@@ -1,34 +1,21 @@
 (ns elastisch.test.core
-  (:require [clj-http.client      :as http]
-            [elastisch.rest-client :as rest]
-            [elastisch.index       :as index]
-            [elastisch.urls        :as urls]
-
-            )
+  (:require [clj-http.client        :as http]
+            [elastisch.rest-client  :as rest]
+            [elastisch.index        :as index]
+            [elastisch.urls         :as urls])
   (:use [elastisch.core]
-        [clojure.test]))
+        [clojure.test]
+        [elastisch.test.fixtures]))
+
+(use-fixtures :each delete-people-index)
 
 (defn ok?
   [response]
   (:ok response))
 
-(deftest replace-me
-  (println
-   (ok?
-    (rest/post-req
-     (urls/index-record "test" "test-type" 1)
-     :body { :user "kimchy" :post_date "2009-11-15T14:12:12" :message "trying out Elastic Search" })
-    ))
-
-  (index/delete "test2")
-
-  (let [mappings { :test-type {
-                               :_source  { :enabled false }
-                               :properties { :field1 { :type "string" :index "not_analyzed" }}} }]
-    (index/create "test2" :settings {} :mappings mappings))
-
-
-  (println
-   (rest/get-req
-    (urls/index-mapping "test2" "test-type")))
-  )
+(deftest create-index-test
+  (let [index    "people"
+        mappings people-mapping
+        response (index/create index :mappings mappings)]
+    (is (= true (ok? response)))
+    (is (= true (index/exists? index)))))

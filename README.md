@@ -12,6 +12,13 @@ Potentially you may get a performance gain wrapping Java API directly, or implem
 in the same manner, since rest API uses it directly. Personally, I can't see that very useful, and
 creating a wrapper could potentially make Elastish less Clojurish.
 
+# Pitfalls
+
+Right now clj-http's default behavior (throw exceptions) is off. Most likely, that will become configurable,
+throwing exceptions by default, since REST client should behave as close to binary driver as possible and
+mimic server behavior where possible.
+
+
 # This is hugely WIP
 
 Until version 1.0.0 APIs may change any day. As soon as it's stable enough (subjectively), basic docs
