@@ -1,4 +1,4 @@
-(ns elastish.rest-client
+(ns elastisch.rest-client
   (:require [clj-http.client   :as http]
             [clojure.data.json :as json]))
 

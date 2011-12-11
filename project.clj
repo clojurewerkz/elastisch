@@ -1,4 +1,4 @@
-(defproject elastish "0.0.1-SNAPSHOT"
+(defproject elastisch "0.0.1-SNAPSHOT"
   :description "Clojure ElasticSearch Client"
   :repositories {
                  "clojure-releases" "http://build.clojure.org/releases"

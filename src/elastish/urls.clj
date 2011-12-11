@@ -1,4 +1,4 @@
-(ns elastish.urls)
+(ns elastisch.urls)
 
 (defn base
   []

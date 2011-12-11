@@ -1,1 +1,1 @@
-(ns elastish.core)
+(ns elastisch.core)

@@ -1,7 +1,7 @@
-(ns elastish.index
+(ns elastisch.index
   (:require [clojure.data.json    :as json]
-            [elastish.urls        :as urls]
-            [elastish.rest-client :as rest]))
+            [elastisch.urls        :as urls]
+            [elastisch.rest-client :as rest]))
 
 (defn create
   [index-name & { :keys [settings mappings]  }]

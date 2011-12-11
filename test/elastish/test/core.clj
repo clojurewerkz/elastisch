@@ -1,11 +1,11 @@
-(ns elastish.test.core
+(ns elastisch.test.core
   (:require [clj-http.client      :as http]
-            [elastish.rest-client :as rest]
-            [elastish.index       :as index]
-            [elastish.urls        :as urls]
+            [elastisch.rest-client :as rest]
+            [elastisch.index       :as index]
+            [elastisch.urls        :as urls]
 
             )
-  (:use [elastish.core]
+  (:use [elastisch.core]
         [clojure.test]))
 
 (defn ok?
