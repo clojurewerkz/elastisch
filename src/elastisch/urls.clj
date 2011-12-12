@@ -14,7 +14,6 @@
 (defn index-mapping
   "Returns index mapping"
   ([^String index-name]
-     (println index-name)
      (format "%s/%s/_mapping" base index-name))
   ([^String index-name, ^String type-name]
      (format "%s/%s/%s/_mapping" base index-name type-name)))
