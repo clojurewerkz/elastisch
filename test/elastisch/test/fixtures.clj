@@ -15,7 +15,6 @@
 
 (def people-mapping {
                      :person {
-                              :_source { :enabled false }
                               :properties {
                                            :first-name { :type "string" }
                                            :last-name  { :type "string" }
