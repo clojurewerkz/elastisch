@@ -35,4 +35,10 @@
         __       (index/update-mapping index "person" :mapping people-mapping)]
     (is (= mappings (:people (index/get-mapping index))))))
 
-;;(deftest get-index-settings-test)
+(deftest get-index-settings-test
+  (let [index     "people"
+        settings  { :index { :refresh-interval "1s" } }
+        _         (index/create index :settings settings :mappings {})]
+    (is (= "1s" (:index.refresh-interval (:settings (:people (index/get-settings "people"))))))))
+
+;; def delete-index-mapping-test

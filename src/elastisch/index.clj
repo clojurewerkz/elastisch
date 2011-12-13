@@ -52,6 +52,26 @@
    (urls/index-mapping (join-names index-name-or-names) type-name)
    :body mapping))
 
+;;
+;; Settings
+;;
+(defn update-settings
+  ([]
+     (rest/json-put-req
+      (urls/index-settings)))
+  ([^String index-name]
+     (rest/json-put-req
+      (urls/index-settings index-name))))
+
+
+(defn get-settings
+  ([]
+     (rest/json-get-req
+      (urls/index-settings))  )
+  ([^String index-name]
+     (rest/json-get-req
+      (urls/index-settings index-name))))
+
 ;; def delete-index-mapping
 
 ;;

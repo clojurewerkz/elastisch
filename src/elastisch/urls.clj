@@ -19,8 +19,10 @@
      (format "%s/%s/%s/_mapping" base index-name type-name)))
 
 (defn index-settings
-  [^String index-name]
-  (format "%s/%s/_settings" base index-name))
+  ([]
+     (format "%s/_settings" base))
+  ([^String index-name]
+    (format "%s/%s/_settings" base index-name)))
 
 ;; defn index-open
 ;; defn index-close

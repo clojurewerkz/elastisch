@@ -14,12 +14,9 @@
   :biography  "Tries to avoid eating fat, being good to other people and does sports every now and then" })
 
 (def people-mapping {
-                     :person {
-                              :properties {
-                                           :first-name { :type "string" }
-                                           :last-name  { :type "string" }
-                                           :title      { :type "string" :analyzer "snowball" }
-                                           :biography  { :type "string" :analyzer "snowball"}
-                                           }
-                              }
-                     })
+  :person {
+    :properties {
+      :first-name { :type "string" }
+      :last-name  { :type "string" }
+      :title      { :type "string" :analyzer "snowball" }
+      :biography  { :type "string" :analyzer "snowball"}}}})
