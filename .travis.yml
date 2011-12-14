@@ -1,2 +1,2 @@
 language: clojure
-before_install: sudo apt-get install unzip && wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.18.5.zip && unzip elasticsearch-0.18.5.zip && cd ./elasticsearch-0.18.5/ && ls -la && ./bin/elasticsearch
+before_script: sudo apt-get install unzip && wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.18.5.zip && unzip elasticsearch-0.18.5.zip && cd ./elasticsearch-0.18.5/ && ls -la && ./bin/elasticsearch
