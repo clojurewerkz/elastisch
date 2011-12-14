@@ -1,1 +1,2 @@
+before_install: wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.18.5.zip && unzip elasticsearch-0.18.5.zip && ./elasticsearch-0.18.5/bin/elasticsearch
 language: clojure
