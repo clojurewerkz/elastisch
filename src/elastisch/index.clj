@@ -55,6 +55,7 @@
 ;;
 ;; Settings
 ;;
+
 (defn update-settings
   ([]
      (rest/json-put-req
@@ -83,5 +84,10 @@
   [index-name]
   (rest/json-get-req (urls/index-settings index-name)))
 
-;; defn open
-;; defn close
+(defn open
+  [index-name]
+  (rest/json-post-req (urls/index-open index-name)))
+
+(defn close
+  [index-name]
+  (rest/json-post-req (urls/index-close index-name)))

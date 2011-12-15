@@ -24,6 +24,10 @@
   ([^String index-name]
     (format "%s/%s/_settings" base index-name)))
 
-;; defn index-open
-;; defn index-close
+(defn index-open
+  [^String index-name]
+  (format "%s/%s/_open" base index-name))
 
+(defn index-close
+  [^String index-name]
+  (format "%s/%s/_close" base index-name))
