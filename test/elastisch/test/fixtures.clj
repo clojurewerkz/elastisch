@@ -16,7 +16,7 @@
 (def people-mapping {
   :person {
     :properties {
-      :first-name { :type "string" }
+      :first-name { :type "string" :store "yes" }
       :last-name  { :type "string" }
       :title      { :type "string" :analyzer "snowball" }
       :biography  { :type "string" :analyzer "snowball"}}}})

@@ -11,12 +11,20 @@
   [index-name type id]
   (format "%s/%s/%s/%s" base index-name type id))
 
-(defn index-mapping
+(defn- _index-mapping
   "Returns index mapping"
   ([^String index-name]
      (format "%s/%s/_mapping" base index-name))
-  ([^String index-name, ^String type-name]
+  ([^String index-name ^String type-name]
      (format "%s/%s/%s/_mapping" base index-name type-name)))
+
+(defn index-mapping
+  "Returns index mapping"
+  ([^String index-name & [ ^String type-name ^Boolean ignore-conflicts ]]
+     (let [url (if (nil? type-name) (_index-mapping index-name) (_index-mapping index-name type-name))]
+       (if (nil? ignore-conflicts)
+         url
+         (format "%s?ignore_conflicts=%s" url (.toString ignore-conflicts))))))
 
 (defn index-settings
   ([]
