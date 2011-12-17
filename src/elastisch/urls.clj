@@ -1,4 +1,5 @@
-(ns elastisch.urls)
+(ns elastisch.urls
+  (:require [elastisch.utils       :as utils]))
 
 (def base
   "http://localhost:9200")
@@ -7,9 +8,13 @@
   [index-name]
   (format "%s/%s" base index-name))
 
-(defn index-record
-  [index-name type id]
-  (format "%s/%s/%s/%s" base index-name type id))
+(defn record
+  [index-name type id  & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
+  (if (empty? (keys all))
+    (format "%s/%s/%s/%s" base index-name type id)
+    (format "%s/%s/%s/%s?%s" base index-name type id (utils/join-hash all))
+    ))
+
 
 (defn- _index-mapping
   "Returns index mapping"
