@@ -9,11 +9,10 @@
   (format "%s/%s" base index-name))
 
 (defn record
-  [index-name type id  & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
-  (if (empty? (keys all))
+  [index-name type id params]
+  (if (empty? (keys params))
     (format "%s/%s/%s/%s" base index-name type id)
-    (format "%s/%s/%s/%s?%s" base index-name type id (utils/join-hash all))
-    ))
+    (format "%s/%s/%s/%s?%s" base index-name type id (utils/join-hash params))))
 
 
 (defn- _index-mapping

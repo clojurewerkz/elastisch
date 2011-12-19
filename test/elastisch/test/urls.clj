@@ -1,5 +1,5 @@
 (ns elastisch.test.urls
-  (:require [elastisch.urls          :as urls])
+  (:require [elastisch.urls :as urls])
   (:use [elastisch.core]
         [clojure.test]))
 
@@ -16,4 +16,4 @@
 
 (deftest record-url-test
   (is (= "http://localhost:9200/index_name/type_name/1?op_type=3&version=2"
-         (urls/record "index_name" "type_name" 1 :version 2 :op_type 3))))
+         (urls/record "index_name" "type_name" 1 { :version 2 :op_type 3 }))))

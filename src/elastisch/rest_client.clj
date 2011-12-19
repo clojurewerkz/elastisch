@@ -25,6 +25,5 @@
 
 (defn delete-req
   [^String uri]
-
   (json/read-json
    (:body (http/delete uri { :accept :json :throw-exceptions false }))))

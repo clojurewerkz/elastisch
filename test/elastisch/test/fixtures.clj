@@ -7,7 +7,7 @@
   (f)
   (index/delete "people"))
 
-(def jack {
+(def person-jack {
   :first-name "Jack"
   :last-name  "Black"
   :title      "Sales Manager"
