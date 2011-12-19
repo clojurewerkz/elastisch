@@ -14,7 +14,7 @@
 
 (defn ok?
   [response]
-  (:ok response))
+  (= true (:ok response)))
 
 (defn acknowledged?
   [response]
