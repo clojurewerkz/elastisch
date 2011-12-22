@@ -5,11 +5,17 @@
   "http://localhost:9200")
 
 (defn index
-  [index-name]
+  [^String index-name]
   (format "%s/%s" base index-name))
 
+(defn index-type
+  [^String index-name ^String index-type params]
+  (if (empty? (keys params))
+    (format "%s/%s/%s" base index-name index-type)
+    (format "%s/%s/%s" base index-name index-type (utils/join-hash params))))
+
 (defn record
-  [index-name type id params]
+  [^String index-name ^String type id params]
   (if (empty? (keys params))
     (format "%s/%s/%s/%s" base index-name type id)
     (format "%s/%s/%s/%s?%s" base index-name type id (utils/join-hash params))))

@@ -6,7 +6,6 @@
 
 (defn join-hash
   [hash]
-  (println (type hash))
   (let [key-value-joiner (fn [k v] (if (empty? k) v (clojure.string/join "&" [k v])))
         params-joiner    (fn [params] (clojure.string/join "=" params))
         colon-stripper   (fn [c] (clojure.string/replace c #"^\:+" ""))]
@@ -15,6 +14,10 @@
 (defn ok?
   [response]
   (= true (:ok response)))
+
+(defn conflict?
+  [response]
+  (= 409 (:status response)))
 
 (defn acknowledged?
   [response]

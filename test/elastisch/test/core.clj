@@ -29,7 +29,7 @@
 (deftest put-record-precreated-index-test
   (let [index    "people"
         type     "person"
-        id       "1"        
+        id       "1"
         _        (index/create index :mappings fixtures/people-mapping)
         document   fixtures/person-jack
         response   (put-record index type id document)
@@ -47,10 +47,28 @@
         type     "person"
         id       "1"
         document fixtures/person-joe
-        response_v1     (put-record index type id fixtures/person-jack)
-        response_middle (put-record index type id fixtures/person-mary)
-        response        (put-record index type id fixtures/person-joe :version 1)]
-    (is (= false (utils/ok? response)))))
+        _        (put-record index type id fixtures/person-jack)
+        _        (put-record index type id fixtures/person-mary)
+        response (put-record index type id fixtures/person-joe :version 1)]
+    (is (= true (utils/conflict? response)))))
+
+(deftest put-create-record-when-already-created-test
+  (let [index    "people"
+        type     "person"
+        id       "1"
+        _        (put-record index type id fixtures/person-jack)
+        response (put-record index type id fixtures/person-joe :op_type "create")]
+    (is (= true (utils/conflict? response)))))
+
+(deftest put-create-autogenerate-id-test
+  (let [index    "people"
+        type     "person"
+        response (create-record index type fixtures/person-jack)]
+    (is (= (utils/ok? response)))
+    (are [expected actual] (= expected (actual response))
+         index    :_index
+         type     :_type
+         1        :_version)))
 
 ;; deftest optional-type
 ;; deftest fields

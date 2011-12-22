@@ -7,7 +7,13 @@
   (rest/json-put-req
    (urls/record index type id all)
    :body document))
-  
+
+(defn create-record
+  [index type document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
+  (rest/json-post-req
+   (urls/index-type index type all)
+   :body document))
+
 ;; defn delete-record
 (defn get-record
   [index type id & {:keys [realtime fields routing preference refresh] :as all}]
