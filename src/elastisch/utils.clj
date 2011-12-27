@@ -19,6 +19,11 @@
   [response]
   (= 409 (:status response)))
 
+(defn not-found?
+  [response]
+  (or (= 404 (:status response))
+      (= false (:exists response))))
+
 (defn acknowledged?
   [response]
   (:acknowledged response))
