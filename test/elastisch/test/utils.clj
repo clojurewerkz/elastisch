@@ -1,6 +1,8 @@
 (ns elastisch.test.utils
   (:require [elastisch.utils :as utils])
-  (:use [clojure.test]))
+  (:use [clojure.test]
+        [clojure.string]
+        ))
 ;;
 ;; Utils
 ;;

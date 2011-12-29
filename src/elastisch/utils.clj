@@ -1,5 +1,5 @@
 (ns elastisch.utils
-  (:use [clojure.string]))
+  (:require [clojure.string]))
 
 (defn join-names
   [name-or-names]
