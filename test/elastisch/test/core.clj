@@ -95,6 +95,29 @@
     (is (utils/ok? (core/delete index-name index-type id)))
     (is (not (core/present? index-name index-type id)))))
 
+;;
+;; mget
+;;
+
+(deftest multi-get-test
+  (core/put index-name index-type "1" fixtures/person-jack)
+  (core/put index-name index-type "2" fixtures/person-mary)
+  (core/put index-name index-type "3" fixtures/person-joe)
+  (let [mget-result (core/multi-get
+                     [ { :_index index-name :_type index-type :_id "1"  }
+                       { :_index index-name :_type index-type :_id "2" } ])]
+    (is (= fixtures/person-jack (:_source (first mget-result))))
+    (is (= fixtures/person-mary (:_source (second mget-result)))))
+  (let [mget-result (core/multi-get index-name
+                     [ { :_type index-type :_id "1"  }
+                       { :_type index-type :_id "2" } ])]
+    (is (= fixtures/person-jack (:_source (first mget-result))))
+    (is (= fixtures/person-mary (:_source (second mget-result)))))
+  (let [mget-result (core/multi-get index-name index-type
+                     [ { :_id "1"  } { :_id "2" } ])]
+    (is (= fixtures/person-jack (:_source (first mget-result))))
+    (is (= fixtures/person-mary (:_source (second mget-result))))))
+
 ;; deftest optional-type
 ;; deftest fields
 ;; deftest routing

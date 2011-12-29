@@ -1,5 +1,5 @@
 (ns elastisch.urls
-  (:require [elastisch.utils       :as utils]))
+  (:require [elastisch.utils  :as utils]))
 
 (def base
   "http://localhost:9200")
@@ -25,13 +25,13 @@
   "Returns index mapping"
   ([^String index-name]
      (format "%s/%s/_mapping" base index-name))
-  ([^String index-name ^String type-name]
-     (format "%s/%s/%s/_mapping" base index-name type-name)))
+  ([^String index-name ^String index-type]
+     (format "%s/%s/%s/_mapping" base index-name index-type)))
 
 (defn index-mapping
   "Returns index mapping"
-  ([^String index-name & [ ^String type-name ^Boolean ignore-conflicts ]]
-     (let [url (if (nil? type-name) (_index-mapping index-name) (_index-mapping index-name type-name))]
+  ([^String index-name & [ ^String index-type ^Boolean ignore-conflicts ]]
+     (let [url (if (nil? index-type) (_index-mapping index-name) (_index-mapping index-name index-type))]
        (if (nil? ignore-conflicts)
          url
          (format "%s?ignore_conflicts=%s" url (.toString ignore-conflicts))))))
@@ -49,3 +49,11 @@
 (defn index-close
   [^String index-name]
   (format "%s/%s/_close" base index-name))
+
+(defn index-mget
+  ([]
+    (format "%s/_mget" base))
+  ([^String index-name]
+    (format "%s/%s/_mget" base index-name))
+  ([^String index-name ^String index-type]
+    (format "%s/%s/%s/_mget" base index-name index-type)))

@@ -38,8 +38,7 @@
     (is (= true (utils/ok? response)))
     (is (= mappings (:people (index/get-mapping index))))
     (is (= mappings (:people (index/get-mapping [index, "shmeople"]))))
-    (is (= mappings (index/get-mapping index "person")))
-    ))
+    (is (= mappings (index/get-mapping index "person")))))
 
 (deftest update-index-mapping-test
   (let [index    "people"

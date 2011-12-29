@@ -35,6 +35,25 @@
   [index type id]
   (not (nil? (get index type id))))
 
+(defn multi-get
+  "Multi get returns only items that are present in database."
+  ([query]
+     (let [results (rest/json-post-req
+                     (urls/index-mget)
+                     :body { :docs query })]
+       (filter #(:exists %) (:docs results))))
+  ([index query]
+     (let [results (rest/json-post-req
+                    (urls/index-mget index)
+                    :body { :docs query })]
+       (filter #(:exists %) (:docs results))))
+  ([index type query]
+     (let [results (rest/json-post-req
+                    (urls/index-mget index type)
+                    :body { :docs query })]
+       (filter #(:exists %) (:docs results)))))
+
+
 ;; defn multi-get
 ;; defn get-records
 ;; defn search
