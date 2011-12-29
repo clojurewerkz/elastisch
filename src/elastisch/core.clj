@@ -53,9 +53,6 @@
                     :body { :docs query })]
        (filter #(:exists %) (:docs results)))))
 
-
-;; defn multi-get
-;; defn get-records
 ;; defn search
 ;; defn count
 ;; defn delete-by-query
