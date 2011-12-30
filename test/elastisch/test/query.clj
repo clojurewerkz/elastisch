@@ -41,3 +41,21 @@
          must-not (:must_not bool)
          minimum-number-should-match (:minimum_number_should_match bool)
          boost  (:boost bool))))
+
+(deftest boosting
+  (let [positive       { :term { :field1 "value1" } }
+        negative       { :term { :field2 "value2" } }
+        positive-boost 1.0
+        negative-boost 0.2
+        result         (query/boosting
+                        :positive (query/term :field1 "value1")
+                        :negative (query/term :field2 "value2")
+                        :positive-boost 1.0
+                        :negative-boost 0.2)
+        boosting       (:boosting result)]
+
+    (are [actual expected] (= actual expected)
+         positive       (:positive boosting)
+         negative       (:negative boosting)
+         positive-boost (:positive_boost boosting)
+         negative-boost (:negative_boost boosting))))

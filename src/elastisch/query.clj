@@ -20,14 +20,20 @@
         params    (merge { :query query } json-opts)]
     { :text { :message params } }))
 
+(defn- options-query
+  [key options]
+  (let [json-opts (utils/clj-to-json-options options)]
+    (hash-map key json-opts)))
+
 (defn bool
   [& { :keys [must should must-not minimum-number-should-match boost disable-coord] :as options}]
-  (let [json-opts (utils/clj-to-json-options options)]
-    { :bool json-opts }))
+  (options-query :bool options))
 
-;; text
-;; bool
-;; boosting
+
+(defn boosting
+  [& { :keys [positive negative positive-boost negative-boost] :as options}]
+  (options-query :boosting options))
+
 ;; ids
 ;; custom-score
 ;; constant-score
