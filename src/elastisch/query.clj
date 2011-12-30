@@ -14,6 +14,17 @@
   [key & { :keys [from to include-lower include-upper gt gte lt lte boost] :as options}]
   { :range (hash-map key (utils/clj-to-json-options options)) })
 
+(defn text
+  [query & { :keys [analyzer operator type] :as options}]
+  (let [json-opts (utils/clj-to-json-options options)
+        params    (merge { :query query } json-opts)]
+    { :text { :message params } }))
+
+(defn bool
+  [& { :keys [must should must-not minimum-number-should-match boost disable-coord] :as options}]
+  (let [json-opts (utils/clj-to-json-options options)]
+    { :bool json-opts }))
+
 ;; text
 ;; bool
 ;; boosting
