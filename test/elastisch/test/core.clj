@@ -4,6 +4,7 @@
             [elastisch.index         :as index]
             [elastisch.urls          :as urls]
             [elastisch.utils         :as utils]
+            [elastisch.query         :as query]
             [elastisch.test.fixtures :as fixtures])
   (:use [clojure.test]))
 
@@ -117,6 +118,22 @@
                      [ { :_id "1"  } { :_id "2" } ])]
     (is (= fixtures/person-jack (:_source (first mget-result))))
     (is (= fixtures/person-mary (:_source (second mget-result))))))
+
+;;
+;; query
+;;
+
+(deftest search-test
+  (index/create index-name :mappings fixtures/people-mapping)
+
+  (core/put index-name index-type "1" fixtures/person-jack)
+  (core/put index-name index-type "2" fixtures/person-mary)
+  (core/put index-name index-type "3" fixtures/person-joe)
+
+  (index/refresh index-name)
+
+  (let [result (core/search index-name index-type :query (query/term :biography "avoid"))]
+    (is (= fixtures/person-jack (:_source (first (:hits (:hits result))))))))
 
 ;; deftest optional-type
 ;; deftest fields

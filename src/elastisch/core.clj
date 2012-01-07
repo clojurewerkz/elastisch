@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [get])
   (:require [elastisch.utils         :as utils]
             [elastisch.rest-client   :as rest]
-            [elastisch.urls          :as urls]))
+            [elastisch.urls          :as urls])
+  (:use     [clojure.set]))
 
 (defn put
   [index type id document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
@@ -52,6 +53,20 @@
                     (urls/index-mget index type)
                     :body { :docs query })]
        (filter #(:exists %) (:docs results)))))
+
+;; (defn uri-search
+;;   [index type & { :keys [q df analyzer default-operator explain fields sort track-scores timeout from size search-type lowercase-expanded-terms analyze-wildcard]}])
+
+;;
+(defn search
+  [index-name-or-names type-name-or-names & { :keys [query sort facets filter highlight size from fields min-score version explain script-fields index-boost
+                                                     ;; Query string attributes
+                                                     search-type scroll size] :as options }]
+  (let [query-string-attributes (select-keys options [:search-type :scroll :size])
+        body-attributes         (difference options query-string-attributes)]
+  (rest/json-post-req
+   (urls/search (utils/join-names index-name-or-names) (utils/join-names type-name-or-names) query-string-attributes)
+   :body body-attributes)))
 
 ;; defn search
 ;; defn count

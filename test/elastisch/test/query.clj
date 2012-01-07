@@ -42,7 +42,7 @@
          minimum-number-should-match (:minimum_number_should_match bool)
          boost  (:boost bool))))
 
-(deftest boosting
+(deftest boosting-query-test
   (let [positive       { :term { :field1 "value1" } }
         negative       { :term { :field2 "value2" } }
         positive-boost 1.0
@@ -59,3 +59,25 @@
          negative       (:negative boosting)
          positive-boost (:positive_boost boosting)
          negative-boost (:negative_boost boosting))))
+
+(deftest ids-query-test
+  (is (=  { :ids { :type "my_type" :values  ["1" "4" "100"] } }
+          (query/ids "my_type" [ "1" "4" "100" ]))))
+
+(deftest custom-score-query-test
+  (let [query   { :terms { :foo [ :bar :baz ] } }
+        params  { :param1  2 :param2  3.1 }
+        script  "_score * doc['my_numeric_field'].value / pow(param1 param2)"
+        result  (query/custom-score
+                 :query   (query/term :foo [:bar :baz])
+                 :params  { :param1  2 :param2  3.1 }
+                 :script  "_score * doc['my_numeric_field'].value / pow(param1 param2)")
+        custom-score (:custom_score result)]
+    (are [actual expected] (= actual expected)
+         query    (:query custom-score)
+         params   (:params custom-score)
+         script   (:script custom-score))))
+
+
+
+

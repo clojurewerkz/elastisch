@@ -34,8 +34,15 @@
   [& { :keys [positive negative positive-boost negative-boost] :as options}]
   (options-query :boosting options))
 
-;; ids
-;; custom-score
+(defn ids
+  [type ids]
+  { :ids { :type type :values  ids } })
+
+(defn custom-score
+  [& {:keys [query params script] :as options}]
+  (options-query :custom_score options))
+
+
 ;; constant-score
 ;; dis-max
 ;; field

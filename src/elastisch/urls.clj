@@ -14,6 +14,12 @@
     (format "%s/%s/%s" base index-name index-type)
     (format "%s/%s/%s" base index-name index-type (utils/join-hash params))))
 
+(defn search
+  [^String index-name ^String index-type params]
+  (if (empty? (keys params))
+    (format "%s/%s/%s/_search" base index-name index-type)
+    (format "%s/%s/%s/_search" base index-name index-type (utils/join-hash params))))
+
 (defn record
   [^String index-name ^String type id params]
   (if (empty? (keys params))
@@ -57,3 +63,11 @@
     (format "%s/%s/_mget" base index-name))
   ([^String index-name ^String index-type]
     (format "%s/%s/%s/_mget" base index-name index-type)))
+
+(defn index-refresh
+  ([]
+    (format "%s/_refresh" base))
+  ([^String index-name]
+    (format "%s/%s/_refresh" base index-name))
+  ([^String index-name ^String index-type]
+    (format "%s/%s/%s/_refresh" base index-name index-type)))

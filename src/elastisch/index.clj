@@ -71,7 +71,7 @@
 ;;
 
 (defn update-settings
-  "Change specific index level settings in real time. 
+  "Change specific index level settings in real time.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([settings]
@@ -116,6 +116,12 @@
   [index-name]
   (rest/json-post-req (urls/index-close index-name)))
 
+(defn refresh
+  ([]
+     (rest/json-post-req (urls/index-refresh)))
+  ([index-name-or-names]
+     (rest/json-post-req (urls/index-refresh (utils/join-names index-name-or-names)))))
+
 ;;
 ;; Aliases
 ;;
@@ -134,14 +140,11 @@
 
 ;;
 ;; Templates
-;; 
+;;
 
 ;; defn get-template
-;; 
+;;
 ;; defn delete-template
-
-
-;; defn refresh
 ;; defn optimize
 ;; defn flush
 ;; defn snapshot
