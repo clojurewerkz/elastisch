@@ -78,6 +78,33 @@
          params   (:params custom-score)
          script   (:script custom-score))))
 
+(deftest constant-score-query-test
+  (let [query   { :terms { :foo [ :bar :baz ] } }
+        boost   2.0
+        result  (query/constant-score
+                 :query   (query/term :foo [:bar :baz])
+                 :boost   boost)
+        constant-score (:constant_score result)]
+    (are [actual expected] (= actual expected)
+         query    (:query constant-score)
+         boost    (:boost constant-score))))
+
+(deftest dis-max-query-test
+  (let [query1   { :term { :age 24 } }
+        query2   { :term { :age 35 } }
+        boost       2.0
+        tie-breaker 0.7
+        result  (query/dis-max
+                 :queries     [ query1, query2 ]
+                 :boost       boost
+                 :tie-breaker tie-breaker)
+        dis-max  (:dis_max result)]
+    (are [actual expected] (= actual expected)
+         query1   (first  (:queries dis-max))
+         query2   (second (:queries dis-max))
+         boost       (:boost dis-max)
+         tie-breaker (:tie_breaker dis-max))))
+
 
 
 
