@@ -16,7 +16,7 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
   [index-name & { :keys [settings mappings]  }]
   (let [request-body { :settings settings :mappings mappings } ]
-    (rest/json-post-req
+    (rest/post
      (urls/index index-name)
      :body request-body)))
 
@@ -25,14 +25,14 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"
   [index-name]
-  (= 200 (:status (rest/head-req (urls/index index-name)))))
+  (= 200 (:status (rest/head (urls/index index-name)))))
 
 (defn delete
   "The delete index API allows to delete an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
   [index-name]
-  (rest/delete-req (urls/index index-name)))
+  (rest/delete (urls/index index-name)))
 
 ;;
 ;; Mappings
@@ -43,10 +43,10 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
   ([index-name-or-names]
-     (rest/json-get-req
+     (rest/get
       (urls/index-mapping (utils/join-names index-name-or-names))))
   ([^String index-name ^String type-name]
-     (rest/json-get-req
+     (rest/get
       (urls/index-mapping index-name type-name))))
 
 (defn update-mapping
@@ -54,7 +54,7 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
   [^String index-name-or-names ^String type-name & { :keys [mapping ignore-conflicts] }]
-  (rest/json-put-req
+  (rest/put
    (urls/index-mapping (utils/join-names index-name-or-names) type-name ignore-conflicts)
    :body mapping))
 
@@ -63,7 +63,7 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
   [^String index-name ^String type-name]
-  (rest/delete-req
+  (rest/delete
    (urls/index-mapping index-name type-name)))
 
 ;;
@@ -75,11 +75,11 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([settings]
-     (rest/json-put-req
+     (rest/put
       (urls/index-settings)
       :body settings))
   ([^String index-name settings]
-     (rest/json-put-req
+     (rest/put
       (urls/index-settings index-name)
       :body settings)))
 
@@ -90,10 +90,10 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html
   "
   ([]
-     (rest/json-get-req
+     (rest/get
       (urls/index-settings)))
   ([^String index-name]
-     (rest/json-get-req
+     (rest/get
       (urls/index-settings index-name))))
 
 ;;
@@ -106,7 +106,7 @@
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html
   "
   [index-name]
-  (rest/json-post-req (urls/index-open index-name)))
+  (rest/post (urls/index-open index-name)))
 
 (defn close
   "Close index.
@@ -114,13 +114,13 @@
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html
   "
   [index-name]
-  (rest/json-post-req (urls/index-close index-name)))
+  (rest/post (urls/index-close index-name)))
 
 (defn refresh
   ([]
-     (rest/json-post-req (urls/index-refresh)))
+     (rest/post (urls/index-refresh)))
   ([index-name-or-names]
-     (rest/json-post-req (urls/index-refresh (utils/join-names index-name-or-names)))))
+     (rest/post (urls/index-refresh (utils/join-names index-name-or-names)))))
 
 ;;
 ;; Aliases

@@ -7,21 +7,21 @@
 
 (defn put
   [index type id document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
-  (rest/json-put-req
+  (rest/put
    (urls/record index type id all)
    :body document))
 
 (defn create
   "Creates document, autogenerating ID"
   [index type document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
-  (rest/json-post-req
+  (rest/post
    (urls/index-type index type all)
    :body document))
 
 (defn get
   "Gets Document by Id or returns nil if document is not found."
   [index type id & {:keys [realtime fields routing preference refresh] :as all}]
-  (let [result (rest/json-get-req
+  (let [result (rest/get
                 (urls/record index type id all))]
     (if (utils/not-found? result)
       nil
@@ -29,7 +29,7 @@
 
 (defn delete
   [index type id & {:keys [version routing parent replication consistency refresh] :as all}]
-  (rest/delete-req
+  (rest/delete
    (urls/record index type id all)))
 
 (defn present?
@@ -39,17 +39,17 @@
 (defn multi-get
   "Multi get returns only items that are present in database."
   ([query]
-     (let [results (rest/json-post-req
+     (let [results (rest/post
                      (urls/index-mget)
                      :body { :docs query })]
        (filter #(:exists %) (:docs results))))
   ([index query]
-     (let [results (rest/json-post-req
+     (let [results (rest/post
                     (urls/index-mget index)
                     :body { :docs query })]
        (filter #(:exists %) (:docs results))))
   ([index type query]
-     (let [results (rest/json-post-req
+     (let [results (rest/post
                     (urls/index-mget index type)
                     :body { :docs query })]
        (filter #(:exists %) (:docs results)))))
@@ -64,7 +64,7 @@
                                                      search-type scroll size] :as options }]
   (let [query-string-attributes (select-keys options [:search-type :scroll :size])
         body-attributes         (difference options query-string-attributes)]
-  (rest/json-post-req
+  (rest/post
    (urls/search (utils/join-names index-name-or-names) (utils/join-names type-name-or-names) query-string-attributes)
    :body body-attributes)))
 
