@@ -1,6 +1,6 @@
 # Elastish - Clojure client for ElasticSearch REST API
 
-[![Continuous Integration status](https://secure.travis-ci.org/ifesdjeen/elastisch.png)](http://travis-ci.org/ifesdjeen/elastisch)
+[![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
 
 Basic reasoning behind that project is to create a good reference implementation for ES API, allow
 people to use it with arbitrary DBs and use it in distributed / high performant systems.
