@@ -57,13 +57,17 @@ throwing exceptions by default, since REST client should behave as close to bina
 mimic server behavior where possible.
 
 
-# This is hugely WIP
+# Current status
 
-Until version 1.0.0 APIs may change any day. As soon as it's stable enough (subjectively), basic docs
-and examples will be added and jar uploaded to Clojars.
+We're currently working hard on improving design and implementing missing features.
+You can certainly help us by testing, implementing things you need or even by using and giving us some
+feedback.
+
+New snapshots are released to [clojars.org](https://clojars.org/clojurewerkz/elastisch) every few days.
 
 ## License
 
 Copyright (C) 2011 Alex Petrov
 
 Distributed under the Eclipse Public License, the same as Clojure.
+
