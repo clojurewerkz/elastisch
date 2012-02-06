@@ -1,4 +1,4 @@
-(defproject elastisch "0.0.1-SNAPSHOT"
+(defproject clojurewerkz/elastisch "1.0.0-SNAPSHOT"
   :description "Clojure ElasticSearch Client"
   :repositories {
                  "clojure-releases" "http://build.clojure.org/releases"
@@ -9,6 +9,6 @@
                  }
   :dependencies [[org.clojure/clojure   "1.3.0"]
                  [org.clojure/data.json "0.1.2"]
-                 [clj-http              "0.2.4"]]
+                 [clj-http              "0.3.1"]]
   :dev-resources-path "test/resources"
   :warn-on-reflection true)
