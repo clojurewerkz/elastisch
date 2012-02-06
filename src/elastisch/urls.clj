@@ -1,8 +1,13 @@
 (ns elastisch.urls
   (:require [elastisch.utils  :as utils]))
 
+(defrecord ElasticSearchEndpoint
+    [uri])
+
+(def ^:dynamic *endpoint* (ElasticSearchEndpoint. "http://localhost:9200"))
+
 (def base
-  "http://localhost:9200")
+  (:uri *endpoint*))
 
 (defn index
   [^String index-name]
