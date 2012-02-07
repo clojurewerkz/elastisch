@@ -1,28 +1,27 @@
 (ns elastisch.core
   (:refer-clojure :exclude [get])
   (:require [elastisch.utils         :as utils]
-            [elastisch.rest-client   :as rest]
-            [elastisch.urls          :as urls])
+            [elastisch.rest          :as rest])
   (:use     [clojure.set]))
 
 (defn put
   [index type id document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
   (rest/put
-   (urls/record index type id all)
+   (rest/record index type id all)
    :body document))
 
 (defn create
   "Creates document, autogenerating ID"
   [index type document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
   (rest/post
-   (urls/index-type index type all)
+   (rest/index-type index type all)
    :body document))
 
 (defn get
   "Gets Document by Id or returns nil if document is not found."
   [index type id & {:keys [realtime fields routing preference refresh] :as all}]
   (let [result (rest/get
-                (urls/record index type id all))]
+                (rest/record index type id all))]
     (if (utils/not-found? result)
       nil
       result)))
@@ -30,7 +29,7 @@
 (defn delete
   [index type id & {:keys [version routing parent replication consistency refresh] :as all}]
   (rest/delete
-   (urls/record index type id all)))
+   (rest/record index type id all)))
 
 (defn present?
   [index type id]
@@ -40,17 +39,17 @@
   "Multi get returns only items that are present in database."
   ([query]
      (let [results (rest/post
-                     (urls/index-mget)
+                     (rest/index-mget)
                      :body { :docs query })]
        (filter #(:exists %) (:docs results))))
   ([index query]
      (let [results (rest/post
-                    (urls/index-mget index)
+                    (rest/index-mget index)
                     :body { :docs query })]
        (filter #(:exists %) (:docs results))))
   ([index type query]
      (let [results (rest/post
-                    (urls/index-mget index type)
+                    (rest/index-mget index type)
                     :body { :docs query })]
        (filter #(:exists %) (:docs results)))))
 
@@ -65,7 +64,7 @@
   (let [query-string-attributes (select-keys options [:search-type :scroll :size])
         body-attributes         (difference options query-string-attributes)]
   (rest/post
-   (urls/search (utils/join-names index-name-or-names) (utils/join-names type-name-or-names) query-string-attributes)
+   (rest/search (utils/join-names index-name-or-names) (utils/join-names type-name-or-names) query-string-attributes)
    :body body-attributes)))
 
 ;; defn search

@@ -1,8 +1,7 @@
 (ns elastisch.test.core
   (:require [elastisch.core          :as core]
-            [elastisch.rest-client   :as rest]
+            [elastisch.rest          :as rest]
             [elastisch.index         :as index]
-            [elastisch.urls          :as urls]
             [elastisch.utils         :as utils]
             [elastisch.query         :as query]
             [elastisch.test.fixtures :as fixtures])

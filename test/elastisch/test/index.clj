@@ -1,8 +1,7 @@
 (ns elastisch.test.index
   (:require [clj-http.client         :as http]
-            [elastisch.rest-client   :as rest]
+            [elastisch.rest          :as rest]
             [elastisch.index         :as index]
-            [elastisch.urls          :as urls]
             [elastisch.utils         :as utils]
             [elastisch.test.fixtures :as fixtures])
   (:use [elastisch.core]
