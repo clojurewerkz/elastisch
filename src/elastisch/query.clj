@@ -1,4 +1,5 @@
 (ns elastisch.query
+  (:refer-clojure :exclude [range])
   (:require [elastisch.utils :as utils]))
 
 (defn term

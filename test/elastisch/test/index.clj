@@ -1,4 +1,5 @@
 (ns elastisch.test.index
+  (:refer-clojure :exclude [get])
   (:require [clj-http.client         :as http]
             [elastisch.rest          :as rest]
             [elastisch.index         :as index]
