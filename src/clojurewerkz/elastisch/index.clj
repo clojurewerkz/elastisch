@@ -1,7 +1,7 @@
-(ns elastisch.index
+(ns clojurewerkz.elastisch.index
   (:require [clojure.data.json     :as json]
-            [elastisch.rest        :as rest]
-            [elastisch.utils       :as utils]
+            [clojurewerkz.elastisch.rest        :as rest]
+            [clojurewerkz.elastisch.utils       :as utils]
             [clj-http.client       :as http]))
 
 ;;

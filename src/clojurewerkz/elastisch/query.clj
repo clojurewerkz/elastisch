@@ -1,6 +1,6 @@
-(ns elastisch.query
+(ns clojurewerkz.elastisch.query
   (:refer-clojure :exclude [range])
-  (:require [elastisch.utils :as utils]))
+  (:require [clojurewerkz.elastisch.utils :as utils]))
 
 (defn term
   "Term Query

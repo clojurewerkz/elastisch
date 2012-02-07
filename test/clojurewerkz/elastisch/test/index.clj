@@ -1,11 +1,11 @@
-(ns elastisch.test.index
+(ns clojurewerkz.elastisch.test.index
   (:refer-clojure :exclude [get])
   (:require [clj-http.client         :as http]
-            [elastisch.rest          :as rest]
-            [elastisch.index         :as index]
-            [elastisch.utils         :as utils]
-            [elastisch.test.fixtures :as fixtures])
-  (:use [elastisch.document]
+            [clojurewerkz.elastisch.rest          :as rest]
+            [clojurewerkz.elastisch.index         :as index]
+            [clojurewerkz.elastisch.utils         :as utils]
+            [clojurewerkz.elastisch.test.fixtures :as fixtures])
+  (:use [clojurewerkz.elastisch.document]
         [clojure.test]))
 
 (use-fixtures :each fixtures/delete-people-index)

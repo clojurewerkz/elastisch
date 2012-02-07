@@ -1,5 +1,5 @@
-(ns elastisch.test.query
-  (:require [elastisch.query :as query])
+(ns clojurewerkz.elastisch.test.query
+  (:require [clojurewerkz.elastisch.query :as query])
   (:use [clojure.test]))
 
 

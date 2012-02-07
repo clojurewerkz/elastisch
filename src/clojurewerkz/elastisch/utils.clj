@@ -1,4 +1,4 @@
-(ns elastisch.utils
+(ns clojurewerkz.elastisch.utils
   (:require [clojure.string]))
 
 (defn join-names

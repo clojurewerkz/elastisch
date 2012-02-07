@@ -1,10 +1,10 @@
-(ns elastisch.test.document
-  (:require [elastisch.document      :as document]
-            [elastisch.rest          :as rest]
-            [elastisch.index         :as index]
-            [elastisch.utils         :as utils]
-            [elastisch.query         :as query]
-            [elastisch.test.fixtures :as fixtures])
+\(ns clojurewerkz.elastisch.test.document
+  (:require [clojurewerkz.elastisch.document      :as document]
+            [clojurewerkz.elastisch.rest          :as rest]
+            [clojurewerkz.elastisch.index         :as index]
+            [clojurewerkz.elastisch.utils         :as utils]
+            [clojurewerkz.elastisch.query         :as query]
+            [clojurewerkz.elastisch.test.fixtures :as fixtures])
   (:use [clojure.test]))
 
 (use-fixtures :each fixtures/delete-people-index)
@@ -139,5 +139,3 @@
 ;; deftest routing
 ;; deftest preference
 ;; deftest refresh
-
-

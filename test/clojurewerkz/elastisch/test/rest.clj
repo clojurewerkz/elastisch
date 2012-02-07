@@ -1,5 +1,5 @@
-(ns elastisch.test.rest
-  (:require [elastisch.rest :as rest])
+(ns clojurewerkz.elastisch.test.rest
+  (:require [clojurewerkz.elastisch.rest :as rest])
   (:use [clojure.test]))
 
 (deftest index-mapping-url-test

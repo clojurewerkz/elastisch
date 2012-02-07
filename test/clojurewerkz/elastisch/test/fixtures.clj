@@ -1,5 +1,5 @@
-(ns elastisch.test.fixtures
-  (:require [elastisch.index       :as index]))
+(ns clojurewerkz.elastisch.test.fixtures
+  (:require [clojurewerkz.elastisch.index       :as index]))
 
 (defn delete-people-index
   [f]

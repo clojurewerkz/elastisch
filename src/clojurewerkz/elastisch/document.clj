@@ -1,7 +1,7 @@
-(ns elastisch.document
+(ns clojurewerkz.elastisch.document
   (:refer-clojure :exclude [get])
-  (:require [elastisch.utils         :as utils]
-            [elastisch.rest          :as rest])
+  (:require [clojurewerkz.elastisch.utils         :as utils]
+            [clojurewerkz.elastisch.rest          :as rest])
   (:use     [clojure.set]))
 
 (defn put
