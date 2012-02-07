@@ -5,21 +5,21 @@
   (:use     [clojure.set]))
 
 (defn put
-  [index type id document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
+  [index type id document & {:as all}]
   (rest/put
    (rest/record index type id all)
    :body document))
 
 (defn create
   "Creates document, autogenerating ID"
-  [index type document & {:keys [version op_type routing parent timestamp ttl prelocate timeout refresh replication consistency] :as all}]
+  [index type document & {:as all}]
   (rest/post
    (rest/index-type index type all)
    :body document))
 
 (defn get
   "Gets Document by Id or returns nil if document is not found."
-  [index type id & {:keys [realtime fields routing preference refresh] :as all}]
+  [index type id & {:as all}]
   (let [result (rest/get
                 (rest/record index type id all))]
     (if (utils/not-found? result)
@@ -27,7 +27,7 @@
       result)))
 
 (defn delete
-  [index type id & {:keys [version routing parent replication consistency refresh] :as all}]
+  [index type id & {:as all}]
   (rest/delete
    (rest/record index type id all)))
 
@@ -55,12 +55,10 @@
 
 ;; (defn uri-search
 ;;   [index type & { :keys [q df analyzer default-operator explain fields sort track-scores timeout from size search-type lowercase-expanded-terms analyze-wildcard]}])
-
 ;;
+
 (defn search
-  [index-name-or-names type-name-or-names & { :keys [query sort facets filter highlight size from fields min-score version explain script-fields index-boost
-                                                     ;; Query string attributes
-                                                     search-type scroll size] :as options }]
+  [index-name-or-names type-name-or-names & { :as options }]
   (let [query-string-attributes (select-keys options [:search-type :scroll :size])
         body-attributes         (difference options query-string-attributes)]
   (rest/post
