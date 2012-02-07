@@ -1,18 +1,61 @@
-# Elastish - Clojure client for ElasticSearch REST API
+# Elastisch, a Clojure client for Elastic Search
+
+Elastisch is a Clojure client for Elastic Search, a modern distributed RESTful search engine.
 
 [![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
 
-Basic reasoning behind that project is to create a good reference implementation for ES API, allow
-people to use it with arbitrary DBs and use it in distributed / high performant systems.
+## Project Goals
 
-Most of operations on Indexes, and Queries are supported. Very easy to use and understand. All
-options are implemented as Clojure keys, so you'll see compile-time notifications for incorrectly
-written queries.
+ * Closely follow recent Elastic Search releases & features.
+ * Be well documented.
+ * Be well tested.
+ * Be maintained.
+ * Integrate with libraries like clojure.data.json and Joda Time.
+ * Learn from other clients like the Java and Ruby ones.
+ * Target Clojure 1.3.0 and later from the ground up.
 
-Next milestone is making API even more accessible, describing most important operations in quickstart
-guide and improving docs in code.
 
-# Quickstart
+### Why not wrap Java API?
+
+Wrapping ES Java client may produce a performance gain but we don't see that to be very useful, and
+following Java client conventions would likely make Elastish less Clojurish.
+
+
+## Documentation & Examples
+
+We are working on documentation guides & examples site for the 1.0 release. In the meantime, please refer to the [test suite](https://github.com/michaelklishin/elastisch/tree/master/test/elastisch/test) for code examples.
+
+
+## This is a Work In Progress
+
+Core Elastisch APIs are stabilized but it is still a work in progress. Keep that in mind. 1.0 will be released in early 2012
+together with documentation guides and dedicated website.
+
+
+## Artifacts
+
+Snapshot artifacts are [released to Clojars](https://clojars.org/clojurewerkz/elastisch) every few days.
+
+With Leiningen:
+
+    [clojurewerkz/elastisch "1.0.0-SNAPSHOT"]
+
+
+With Maven:
+
+    <dependency>
+      <groupId>clojurewerkz</groupId>
+      <artifactId>elastisch</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+
+## Supported Clojure versions
+
+Elastisch is built from the ground up for Clojure 1.3 and up.
+
+
+## Quickstart
 
 ## Creating an index with mapping
 
@@ -44,30 +87,16 @@ guide and improving docs in code.
   (elastisch.core/search :query (elastisch.query/term :foo "bar"))
 ```
 
-# Why not wrap Java API?
 
-Potentially you may get a performance gain wrapping Java API directly, or implementing your driver
-in the same manner, since rest API uses it directly. Personally, I can't see that very useful, and
-creating a wrapper could potentially make Elastish less Clojurish.
+## Pitfalls
 
-# Pitfalls
-
-Right now clj-http's default behavior (throw exceptions) is off. Most likely, that will become configurable,
+Right now clj-http's default behavior (to throw exceptions for 40x and 50x responses) is off. Most likely, that will become configurable,
 throwing exceptions by default, since REST client should behave as close to binary driver as possible and
 mimic server behavior where possible.
 
 
-# Current status
-
-We're currently working hard on improving design and implementing missing features.
-You can certainly help us by testing, implementing things you need or even by using and giving us some
-feedback.
-
-New snapshots are released to [clojars.org](https://clojars.org/clojurewerkz/elastisch) every few days.
-
 ## License
 
-Copyright (C) 2011 Alex Petrov
+Copyright (C) 2011-2012 Alex Petrov
 
 Distributed under the Eclipse Public License, the same as Clojure.
-
