@@ -1,4 +1,4 @@
-(ns elastisch.core
+(ns elastisch.document
   (:refer-clojure :exclude [get])
   (:require [elastisch.utils         :as utils]
             [elastisch.rest          :as rest])

@@ -5,7 +5,7 @@
             [elastisch.index         :as index]
             [elastisch.utils         :as utils]
             [elastisch.test.fixtures :as fixtures])
-  (:use [elastisch.core]
+  (:use [elastisch.document]
         [clojure.test]))
 
 (use-fixtures :each fixtures/delete-people-index)
