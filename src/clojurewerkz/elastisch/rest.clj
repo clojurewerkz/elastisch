@@ -5,12 +5,11 @@
             [clojure.data.json :as json]))
 
 (defrecord ElasticSearchEndpoint
-    [uri])
+    [uri version])
 
 (def ^:const throw-exceptions false)
 
-(def ^:dynamic *endpoint* (ElasticSearchEndpoint. "http://localhost:9200"))
-
+(def ^:dynamic *endpoint* (ElasticSearchEndpoint. "http://localhost:9200" ""))
 
 ;; FIXME: rewrite that to macros
 
@@ -109,3 +108,14 @@
     (format "%s/%s/_refresh" base index-name))
   ([^String index-name ^String index-type]
     (format "%s/%s/%s/_refresh" base index-name index-type)))
+
+
+(defn connect
+  [uri]
+  (let [response (get uri)]
+    (ElasticSearchEndpoint. uri
+                            (:number (:version response)))))
+
+(defn connect!
+  [uri]
+  (def ^{ :dynamic true } *endpoint* (connect uri)))

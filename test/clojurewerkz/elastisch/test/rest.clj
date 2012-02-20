@@ -25,3 +25,8 @@
          (rest/index-mget "index_name")))
   (is (= "http://localhost:9200/index_name/type_name/_mget"
          (rest/index-mget "index_name" "type_name"))))
+
+
+(deftest connect-test
+  (is (= "http://localhost:9200" (:uri rest/*endpoint*)))
+  (is (not (nil? (:version rest/*endpoint*)))))
