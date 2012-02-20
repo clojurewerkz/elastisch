@@ -1,4 +1,4 @@
-\(ns clojurewerkz.elastisch.test.document
+(ns clojurewerkz.elastisch.test.document
   (:require [clojurewerkz.elastisch.document      :as document]
             [clojurewerkz.elastisch.rest          :as rest]
             [clojurewerkz.elastisch.index         :as index]
