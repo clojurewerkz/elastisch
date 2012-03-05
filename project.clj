@@ -9,6 +9,6 @@
                  }
   :dependencies [[org.clojure/clojure   "1.3.0"]
                  [org.clojure/data.json "0.1.2"]
-                 [clj-http              "0.3.1"]]
+                 [clj-http              "0.3.2"]]
   :dev-resources-path "test/resources"
   :warn-on-reflection true)
