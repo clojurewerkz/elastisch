@@ -1,2 +1,6 @@
 language: clojure
-before_script: sudo apt-get install unzip && wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.18.5.zip && unzip elasticsearch-0.18.5.zip && ./elasticsearch-0.18.5/bin/elasticsearch || sleep 2
+lein: lein2
+before_script:
+  - sudo apt-get install unzip
+  - wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.18.5.zip && unzip elasticsearch-0.18.5.zip && ./elasticsearch-0.18.5/bin/elasticsearch || sleep 2
+script: lein2 with-profile dev:1.4 test

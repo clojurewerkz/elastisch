@@ -2,6 +2,8 @@
   (:require [clojurewerkz.elastisch.rest :as rest])
   (:use [clojure.test]))
 
+(println (str "Using Clojure version " *clojure-version*))
+
 (deftest index-mapping-url-test
   (are [expected actual] (= expected actual)
        "http://localhost:9200/index_name/_mapping"
