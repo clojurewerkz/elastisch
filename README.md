@@ -124,7 +124,7 @@ mimic server behavior where possible.
 Elastisch uses [Leiningen 2](https://github.com/technomancy/leiningen/blob/master/doc/TUTORIAL.md). Make
 sure you have it installed and then run tests against Clojure 1.3.0 and 1.4.0[-beta4] using
 
-    lein2 with-profile test:1.4 test
+    lein2 all test
 
 Then create a branch and make your changes on it. Once you are done with your changes and all
 tests pass, submit a pull request on Github.
