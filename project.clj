@@ -3,7 +3,8 @@
   :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [org.clojure/data.json "0.1.2"]
-                 [clj-http "0.3.3"]]
+                 [clj-http "0.3.3"]
+                 [clojurewerkz/support "0.1.0-beta2"]]
   :profiles     {
                  :dev { :resource-paths ["test/resources"] }
                  :1.4 { :dependencies [[org.clojure/clojure "1.4.0-beta5"]]

@@ -1,5 +1,6 @@
 (ns clojurewerkz.elastisch.utils
-  (:require [clojure.string]))
+  (:require clojure.string
+            [clojurewerkz.support.http.statuses :as statuses]))
 
 (defn join-names
   [name-or-names]
@@ -18,16 +19,17 @@
 
 (defn ok?
   [response]
-  (= true (:ok response)))
+  (true? (:ok response)))
 
 (defn conflict?
   [response]
-  (= 409 (:status response)))
+  (statuses/conflict? (:status response)))
 
 (defn not-found?
   [response]
-  (or (= 404 (:status response))
-      (= false (:exists response))))
+  (let [s (:status response)]
+    (or (false? (:exists response))
+        (and s (statuses/missing? s)))))
 
 (defn acknowledged?
   [response]
