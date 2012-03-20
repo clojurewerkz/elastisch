@@ -6,7 +6,7 @@
                  [clj-http "0.3.3"]]
   :profiles     {
                  :dev { :resource-paths ["test/resources"] }
-                 :1.4 { :dependencies [[org.clojure/clojure "1.4.0-beta4"]]
+                 :1.4 { :dependencies [[org.clojure/clojure "1.4.0-beta5"]]
                        :resource-paths ["test/resources"] }
                  }
   :aliases { "all" ["with-profile" "dev:dev,1.4"] }
