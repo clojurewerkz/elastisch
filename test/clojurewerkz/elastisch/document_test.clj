@@ -113,6 +113,7 @@
 (deftest put-create-autogenerate-id-test
   (let [response (doc/create index-name index-type fx/person-jack)]
     (is (ok? response))
+    (is (:_id response))
     (are [expected actual] (= expected (actual response))
          index-name :_index
          index-type  :_type
@@ -122,13 +123,13 @@
 ;; get, present?
 ;;
 
-(deftest get-non-existing-test
+(deftest test-get-with-non-existing-document
   (is (nil? (doc/get index-name index-type "1"))))
 
-(deftest present-on-non-existing-test
+(deftest test-present-on-non-existing-id
   (is (not (doc/present? index-name index-type "1"))))
 
-(deftest present-on-existing-test
+(deftest test-present-on-existing-id
   (doc/put index-name index-type "1" fx/person-jack)
   (is (doc/present? index-name index-type "1")))
 
