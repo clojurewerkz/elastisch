@@ -1,5 +1,5 @@
 (ns clojurewerkz.elastisch.document
-  (:refer-clojure :exclude [get replace])
+  (:refer-clojure :exclude [get replace count])
   (:require [clojurewerkz.elastisch.rest          :as rest])
   (:use     clojure.set
             [clojurewerkz.elastisch.utils :only [join-names]]
