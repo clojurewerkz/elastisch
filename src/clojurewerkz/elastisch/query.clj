@@ -5,7 +5,7 @@
 (defn term
   "Term Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/term-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/term-query.html"
   [key values & { :as options }]
   (let [json-opts (utils/clj-to-json-options options)]
     (merge
@@ -17,14 +17,14 @@
 (defn range
   "Range Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/range-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/range-query.html"
   [key & { :as options}]
   { :range (hash-map key (utils/clj-to-json-options options)) })
 
 (defn text
   "Text Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html"
   [query & { :as options}]
   (let [json-opts (utils/clj-to-json-options options)
         params    (merge { :query query } json-opts)]
@@ -38,7 +38,7 @@
 (defn bool
   "Boolean Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html"
   [& { :as options}]
   (options-query :bool options))
 
@@ -46,35 +46,35 @@
 (defn boosting
   "Boosting Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/boosting-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/boosting-query.html"
   [& { :as options}]
   (options-query :boosting options))
 
 (defn ids
   "IDs Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/ids-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/ids-query.html"
   [type ids]
   { :ids { :type type :values ids } })
 
 (defn custom-score
   "Custom Score Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/custom-score-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/custom-score-query.html"
   [& {:as options}]
   (options-query :custom_score options))
 
 (defn constant-score
   "Constant Score Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/constant-score-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/constant-score-query.html"
   [& {:as options}]
   (options-query :constant_score options))
 
 (defn dis-max
   "Dis Max Query
 
-  For more information, refer http://www.elasticsearch.org/guide/reference/query-dsl/dis-max-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/dis-max-query.html"
   [& {:as options}]
   (options-query :dis_max options))
 

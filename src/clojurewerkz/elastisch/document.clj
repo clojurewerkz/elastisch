@@ -1,8 +1,9 @@
 (ns clojurewerkz.elastisch.document
-  (:refer-clojure :exclude [get])
+  (:refer-clojure :exclude [get replace])
   (:require [clojurewerkz.elastisch.utils         :as utils]
             [clojurewerkz.elastisch.rest          :as rest])
-  (:use     [clojure.set]))
+  (:use     clojure.set
+            [clojurewerkz.elastisch.response :only [not-found?]]))
 
 (defn put
   [index type id document & {:as all}]
@@ -22,7 +23,7 @@
   [index type id & {:as all}]
   (let [result (rest/get
                 (rest/record index type id all))]
-    (if (utils/not-found? result)
+    (if (not-found? result)
       nil
       result)))
 
@@ -39,8 +40,8 @@
   "Multi get returns only items that are present in database."
   ([query]
      (let [results (rest/post
-                     (rest/index-mget)
-                     :body { :docs query })]
+                    (rest/index-mget)
+                    :body { :docs query })]
        (filter #(:exists %) (:docs results))))
   ([index query]
      (let [results (rest/post
@@ -53,20 +54,21 @@
                     :body { :docs query })]
        (filter #(:exists %) (:docs results)))))
 
-;; (defn uri-search
-;;   [index type & { :keys [q df analyzer default-operator explain fields sort track-scores timeout from size search-type lowercase-expanded-terms analyze-wildcard]}])
-;;
-
 (defn search
+  "Performs a search query"
   [index-name-or-names type-name-or-names & { :as options }]
   (let [query-string-attributes (select-keys options [:search-type :scroll :size])
         body-attributes         (difference options query-string-attributes)]
-  (rest/post
-   (rest/search (utils/join-names index-name-or-names) (utils/join-names type-name-or-names) query-string-attributes)
-   :body body-attributes)))
+    (rest/post
+     (rest/search (utils/join-names index-name-or-names) (utils/join-names type-name-or-names) query-string-attributes)
+     :body body-attributes)))
 
-;; defn search
+(defn replace
+  "Replaces document with given id with a new one"
+  [idx-name idx-type id document]
+  (delete idx-name idx-type id)
+  (put idx-name idx-type id document))
+
 ;; defn count
 ;; defn delete-by-query
 ;; defn more-like-this
-
