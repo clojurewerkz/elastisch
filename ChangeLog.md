@@ -9,6 +9,15 @@ and is almost always used with a query, for example:
 (doc/count "people" "person" (q/term :username "clojurewerkz"))
 ```
 
+### elastisch.document/delete-by-query
+
+`clojurewerkz.elastisch.document/delete-by-query` provides access to the [Delete by query API](http://www.elasticsearch.org/guide/reference/api/delete-by-query.html) of Elastic Search, for example:
+
+``` clojure
+(doc/delete-by-query "people" "person" (q/term :tag "mongodb"))
+```
+
+
 
 ## Changes between Elastisch 1.0.0-alpha1 and 1.0.0-alpha2
 
