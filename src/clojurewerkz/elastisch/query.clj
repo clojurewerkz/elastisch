@@ -15,16 +15,14 @@
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/range-query.html"
   [key & { :as options}]
-  { :range (hash-map key (utils/clj-to-json-options options)) })
+  { :range (hash-map key options) })
 
 (defn text
   "Text Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html"
   [query & { :as options}]
-  (let [json-opts (utils/clj-to-json-options options)
-        params    (merge { :query query } json-opts)]
-    { :text { :message params } }))
+  { :text { :message (merge { :query query } options) } })
 
 (defn bool
   "Boolean Query
