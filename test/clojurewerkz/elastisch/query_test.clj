@@ -1,6 +1,6 @@
-(ns clojurewerkz.elastisch.test.query
+(ns clojurewerkz.elastisch.query-test
   (:require [clojurewerkz.elastisch.query :as query])
-  (:use [clojure.test]))
+  (:use clojure.test))
 
 
 (deftest term-query-test

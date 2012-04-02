@@ -1,11 +1,11 @@
-(ns clojurewerkz.elastisch.test.document
+(ns clojurewerkz.elastisch.document-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.document      :as doc]
             [clojurewerkz.elastisch.rest          :as rest]
             [clojurewerkz.elastisch.index         :as idx]
             [clojurewerkz.elastisch.utils         :as utils]
             [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.test.fixtures :as fx])
+            [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test clojurewerkz.elastisch.response))
 
 (use-fixtures :each fx/delete-people-index)

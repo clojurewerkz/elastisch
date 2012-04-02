@@ -1,10 +1,10 @@
-(ns clojurewerkz.elastisch.test.index
+(ns clojurewerkz.elastisch.index-test
   (:refer-clojure :exclude [get replace])
   (:require [clj-http.client         :as http]
             [clojurewerkz.elastisch.rest          :as rest]
             [clojurewerkz.elastisch.index         :as index]
             [clojurewerkz.elastisch.utils         :as utils]
-            [clojurewerkz.elastisch.test.fixtures :as fx])
+            [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojurewerkz.elastisch.document
         clojurewerkz.elastisch.response
         clojure.test))
