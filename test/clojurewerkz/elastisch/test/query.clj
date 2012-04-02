@@ -11,11 +11,11 @@
     (is (= expected (query/term :foo [:bar :baz]))))
 
   (let [expected { :term { :foo :bar } :minimum_match 2 }]
-    (is (= expected (query/term :foo :bar :minimum-match 2)))))
+    (is (= expected (query/term :foo :bar :minimum_match 2)))))
 
 (deftest range-query-test
   (is (= { :range { :foo { :gt 5 :lt 10 :include_upper false :include_lower false } } }
-         (query/range :foo :gt 5 :lt 10 :include-upper false :include-lower false))))
+         (query/range :foo :gt 5 :lt 10 :include_upper false :include_lower false))))
 
 (deftest text-query-test
   (is (= { :text { :message { :query "this is a test" :analyzer "my_analyzer" :operator "and" } } }
@@ -30,9 +30,9 @@
 
         result                       (query/bool
                                       :must (query/term :user "kimchy")
-                                      :must-not (query/range :age :from 10 :to 20)
+                                      :must_not (query/range :age :from 10 :to 20)
                                       :should [ (query/term :tag "wow") (query/term :tag "elasticsearch") ]
-                                      :minimum-number-should-match 1
+                                      :minimum_number_should_match 1
                                       :boost 1.0)
         bool                         (:bool result)]
     (are [actual expected] (= actual expected)
@@ -50,8 +50,8 @@
         result         (query/boosting
                         :positive (query/term :field1 "value1")
                         :negative (query/term :field2 "value2")
-                        :positive-boost 1.0
-                        :negative-boost 0.2)
+                        :positive_boost 1.0
+                        :negative_boost 0.2)
         boosting       (:boosting result)]
 
     (are [actual expected] (= actual expected)
@@ -97,14 +97,10 @@
         result  (query/dis-max
                  :queries     [ query1, query2 ]
                  :boost       boost
-                 :tie-breaker tie-breaker)
+                 :tie_breaker tie-breaker)
         dis-max  (:dis_max result)]
     (are [actual expected] (= actual expected)
          query1   (first  (:queries dis-max))
          query2   (second (:queries dis-max))
          boost       (:boost dis-max)
          tie-breaker (:tie_breaker dis-max))))
-
-
-
-

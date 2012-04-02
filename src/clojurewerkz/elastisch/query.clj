@@ -7,12 +7,8 @@
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/term-query.html"
   [key values & { :as options }]
-  (let [json-opts (utils/clj-to-json-options options)]
-    (merge
-     (if (vector? values)
-       { :terms (hash-map key values) }
-       { :term (hash-map key values) })
-     json-opts)))
+  (merge { (if (coll? values) :terms :term) (hash-map key values) }
+         options))
 
 (defn range
   "Range Query
@@ -30,17 +26,12 @@
         params    (merge { :query query } json-opts)]
     { :text { :message params } }))
 
-(defn- options-query
-  [key options]
-  (let [json-opts (utils/clj-to-json-options options)]
-    (hash-map key json-opts)))
-
 (defn bool
   "Boolean Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html"
   [& { :as options}]
-  (options-query :bool options))
+  { :bool options })
 
 
 (defn boosting
@@ -48,7 +39,7 @@
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/boosting-query.html"
   [& { :as options}]
-  (options-query :boosting options))
+  { :boosting options })
 
 (defn ids
   "IDs Query
@@ -62,21 +53,21 @@
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/custom-score-query.html"
   [& {:as options}]
-  (options-query :custom_score options))
+  { :custom_score options })
 
 (defn constant-score
   "Constant Score Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/constant-score-query.html"
   [& {:as options}]
-  (options-query :constant_score options))
+  { :constant_score options })
 
 (defn dis-max
   "Dis Max Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/dis-max-query.html"
   [& {:as options}]
-  (options-query :dis_max options))
+  { :dis_max options })
 
 ;; field
 ;; filtered
