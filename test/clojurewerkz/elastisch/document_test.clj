@@ -6,7 +6,8 @@
             [clojurewerkz.elastisch.utils         :as utils]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.response))
+  (:use clojure.test clojurewerkz.elastisch.response
+        [clj-time.core :only [months ago now from-now]]))
 
 (use-fixtures :each fx/delete-people-index)
 (def ^{:const true} index-name "people")
@@ -16,7 +17,7 @@
 ;; put
 ;;
 
-(deftest put-autocreate-index-test
+(deftest test-put-with-autocreated-index
   (let [id         "1"
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
@@ -31,7 +32,7 @@
          id         :_id
          true       :exists)))
 
-(deftest put-precreated-index-test
+(deftest test-put-with-precreated-index
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         document   fx/person-jack
@@ -45,7 +46,7 @@
          id         :_id
          true       :exists)))
 
-(deftest put-versioned-test
+(deftest test-put-with-missing-document-versioning-type
   (let [id       "1"
         document fx/person-joe
         _        (doc/put index-name index-type id fx/person-jack)
@@ -53,11 +54,51 @@
         response (doc/put index-name index-type id fx/person-joe :version 1)]
     (is (conflict? response))))
 
+(deftest test-put-with-conflicting-document-version
+  (let [id       "1"
+        document fx/person-joe
+        _        (doc/put index-name index-type id fx/person-jack)
+        _        (doc/put index-name index-type id fx/person-mary)
+        response (doc/put index-name index-type id fx/person-joe :version 1 :version_type "external")]
+    (is (conflict? response))
+    (is (not (ok? response)))))
+
+(deftest test-put-with-new-document-version
+  (let [id       "1"
+        document fx/person-joe
+        _        (doc/put index-name index-type id fx/person-jack :version 1 :version_type "external")
+        _        (doc/put index-name index-type id fx/person-mary :version 2 :version_type "external")
+        response (doc/put index-name index-type id fx/person-joe  :version 3 :version_type "external")]
+    (is (not (conflict? response)))
+    (is (ok? response))))
+
 (deftest create-when-already-created-test
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         response (doc/put index-name index-type id fx/person-joe :op_type "create")]
     (is (conflict? response))))
+
+(deftest test-put-with-a-timestamp
+  (let [id       "1"
+        _        (idx/create index-name :mappings fx/people-mapping)
+        document fx/person-jack
+        response (doc/put index-name index-type id document :timestamp (-> 2 months ago))]
+    (is (ok? response))))
+
+(deftest test-put-with-a-1-day-ttl
+  (let [id       "1"
+        _        (idx/create index-name :mappings fx/people-mapping)
+        document fx/person-jack
+        response (doc/put index-name index-type id document :ttl "1d")]
+    (is (ok? response))))
+
+(deftest test-put-with-a-10-seconds-ttl
+  (let [id       "1"
+        _        (idx/create index-name :mappings fx/people-mapping)
+        document fx/person-jack
+        response (doc/put index-name index-type id document :ttl 10000)]
+    (is (ok? response))))
+
 
 ;;
 ;; create

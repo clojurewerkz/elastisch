@@ -11,7 +11,8 @@
 
 (defn conflict?
   [response]
-  (statuses/conflict? (:status response)))
+  (let [s (:status response)]
+    (and s (statuses/conflict? s))))
 
 (defn not-found?
   [response]
