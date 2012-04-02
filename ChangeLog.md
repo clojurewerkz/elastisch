@@ -1,4 +1,4 @@
-## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
+## Changes between Elastisch 1.0.0-alpha2 and 1.0.0-alpha3
 
 ### elastisch.document/count
 
@@ -9,6 +9,8 @@ and is almost always used with a query, for example:
 (doc/count "people" "person" (q/term :username "clojurewerkz"))
 ```
 
+
+## Changes between Elastisch 1.0.0-alpha1 and 1.0.0-alpha2
 
 ### elastisch.document/replace
 
