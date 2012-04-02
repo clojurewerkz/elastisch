@@ -1,8 +1,8 @@
 (ns clojurewerkz.elastisch.index
   (:require [clojure.data.json     :as json]
             [clojurewerkz.elastisch.rest        :as rest]
-            [clojurewerkz.elastisch.utils       :as utils]
-            [clj-http.client       :as http]))
+            [clj-http.client       :as http])
+  (:use [clojurewerkz.elastisch.utils :only [join-names]]))
 
 ;;
 ;; create, delete, exists?
@@ -42,7 +42,7 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
   ([index-name]
-     (rest/get (rest/index-mapping-url (utils/join-names index-name))))
+     (rest/get (rest/index-mapping-url (join-names index-name))))
   ([^String index-name ^String type-name]
      (rest/get
       (rest/index-mapping-url index-name type-name))))
@@ -52,7 +52,7 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
   [^String index-name-or-names ^String type-name & { :keys [mapping ignore-conflicts] }]
-  (rest/put (rest/index-mapping-url (utils/join-names index-name-or-names) type-name)
+  (rest/put (rest/index-mapping-url (join-names index-name-or-names) type-name)
             :body mapping
             :query-params { :ignore-conflicts true }))
 
@@ -113,7 +113,7 @@
   ([]
      (rest/post (rest/index-refresh-url)))
   ([index-name]
-     (rest/post (rest/index-refresh-url (utils/join-names index-name)))))
+     (rest/post (rest/index-refresh-url (join-names index-name)))))
 
 ;;
 ;; Aliases
