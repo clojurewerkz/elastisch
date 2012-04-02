@@ -7,13 +7,13 @@ Elastisch is a Clojure client for Elastic Search, a modern distributed RESTful s
 
 ## Project Goals
 
- * Closely follow recent Elastic Search releases & features.
- * Be well documented.
- * Be well tested.
- * Be maintained.
- * Integrate with libraries like clojure.data.json and Joda Time.
- * Learn from other clients like the Java and Ruby ones.
- * Target Clojure 1.3.0 and later from the ground up.
+ * Be reasonably feature complete
+ * Be well documented
+ * Be well tested
+ * Closely follow recent Elastic Search releases & developments
+ * Be well maintained
+ * Learn from other clients like the Java and Ruby ones
+ * Target Clojure 1.3.0 and later from the ground up
 
 
 ### Why Not Wrap the Java Client?
@@ -112,17 +112,17 @@ Elastisch is built from the ground up for Clojure 1.3 and up.
 ```
 
 
-## Pitfalls
+## Elastisch Is a ClojureWerkz Project
 
-Right now clj-http's default behavior (to throw exceptions for 40x and 50x responses) is off. Most likely, that will become configurable,
-throwing exceptions by default, since REST client should behave as close to binary driver as possible and
-mimic server behavior where possible.
+Elastisch is part of the group of libraries known as ClojureWerkz, together with
+[Monger](https://github.com/michaelklishin/monger), [Langohr](https://github.com/michaelklishin/langohr), [Neocons](https://github.com/michaelklishin/neocons), [Quartzite](https://github.com/michaelklishin/quartzite), [Urly](https://github.com/michaelklishin/urly) and several others.
+
 
 
 ## Development
 
 Elastisch uses [Leiningen 2](https://github.com/technomancy/leiningen/blob/master/doc/TUTORIAL.md). Make
-sure you have it installed and then run tests against Clojure 1.3.0 and 1.4.0[-beta4] using
+sure you have it installed and then run tests against Clojure 1.3.0 and 1.4.0[-beta6] using
 
     lein2 all test
 
@@ -133,6 +133,6 @@ tests pass, submit a pull request on Github.
 
 ## License
 
-Copyright (C) 2011-2012 Alex Petrov
+Copyright (C) 2011-2012 Alex Petrov, Michael S. Klishin
 
 Distributed under the Eclipse Public License, the same as Clojure.
