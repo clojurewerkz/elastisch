@@ -99,6 +99,12 @@
         response (doc/put index-name index-type id fx/person-jack :timeout "1m")]
     (is (ok? response))))
 
+(deftest test-put-with-refresh-set-to-true
+  (let [id       "1"
+        _        (idx/create index-name :mappings fx/people-mapping)
+        response (doc/put index-name index-type id fx/person-jack :refresh true)]
+    (is (ok? response))))
+
 
 ;;
 ;; create
