@@ -140,7 +140,7 @@
 ;; replace
 ;;
 
-(deftest ^{:focus true} test-replacing-documents
+(deftest test-replacing-documents
   (let [id      "1"
         new-bio "Such a brilliant person"]
     (idx/create index-name :mappings fx/people-mapping)
