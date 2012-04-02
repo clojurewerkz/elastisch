@@ -108,12 +108,17 @@
      (join slash [(base) index-name index-type "_refresh"])))
 
 
+;;
+;; API
+;;
+
 (defn connect
+  "Connects with ElasticSearch endpoint and performs discovery"
   [uri]
   (let [response (get uri)]
-    (ElasticSearchEndpoint. uri
-                            (:number (:version response)))))
+    (ElasticSearchEndpoint. uri (get-in response [:version :number]))))
 
 (defn connect!
+  "Alters default ElasticSearch connection endpoint"
   [uri]
   (alter-var-root (var *endpoint*) (constantly (connect uri))))
