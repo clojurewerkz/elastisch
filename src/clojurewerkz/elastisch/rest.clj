@@ -1,32 +1,36 @@
 (ns clojurewerkz.elastisch.rest
   (:refer-clojure :exclude [get])
-  (:require [clojurewerkz.elastisch.utils   :as utils]
+  (:require [clojurewerkz.elastisch.utils :as utils]
             [clj-http.client   :as http]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json])
+  (:use [clojure.string :only [join]]))
 
 (defrecord ElasticSearchEndpoint
     [uri version])
 
+(def ^{:dynamic true} *endpoint* (ElasticSearchEndpoint. "http://localhost:9200" ""))
 (def ^:const throw-exceptions false)
 
-(def ^{:dynamic true} *endpoint* (ElasticSearchEndpoint. "http://localhost:9200" ""))
+(def ^{:const true} slash "/")
 
-;; FIXME: rewrite that to macros
 
 (defn post
   [^String uri &{ :keys [body] :as options }]
   (io! (json/read-json
-   (:body (http/post uri (merge options { :accept :json :body (json/json-str body) }))))))
+        (:body (http/post uri (merge options { :accept :json :body (json/json-str body) }))))))
 
 (defn put
   [^String uri &{ :keys [body] :as options}]
   (io! (json/read-json
-   (:body (http/put uri (merge options { :accept :json :body (json/json-str body)  :throw-exceptions throw-exceptions }))))))
+        (:body (http/put uri (merge options { :accept :json :body (json/json-str body)  :throw-exceptions throw-exceptions }))))))
 
 (defn get
-  [^String uri]
-  (io! (json/read-json
-   (:body (http/get uri { :accept :json :throw-exceptions throw-exceptions })))))
+  ([^String uri]
+     (io! (json/read-json
+           (:body (http/get uri { :accept :json :throw-exceptions throw-exceptions })))))
+  ([^String uri &{ :as options }]
+     (io! (json/read-json
+           (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions} options)))))))
 
 (defn head
   [^String uri]
@@ -35,7 +39,7 @@
 (defn delete
   [^String uri]
   (io! (json/read-json
-   (:body (http/delete uri { :accept :json :throw-exceptions throw-exceptions })))))
+        (:body (http/delete uri { :accept :json :throw-exceptions throw-exceptions })))))
 
 
 (defn base
@@ -44,71 +48,58 @@
 
 (defn index
   [^String index-name]
-  (format "%s/%s" (base) index-name))
+  (join slash [(base) index-name]))
 
 (defn index-type
-  [^String index-name ^String index-type params]
-  (if (empty? (keys params))
-    (format "%s/%s/%s" (base) index-name index-type)
-    (format "%s/%s/%s" (base) index-name index-type (utils/join-hash params))))
+  [^String index-name ^String index-type]
+  (join slash [(base) index-name index-type]))
 
 (defn search
-  [^String index-name ^String index-type params]
-  (if (empty? (keys params))
-    (format "%s/%s/%s/_search" (base) index-name index-type)
-    (format "%s/%s/%s/_search" (base) index-name index-type (utils/join-hash params))))
+  [^String index-name ^String index-type]
+  (join slash [(base) index-name index-type "_search"]))
 
 (defn record
-  [^String index-name ^String type id params]
-  (if (empty? (keys params))
-    (format "%s/%s/%s/%s" (base) index-name type id)
-    (format "%s/%s/%s/%s?%s" (base) index-name type id (utils/join-hash params))))
+  [^String index-name ^String type id]
+  (join slash [(base) index-name type id]))
 
-
-(defn- _index-mapping
-  "Returns index mapping"
-  ([^String index-name]
-     (format "%s/%s/_mapping" (base) index-name))
-  ([^String index-name ^String index-type]
-     (format "%s/%s/%s/_mapping" (base) index-name index-type)))
 
 (defn index-mapping
   "Returns index mapping"
-  ([^String index-name & [ ^String index-type ^Boolean ignore-conflicts ]]
-     (let [url (if (nil? index-type) (_index-mapping index-name) (_index-mapping index-name index-type))]
-       (if (nil? ignore-conflicts)
-         url
-         (format "%s?ignore_conflicts=%s" url (.toString ignore-conflicts))))))
+  ([^String index-name]
+     (join slash [(base) index-name "_mapping"]))
+  ([^String index-name ^String index-type]
+     (join slash [(base) index-name index-type "_mapping"])))
+
 
 (defn index-settings
   ([]
-     (format "%s/_settings" (base)))
+     (str (base) slash "_settings"))
   ([^String index-name]
-    (format "%s/%s/_settings" (base) index-name)))
+     (join slash [(base) index-name "_settings"])))
 
 (defn index-open
   [^String index-name]
-  (format "%s/%s/_open" (base) index-name))
+  (join slash [(base) index-name "_open"]))
 
 (defn index-close
   [^String index-name]
-  (format "%s/%s/_close" (base) index-name))
+  (join slash [(base) index-name "_close"]))
 
 (defn index-mget
   ([]
-    (format "%s/_mget" (base)))
+     (str (base) slash "_mget"))
   ([^String index-name]
-    (format "%s/%s/_mget" (base) index-name))
+     (join slash [(base) index-name "_mget"]))
   ([^String index-name ^String index-type]
-    (format "%s/%s/%s/_mget" (base) index-name index-type)))
+     (join slash [(base) index-name index-type "_mget"])))
 
 (defn index-refresh
   ([]
-    (format "%s/_refresh" (base)))
+     (str (base) slash "_refresh"))
   ([^String index-name]
-    (format "%s/%s/_refresh" (base) index-name))
+     (join slash [(base) index-name "_refresh"]))
   ([^String index-name ^String index-type]
-    (format "%s/%s/%s/_refresh" (base) index-name index-type)))
+     (join slash [(base) index-name index-type "_refresh"])))
 
 
 (defn connect

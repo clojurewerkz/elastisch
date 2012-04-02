@@ -41,9 +41,8 @@
   "The get mapping API allows to retrieve mapping definition of index or index/type.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
-  ([index-name-or-names]
-     (rest/get
-      (rest/index-mapping (utils/join-names index-name-or-names))))
+  ([index-name]
+     (rest/get (rest/index-mapping (utils/join-names index-name))))
   ([^String index-name ^String type-name]
      (rest/get
       (rest/index-mapping index-name type-name))))
@@ -53,9 +52,9 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
   [^String index-name-or-names ^String type-name & { :keys [mapping ignore-conflicts] }]
-  (rest/put
-   (rest/index-mapping (utils/join-names index-name-or-names) type-name ignore-conflicts)
-   :body mapping))
+  (rest/put (rest/index-mapping (utils/join-names index-name-or-names) type-name)
+            :body mapping
+            :query-params { :ignore-conflicts true }))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data. The REST endpoint is /{index}/{type} with DELETE method.
@@ -74,13 +73,11 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([settings]
-     (rest/put
-      (rest/index-settings)
-      :body settings))
+     (rest/put (rest/index-settings)
+               :body settings))
   ([^String index-name settings]
-     (rest/put
-      (rest/index-settings index-name)
-      :body settings)))
+     (rest/put (rest/index-settings index-name)
+               :body settings)))
 
 
 (defn get-settings
@@ -118,8 +115,8 @@
 (defn refresh
   ([]
      (rest/post (rest/index-refresh)))
-  ([index-name-or-names]
-     (rest/post (rest/index-refresh (utils/join-names index-name-or-names)))))
+  ([index-name]
+     (rest/post (rest/index-refresh (utils/join-names index-name)))))
 
 ;;
 ;; Aliases
