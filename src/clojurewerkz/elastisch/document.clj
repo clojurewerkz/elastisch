@@ -82,11 +82,23 @@
   ([idx-name idx-type query & { :as options }]
      (let [qk   [:q :df :analyzer :default_operator]
            qp   (select-keys options qk)]
-       (rest/post (rest/count-url) (join-names index) (join-names type)
+       (rest/post (rest/count-url (join-names index) (join-names type))
                   :query-params qp
                   :body query))))
 
-;; TODO delete-by-query
+(defn delete-by-query
+  "Performs a delete-by-query operation.
+
+   For Elastic Search reference, see http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+  ([index type query]
+     (rest/delete (rest/delete-by-query-url index type) (join-names index) (join-names type) :body query))
+  ([index type query & { :as options }]
+     (let [qk   [:q :df :analyzer :default_operator]
+           qp   (select-keys options qk)]
+       (rest/delete (rest/delete-by-query-url (join-names index) (join-names type))
+                    :query-params qp
+                    :body query))))
+
 ;; TODO more-like-this
 ;; TODO percolate
 ;; TODO multi-search

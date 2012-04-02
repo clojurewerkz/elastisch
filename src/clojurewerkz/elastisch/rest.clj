@@ -30,16 +30,19 @@
            (:body (http/get uri { :accept :json :throw-exceptions throw-exceptions })))))
   ([^String uri &{ :as options }]
      (io! (json/read-json
-           (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions} options)))))))
+           (:body (http/get uri (merge options {:accept :json :throw-exceptions throw-exceptions})))))))
 
 (defn head
   [^String uri]
   (io! (http/head uri { :accept :json :throw-exceptions throw-exceptions })))
 
 (defn delete
-  [^String uri]
-  (io! (json/read-json
-        (:body (http/delete uri { :accept :json :throw-exceptions throw-exceptions })))))
+  ([^String uri]
+     (io! (json/read-json
+           (:body (http/delete uri { :accept :json :throw-exceptions throw-exceptions })))))
+  ([^String uri &{ :keys [body] :as options }]
+     (io! (json/read-json
+           (:body (http/delete uri (merge options { :accept :json :body (json/json-str body) :throw-exceptions throw-exceptions })))))))
 
 
 (defn base
@@ -70,7 +73,6 @@
 
 
 (defn index-mapping-url
-  "Returns index mapping"
   ([^String index-name]
      (join slash [(base) index-name "_mapping"]))
   ([^String index-name ^String index-type]
@@ -106,6 +108,13 @@
      (join slash [(base) index-name "_refresh"]))
   ([^String index-name ^String index-type]
      (join slash [(base) index-name index-type "_refresh"])))
+
+
+(defn delete-by-query-url
+  ([^String index-name]
+     (join slash [(base) index-name "_query"]))
+  ([^String index-name ^String index-type]
+     (join slash [(base) index-name index-type "_query"])))
 
 
 ;;
