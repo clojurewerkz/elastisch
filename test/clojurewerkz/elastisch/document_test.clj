@@ -48,7 +48,6 @@
 
 (deftest test-put-with-missing-document-versioning-type
   (let [id       "1"
-        document fx/person-joe
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
         response (doc/put index-name index-type id fx/person-joe :version 1)]
@@ -56,7 +55,6 @@
 
 (deftest test-put-with-conflicting-document-version
   (let [id       "1"
-        document fx/person-joe
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
         response (doc/put index-name index-type id fx/person-joe :version 1 :version_type "external")]
@@ -65,7 +63,6 @@
 
 (deftest test-put-with-new-document-version
   (let [id       "1"
-        document fx/person-joe
         _        (doc/put index-name index-type id fx/person-jack :version 1 :version_type "external")
         _        (doc/put index-name index-type id fx/person-mary :version 2 :version_type "external")
         response (doc/put index-name index-type id fx/person-joe  :version 3 :version_type "external")]
@@ -81,22 +78,25 @@
 (deftest test-put-with-a-timestamp
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
-        document fx/person-jack
-        response (doc/put index-name index-type id document :timestamp (-> 2 months ago))]
+        response (doc/put index-name index-type id fx/person-jack :timestamp (-> 2 months ago))]
     (is (ok? response))))
 
 (deftest test-put-with-a-1-day-ttl
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
-        document fx/person-jack
-        response (doc/put index-name index-type id document :ttl "1d")]
+        response (doc/put index-name index-type id fx/person-jack :ttl "1d")]
     (is (ok? response))))
 
 (deftest test-put-with-a-10-seconds-ttl
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
-        document fx/person-jack
-        response (doc/put index-name index-type id document :ttl 10000)]
+        response (doc/put index-name index-type id fx/person-jack :ttl 10000)]
+    (is (ok? response))))
+
+(deftest test-put-with-a-timeout
+  (let [id       "1"
+        _        (idx/create index-name :mappings fx/people-mapping)
+        response (doc/put index-name index-type id fx/person-jack :timeout "1m")]
     (is (ok? response))))
 
 
