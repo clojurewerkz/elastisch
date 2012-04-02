@@ -11,8 +11,8 @@
 
 (deftest test-mget-path
   (is (= "http://localhost:9200/_mget"
-         (rest/index-mget)))
+         (rest/index-mget-url)))
   (is (= "http://localhost:9200/index_name/_mget"
-         (rest/index-mget "index_name")))
+         (rest/index-mget-url "index_name")))
   (is (= "http://localhost:9200/index_name/type_name/_mget"
-         (rest/index-mget "index_name" "type_name"))))
+         (rest/index-mget-url "index_name" "type_name"))))

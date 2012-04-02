@@ -46,30 +46,30 @@
   []
   (:uri *endpoint*))
 
-(defn index
+(defn index-url
   [index-name]
   (str (base) slash index-name))
 
-(defn index-type
+(defn index-type-url
   [index-name index-type]
   (join slash [(base) index-name index-type]))
 
-(defn search
+(defn search-url
   [index-name index-type]
   (join slash [(base) index-name index-type "_search"]))
 
-(defn count-path
+(defn count-url
   ([]
      (str (base) slash "_count"))
   ([index-name index-type]
      (join slash [(base) index-name index-type "_count"])))
 
-(defn record
+(defn record-url
   [^String index-name ^String type id]
   (join slash [(base) index-name type id]))
 
 
-(defn index-mapping
+(defn index-mapping-url
   "Returns index mapping"
   ([^String index-name]
      (join slash [(base) index-name "_mapping"]))
@@ -77,21 +77,21 @@
      (join slash [(base) index-name index-type "_mapping"])))
 
 
-(defn index-settings
+(defn index-settings-url
   ([]
      (str (base) slash "_settings"))
   ([^String index-name]
      (join slash [(base) index-name "_settings"])))
 
-(defn index-open
+(defn index-open-url
   [^String index-name]
   (join slash [(base) index-name "_open"]))
 
-(defn index-close
+(defn index-close-url
   [^String index-name]
   (join slash [(base) index-name "_close"]))
 
-(defn index-mget
+(defn index-mget-url
   ([]
      (str (base) slash "_mget"))
   ([^String index-name]
@@ -99,7 +99,7 @@
   ([^String index-name ^String index-type]
      (join slash [(base) index-name index-type "_mget"])))
 
-(defn index-refresh
+(defn index-refresh-url
   ([]
      (str (base) slash "_refresh"))
   ([^String index-name]

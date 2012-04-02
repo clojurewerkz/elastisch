@@ -16,7 +16,7 @@
   [index-name & { :keys [settings mappings]  }]
   (let [request-body { :settings settings :mappings mappings } ]
     (rest/post
-     (rest/index index-name)
+     (rest/index-url index-name)
      :body request-body)))
 
 (defn exists?
@@ -24,14 +24,14 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"
   [index-name]
-  (= 200 (:status (rest/head (rest/index index-name)))))
+  (= 200 (:status (rest/head (rest/index-url index-name)))))
 
 (defn delete
   "The delete index API allows to delete an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
   [index-name]
-  (rest/delete (rest/index index-name)))
+  (rest/delete (rest/index-url index-name)))
 
 ;;
 ;; Mappings
@@ -42,17 +42,17 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
   ([index-name]
-     (rest/get (rest/index-mapping (utils/join-names index-name))))
+     (rest/get (rest/index-mapping-url (utils/join-names index-name))))
   ([^String index-name ^String type-name]
      (rest/get
-      (rest/index-mapping index-name type-name))))
+      (rest/index-mapping-url index-name type-name))))
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
   [^String index-name-or-names ^String type-name & { :keys [mapping ignore-conflicts] }]
-  (rest/put (rest/index-mapping (utils/join-names index-name-or-names) type-name)
+  (rest/put (rest/index-mapping-url (utils/join-names index-name-or-names) type-name)
             :body mapping
             :query-params { :ignore-conflicts true }))
 
@@ -61,8 +61,7 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
   [^String index-name ^String type-name]
-  (rest/delete
-   (rest/index-mapping index-name type-name)))
+  (rest/delete (rest/index-mapping-url index-name type-name)))
 
 ;;
 ;; Settings
@@ -73,10 +72,10 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([settings]
-     (rest/put (rest/index-settings)
+     (rest/put (rest/index-settings-url)
                :body settings))
   ([^String index-name settings]
-     (rest/put (rest/index-settings index-name)
+     (rest/put (rest/index-settings-url index-name)
                :body settings)))
 
 
@@ -86,11 +85,9 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html
   "
   ([]
-     (rest/get
-      (rest/index-settings)))
+     (rest/get (rest/index-settings-url)))
   ([^String index-name]
-     (rest/get
-      (rest/index-settings index-name))))
+     (rest/get (rest/index-settings-url index-name))))
 
 ;;
 ;; Open/close
@@ -102,7 +99,7 @@
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html
   "
   [index-name]
-  (rest/post (rest/index-open index-name)))
+  (rest/post (rest/index-open-url index-name)))
 
 (defn close
   "Close index.
@@ -110,13 +107,13 @@
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html
   "
   [index-name]
-  (rest/post (rest/index-close index-name)))
+  (rest/post (rest/index-close-url index-name)))
 
 (defn refresh
   ([]
-     (rest/post (rest/index-refresh)))
+     (rest/post (rest/index-refresh-url)))
   ([index-name]
-     (rest/post (rest/index-refresh (utils/join-names index-name)))))
+     (rest/post (rest/index-refresh-url (utils/join-names index-name)))))
 
 ;;
 ;; Aliases
