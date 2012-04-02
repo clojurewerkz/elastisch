@@ -1,8 +1,8 @@
 (ns clojurewerkz.elastisch.document
   (:refer-clojure :exclude [get replace])
-  (:require [clojurewerkz.elastisch.utils         :as utils]
-            [clojurewerkz.elastisch.rest          :as rest])
+  (:require [clojurewerkz.elastisch.rest          :as rest])
   (:use     clojure.set
+            [clojurewerkz.elastisch.utils :only [join-names]]
             [clojurewerkz.elastisch.response :only [not-found?]]))
 
 ;;
@@ -57,10 +57,11 @@
 
 (defn search
   "Performs a search query"
-  [index-name type-name & { :as options }]
-  (let [qp   (select-keys options [:search-type :scroll :size])
-        body (difference options qp)]
-    (rest/post (rest/search (utils/join-names index-name) (utils/join-names type-name))
+  [index type & { :as options }]
+  (let [qk   [:search_type :scroll :size]
+        qp   (select-keys options qk)
+        body (dissoc options qk)]
+    (rest/post (rest/search (join-names index) (join-names type))
                :body body
                :query-params qp)))
 
@@ -70,6 +71,22 @@
   (delete idx-name idx-type id)
   (put idx-name idx-type id document))
 
-;; defn count
-;; defn delete-by-query
-;; defn more-like-this
+(defn count
+  "Performs a count query.
+
+   For Elastic Search reference, see http://www.elasticsearch.org/guide/reference/api/count.html"
+  ([index type]
+     (rest/post (rest/count-path) (join-names index) (join-names type)))
+  ([index type query]
+     (rest/post (rest/count-path) (join-names index) (join-names type) :body query))
+  ([idx-name idx-type query & { :as options }]
+     (let [qk   [:q :df :analyzer :default_operator]
+           qp   (select-keys options qk)]
+       (rest/post (rest/count-path) (join-names index) (join-names type)
+                  :query-params qp
+                  :body query))))
+
+;; TODO delete-by-query
+;; TODO more-like-this
+;; TODO percolate
+;; TODO multi-search

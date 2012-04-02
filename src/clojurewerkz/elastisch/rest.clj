@@ -47,16 +47,22 @@
   (:uri *endpoint*))
 
 (defn index
-  [^String index-name]
-  (join slash [(base) index-name]))
+  [index-name]
+  (str (base) slash index-name))
 
 (defn index-type
-  [^String index-name ^String index-type]
+  [index-name index-type]
   (join slash [(base) index-name index-type]))
 
 (defn search
-  [^String index-name ^String index-type]
+  [index-name index-type]
   (join slash [(base) index-name index-type "_search"]))
+
+(defn count-path
+  ([]
+     (str (base) slash "_count"))
+  ([index-name index-type]
+     (join slash [(base) index-name index-type "_count"])))
 
 (defn record
   [^String index-name ^String type id]

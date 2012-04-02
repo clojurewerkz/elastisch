@@ -42,3 +42,7 @@
 (defn hits-from
   [response]
   (get-in response [:hits :hits]))
+
+(defn count-from
+  [response]
+  (get response :count))
