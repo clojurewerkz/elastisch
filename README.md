@@ -37,15 +37,15 @@ To subscribe for announcements of releases, important changes and so on, please 
 
 ## This is a Work In Progress
 
-Core Elastisch APIs are stabilized but it is still a work in progress. Keep that in mind. 1.0 will be released in early 2012
-together with documentation guides and dedicated website.
+Core Elastisch APIs are not fully stabilized, it is still largely a work in progress. Keep that in mind. 1.0 will be released when we are confident
+in the public API, reached feature completeness and have documentation guides on a dedicated website.
 
 
 ## Artifacts
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.0.0-alpha1"]
+    [clojurewerkz/elastisch "1.0.0-alpha2"]
 
 
 With Maven:
@@ -53,7 +53,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.0.0-alpha1</version>
+      <version>1.0.0-alpha2</version>
     </dependency>
 
 If you feel comfortable using snapshots:
