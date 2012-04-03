@@ -210,38 +210,6 @@
     (is (= fx/person-jack (:_source (first mget-result))))
     (is (= fx/person-mary (:_source (second mget-result))))))
 
-;;
-;; term query
-;;
-
-(deftest basic-term-query-test
-  (idx/create index-name :mappings fx/people-mapping)
-
-  (doc/put index-name index-type "1" fx/person-jack)
-  (doc/put index-name index-type "2" fx/person-mary)
-  (doc/put index-name index-type "3" fx/person-joe)
-
-  (idx/refresh index-name)
-
-  (let [result (doc/search index-name index-type :query (q/term :biography "avoid"))]
-    (is (any-hits? result))
-    (is (= fx/person-jack (:_source (first (hits-from result)))))))
-
-
-(deftest test-term-query-with-a-limit
-  (idx/create index-name :mappings fx/people-mapping)
-
-  (doc/put index-name index-type "1" fx/person-jack)
-  (doc/put index-name index-type "2" fx/person-mary)
-  (doc/put index-name index-type "3" fx/person-joe)
-
-  (idx/refresh index-name)
-  (let [result (doc/search index-name index-type :query (q/term :planet "earth") :size 2)]
-    (is (any-hits? result))
-    (is (= 2 (count (hits-from result))))
-    ;; but total # of hits is reported w/o respect to the limit. MK.
-    (is (= 3 (total-hits result)))))
-
 
 ;;
 ;; replace
