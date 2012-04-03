@@ -9,7 +9,7 @@
         clojurewerkz.elastisch.response
         clojure.test))
 
-(use-fixtures :each fx/delete-people-index)
+(use-fixtures :each fx/reset-indexes)
 
 ;;
 ;; create, delete, exists?

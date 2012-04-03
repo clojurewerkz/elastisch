@@ -9,7 +9,7 @@
   (:use clojure.test clojurewerkz.elastisch.response
         [clj-time.core :only [months ago now from-now]]))
 
-(use-fixtures :each fx/delete-people-index)
+(use-fixtures :each fx/reset-indexes)
 (def ^{:const true} index-name "people")
 (def ^{:const true} index-type "person")
 

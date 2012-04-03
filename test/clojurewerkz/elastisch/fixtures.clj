@@ -1,11 +1,16 @@
 (ns clojurewerkz.elastisch.fixtures
   (:require [clojurewerkz.elastisch.index :as index]))
 
-(defn delete-people-index
+(defn reset-indexes*
+  []
+  (doseq [i ["people"]]
+    (index/delete i)))
+
+(defn reset-indexes
   [f]
-  (index/delete "people")
+  (reset-indexes*)
   (f)
-  (index/delete "people"))
+  (reset-indexes*))
 
 (def person-jack
   {:username   "esjack"
