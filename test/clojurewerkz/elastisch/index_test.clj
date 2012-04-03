@@ -76,21 +76,21 @@
 ;; Settings
 ;;
 
-(deftest get-index-settings-test
+(deftest test-geting-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
         _         (index/create index :settings settings :mappings fx/people-mapping)]
-    (is (= "1s" (:index.refresh_interval (:settings (:people (index/get-settings "people"))))))))
+    (is (= "1s" (get-in (index/get-settings "people") [:people :settings :index.refresh_interval])))))
 
-(deftest update-index-settings-global
+(deftest test-updating-global-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
         _         (index/create index :mappings fx/people-mapping)
         response  (index/update-settings settings)]
     (is (ok? response))
-    (is (= "1s" (:index.refresh_interval (:settings (:people (index/get-settings "people"))))))))
+    (is (= "1s" (get-in (index/get-settings "people") [:people :settings :index.refresh_interval])))))
 
-(deftest update-index-settings-concrete
+(deftest testing-updating-specific-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
         _         (index/create index :mappings fx/people-mapping)
