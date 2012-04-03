@@ -53,7 +53,7 @@
   (let [index    "people"
         mapping  fx/people-mapping
         _        (index/create index :mappings { :person { :properties { :first-name { :type "string" :store "no" } } } })
-        response (index/update-mapping index "person" :mapping mapping :ignore-conflicts false)]
+        response (index/update-mapping index "person" :mapping mapping :ignore_conflicts false)]
     (is (= (ok? response)))))
 
 (deftest create-index-mapping-test
@@ -68,7 +68,7 @@
   (let [index       "people"
         index-type  "person"
         _           (index/create index :mappings fx/people-mapping)
-        response    (index/delete-mapping index, index-type)]
+        response    (index/delete-mapping index index-type)]
     (is (ok? response))
     (is (nil? ((index/get-mapping index) index-type)))))
 
@@ -96,7 +96,7 @@
         _         (index/create index :mappings fx/people-mapping)
         response  (index/update-settings index settings)]
     (is (ok? response))
-    (is (= "1s" (:index.refresh_interval (:settings (:people (index/get-settings "people"))))))))
+    (is (= "1s" (get-in (index/get-settings "people") [:people :settings :index.refresh_interval])))))
 
 ;;
 ;; Open/close

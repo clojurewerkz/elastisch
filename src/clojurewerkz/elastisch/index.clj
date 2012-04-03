@@ -1,7 +1,7 @@
 (ns clojurewerkz.elastisch.index
-  (:require [clojure.data.json     :as json]
-            [clojurewerkz.elastisch.rest        :as rest]
-            [clj-http.client       :as http])
+  (:require [clojure.data.json           :as json]
+            [clojurewerkz.elastisch.rest :as rest]
+            [clj-http.client             :as http])
   (:use [clojurewerkz.elastisch.utils :only [join-names]]))
 
 ;;
@@ -51,10 +51,10 @@
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
-  [^String index-name-or-names ^String type-name & { :keys [mapping ignore-conflicts] }]
+  [^String index-name-or-names ^String type-name & { :keys [mapping ignore_conflicts] }]
   (rest/put (rest/index-mapping-url (join-names index-name-or-names) type-name)
             :body mapping
-            :query-params { :ignore-conflicts true }))
+            :query-params { :ignore_conflicts ignore_conflicts }))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data. The REST endpoint is /{index}/{type} with DELETE method.
