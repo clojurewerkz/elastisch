@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [get replace count])
   (:require [clj-http.client         :as http]
             [clojurewerkz.elastisch.rest          :as rest]
-            [clojurewerkz.elastisch.index         :as index]
+            [clojurewerkz.elastisch.index         :as idx]
             [clojurewerkz.elastisch.utils         :as utils]
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojurewerkz.elastisch.document
@@ -15,62 +15,62 @@
 ;; create, delete, exists?
 ;;
 
-(deftest create-index-test
+(deftest test-successful-creation-of-index
   (let [index    "people"
-        response (index/create index :mappings fx/people-mapping)]
+        response (idx/create index :mappings fx/people-mapping)]
     (is (ok? response))
-    (is (index/exists? index))))
+    (is (idx/exists? index))))
 
-(deftest delete-index-test
+(deftest test-successful-deletion-of-index
   (let [index    "people"
-        _        (index/create index :mappings fx/people-mapping)
-        response (index/delete index)]
+        _        (idx/create index :mappings fx/people-mapping)
+        response (idx/delete index)]
     (is (ok? response))
-    (is (not (index/exists? index)))))
+    (is (not (idx/exists? index)))))
 
 ;;
 ;; Mappings
 ;;
 
-(deftest get-index-mapping-test
+(deftest test-getting-index-mapping
   (let [index    "people"
         mappings fx/people-mapping
-        response (index/create index :mappings mappings)]
+        response (idx/create index :mappings mappings)]
     (is (ok? response))
-    (is (= mappings (:people (index/get-mapping index))))
-    (is (= mappings (:people (index/get-mapping [index, "shmeople"]))))
-    (is (= mappings (index/get-mapping index "person")))))
+    (is (= mappings (:people (idx/get-mapping index))))
+    (is (= mappings (:people (idx/get-mapping [index, "shmeople"]))))
+    (is (= mappings (idx/get-mapping index "person")))))
 
-(deftest update-index-mapping-test
+(deftest test-updating-index-mapping
   (let [index    "people"
         mapping  fx/people-mapping
-        _        (index/create index :mappings { :person { :properties { :first-name { :type "string" } } } })
-        response (index/update-mapping index "person" :mapping mapping)]
+        _        (idx/create index :mappings { :person { :properties { :first-name { :type "string" } } } })
+        response (idx/update-mapping index "person" :mapping mapping)]
     (is (= (ok? response)))
-    (is (= mapping (:people (index/get-mapping index))))))
+    (is (= mapping (:people (idx/get-mapping index))))))
 
-(deftest update-index-mapping-test
+(deftest test-updating-index-mapping
   (let [index    "people"
         mapping  fx/people-mapping
-        _        (index/create index :mappings { :person { :properties { :first-name { :type "string" :store "no" } } } })
-        response (index/update-mapping index "person" :mapping mapping :ignore_conflicts false)]
+        _        (idx/create index :mappings { :person { :properties { :first-name { :type "string" :store "no" } } } })
+        response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts false)]
     (is (= (ok? response)))))
 
-(deftest create-index-mapping-test
+(deftest test-creating-index-mapping
   (let [index    "people"
         mapping  fx/people-mapping
-        _        (index/create index :mappings {})
-        response (index/update-mapping index "person" :mapping mapping)]
+        _        (idx/create index :mappings {})
+        response (idx/update-mapping index "person" :mapping mapping)]
     (is (ok? response))
-    (is (= mapping (:people (index/get-mapping index))))))
+    (is (= mapping (:people (idx/get-mapping index))))))
 
-(deftest delete-index-mapping-test
+(deftest test-delete-index-mapping
   (let [index       "people"
         index-type  "person"
-        _           (index/create index :mappings fx/people-mapping)
-        response    (index/delete-mapping index index-type)]
+        _           (idx/create index :mappings fx/people-mapping)
+        response    (idx/delete-mapping index index-type)]
     (is (ok? response))
-    (is (nil? ((index/get-mapping index) index-type)))))
+    (is (nil? ((idx/get-mapping index) index-type)))))
 
 ;;
 ;; Settings
@@ -79,24 +79,24 @@
 (deftest test-geting-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
-        _         (index/create index :settings settings :mappings fx/people-mapping)]
-    (is (= "1s" (get-in (index/get-settings "people") [:people :settings :index.refresh_interval])))))
+        _         (idx/create index :settings settings :mappings fx/people-mapping)]
+    (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
 (deftest test-updating-global-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
-        _         (index/create index :mappings fx/people-mapping)
-        response  (index/update-settings settings)]
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/update-settings settings)]
     (is (ok? response))
-    (is (= "1s" (get-in (index/get-settings "people") [:people :settings :index.refresh_interval])))))
+    (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
 (deftest testing-updating-specific-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
-        _         (index/create index :mappings fx/people-mapping)
-        response  (index/update-settings index settings)]
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/update-settings index settings)]
     (is (ok? response))
-    (is (= "1s" (get-in (index/get-settings "people") [:people :settings :index.refresh_interval])))))
+    (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
 ;;
 ;; Open/close
@@ -104,6 +104,6 @@
 
 (deftest open-close-index-test
   (let [index     "people"
-        _         (index/create index :mappings fx/people-mapping)]
-    (is (ok? (index/open index)))
-    (is (ok? (index/close index)))))
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/open index)))
+    (is (ok? (idx/close index)))))
