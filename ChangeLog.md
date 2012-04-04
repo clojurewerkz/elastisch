@@ -1,9 +1,9 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
-### Prefix Query support
+### Prefix, Field, Filtered Query Support
 
-Elastisch now supports [prefix queries](http://www.elasticsearch.org/guide/reference/query-dsl/prefix-query.html), see `clojurewerkz.elastisch.query/prefix`
-and `clojurewerkz.elastisch.document/search` to learn more.
+Elastisch now supports [prefix queries](http://www.elasticsearch.org/guide/reference/query-dsl/prefix-query.html), see `clojurewerkz.elastisch.query/prefix`,
+`clojurewerkz.elastisch.query/field`, `clojurewerkz.elastisch.query/filtered`, and `clojurewerkz.elastisch.document/search` to learn more.
 
 
 ## Changes between Elastisch 1.0.0-alpha2 and 1.0.0-alpha3
