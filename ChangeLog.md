@@ -1,5 +1,19 @@
 ## Changes between Elastisch 1.0.0-alpha2 and 1.0.0-alpha3
 
+### elastisch.document/more-like-this
+
+`clojurewerkz.elastisch.document/more-like-this` provides access to the [Elastic Search More Like This API](http://www.elasticsearch.org/guide/reference/api/more-like-this.html) for
+documents and returns documents similar to a given one:
+
+``` clojure
+(doc/more-like-this "people" "person" "1" :min_term_freq 1 :min_doc_freq 1)
+```
+
+Please note that `:min_doc_freq` and `:min_term_freq` parameters may be very important for small data sets.
+If you observe responses with no results, try lowering them.
+
+
+
 ### elastisch.document/count
 
 `clojurewerkz.elastisch.document/count` provides access to the [Elastic Search count API](http://www.elasticsearch.org/guide/reference/api/count.html)
