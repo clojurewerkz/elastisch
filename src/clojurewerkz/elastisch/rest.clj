@@ -116,6 +116,10 @@
   ([^String index-name ^String index-type]
      (join slash [(base) index-name index-type "_query"])))
 
+(defn more-like-this-url
+  [^String index-name ^String index-type id]
+  (join slash [(base) index-name index-type id "_mlt"]))
+
 
 ;;
 ;; API
