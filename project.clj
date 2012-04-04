@@ -3,7 +3,7 @@
   :license {:name "Eclipse Public License"}  
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [org.clojure/data.json "0.1.2"]
-                 [clj-http "0.3.3"]
+                 [clj-http "0.3.6"]
                  [clojurewerkz/support "0.1.0-beta2"]]
   :min-lein-version "2.0.0"  
   :profiles     {
