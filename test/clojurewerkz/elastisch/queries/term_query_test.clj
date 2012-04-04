@@ -18,7 +18,7 @@
 ;; term query
 ;;
 
-(deftest basic-term-query-test
+(deftest ^{:query true} test-basic-term-query
   (idx/create index-name :mappings fx/people-mapping)
 
   (doc/put index-name index-type "1" fx/person-jack)
@@ -32,7 +32,7 @@
     (is (= fx/person-jack (:_source (first (hits-from result)))))))
 
 
-(deftest test-term-query-with-a-limit
+(deftest ^{:query true} test-term-query-with-a-limit
   (idx/create index-name :mappings fx/people-mapping)
 
   (doc/put index-name index-type "1" fx/person-jack)

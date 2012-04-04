@@ -15,21 +15,21 @@
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/range-query.html"
   [key & { :as options}]
-  { :range (hash-map key options) })
+  {:range (hash-map key options) })
 
 (defn text
   "Text Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html"
   [query & { :as options}]
-  { :text { :message (merge { :query query } options) } })
+  {:text { :message (merge { :query query } options) } })
 
 (defn bool
   "Boolean Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html"
   [& { :as options}]
-  { :bool options })
+  {:bool options})
 
 
 (defn boosting
@@ -37,35 +37,42 @@
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/boosting-query.html"
   [& { :as options}]
-  { :boosting options })
+  {:boosting options})
 
 (defn ids
   "IDs Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/ids-query.html"
   [type ids]
-  { :ids { :type type :values ids } })
+  {:ids { :type type :values ids }})
 
 (defn custom-score
   "Custom Score Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/custom-score-query.html"
   [& {:as options}]
-  { :custom_score options })
+  {:custom_score options})
 
 (defn constant-score
   "Constant Score Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/constant-score-query.html"
   [& {:as options}]
-  { :constant_score options })
+  {:constant_score options})
 
 (defn dis-max
   "Dis Max Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/dis-max-query.html"
   [& {:as options}]
-  { :dis_max options })
+  {:dis_max options})
+
+(defn prefix
+  "Prefix query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/prefix-query.html"
+  [& {:as options}]
+  {:prefix options})
 
 ;; field
 ;; filtered
@@ -76,7 +83,6 @@
 ;; match-all
 ;; mlt
 ;; mlt-field
-;; prefix
 ;; query-string
 ;; range
 ;; span-first
