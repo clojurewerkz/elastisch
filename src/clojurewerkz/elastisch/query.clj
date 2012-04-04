@@ -74,8 +74,21 @@
   [& {:as options}]
   {:prefix options})
 
-;; field
-;; filtered
+(defn field
+  "Field query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/field-query.html"
+  [& {:as options}]
+  {:field options})
+
+(defn filtered
+  "Filtered query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/filtered-query.html"
+  [& {:as options}]
+  {:filtered options})
+
+
 ;; flt
 ;; flt-field
 ;; fuzzy
