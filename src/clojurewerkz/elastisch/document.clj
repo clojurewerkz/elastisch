@@ -99,6 +99,11 @@
                     :query-params qp
                     :body query))))
 
-;; TODO more-like-this
+
+(defn more-like-this
+  [index mapping-type id &{:as params}]
+  (rest/get (rest/more-like-this-url index mapping-type id)
+            :query-params params))
+
 ;; TODO percolate
 ;; TODO multi-search

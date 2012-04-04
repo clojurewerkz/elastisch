@@ -3,7 +3,7 @@
 
 (defn reset-indexes*
   []
-  (doseq [i ["people"]]
+  (doseq [i ["people" "articles"]]
     (index/delete i)))
 
 (defn reset-indexes
@@ -11,6 +11,10 @@
   (reset-indexes*)
   (f)
   (reset-indexes*))
+
+;;
+;; People
+;;
 
 (def person-jack
   {:username   "esjack"
@@ -43,3 +47,50 @@
                            :title      { :type "string" :analyzer "snowball" }
                            :planet     { :type "string" }
                            :biography  { :type "string" :analyzer "snowball"}}}})
+
+
+
+;;
+;; Articles
+;;
+
+(def article-on-elasticsearch
+  {:url "http://en.wikipedia.org/wiki/ElasticSearch"
+   :title "ElasticSearch"
+   :language "English"
+   :tags "technology, opensource, search, full-text search, distributed, software, lucene"
+   :summary "ElasticSearch is a distributed, RESTful, free/open source search server based on Apache Lucene.
+             It is developed by Shay Banon and is released under the Apache Software License. ElasticSearch can be used to search all kind of documents.
+             It provides a scalable search solution, has near real-time search and support for multitenancy."})
+
+(def article-on-lucene
+  {:url "http://en.wikipedia.org/wiki/Apache_Lucene"
+   :title "Apache Lucene"
+   :language "English"
+   :tags "technology, opensource, search, full-text search, distributed, software, lucene"
+   :summary "Apache Lucene is a free/open source information retrieval software library, originally created in Java by Doug Cutting. It is
+             supported by the Apache Software Foundation and is released under the Apache Software License."})
+
+(def article-on-nueva-york
+  {:url "http://es.wikipedia.org/wiki/Nueva_York"
+   :title "Nueva York"
+   :language "Spanish"
+   :tags "geografía, EEUU, historia, ciudades, Norteamérica"
+   :summary "Nueva York1 (en inglés y oficialmente, New York City) es la ciudad más poblada del Estado de Nueva York, de los
+             Estados Unidos de América y la segunda aglomeración urbana del continente. Es el centro del área metropolitana de Nueva York,
+             la cual está entre las aglomeraciones urbanas más grandes del mundo."})
+
+(def article-on-austin
+  {:url "http://es.wikipedia.org/wiki/Austin"
+   :title "Austin"
+   :language "Spanish"
+   :tags "geografía, EEUU, historia, ciudades, Norteamérica"
+   :summary "Austin es una ciudad y capital estatal, ubicada en los condados de Travis, Williamson y Hays,
+             en el estado estadounidense de Texas."})
+
+(def articles-mapping
+  {:article {:properties {:title    {:type "string" :analyzer "snowball"}
+                          :summary  {:type "string" :analyzer "snowball"}
+                          :url      {:type "string"}
+                          :language {:type "string"}
+                          :tags     {:type "string" :analyzer "standard"}}}})
