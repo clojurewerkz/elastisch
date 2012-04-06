@@ -83,7 +83,7 @@
    :title "Nueva York"
    :language "Spanish"
    :tags "geografía, EEUU, historia, ciudades, Norteamérica"
-   :summary "Nueva York1 (en inglés y oficialmente, New York City) es la ciudad más poblada del Estado de Nueva York, de los
+   :summary "Nueva York (en inglés y oficialmente, New York City) es la ciudad más poblada del Estado de Nueva York, de los
              Estados Unidos de América y la segunda aglomeración urbana del continente. Es el centro del área metropolitana de Nueva York,
              la cual está entre las aglomeraciones urbanas más grandes del mundo."})
 

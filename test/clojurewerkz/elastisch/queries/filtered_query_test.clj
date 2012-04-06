@@ -25,7 +25,7 @@
 
 
 ;;
-;; term query
+;; filtered query
 ;;
 
 (deftest ^{:query true} test-basic-filtered-query

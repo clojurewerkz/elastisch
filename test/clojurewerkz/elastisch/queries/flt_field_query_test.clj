@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.field-query-test
+(ns clojurewerkz.elastisch.queries.flt-field-query-test
   (:require [clojurewerkz.elastisch.document      :as doc]
             [clojurewerkz.elastisch.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
@@ -23,12 +23,12 @@
 (use-fixtures :each fx/reset-indexes prepopulate-index)
 
 ;;
-;; field query
+;; flt query
 ;;
 
-(deftest ^{:query true} test-basic-field-query
-  (let [response (doc/search index-name index-type :query (q/field "latest-edit.author" "thorwald"))
+(deftest ^{:query true :focus true} test-basic-flt-field-query
+  (let [response (doc/search index-name index-type :query (q/fuzzy-like-this-field :summary {:like_text "ciudad"}))
         hits     (hits-from response)]
     (is (any-hits? response))
-    (is (= 1 (total-hits response)))
-    (is (= "2" (-> hits first :_id)))))
+    (is (= 2 (total-hits response)))
+    (is (= #{"4" "3"} (set (map :_id hits))))))

@@ -88,8 +88,22 @@
   [& {:as options}]
   {:filtered options})
 
+(defn fuzzy-like-this
+  "FLT (fuzzy like this) query
 
-;; flt
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/flt-query.html"
+  [& {:as options}]
+  {:fuzzy_like_this options})
+
+(defn fuzzy-like-this-field
+  "FLT (fuzzy like this) query for a single field
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/flt-field-query.html"
+  [& {:as options}]
+  {:fuzzy_like_this_field options})
+
+
+
 ;; flt-field
 ;; fuzzy
 ;; has-child
