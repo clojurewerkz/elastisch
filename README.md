@@ -122,7 +122,7 @@ Elastisch is part of the group of libraries known as ClojureWerkz, together with
 ## Development
 
 Elastisch uses [Leiningen 2](https://github.com/technomancy/leiningen/blob/master/doc/TUTORIAL.md). Make
-sure you have it installed and then run tests against Clojure 1.3.0 and 1.4.0[-beta6] using
+sure you have it installed and then run tests against all supported Clojure versions using
 
     lein2 all test
 
