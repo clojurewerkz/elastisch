@@ -10,12 +10,12 @@
 ;;
 
 (defn create
-  "Adds document to the search index, with its id"
+  "Adds document to the search index. Document id will be generated automatically"
   [index mapping-type document & {:as params}]
   (rest/post (rest/index-type-url index mapping-type) :body document :query-params params))
 
 (defn put
-  "Adds document to the search index"
+  "Adds document to the search index, using given document id"
   ([index mapping-type id document]
      (rest/put (rest/record-url index mapping-type id) :body document))
   ([index mapping-type id document & {:as params}]
