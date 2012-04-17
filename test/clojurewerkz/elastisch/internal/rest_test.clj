@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.rest-test
+(ns clojurewerkz.elastisch.internal.rest-test
   (:require [clojurewerkz.elastisch.rest :as rest])
   (:use clojure.test))
 

@@ -1,9 +1,8 @@
-(ns clojurewerkz.elastisch.index-test
+(ns clojurewerkz.elastisch.indices-test
   (:refer-clojure :exclude [get replace count])
   (:require [clj-http.client         :as http]
-            [clojurewerkz.elastisch.rest          :as rest]
-            [clojurewerkz.elastisch.index         :as idx]
-            [clojurewerkz.elastisch.utils         :as utils]
+            [clojurewerkz.elastisch.rest     :as rest]
+            [clojurewerkz.elastisch.index    :as idx]
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojurewerkz.elastisch.document
         clojurewerkz.elastisch.response
