@@ -26,5 +26,5 @@
       (dotimes [n 5]
         (doc/put index-name index-type id fx/person-jack))
       (idx/refresh index-name)
-      (let [result (doc/search index-name index-type :query (q/term :biography "avoid") :version true)]
+      (let [result (doc/search index-name index-type :query (q/term :biography "avoid"))]
         (is (= 1 (total-hits result)))))))
