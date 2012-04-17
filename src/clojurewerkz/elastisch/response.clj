@@ -43,6 +43,12 @@
   [response]
   (get-in response [:hits :hits]))
 
+(defn ids-from
+  [response]
+  (if (any-hits? response)
+    (map :_id (hits-from response))
+    []))
+
 (defn count-from
   [response]
   (get response :count))

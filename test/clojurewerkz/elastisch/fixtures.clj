@@ -43,6 +43,15 @@
    :planet     "Earth"
    :age 28})
 
+(def person-tony
+  {:username   "estony"
+   :first-name "Tony"
+   :last-name  "Hall"
+   :title      "Yak Shaver"
+   :biography  "yak/reduce all day long"
+   :planet     "Earth"
+   :age 29})
+
 (def people-mapping
   { :person { :properties {:username   { :type "string" :store "yes" }                        
                            :first-name { :type "string" :store "yes" }
