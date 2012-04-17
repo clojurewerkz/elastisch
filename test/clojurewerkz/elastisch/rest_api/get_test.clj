@@ -15,11 +15,16 @@
 
 
 ;;
-;; get, present?
+;; get
 ;;
 
 (deftest test-get-with-non-existing-document
   (is (nil? (doc/get index-name index-type "1"))))
+
+
+;;
+;; present?
+;;
 
 (deftest test-present-on-non-existing-id
   (is (not (doc/present? index-name index-type "1"))))
@@ -62,16 +67,16 @@
   (doc/put index-name index-type "2" fx/person-mary)
   (doc/put index-name index-type "3" fx/person-joe)
   (let [mget-result (doc/multi-get
-                     [ { :_index index-name :_type index-type :_id "1"  }
-                       { :_index index-name :_type index-type :_id "2" } ])]
+                     [{:_index index-name :_type index-type :_id "1"}
+                      {:_index index-name :_type index-type :_id "2"}])]
     (is (= fx/person-jack (:_source (first mget-result))))
     (is (= fx/person-mary (:_source (second mget-result)))))
   (let [mget-result (doc/multi-get index-name
-                                   [ { :_type index-type :_id "1"  }
-                                     { :_type index-type :_id "2" } ])]
+                                   [{:_type index-type :_id "1"}
+                                    {:_type index-type :_id "2"}])]
     (is (= fx/person-jack (:_source (first mget-result))))
     (is (= fx/person-mary (:_source (second mget-result)))))
   (let [mget-result (doc/multi-get index-name index-type
-                                   [ { :_id "1"  } { :_id "2" } ])]
+                                   [{:_id "1"} {:_id "2"}])]
     (is (= fx/person-jack (:_source (first mget-result))))
     (is (= fx/person-mary (:_source (second mget-result))))))
