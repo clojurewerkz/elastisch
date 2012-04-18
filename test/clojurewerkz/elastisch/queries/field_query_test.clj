@@ -27,7 +27,7 @@
 ;;
 
 (deftest ^{:query true} test-basic-field-query
-  (let [response (doc/search index-name index-type :query (q/field "latest-edit.author" "thorwald"))
+  (let [response (doc/search index-name index-type :query (q/field "latest-edit.author" "Thorwald"))
         hits     (hits-from response)]
     (is (any-hits? response))
     (is (= 1 (total-hits response)))
