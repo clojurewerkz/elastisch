@@ -30,25 +30,30 @@
 
 
 (defn total-hits
+  "Returns number of search hits from a response"
   [response]
   (get-in response [:hits :total]))
 
+(defn count-from
+  "Returns total number of search hits from a response"
+  [response]
+  (get response :count))
+
 (defn any-hits?
+  "Returns true if a response has any search hits, false otherwise"
   [response]
   (> (total-hits response) 0))
 
 (def no-hits? (complement any-hits?))
 
 (defn hits-from
+  "Returns search hits from a response"
   [response]
   (get-in response [:hits :hits]))
 
 (defn ids-from
+  "Returns search hit ids from a response"
   [response]
   (if (any-hits? response)
-    (map :_id (hits-from response))
-    []))
-
-(defn count-from
-  [response]
-  (get response :count))
+    (set (map :_id (hits-from response)))
+    #{}))

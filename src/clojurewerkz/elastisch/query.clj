@@ -102,10 +102,14 @@
   [& {:as options}]
   {:fuzzy_like_this_field options})
 
+(defn fuzzy
+  "Fuzzy or Levenshtein (edit distance) query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/fuzzy-query.html"
+  [& {:as options}]
+  {:fuzzy options})
 
 
-;; flt-field
-;; fuzzy
 ;; has-child
 ;; match-all
 ;; mlt
