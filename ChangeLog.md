@@ -1,6 +1,12 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
-### Match ALl Query Support
+
+### MTL (More Like This) Query Support
+
+Elastisch now supports [More Like This](http://www.elasticsearch.org/guide/reference/query-dsl/mtl-query.html) query.
+
+
+### Match All Query Support
 
 Elastisch now supports [match all](http://www.elasticsearch.org/guide/reference/query-dsl/match-all-query.html) query.
 

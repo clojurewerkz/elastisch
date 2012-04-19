@@ -118,6 +118,12 @@
   ([& {:as options}]
      {:match_all options}))
 
+(defn mlt
+  "MLT (More Like This) query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/mlt-query.html"
+  [& {:as options}]
+  {:more_like_this options})
 
 ;; has-child
 ;; mlt
