@@ -109,9 +109,17 @@
   [& {:as options}]
   {:fuzzy options})
 
+(defn match-all
+  "Match All query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/match-all-query.html"
+  ([]
+     {:match_all {}})
+  ([& {:as options}]
+     {:match_all options}))
+
 
 ;; has-child
-;; match-all
 ;; mlt
 ;; mlt-field
 ;; query-string
