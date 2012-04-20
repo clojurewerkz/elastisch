@@ -1,6 +1,11 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
 
+### clj-time Upgraded to 0.4.1
+
+[clj-time](https://github.com/seancorfield/clj-time) dependency has been upgraded to version 0.4.1.
+
+
 ### MTL (More Like This) Query Support
 
 Elastisch now supports [More Like This](http://www.elasticsearch.org/guide/reference/query-dsl/mtl-query.html) query.

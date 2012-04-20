@@ -7,7 +7,7 @@
                  [clojurewerkz/support  "0.1.0-beta2"]]
   :min-lein-version "2.0.0"  
   :profiles     {:dev {:resource-paths ["test/resources"]
-                       :dependencies [[clj-time            "0.4.0" :exclusions [org.clojure/clojure]]]}
+                       :dependencies [[clj-time            "0.4.1" :exclusions [org.clojure/clojure]]]}
                  :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]
                        :resource-paths ["test/resources"]}}
   :aliases {"all" ["with-profile" "dev:dev,1.4"]}
