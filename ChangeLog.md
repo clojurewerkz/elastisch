@@ -1,6 +1,11 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
 
+### MTL (More Like This) Field Query Support
+
+Elastisch now supports [More Like This Field](http://www.elasticsearch.org/guide/reference/query-dsl/mtl-field-query.html) queries.
+
+
 ### clj-time Upgraded to 0.4.1
 
 [clj-time](https://github.com/seancorfield/clj-time) dependency has been upgraded to version 0.4.1.
@@ -8,17 +13,17 @@
 
 ### MTL (More Like This) Query Support
 
-Elastisch now supports [More Like This](http://www.elasticsearch.org/guide/reference/query-dsl/mtl-query.html) query.
+Elastisch now supports [More Like This](http://www.elasticsearch.org/guide/reference/query-dsl/mtl-query.html) queries.
 
 
 ### Match All Query Support
 
-Elastisch now supports [match all](http://www.elasticsearch.org/guide/reference/query-dsl/match-all-query.html) query.
+Elastisch now supports [match all](http://www.elasticsearch.org/guide/reference/query-dsl/match-all-query.html) queries.
 
 
 ### Fuzzy (Edit Distance) Query Support
 
-Elastisch now supports [fuzzy (edit distance)](http://www.elasticsearch.org/guide/reference/query-dsl/fuzzy-query.html) query.
+Elastisch now supports [fuzzy (edit distance)](http://www.elasticsearch.org/guide/reference/query-dsl/fuzzy-query.html) queries.
 
 
 
