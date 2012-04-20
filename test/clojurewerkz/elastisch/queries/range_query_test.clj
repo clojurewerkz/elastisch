@@ -6,8 +6,8 @@
   (:use clojure.test clojurewerkz.elastisch.response))
 
 
-(def ^{:const true} index-name "articles")
-(def ^{:const true} index-type "article")
+(def ^{:const true} index-name "people")
+(def ^{:const true} index-type "person")
 
 (defn prepopulate-index
   [f]
