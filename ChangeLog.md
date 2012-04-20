@@ -1,5 +1,10 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
+### Wildcard Query Support
+
+Elastisch now supports [Wildcard](http://www.elasticsearch.org/guide/reference/query-dsl/wildcard-query.html) queries.
+
+
 ### Span Queries Support
 
 Elastisch now supports [span queries](http://www.lucidimagination.com/blog/2009/07/18/the-spanquery/):
