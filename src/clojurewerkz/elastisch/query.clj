@@ -140,7 +140,6 @@
   {:query_string options})
 
 ;; has-child
-;; range
 ;; span-first
 ;; span-near
 ;; span-not
