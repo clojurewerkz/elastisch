@@ -28,7 +28,7 @@
 ;; mlt query
 ;;
 
-(deftest test-query-string-query
+(deftest ^{:query true} test-query-string-query
   (let [response (doc/search index-name index-type :query (q/query-string :query "Austin" :default_field "title"))]
-    (is (= 2 (total-hits response)))
+    (is (= 1 (total-hits response)))
     (is (= #{"4"} (ids-from response)))))
