@@ -1,5 +1,18 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
+### Span Queries Support
+
+Elastisch now supports [span queries](http://www.lucidimagination.com/blog/2009/07/18/the-spanquery/):
+
+ * [Span First](http://www.elasticsearch.org/guide/reference/query-dsl/span-first-query.html)
+ * [Span Near](http://www.elasticsearch.org/guide/reference/query-dsl/span-near-query.html)
+ * [Span Not](http://www.elasticsearch.org/guide/reference/query-dsl/span-not-query.html)
+ * [Span Or](http://www.elasticsearch.org/guide/reference/query-dsl/span-or-query.html)
+ * [Span Term](http://www.elasticsearch.org/guide/reference/query-dsl/span-term-query.html)
+
+Span queries are used for [proximity search](http://en.wikipedia.org/wiki/Proximity_search_(text)).
+
+
 ### Query String Query Support
 
 Elastisch now supports [Query String](http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html) queries.

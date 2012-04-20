@@ -139,13 +139,49 @@
   [& {:as options}]
   {:query_string options})
 
+(defn span-first
+  "Span First query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/span-first-query.html"
+  [& {:as options}]
+  {:span_first options})
+
+(defn span-near
+  "Span Near query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/span-near-query.html"
+  [& {:as options}]
+  {:span_near options})
+
+(defn span-not
+  "Span Not query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/span-not-query.html"
+  [& {:as options}]
+  {:span_not options})
+
+(defn span-or
+  "Span Or query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/span-or-query.html"
+  [& {:as options}]
+  {:span_or options})
+
+(defn span-term
+  "Span Term query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/span-term-query.html"
+  [& {:as options}]
+  {:span_term options})
+
+(defn wildcard
+  "Wildcard query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/wildcard-query.html"
+  [& {:as options}]
+  {:wildcard options})
+
 ;; has-child
-;; span-first
-;; span-near
-;; span-not
-;; span-or
-;; span-term
 ;; top-children
-;; wildcard
 ;; nested
 ;; custom-filters-score
