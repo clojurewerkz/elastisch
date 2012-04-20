@@ -26,7 +26,7 @@
 ;; flt query
 ;;
 
-(deftest ^{:query true :focus true} test-basic-flt-query
+(deftest ^{:query true} test-basic-flt-query
   (let [response (doc/search index-name index-type :query (q/fuzzy-like-this :fields ["summary"] :like_text "ciudad"))
         hits     (hits-from response)]
     (is (any-hits? response))

@@ -33,7 +33,7 @@
     (is (= 1 (total-hits response)))
     (is (= #{"3"} (ids-from response)))))
 
-(deftest ^{:query true :focus true} test-basic-fuzzy-query-with-numeric-fields
+(deftest ^{:query true} test-basic-fuzzy-query-with-numeric-fields
   (let [response (doc/search index-name index-type :query (q/fuzzy :number-of-edits {:value 13000 :min_similarity 3}))
         hits     (hits-from response)]
     (is (any-hits? response))
@@ -41,7 +41,7 @@
     (is (= #{"4"} (ids-from response)))))
 
 ;; TODO: ES 0.19.2 spills 500s complaining about java.lang.IllegalArgumentException: minimumSimilarity >= 1
-#_ (deftest ^{:query true :focus true} test-basic-fuzzy-query-with-date-fields
+#_ (deftest ^{:query true} test-basic-fuzzy-query-with-date-fields
      (let [response (doc/search index-name index-type :query (q/fuzzy "last-edit.date" {:value "2012-03-25T12:00:00" :min_similarity "1d"}))
            hits     (hits-from response)]
        (is (any-hits? response))

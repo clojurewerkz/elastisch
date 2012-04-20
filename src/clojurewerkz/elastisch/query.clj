@@ -132,8 +132,14 @@
   [& {:as options}]
   {:more_like_this_field options})
 
+(defn query-string
+  "Query String query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html"
+  [& {:as options}]
+  {:query_string options})
+
 ;; has-child
-;; query-string
 ;; range
 ;; span-first
 ;; span-near
