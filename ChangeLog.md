@@ -1,5 +1,9 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
+### Query String Query Support
+
+Elastisch now supports [Query String](http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html) queries.
+
 
 ### MTL (More Like This) Field Query Support
 
