@@ -125,9 +125,14 @@
   [& {:as options}]
   {:more_like_this options})
 
+(defn mlt-field
+  "MLT (More Like This) query that works for a single field
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/mlt-field-query.html"
+  [& {:as options}]
+  {:more_like_this_field options})
+
 ;; has-child
-;; mlt
-;; mlt-field
 ;; query-string
 ;; range
 ;; span-first

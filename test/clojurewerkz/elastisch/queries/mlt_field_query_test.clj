@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.mlt-query-test
+(ns clojurewerkz.elastisch.queries.mlt-field-query-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.document :as doc]
             [clojurewerkz.elastisch.index    :as idx]
@@ -28,8 +28,8 @@
 ;; mlt query
 ;;
 
-(deftest test-more-like-this-query
-  (let [response (doc/search index-name index-type :query (q/mlt :like_text "technology, opensource, search, full-text search, distributed, software, lucene"
-                                                                 :fields ["tags"] :min_term_freq 1 :min_doc_freq 1))]
+(deftest test-more-like-this-field-query
+  (let [response (doc/search index-name index-type :query (q/mlt-field :tags {:tags {:like_text "technology, opensource, search, full-text search, distributed, software, lucene"
+                                                                                     :min_term_freq 1 :min_doc_freq 1}}))]
     (is (= 2 (total-hits response)))
     (is (= #{"1" "2"} (ids-from response)))))
