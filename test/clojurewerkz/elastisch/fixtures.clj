@@ -53,12 +53,13 @@
    :age 29})
 
 (def people-mapping
-  { :person { :properties {:username   { :type "string" :store "yes" }                        
-                           :first-name { :type "string" :store "yes" }
-                           :last-name  { :type "string" }
-                           :title      { :type "string" :analyzer "snowball" }
-                           :planet     { :type "string" }
-                           :biography  { :type "string" :analyzer "snowball"}}}})
+  {:person {:properties {:username   {:type "string" :store "yes"}
+                         :first-name {:type "string" :store "yes"}
+                         :last-name  {:type "string"}
+                         :age        {:type "integer"}
+                         :title      {:type "string" :analyzer "snowball"}
+                         :planet     {:type "string"}
+                         :biography  {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
 
 
 
