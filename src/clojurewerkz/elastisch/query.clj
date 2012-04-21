@@ -181,7 +181,37 @@
   [& {:as options}]
   {:wildcard options})
 
-;; has-child
-;; top-children
-;; nested
-;; custom-filters-score
+(defn indices
+  "Indices query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/indices-query.html"
+  [& {:as options}]
+  {:indices options})
+
+(defn has-child
+  "Has Child query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/has-child-query.html"
+  [& {:as options}]
+  {:has_child options})
+
+(defn custom-filters-score
+  "Custom Filters Score query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/custom-filters-score-query.html"
+  [& {:as options}]
+  {:custom_filters_score options})
+
+(defn top-children
+  "Top children query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/top-children-query.html"
+  [& {:as options}]
+  {:top_children options})
+
+(defn nested
+  "Nested document query
+
+   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/nested-query.html"
+  [& {:as options}]
+  {:nested options})
