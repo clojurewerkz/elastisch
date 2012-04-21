@@ -1,4 +1,4 @@
-(defproject clojurewerkz/elastisch "1.0.0-alpha4"
+(defproject clojurewerkz/elastisch "1.0.0-SNAPSHOT"
   :description "Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}  
   :dependencies [[org.clojure/clojure   "1.3.0"]
