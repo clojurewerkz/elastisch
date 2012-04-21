@@ -1,3 +1,8 @@
+## Changes between Elastisch 1.0.0-alpha4 and 1.0.0-alpha5
+
+No changes yet.
+
+
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
 ### HTTP API namespaces renamed
