@@ -1,5 +1,30 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
+### Custom Filters Score Query Support
+
+Elastisch now supports [Custom Filters Score](http://www.elasticsearch.org/guide/reference/query-dsl/custom-filters-score-query.html) queries.
+
+
+### Nested Query Support
+
+Elastisch now supports [Nested](http://www.elasticsearch.org/guide/reference/query-dsl/nested-query.html) queries.
+
+
+### Indices Query Support
+
+Elastisch now supports [Indices](http://www.elasticsearch.org/guide/reference/query-dsl/indices-query.html) queries.
+
+
+### Top Children Query Support
+
+Elastisch now supports [Top Children](http://www.elasticsearch.org/guide/reference/query-dsl/top-children-query.html) queries.
+
+
+### Has Child Query Support
+
+Elastisch now supports [Has Child](http://www.elasticsearch.org/guide/reference/query-dsl/has-child-query.html) queries.
+
+
 ### Wildcard Query Support
 
 Elastisch now supports [Wildcard](http://www.elasticsearch.org/guide/reference/query-dsl/wildcard-query.html) queries.
