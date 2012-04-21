@@ -1,5 +1,5 @@
 (ns clojurewerkz.elastisch.fixtures
-  (:require [clojurewerkz.elastisch.index :as index]))
+  (:require [clojurewerkz.elastisch.rest.index :as index]))
 
 (defn reset-indexes*
   []

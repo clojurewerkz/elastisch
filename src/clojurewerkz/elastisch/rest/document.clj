@@ -1,9 +1,9 @@
-(ns clojurewerkz.elastisch.document
+(ns clojurewerkz.elastisch.rest.document
   (:refer-clojure :exclude [get replace count])
   (:require [clojurewerkz.elastisch.rest          :as rest])
   (:use     clojure.set
-            [clojurewerkz.elastisch.utils :only [join-names]]
-            [clojurewerkz.elastisch.response :only [not-found?]]))
+            [clojurewerkz.elastisch.rest.utils :only [join-names]]
+            [clojurewerkz.elastisch.rest.response :only [not-found?]]))
 
 ;;
 ;; API

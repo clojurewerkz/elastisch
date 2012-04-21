@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.utils
+(ns clojurewerkz.elastisch.rest.utils
   (:require clojure.string))
 
 ;;

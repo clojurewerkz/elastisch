@@ -1,9 +1,9 @@
 (ns clojurewerkz.elastisch.queries.flt-field-query-test
-  (:require [clojurewerkz.elastisch.document      :as doc]
-            [clojurewerkz.elastisch.index         :as idx]
+  (:require [clojurewerkz.elastisch.rest.document :as doc]
+            [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.response))
+  (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
 (def ^{:const true} index-name "articles")

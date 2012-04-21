@@ -1,7 +1,6 @@
 (ns clojurewerkz.elastisch.rest
   (:refer-clojure :exclude [get])
-  (:require [clojurewerkz.elastisch.utils :as utils]
-            [clj-http.client   :as http]
+  (:require [clj-http.client   :as http]
             [clojure.data.json :as json])
   (:use [clojure.string :only [join]]))
 

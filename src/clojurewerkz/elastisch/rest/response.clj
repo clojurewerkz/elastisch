@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.response
+(ns clojurewerkz.elastisch.rest.response
   (:require [clojurewerkz.support.http.statuses :as statuses]))
 
 ;;

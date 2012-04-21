@@ -1,5 +1,5 @@
 (ns clojurewerkz.elastisch.internal.utils-test
-  (:require [clojurewerkz.elastisch.utils :as utils])
+  (:require [clojurewerkz.elastisch.rest.utils :as utils])
   (:use clojure.test))
 
 (deftest join-names-test

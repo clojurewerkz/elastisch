@@ -1,11 +1,11 @@
 (ns clojurewerkz.elastisch.rest-api.delete-test
   (:refer-clojure :exclude [replace])
-  (:require [clojurewerkz.elastisch.document      :as doc]
+  (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest          :as rest]
-            [clojurewerkz.elastisch.index         :as idx]
+            [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.response))
+  (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
 (use-fixtures :each fx/reset-indexes)

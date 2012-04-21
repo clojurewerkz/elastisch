@@ -1,10 +1,10 @@
 (ns clojurewerkz.elastisch.rest-api.index-test
   (:refer-clojure :exclude [replace])
-  (:require [clojurewerkz.elastisch.document      :as doc]
-            [clojurewerkz.elastisch.index         :as idx]
+  (:require [clojurewerkz.elastisch.rest.document      :as doc]
+            [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.response
+  (:use clojure.test clojurewerkz.elastisch.rest.response
         [clj-time.core :only [months ago]]))
 
 (use-fixtures :each fx/reset-indexes)

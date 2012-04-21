@@ -1,5 +1,11 @@
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
 
+### HTTP API namespaces renamed
+
+HTTP/REST API namespaces are now grouped under `clojurewerkz.elastisch.rest`, for example, what used to be `clojurewerkz.elastisch.document` is now
+`clojurewerkz.elastisch.rest.document`. This is done to leave room for [Memcached transport](http://www.elasticsearch.org/guide/reference/modules/memcached.html) support in the future.
+
+
 ### Custom Filters Score Query Support
 
 Elastisch now supports [Custom Filters Score](http://www.elasticsearch.org/guide/reference/query-dsl/custom-filters-score-query.html) queries.

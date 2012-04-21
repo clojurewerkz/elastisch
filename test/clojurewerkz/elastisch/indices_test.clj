@@ -1,11 +1,10 @@
 (ns clojurewerkz.elastisch.indices-test
   (:refer-clojure :exclude [get replace count])
-  (:require [clj-http.client         :as http]
-            [clojurewerkz.elastisch.rest     :as rest]
-            [clojurewerkz.elastisch.index    :as idx]
-            [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojurewerkz.elastisch.document
-        clojurewerkz.elastisch.response
+  (:require [clojurewerkz.elastisch.rest       :as rest]
+            [clojurewerkz.elastisch.rest.index :as idx]
+            [clojurewerkz.elastisch.fixtures   :as fx])
+  (:use clojurewerkz.elastisch.rest.document
+        clojurewerkz.elastisch.rest.response
         clojure.test))
 
 (use-fixtures :each fx/reset-indexes)

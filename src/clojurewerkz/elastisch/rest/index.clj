@@ -1,8 +1,8 @@
-(ns clojurewerkz.elastisch.index
+(ns clojurewerkz.elastisch.rest.index
   (:require [clojure.data.json           :as json]
             [clojurewerkz.elastisch.rest :as rest]
             [clj-http.client             :as http])
-  (:use [clojurewerkz.elastisch.utils :only [join-names]]))
+  (:use [clojurewerkz.elastisch.rest.utils :only [join-names]]))
 
 ;;
 ;; create, delete, exists?
