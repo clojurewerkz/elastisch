@@ -10,7 +10,7 @@
                        :dependencies [[clj-time            "0.4.1" :exclusions [org.clojure/clojure]]]}
                  :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
                  :1.5 {:dependencies [[org.clojure/clojure "1.5.0-master-SNAPSHOT"]]}}
-  :aliases {"all" ["with-profile" "dev:dev,1.4:dev,1.5"]}
+  :aliases {"all" ["with-profile" "dev:dev,1.4"]}
   :repositories {"clojure-releases" "http://build.clojure.org/releases",
                  "sonatype"         { :url "http://oss.sonatype.org/content/repositories/releases",
                                      :snapshots false,
