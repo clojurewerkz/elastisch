@@ -1,6 +1,8 @@
 ## Changes between Elastisch 1.0.0-alpha4 and 1.0.0-alpha5
 
-No changes yet.
+### clj-http upgraded to 0.4.0
+
+Elastisch now uses clj-http 0.4.0.
 
 
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
