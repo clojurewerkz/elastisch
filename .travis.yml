@@ -5,3 +5,7 @@ before_install:
   - sleep 3
   - sudo service elasticsearch status
 script: lein2 all test
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
