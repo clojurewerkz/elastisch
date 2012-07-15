@@ -4,7 +4,8 @@
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.rest.response
+  (:use clojure.test
+        [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict?]]
         [clj-time.core :only [months ago]]))
 
 (use-fixtures :each fx/reset-indexes)
@@ -18,10 +19,15 @@
 ;; index/create
 ;;
 
-(deftest ^{:indexing true} test-create-an-index-without-mappings
+(deftest ^{:indexing true} test-create-an-index-without-mappings-or-settings
   (let [response (idx/create "elastisch-index-without-mappings")]
-    (is (= {:ok true :acknowledged true}
-           response))))
+    (is (ok? response))
+    (is (acknowledged? response))))
+
+(deftest ^{:indexing true} test-create-an-index-with-settings
+  (let [response (idx/create "elastisch-index-without-mappings" :settings {"number_of_shards" 1})]
+    (is (ok? response))
+    (is (acknowledged? response))))
 
 
 ;;
