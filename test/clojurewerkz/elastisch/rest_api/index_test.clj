@@ -48,7 +48,21 @@
          id         :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-put-with-precreated-index
+(deftest ^{:indexing true} test-put-with-precreated-index-without-mapping-types
+  (let [id       "1"
+        _        (idx/create index-name)
+        document   fx/person-jack
+        response   (doc/put index-name index-type id document)
+        get-result (doc/get index-name index-type id)]
+    (is (ok? response))
+    (are [expected actual] (= expected (actual get-result))
+         document   :_source
+         index-name :_index
+         index-type :_type
+         id         :_id
+         true       :exists)))
+
+(deftest ^{:indexing true} test-put-with-precreated-index-with-mapping-types
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         document   fx/person-jack
