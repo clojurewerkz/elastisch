@@ -39,7 +39,7 @@ in the public API, reached feature completeness and have documentation guides on
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.0.0-alpha4"]
+    [clojurewerkz/elastisch "1.0.0-beta1"]
 
 
 With Maven:
@@ -47,25 +47,8 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.0.0-alpha4</version>
+      <version>1.0.0-beta1</version>
     </dependency>
-
-If you feel comfortable using snapshots:
-
-With Leiningen:
-
-    [clojurewerkz/elastisch "1.0.0-SNAPSHOT"]
-
-
-With Maven:
-
-    <dependency>
-      <groupId>clojurewerkz</groupId>
-      <artifactId>elastisch</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-Snapshot artifacts are [released to Clojars](https://clojars.org/clojurewerkz/elastisch) every few days.
 
 
 ## Supported Clojure versions

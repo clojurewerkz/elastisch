@@ -31,7 +31,7 @@
 
    Related ElasticSearch API Reference section:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
-  [index-name & {:keys [settings mappings]}]
+  [^String index-name & {:keys [settings mappings]}]
   (rest/post (rest/index-url index-name) :body (if mappings
                                                  {:settings settings :mappings mappings}
                                                  {:settings settings})))
@@ -40,14 +40,14 @@
   "Used to check if the index (indices) exists or not.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"
-  [index-name]
+  [^String index-name]
   (= 200 (:status (rest/head (rest/index-url index-name)))))
 
 (defn delete
   "The delete index API allows to delete an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
-  [index-name]
+  [^String index-name]
   (rest/delete (rest/index-url index-name)))
 
 ;;
@@ -58,7 +58,7 @@
   "The get mapping API allows to retrieve mapping definition of index or index/type.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
-  ([index-name]
+  ([^String index-name]
      (rest/get (rest/index-mapping-url (join-names index-name))))
   ([^String index-name ^String type-name]
      (rest/get

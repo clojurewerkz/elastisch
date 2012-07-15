@@ -1,3 +1,9 @@
+## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
+
+No changes yet.
+
+
+
 ## Changes between Elastisch 1.0.0-alpha4 and 1.0.0-beta1
 
 ### Indexes can be created without mappings
