@@ -18,5 +18,6 @@
                                :snapshots true
                                :releases {:checksum :fail :update :always}}}
   :warn-on-reflection true
-  :test-selectors {:focus   :focus
-                   :all     (constantly true)})
+  :test-selectors {:focus    :focus
+                   :indexing :indexing
+                   :all      (constantly true)})
