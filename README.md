@@ -85,7 +85,7 @@ Distributed under the Eclipse Public License, the same as Clojure.
 
 ## FAQ
 
-### Why Not Wrap the Java Client?
+### Why Not Just Wrap the Java Client?
 
-Wrapping ES Java client may produce a performance gain but we don't see that to be very useful, and
-following Java client conventions would likely make Elastish less Clojurish.
+Wrapping ES Java client may result in some performance gain but we don't see it to be great enough to be a significant factor for Elastisch.
+Following Java client conventions would likely make Elastisch less Clojuric.
