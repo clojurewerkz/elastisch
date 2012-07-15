@@ -10,9 +10,8 @@ Elastisch is a Clojure client for ElasticSearch, a modern distributed RESTful se
  * Be reasonably feature complete
  * Be well documented
  * Be well tested
- * Closely follow recent Elastic Search releases & developments
- * Be well maintained
- * Learn from other clients like the Java and Ruby ones
+ * Closely follow ElasticSearch API structure
+ * Follow recent ElasticSearch releases & developments
  * Target Clojure 1.3.0 and later from the ground up
 
 
