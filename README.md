@@ -58,7 +58,7 @@ Elastisch is built from the ground up for Clojure 1.3 and up.
 ## Elastisch Is a ClojureWerkz Project
 
 Elastisch is part of the group of libraries known as ClojureWerkz, together with
-[Monger](https://github.com/michaelklishin/monger), [Langohr](https://github.com/michaelklishin/langohr), [Neocons](https://github.com/michaelklishin/neocons), [Quartzite](https://github.com/michaelklishin/quartzite), [Urly](https://github.com/michaelklishin/urly) and several others.
+[Monger](https://github.com/michaelklishin/monger), [Welle](https://github.com/michaelklishin/welle), [Langohr](https://github.com/michaelklishin/langohr), [Neocons](https://github.com/michaelklishin/neocons), [Quartzite](https://github.com/michaelklishin/quartzite) and several others.
 
 
 
