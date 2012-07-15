@@ -3,8 +3,8 @@
   :license {:name "Eclipse Public License"}  
   :dependencies [[org.clojure/clojure   "1.3.0"]
                  [org.clojure/data.json "0.1.2"]
-                 [clj-http              "0.4.0" :exclusions [org.clojure/clojure]]
-                 [clojurewerkz/support  "0.5.0"]]
+                 [clj-http              "0.4.4" :exclusions [org.clojure/clojure]]
+                 [clojurewerkz/support  "0.6.0"]]
   :min-lein-version "2.0.0"  
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.4.2" :exclusions [org.clojure/clojure]]]}

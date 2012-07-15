@@ -13,11 +13,10 @@
   "The create index API allows to instantiate an index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
-  [index-name & { :keys [settings mappings]  }]
-  (let [request-body { :settings settings :mappings mappings } ]
-    (rest/post
-     (rest/index-url index-name)
-     :body request-body)))
+  [index-name & {:keys [settings mappings]}]
+  (rest/post (rest/index-url index-name) :body (if mappings
+                                                 {:settings settings :mappings mappings}
+                                                 {:settings settings})))
 
 (defn exists?
   "Used to check if the index (indices) exists or not.

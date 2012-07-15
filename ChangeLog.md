@@ -1,8 +1,14 @@
-## Changes between Elastisch 1.0.0-alpha4 and 1.0.0-alpha5
+## Changes between Elastisch 1.0.0-alpha4 and 1.0.0-beta1
 
-### clj-http upgraded to 0.4.0
+### Indexes can be created without mappings
 
-Elastisch now uses clj-http 0.4.0.
+It is now possible to create indexes without specifying mapping types: `clojurewerkz.elastisch.rest.index/create`
+no longer requires `:mapping` to be passed.
+
+
+### clj-http upgraded to 0.4.x
+
+Elastisch now uses clj-http 0.4.x.
 
 
 ## Changes between Elastisch 1.0.0-alpha3 and 1.0.0-alpha4
