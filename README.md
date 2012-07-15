@@ -28,10 +28,10 @@ To subscribe for announcements of releases, important changes and so on, please 
 
 
 
-## This is a Work In Progress
+## Project Maturity
 
-Core Elastisch APIs are not fully stabilized, it is still largely a work in progress. Keep that in mind. 1.0 will be released when we are confident
-in the public API, reached feature completeness and have documentation guides on a dedicated website.
+Elastisch is a young project, although it has been used in production since early days. Elastisch API is not fully stabilized, leep that in mind. 1.0 will be released
+when we are confident in the public API, reached feature completeness and documentation guides site is up and in good shape.
 
 
 ## Artifacts
