@@ -125,7 +125,7 @@
 ;;
 
 (defn connect
-  "Connects with ElasticSearch endpoint and performs discovery"
+  "Connects to the given ElasticSearch endpoint and returns it"
   [uri]
   (let [response (get uri)]
     (ElasticSearchEndpoint. uri (get-in response [:version :number]))))
