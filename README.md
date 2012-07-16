@@ -17,7 +17,7 @@ Elastisch is a Clojure client for ElasticSearch, a modern distributed RESTful se
 
 ## Documentation & Examples
 
-We are working on documentation guides & examples site for the 1.0 release. In the meantime, please refer to the [test suite](https://github.com/michaelklishin/elastisch/tree/master/test/elastisch/test) for code examples.
+We are working on [documentation guides](http://clojureelasticsearch.info) & examples site for the 1.0 release. In the meantime, please refer to the [test suite](https://github.com/michaelklishin/elastisch/tree/master/test/elastisch/test) for code examples.
 
 
 ## Community
