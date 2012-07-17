@@ -1,6 +1,19 @@
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
 
-No changes yet.
+### Search functions that can search across all types or globally
+
+`clojurewerkz.elastisch.rest.document/search-all-types` is a new function that searches across
+one or more indexes and all mapping types:
+
+``` clojure
+(doc/search-all-types ["customer1_index" "customer2_index"] :query (q/query-string :query "Austin" :default_field "title"))
+```
+
+`clojurewerkz.elastisch.rest.document/search-all-indexes-and-types` is another new function that searches across all indexes and all mapping types:
+
+``` clojure
+(doc/search-all-indexes-and-types :query (q/query-string :query "Austin" :default_field "title"))
+```
 
 
 
