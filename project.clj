@@ -20,4 +20,5 @@
   :warn-on-reflection true
   :test-selectors {:focus    :focus
                    :indexing :indexing
+                   :query    :query
                    :all      (constantly true)})
