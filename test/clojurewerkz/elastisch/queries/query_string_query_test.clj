@@ -25,10 +25,20 @@
 
 
 ;;
-;; mlt query
+;; query string query
 ;;
 
 (deftest ^{:query true} test-query-string-query
   (let [response (doc/search index-name index-type :query (q/query-string :query "Austin" :default_field "title"))]
+    (is (= 1 (total-hits response)))
+    (is (= #{"4"} (ids-from response)))))
+
+(deftest ^{:query true} test-query-string-query-across-all-mapping-types
+  (let [response (doc/search-all-types index-name :query (q/query-string :query "Austin" :default_field "title"))]
+    (is (= 1 (total-hits response)))
+    (is (= #{"4"} (ids-from response)))))
+
+(deftest ^{:query true} test-query-string-query-across-all-mapping-types
+  (let [response (doc/search-all-indexes-and-types index-name :query (q/query-string :query "Austin" :default_field "title"))]
     (is (= 1 (total-hits response)))
     (is (= #{"4"} (ids-from response)))))

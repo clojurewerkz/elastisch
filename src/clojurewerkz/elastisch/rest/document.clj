@@ -11,8 +11,8 @@
 
 (defn create
   "Adds document to the search index. Document id will be generated automatically"
-  [index mapping-type document & {:as params}]
-  (rest/post (rest/index-type-url index mapping-type) :body document :query-params params))
+  ([index mapping-type document & {:as params}]
+     (rest/post (rest/mapping-type-url index mapping-type) :body document :query-params params)))
 
 (defn put
   "Adds document to the search index, using given document id"
@@ -56,12 +56,35 @@
        (filter :exists (:docs results)))))
 
 (defn search
-  "Performs a search query"
-  [index mapping-type & { :as options }]
+  "Performs a search query across one or more indexes and one or more mapping types.
+
+   Passing index name as \"_all\" means searching across all indexes."
+  [index mapping-type & {:as options}]
   (let [qk   [:search_type :scroll :size]
         qp   (select-keys options qk)
         body (dissoc options qk)]
     (rest/post (rest/search-url (join-names index) (join-names mapping-type))
+               :body body
+               :query-params qp)))
+
+(defn search-all-types
+  "Performs a search query across one or more indexes and all mapping types."
+  [index & {:as options}]
+  (let [qk   [:search_type :scroll :size]
+        qp   (select-keys options qk)
+        body (dissoc options qk)]
+    (rest/post (rest/search-url (join-names index))
+               :body body
+               :query-params qp)))
+
+(defn search-all-indexes-and-types
+  "Performs a search query across all indexes and all mapping types. This may put very high load on your
+   ElasticSearch cluster so use this function with care."
+  [index & {:as options}]
+  (let [qk   [:search_type :scroll :size]
+        qp   (select-keys options qk)
+        body (dissoc options qk)]
+    (rest/post (rest/search-url)
                :body body
                :query-params qp)))
 

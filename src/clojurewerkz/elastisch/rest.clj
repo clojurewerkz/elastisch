@@ -50,74 +50,87 @@
 
 (defn index-url
   [index-name]
-  (str (base) slash index-name))
+  (str (:uri *endpoint*) slash index-name))
 
-(defn index-type-url
-  [index-name index-type]
-  (join slash [(base) index-name index-type]))
+(defn mapping-type-url
+  [index-name mapping-type]
+  (join slash [(:uri *endpoint*) index-name mapping-type]))
 
 (defn search-url
-  [index-name index-type]
-  (join slash [(base) index-name index-type "_search"]))
+  "Constructs search query URI for the given index (or multiple indexes) and mapping types.
+
+   0-arity form constructs a URI that searches across all indexes and all mappings
+   1-arity form constructs a URI for one or more indexes and all mappings in them.
+   2-arity form constructs a URI for one or more indexes and given mappings in them.
+
+   Passing index name as \"_all\" means searching across all indexes.
+
+   To specify multiple indexes or mapping types, pass them as collections"
+  ([]
+     (join slash [(:uri *endpoint*) "_search"]))
+  ([index-name]
+     (join slash [(:uri *endpoint*) index-name "_search"]))
+  ([index-name mapping-type]
+     (join slash [(:uri *endpoint*) index-name mapping-type "_search"])))
 
 (defn count-url
   ([]
-     (str (base) slash "_count"))
-  ([index-name index-type]
-     (join slash [(base) index-name index-type "_count"])))
+     (str (:uri *endpoint*) slash "_count"))
+  ([index-name mapping-type]
+     (join slash [(:uri *endpoint*) index-name mapping-type "_count"])))
 
 (defn record-url
   [^String index-name ^String type id]
-  (join slash [(base) index-name type id]))
+  (join slash [(:uri *endpoint*) index-name type id]))
 
 
 (defn index-mapping-url
   ([^String index-name]
-     (join slash [(base) index-name "_mapping"]))
-  ([^String index-name ^String index-type]
-     (join slash [(base) index-name index-type "_mapping"])))
+     (join slash [(:uri *endpoint*) index-name "_mapping"]))
+  ([^String index-name ^String mapping-type]
+     (join slash [(:uri *endpoint*) index-name mapping-type "_mapping"])))
 
 
 (defn index-settings-url
   ([]
-     (str (base) slash "_settings"))
+     (str (:uri *endpoint*) slash "_settings"))
   ([^String index-name]
-     (join slash [(base) index-name "_settings"])))
+     (join slash [(:uri *endpoint*) index-name "_settings"])))
 
 (defn index-open-url
   [^String index-name]
-  (join slash [(base) index-name "_open"]))
+  (join slash [(:uri *endpoint*) index-name "_open"]))
 
 (defn index-close-url
   [^String index-name]
-  (join slash [(base) index-name "_close"]))
+  (join slash [(:uri *endpoint*) index-name "_close"]))
 
 (defn index-mget-url
   ([]
-     (str (base) slash "_mget"))
+     (str (:uri *endpoint*) slash "_mget"))
   ([^String index-name]
-     (join slash [(base) index-name "_mget"]))
-  ([^String index-name ^String index-type]
-     (join slash [(base) index-name index-type "_mget"])))
+     (join slash [(:uri *endpoint*) index-name "_mget"]))
+  ([^String index-name ^String mapping-type]
+     (join slash [(:uri *endpoint*) index-name mapping-type "_mget"])))
 
 (defn index-refresh-url
   ([]
-     (str (base) slash "_refresh"))
+     (str (:uri *endpoint*) slash "_refresh"))
   ([^String index-name]
-     (join slash [(base) index-name "_refresh"]))
-  ([^String index-name ^String index-type]
-     (join slash [(base) index-name index-type "_refresh"])))
+     (join slash [(:uri *endpoint*) index-name "_refresh"]))
+  ([^String index-name ^String mapping-type]
+     (join slash [(:uri *endpoint*) index-name mapping-type "_refresh"])))
 
 
 (defn delete-by-query-url
   ([^String index-name]
-     (join slash [(base) index-name "_query"]))
-  ([^String index-name ^String index-type]
-     (join slash [(base) index-name index-type "_query"])))
+     (join slash [(:uri *endpoint*) index-name "_query"]))
+  ([^String index-name ^String mapping-type]
+     (join slash [(:uri *endpoint*) index-name mapping-type "_query"])))
 
 (defn more-like-this-url
-  [^String index-name ^String index-type id]
-  (join slash [(base) index-name index-type id "_mlt"]))
+  [^String index-name ^String mapping-type id]
+  (join slash [(:uri *endpoint*) index-name mapping-type id "_mlt"]))
 
 
 ;;
