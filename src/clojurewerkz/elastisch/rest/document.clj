@@ -1,5 +1,5 @@
 (ns clojurewerkz.elastisch.rest.document
-  (:refer-clojure :exclude [get replace count])
+  (:refer-clojure :exclude [get replace count sort])
   (:require [clojurewerkz.elastisch.rest          :as rest])
   (:use     clojure.set
             [clojurewerkz.elastisch.rest.utils :only [join-names]]
@@ -30,13 +30,16 @@
       result)))
 
 (defn delete
-  "Deletes document from the index"
+  "Deletes document from the index.
+
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete.html"
   ([index mapping-type id]
      (rest/delete (rest/record-url index mapping-type id)))
   ([index mapping-type id & {:as params}]
      (rest/delete (rest/record-url index mapping-type id) :query-params params)))
 
 (defn present?
+  "Returns true if a document with the given id is present in the provided index / mapping type."
   [index mapping-type id]
   (not (nil? (get index mapping-type id))))
 
@@ -97,7 +100,7 @@
 (defn count
   "Performs a count query.
 
-   For Elastic Search reference, see http://www.elasticsearch.org/guide/reference/api/count.html"
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/count.html"
   ([index mapping-type]
      (rest/post (rest/count-url) (join-names index) (join-names mapping-type)))
   ([index mapping-type query]
@@ -112,7 +115,7 @@
 (defn delete-by-query
   "Performs a delete-by-query operation.
 
-   For Elastic Search reference, see http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
   ([index mapping-type query]
      (rest/delete (rest/delete-by-query-url index mapping-type) (join-names index) (join-names mapping-type) :body query))
   ([index mapping-type query & { :as options }]
