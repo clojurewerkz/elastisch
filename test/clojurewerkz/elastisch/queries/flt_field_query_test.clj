@@ -7,16 +7,16 @@
 
 
 (def ^{:const true} index-name "articles")
-(def ^{:const true} index-type "article")
+(def ^{:const true} mapping-type "article")
 
 (defn- prepopulate-index
   [f]
   (idx/create index-name :mappings fx/articles-mapping)
 
-  (doc/put index-name index-type "1" fx/article-on-elasticsearch)
-  (doc/put index-name index-type "2" fx/article-on-lucene)
-  (doc/put index-name index-type "3" fx/article-on-nueva-york)
-  (doc/put index-name index-type "4" fx/article-on-austin)
+  (doc/put index-name mapping-type "1" fx/article-on-elasticsearch)
+  (doc/put index-name mapping-type "2" fx/article-on-lucene)
+  (doc/put index-name mapping-type "3" fx/article-on-nueva-york)
+  (doc/put index-name mapping-type "4" fx/article-on-austin)
   (idx/refresh index-name)
   (f))
 
@@ -27,7 +27,7 @@
 ;;
 
 (deftest ^{:query true} test-basic-flt-field-query
-  (let [response (doc/search index-name index-type :query (q/fuzzy-like-this-field :summary {:like_text "ciudad"}))
+  (let [response (doc/search index-name mapping-type :query (q/fuzzy-like-this-field :summary {:like_text "ciudad"}))
         hits     (hits-from response)]
     (is (any-hits? response))
     (is (= 2 (total-hits response)))
