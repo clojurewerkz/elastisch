@@ -123,6 +123,8 @@
 
 
 (defn delete-by-query-url
+  ([]
+     (str (:uri *endpoint*) "/_all/_query"))
   ([^String index-name]
      (join slash [(:uri *endpoint*) index-name "_query"]))
   ([^String index-name ^String mapping-type]

@@ -97,6 +97,7 @@
   (delete index mapping-type id)
   (put index mapping-type id document))
 
+
 (defn count
   "Performs a count query.
 
@@ -106,27 +107,53 @@
   ([index mapping-type query]
      (rest/post (rest/count-url) (join-names index) (join-names mapping-type) :body query))
   ([index mapping-type query & { :as options }]
-     (let [qk   [:q :df :analyzer :default_operator]
-           qp   (select-keys options qk)]
-       (rest/post (rest/count-url (join-names index) (join-names mapping-type))
-                  :query-params qp
-                  :body query))))
+     (rest/post (rest/count-url (join-names index) (join-names mapping-type))
+                :query-params (select-keys options [:df :analyzer :default_operator])
+                :body query)))
+
+(def ^{:doc "Optional parameters that all query-based delete functions share"
+       :const true}
+  optional-delete-query-parameters [:df :analyzer :default_operator :consistency])
 
 (defn delete-by-query
   "Performs a delete-by-query operation.
 
    Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
   ([index mapping-type query]
-     (rest/delete (rest/delete-by-query-url index mapping-type) (join-names index) (join-names mapping-type) :body query))
+     (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body query))
   ([index mapping-type query & { :as options }]
-     (let [qk   [:q :df :analyzer :default_operator]
-           qp   (select-keys options qk)]
-       (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
-                    :query-params qp
-                    :body query))))
+     (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
+                  :query-params (select-keys options optional-delete-query-parameters)
+                  :body query)))
+
+(defn delete-by-query-across-all-types
+  "Performs a delete-by-query operation across all mapping types.
+
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+  ([index query]
+     (rest/delete (rest/delete-by-query-url (join-names index)) :body query))
+  ([index query & {:as options}]
+     (rest/delete (rest/delete-by-query-url (join-names index))
+                  :query-params (select-keys options optional-delete-query-parameters)
+                  :body query)))
+
+(defn delete-by-query-across-all-indexes-and-types
+  "Performs a delete-by-query operation across all indexes and mapping types.
+   This may put very high load on your ElasticSearch cluster so use this function with care.
+
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+  ([query]
+     (rest/delete (rest/delete-by-query-url) :body query))
+  ([query & {:as options}]
+     (rest/delete (rest/delete-by-query-url)
+                  :query-params (select-keys options optional-delete-query-parameters)
+                  :body query)))
 
 
 (defn more-like-this
+  "Performs a More Like This (MLT) query.
+
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/more-like-this.html"
   [index mapping-type id &{:as params}]
   (rest/get (rest/more-like-this-url index mapping-type id)
             :query-params params))

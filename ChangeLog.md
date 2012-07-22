@@ -1,5 +1,22 @@
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
 
+### Functions that delete documents by query across all types or globally
+
+`clojurewerkz.elastisch.rest.document/delete-by-query-across-all-types` is a new function that searches across
+one or more indexes and all mapping types:
+
+``` clojure
+(doc/delete-by-query-across-all-types index-name (q/term :username "esjoe"))
+```
+
+`clojurewerkz.elastisch.rest.document/delete-by-query-across-all-indexes-and-types` is another new function that searches across all indexes and all mapping types:
+
+``` clojure
+(doc/delete-by-query-across-all-indexes-and-types (q/term :username "esjoe"))
+```
+
+
+
 ### Search functions that can search across all types or globally
 
 `clojurewerkz.elastisch.rest.document/search-all-types` is a new function that searches across
