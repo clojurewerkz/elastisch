@@ -1,3 +1,10 @@
+## Changes between Elastisch 1.0.0-beta2 and 1.0.0-beta3
+
+No changes yet.
+
+
+
+
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
 
 ### Functions that delete documents by query across all types or globally

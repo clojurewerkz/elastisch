@@ -38,7 +38,7 @@ when we are confident in the public API, reached feature completeness and docume
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.0.0-beta1"]
+    [clojurewerkz/elastisch "1.0.0-beta2"]
 
 
 With Maven:
@@ -46,7 +46,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-beta2</version>
     </dependency>
 
 
