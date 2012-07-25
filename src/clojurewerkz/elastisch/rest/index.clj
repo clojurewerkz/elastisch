@@ -68,10 +68,9 @@
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
-  [^String index-name-or-names ^String type-name & { :keys [mapping ignore_conflicts] }]
+  [^String index-name-or-names ^String type-name & {:keys [mapping ignore_conflicts]}]
   (rest/put (rest/index-mapping-url (join-names index-name-or-names) type-name)
-            :body mapping
-            :query-params { :ignore_conflicts ignore_conflicts }))
+            :body mapping :query-params {:ignore_conflicts ignore_conflicts}))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data. The REST endpoint is /{index}/{type} with DELETE method.
@@ -89,11 +88,9 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([settings]
-     (rest/put (rest/index-settings-url)
-               :body settings))
+     (rest/put (rest/index-settings-url) :body settings))
   ([^String index-name settings]
-     (rest/put (rest/index-settings-url index-name)
-               :body settings)))
+     (rest/put (rest/index-settings-url index-name) :body settings)))
 
 
 (defn get-settings
@@ -111,22 +108,21 @@
 ;;
 
 (defn open
-  "Open index.
+  "Opens the index.
 
-  API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html
-  "
+  API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [index-name]
   (rest/post (rest/index-open-url index-name)))
 
 (defn close
-  "Close index.
+  "Closes the index.
 
-  API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html
-  "
+  API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [index-name]
   (rest/post (rest/index-close-url index-name)))
 
 (defn refresh
+  ""
   ([]
      (rest/post (rest/index-refresh-url)))
   ([index-name]
