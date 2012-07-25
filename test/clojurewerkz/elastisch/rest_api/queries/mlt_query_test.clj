@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.query-string-query-test
+(ns clojurewerkz.elastisch.rest-api.queries.mlt-query-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.rest.index    :as idx]
@@ -25,20 +25,11 @@
 
 
 ;;
-;; query string query
+;; mlt query
 ;;
 
-(deftest ^{:query true} test-query-string-query
-  (let [response (doc/search index-name mapping-type :query (q/query-string :query "Austin" :default_field "title"))]
-    (is (= 1 (total-hits response)))
-    (is (= #{"4"} (ids-from response)))))
-
-(deftest ^{:query true} test-query-string-query-across-all-mapping-types
-  (let [response (doc/search-all-types index-name :query (q/query-string :query "Austin" :default_field "title"))]
-    (is (= 1 (total-hits response)))
-    (is (= #{"4"} (ids-from response)))))
-
-(deftest ^{:query true} test-query-string-query-across-all-mapping-types
-  (let [response (doc/search-all-indexes-and-types index-name :query (q/query-string :query "Austin" :default_field "title"))]
-    (is (= 1 (total-hits response)))
-    (is (= #{"4"} (ids-from response)))))
+(deftest test-more-like-this-query
+  (let [response (doc/search index-name mapping-type :query (q/mlt :like_text "technology, opensource, search, full-text search, distributed, software, lucene"
+                                                                 :fields ["tags"] :min_term_freq 1 :min_doc_freq 1))]
+    (is (= 2 (total-hits response)))
+    (is (= #{"1" "2"} (ids-from response)))))

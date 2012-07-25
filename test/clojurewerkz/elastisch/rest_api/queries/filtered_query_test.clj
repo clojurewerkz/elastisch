@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.term-query-test
+(ns clojurewerkz.elastisch.rest-api.queries.filtered-query-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.rest.index    :as idx]
@@ -25,18 +25,11 @@
 
 
 ;;
-;; term query
+;; filtered query
 ;;
 
-(deftest ^{:query true} test-basic-term-query
-  (let [result (doc/search index-name mapping-type :query (q/term :biography "avoid"))]
-    (is (any-hits? result))
-    (is (= fx/person-jack (:_source (first (hits-from result)))))))
-
-
-(deftest ^{:query true} test-term-query-with-a-limit
-  (let [result (doc/search index-name mapping-type :query (q/term :planet "earth") :size 2)]
-    (is (any-hits? result))
-    (is (= 2 (count (hits-from result))))
-    ;; but total # of hits is reported w/o respect to the limit. MK.
-    (is (= 3 (total-hits result)))))
+(deftest ^{:query true} test-basic-filtered-query
+  (let [response (doc/search index-name mapping-type :query (q/filtered :query  {:term {:planet "earth"}}
+                                                                      :filter {:range {:age {:from 20 :to 30}}}))]
+    (is (any-hits? response))
+    (is (= 2 (total-hits response)))))

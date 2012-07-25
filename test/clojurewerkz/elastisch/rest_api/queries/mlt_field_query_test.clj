@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.mlt-field-query-test
+(ns clojurewerkz.elastisch.rest-api.queries.mlt-field-query-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.rest.index    :as idx]

@@ -1,6 +1,6 @@
-(ns clojurewerkz.elastisch.queries.flt-query-test
-  (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest.index    :as idx]
+(ns clojurewerkz.elastisch.rest-api.queries.match-all-query-test
+  (:require [clojurewerkz.elastisch.rest.document      :as doc]
+            [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test clojurewerkz.elastisch.rest.response))
@@ -23,12 +23,11 @@
 (use-fixtures :each fx/reset-indexes prepopulate-index)
 
 ;;
-;; flt query
+;; field query
 ;;
 
-(deftest ^{:query true} test-basic-flt-query
-  (let [response (doc/search index-name mapping-type :query (q/fuzzy-like-this :fields ["summary"] :like_text "ciudad"))
+(deftest ^{:query true} test-basic-match-all-query
+  (let [response (doc/search index-name mapping-type :query (q/match-all))
         hits     (hits-from response)]
     (is (any-hits? response))
-    (is (= 2 (total-hits response)))
-    (is (= #{"4" "3"} (set (map :_id hits))))))
+    (is (= 4 (total-hits response)))))

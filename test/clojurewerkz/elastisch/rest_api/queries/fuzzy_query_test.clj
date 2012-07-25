@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.fuzzy-query-test
+(ns clojurewerkz.elastisch.rest-api.queries.fuzzy-query-test
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]

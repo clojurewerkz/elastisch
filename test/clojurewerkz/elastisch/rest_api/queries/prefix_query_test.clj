@@ -1,16 +1,16 @@
-(ns clojurewerkz.elastisch.queries.range-query-test
+(ns clojurewerkz.elastisch.rest-api.queries.prefix-query-test
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
-
 (def ^{:const true} index-name "people")
 (def ^{:const true} mapping-type "person")
 
-(defn prepopulate-index
+(defn- prepopulate-index
   [f]
+
   (idx/create index-name :mappings fx/people-mapping)
 
   (doc/put index-name mapping-type "1" fx/person-jack)
@@ -23,12 +23,12 @@
 (use-fixtures :each fx/reset-indexes prepopulate-index)
 
 ;;
-;; flt query
+;; prefix query
 ;;
 
-(deftest ^{:query true} test-range-query
-  (let [response (doc/search index-name mapping-type :query (q/range :age :from 27 :to 29))
+(deftest ^{:query true} test-basic-prefix-query
+  (let [response (doc/search index-name mapping-type :query (q/prefix :username "esj"))
         hits     (hits-from response)]
     (is (any-hits? response))
-    (is (= 1 (total-hits response)))
-    (is (= #{"2"} (set (map :_id hits))))))
+    (is (= 2 (total-hits response)))
+    (is (= #{"1" "3"} (set (map :_id hits))))))

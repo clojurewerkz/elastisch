@@ -1,35 +1,34 @@
-(ns clojurewerkz.elastisch.queries.mlt-query-test
-  (:refer-clojure :exclude [replace])
+(ns clojurewerkz.elastisch.rest-api.queries.flt-field-query-test
   (:require [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.rest.index    :as idx]
-            [clojurewerkz.elastisch.query    :as q]
+            [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.rest.response
-        [clj-time.core :only [months ago now from-now]]))
+  (:use clojure.test clojurewerkz.elastisch.rest.response))
+
 
 (def ^{:const true} index-name "articles")
 (def ^{:const true} mapping-type "article")
 
-(defn prepopulate-index
+(defn- prepopulate-index
   [f]
   (idx/create index-name :mappings fx/articles-mapping)
+
   (doc/put index-name mapping-type "1" fx/article-on-elasticsearch)
   (doc/put index-name mapping-type "2" fx/article-on-lucene)
   (doc/put index-name mapping-type "3" fx/article-on-nueva-york)
   (doc/put index-name mapping-type "4" fx/article-on-austin)
-
   (idx/refresh index-name)
   (f))
 
 (use-fixtures :each fx/reset-indexes prepopulate-index)
 
-
 ;;
-;; mlt query
+;; flt query
 ;;
 
-(deftest test-more-like-this-query
-  (let [response (doc/search index-name mapping-type :query (q/mlt :like_text "technology, opensource, search, full-text search, distributed, software, lucene"
-                                                                 :fields ["tags"] :min_term_freq 1 :min_doc_freq 1))]
+(deftest ^{:query true} test-basic-flt-field-query
+  (let [response (doc/search index-name mapping-type :query (q/fuzzy-like-this-field :summary {:like_text "ciudad"}))
+        hits     (hits-from response)]
+    (is (any-hits? response))
     (is (= 2 (total-hits response)))
-    (is (= #{"1" "2"} (ids-from response)))))
+    (is (= #{"4" "3"} (ids-from response)))))

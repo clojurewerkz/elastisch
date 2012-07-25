@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.indices-test
+(ns clojurewerkz.elastisch.rest-api.indices-test
   (:refer-clojure :exclude [get replace count])
   (:require [clojurewerkz.elastisch.rest       :as rest]
             [clojurewerkz.elastisch.rest.index :as idx]

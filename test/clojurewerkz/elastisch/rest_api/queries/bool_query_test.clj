@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.queries.bool-query-test
+(ns clojurewerkz.elastisch.rest-api.queries.bool-query-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.rest.index    :as idx]
