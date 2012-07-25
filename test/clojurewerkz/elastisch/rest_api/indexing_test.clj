@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.rest-api.index-test
+(ns clojurewerkz.elastisch.rest-api.indexing-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
@@ -13,21 +13,6 @@
 
 (def ^{:const true} index-name "people")
 (def ^{:const true} index-type "person")
-
-
-;;
-;; index/create
-;;
-
-(deftest ^{:indexing true} test-create-an-index-without-mappings-or-settings
-  (let [response (idx/create "elastisch-index-without-mappings")]
-    (is (ok? response))
-    (is (acknowledged? response))))
-
-(deftest ^{:indexing true} test-create-an-index-with-settings
-  (let [response (idx/create "elastisch-index-without-mappings" :settings {"number_of_shards" 1})]
-    (is (ok? response))
-    (is (acknowledged? response))))
 
 
 ;;

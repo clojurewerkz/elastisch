@@ -13,7 +13,17 @@
 ;; create, delete, exists?
 ;;
 
-(deftest test-successful-creation-of-index
+(deftest ^{:indexing true} test-create-an-index-without-mappings-or-settings
+  (let [response (idx/create "elastisch-index-without-mappings")]
+    (is (ok? response))
+    (is (acknowledged? response))))
+
+(deftest ^{:indexing true} test-create-an-index-with-settings
+  (let [response (idx/create "elastisch-index-without-mappings" :settings {"number_of_shards" 1})]
+    (is (ok? response))
+    (is (acknowledged? response))))
+
+(deftest test-successful-creation-of-index-with-mappings-and-without-settings
   (let [index    "people"
         response (idx/create index :mappings fx/people-mapping)]
     (is (ok? response))
@@ -42,7 +52,7 @@
 (deftest test-updating-index-mapping
   (let [index    "people"
         mapping  fx/people-mapping
-        _        (idx/create index :mappings { :person { :properties { :first-name { :type "string" } } } })
+        _        (idx/create index :mappings {:person {:properties {:first-name {:type "string"}}}})
         response (idx/update-mapping index "person" :mapping mapping)]
     (is (= (ok? response)))
     (is (= mapping (:people (idx/get-mapping index))))))
@@ -50,7 +60,7 @@
 (deftest test-updating-index-mapping
   (let [index    "people"
         mapping  fx/people-mapping
-        _        (idx/create index :mappings { :person { :properties { :first-name { :type "string" :store "no" } } } })
+        _        (idx/create index :mappings {:person {:properties {:first-name {:type "string" :store "no"}}}})
         response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts false)]
     (is (= (ok? response)))))
 
@@ -74,15 +84,15 @@
 ;; Settings
 ;;
 
-(deftest test-geting-index-settings
+(deftest test-getting-index-settings
   (let [index     "people"
-        settings  { :index { :refresh_interval "1s" } }
+        settings  {:index {:refresh_interval "1s"}}
         _         (idx/create index :settings settings :mappings fx/people-mapping)]
     (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
 (deftest test-updating-global-index-settings
   (let [index     "people"
-        settings  { :index { :refresh_interval "1s" } }
+        settings  {:index {:refresh_interval "1s"}}
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/update-settings settings)]
     (is (ok? response))
