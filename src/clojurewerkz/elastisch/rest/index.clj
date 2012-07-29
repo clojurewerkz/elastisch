@@ -122,7 +122,16 @@
   (rest/post (rest/index-close-url index-name)))
 
 (defn refresh
-  ""
+  "Refreshes an index manually.
+
+   Refreshing an index makes all changes (added, modified and deleted documents) since the last refresh available for search. In other
+   words, index changes become \"visible\" to clients. ElasticSearch periodically refreshes indexes, the period is configurable via index
+   settings.
+
+   0-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
+   1-arity refreshes a single index.
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html"
   ([]
      (rest/post (rest/index-refresh-url)))
   ([index-name]
@@ -137,12 +146,6 @@
 ;; defn add-aliases
 ;; defn remove-alias
 ;; defn rename-alias
-
-;;
-;; Analyze
-;;
-
-;; defn analyze
 
 ;;
 ;; Templates
