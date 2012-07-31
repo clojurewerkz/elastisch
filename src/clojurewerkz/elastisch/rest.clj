@@ -145,6 +145,12 @@
   ([^String index-name]
      (join slash [(:uri *endpoint*) index-name "_status"])))
 
+(defn index-stats-url
+  ([]
+     (str (:uri *endpoint*) slash "_stats"))
+  ([^String index-name]
+     (join slash [(:uri *endpoint*) index-name "_stats"])))
+
 (defn index-segments-url
   ([]
      (str (:uri *endpoint*) slash "_segments"))

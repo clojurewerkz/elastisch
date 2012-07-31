@@ -128,3 +128,18 @@
   (idx/create "group1")
   (idx/create "group2")
   (is (ok? (idx/segments ["group1" "group2"]))))
+
+
+;;
+;; Stats
+;;
+
+(deftest ^{:indexing true} test-index-stats
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/stats index :docs true :store true :indexing true)))))
+
+(deftest ^{:indexing true} test-index-stats-for-multiple-indexes
+  (idx/create "group1")
+  (idx/create "group2")
+  (is (ok? (idx/stats ["group1" "group2"] :docs true :store true :indexing true))))

@@ -44,6 +44,16 @@ It takes the same options as documented in the [ElasticSearch guide on the Clear
 (clojurewerkz.elastisch.rest.index/segments "my-index")
 ```
 
+#### Stats
+
+`clojurewerkz.elastisch.rest.index/stats` is a function that returns statistics for an index or multiple indexes:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/stats "my-index" :docs true :store true :indexing true)
+```
+
+It takes the same options as documented in the [ElasticSearch guide on the Stats Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html)
+
 
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
 

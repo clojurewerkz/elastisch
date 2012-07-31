@@ -221,10 +221,9 @@
 ;;
 
 ;; defn get-template
-;;;; defn delete-template
+;; defn delete-template
 
 ;; defn snapshot
-;; defn stats
 
 (defn status
   "Returns recovery and/or snapshot status of an index.
@@ -247,5 +246,23 @@
   ([index-name]
      (rest/get (rest/index-status-url (join-names index-name)))))
 
-;; defn segments
-;; defn clear-cache
+
+(defn stats
+  "Returns statistics about an index or multiple indexes
+
+   Accepted options define what exactly will be contained in the response:
+
+   :docs : the number of documents, deleted documents
+   :store : the size of the index
+   :indexing : indexing statistics
+   :types : document type level stats
+   :get : get operation statistics, including missing stats
+   :search : search statistics, including custom grouping using the groups parameter (search operations can be associated with one or more groups)
+   :merge : merge operation stats
+   :flush : flush operation stats
+   :refresh : refresh operation stats
+   :clear : clear all the flags first
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html"
+  ([index-name & {:as options}]
+     (rest/get (rest/index-stats-url (join-names index-name)) :query-params options)))
