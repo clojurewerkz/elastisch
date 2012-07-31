@@ -3,8 +3,7 @@
 
 (defn reset-indexes*
   []
-  (doseq [i ["people" "articles" "elastisch-index-without-mappings"]]
-    (index/delete i)))
+  (index/delete "_all"))
 
 (defn reset-indexes
   [f]

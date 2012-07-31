@@ -99,3 +99,17 @@
         _         (idx/create index :mappings fx/people-mapping)]
     (is (ok? (idx/clear-cache index :filter true :field_data true)))))
 
+
+;;
+;; Status
+;;
+
+(deftest ^{:indexing true} test-index-status
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/status index :recovery true)))))
+
+(deftest ^{:indexing true} test-index-status-for-multiple-indexes
+  (idx/create "group1")
+  (idx/create "group2")
+  (is (ok? (idx/status ["group1" "group2"] :recovery true :snapshot true))))

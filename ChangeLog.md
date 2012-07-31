@@ -2,17 +2,23 @@
 
 ### More Index Operations
 
+#### Optimize
+
 `clojurewerkz.elastisch.rest.index/optimize` is a function that optimizes an index:
 
 ``` clojure
 (clojurewerkz.elastisch.rest.index/optimize "my-index" :refresh true :max_num_segments 48)
 ```
 
+#### Flush
+
 `clojurewerkz.elastisch.rest.index/flush` is a function that flushes an index:
 
 ``` clojure
 (clojurewerkz.elastisch.rest.index/flush "my-index" :refresh true)
 ```
+
+#### Clear Cache
 
 `clojurewerkz.elastisch.rest.index/clear-cache` is a function that can be used to clear index caches:
 
@@ -22,6 +28,13 @@
 
 It takes the same options as documented in the [ElasticSearch guide on the Clear Cache Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html)
 
+#### Status
+
+`clojurewerkz.elastisch.rest.index/status` is a function that returns status an index or multple indexes:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/status "my-index" :recovery true :snapshot true)
+```
 
 
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2

@@ -1,4 +1,5 @@
 (ns clojurewerkz.elastisch.rest.index
+  (:refer-clojure :exclude [flush])
   (:require [clojure.data.json           :as json]
             [clojurewerkz.elastisch.rest :as rest]
             [clj-http.client             :as http])
@@ -224,6 +225,18 @@
 
 ;; defn snapshot
 ;; defn stats
-;; defn status
+
+(defn status
+  "Returns recovery and/or snapshot status of an index.
+
+   Accepted options:
+
+   :recovery : should recovery status be returned?
+   :snapshot : should snapshot status be returned?
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-status.html"
+  ([index-name & {:as options}]
+     (rest/get (rest/index-status-url (join-names index-name)) :query-params options)))
+
 ;; defn segments
 ;; defn clear-cache
