@@ -90,3 +90,12 @@
         _         (idx/create index :mappings fx/people-mapping)]
     (is (ok? (idx/flush index :refresh true)))))
 
+;;
+;; Clear cache
+;;
+
+(deftest ^{:indexing true} test-clear-index-cache-with-refresh
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/clear-cache index :filter true :field_data true)))))
+

@@ -133,6 +133,12 @@
   ([^String index-name]
      (join slash [(:uri *endpoint*) index-name "_flush"])))
 
+(defn index-clear-cache-url
+  ([]
+     (str (:uri *endpoint*) slash "_cache/clear"))
+  ([^String index-name]
+     (join slash [(:uri *endpoint*) index-name "_cache/clear"])))
+
 
 (defn delete-by-query-url
   ([]

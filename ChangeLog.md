@@ -14,6 +14,13 @@
 (clojurewerkz.elastisch.rest.index/flush "my-index" :refresh true)
 ```
 
+`clojurewerkz.elastisch.rest.index/clear-cache` is a function that can be used to clear index caches:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/clear-cache "my-index" :filter true :field_data true)
+```
+
+It takes the same options as documented in the [ElasticSearch guide on the Clear Cache Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html)
 
 
 

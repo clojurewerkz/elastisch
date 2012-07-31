@@ -184,6 +184,27 @@
   ([index-name & {:as options}]
      (rest/post (rest/index-flush-url (join-names index-name)) :body options)))
 
+
+(defn clear-cache
+  "Clears index caches.
+
+   0-arity clears caches for *all* indexes and may be a very expensive operation. Use it carefully.
+   1-arity clears caches for a single index.
+
+   Accepted options:
+
+   :filter : should filter caches be cleared?
+   :field_data : should field data caches be cleared?
+   :bloom : should Bloom filter caches be cleared?
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html"
+  ([]
+     (rest/post (rest/index-clear-cache-url)))
+  ([index-name]
+     (rest/post (rest/index-clear-cache-url (join-names index-name))))
+  ([index-name & {:as options}]
+     (rest/post (rest/index-clear-cache-url (join-names index-name)) :body options)))
+
 ;;
 ;; Aliases
 ;;
