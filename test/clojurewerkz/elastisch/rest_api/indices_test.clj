@@ -23,13 +23,13 @@
     (is (ok? response))
     (is (acknowledged? response))))
 
-(deftest test-successful-creation-of-index-with-mappings-and-without-settings
+(deftest ^{:indexing true} test-successful-creation-of-index-with-mappings-and-without-settings
   (let [index    "people"
         response (idx/create index :mappings fx/people-mapping)]
     (is (ok? response))
     (is (idx/exists? index))))
 
-(deftest test-successful-deletion-of-index
+(deftest ^{:indexing true} test-successful-deletion-of-index
   (let [index    "people"
         _        (idx/create index :mappings fx/people-mapping)
         response (idx/delete index)]
@@ -40,13 +40,13 @@
 ;; Settings
 ;;
 
-(deftest test-getting-index-settings
+(deftest ^{:indexing true} test-getting-index-settings
   (let [index     "people"
         settings  {:index {:refresh_interval "1s"}}
         _         (idx/create index :settings settings :mappings fx/people-mapping)]
     (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
-(deftest test-updating-global-index-settings
+(deftest ^{:indexing true} test-updating-global-index-settings
   (let [index     "people"
         settings  {:index {:refresh_interval "1s"}}
         _         (idx/create index :mappings fx/people-mapping)
@@ -54,7 +54,7 @@
     (is (ok? response))
     (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
-(deftest testing-updating-specific-index-settings
+(deftest ^{:indexing true} testing-updating-specific-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
         _         (idx/create index :mappings fx/people-mapping)
@@ -66,8 +66,27 @@
 ;; Open/close
 ;;
 
-(deftest open-close-index-test
+(deftest ^{:indexing true} test-open-close-index
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (ok? (idx/open index)))
     (is (ok? (idx/close index)))))
+
+;;
+;; Optimize
+;;
+
+(deftest ^{:indexing true} test-optimize-index
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/optimize index :only_expunge_deletes 1)))))
+
+;;
+;; Flush
+;;
+
+(deftest ^{:indexing true} test-flush-index-with-refresh
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/flush index :refresh true)))))
+

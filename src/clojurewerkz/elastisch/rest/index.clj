@@ -137,6 +137,53 @@
   ([index-name]
      (rest/post (rest/index-refresh-url (join-names index-name)))))
 
+
+(defn optimize
+  "Optimizes an index.
+
+   Optimization makes searches over the index faster and also reclaims some disk space used by
+   deleted documents. Optionally you can optimize and refresh an index in a single request.
+
+   0-arity optimizes *all* indexes and may be a very expensive operation. Use it carefully.
+   1-arity optimizes a single index.
+
+   Accepted options:
+
+   :max_num_segments : the number of segments to optimize to.
+   :only_expunge_deletes : should the optimize process only expunge segments with deleted documents in it?
+   :refresh : when set to true, refreshes the index
+   :flush : when set to true, flushes the index
+   :wait_for_merge : should the request wait for the merge to end?
+
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html"
+  ([]
+     (rest/post (rest/index-optimize-url)))
+  ([index-name & {:as options}]
+     (rest/post (rest/index-optimize-url (join-names index-name)) :body options)))
+
+
+(defn flush
+  "Flushes an index.
+
+   This causes the index by flushing data to the index storage and clearing the internal transaction log.
+   Typically it is sufficient to let ElasticSearch when to periodically flush indexes.
+
+   0-arity flushes *all* indexes and may be a very expensive operation. Use it carefully.
+   1-arity flushes a single index.
+
+   Accepted options:
+
+   :refresh : should a refresh be performed after the flush?
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html"
+  ([]
+     (rest/post (rest/index-flush-url)))
+  ([index-name]
+     (rest/post (rest/index-flush-url (join-names index-name))))
+  ([index-name & {:as options}]
+     (rest/post (rest/index-flush-url (join-names index-name)) :body options)))
+
 ;;
 ;; Aliases
 ;;
@@ -152,10 +199,8 @@
 ;;
 
 ;; defn get-template
-;;
-;; defn delete-template
-;; defn optimize
-;; defn flush
+;;;; defn delete-template
+
 ;; defn snapshot
 ;; defn stats
 ;; defn status

@@ -121,6 +121,18 @@
   ([^String index-name ^String mapping-type]
      (join slash [(:uri *endpoint*) index-name mapping-type "_refresh"])))
 
+(defn index-optimize-url
+  ([]
+     (str (:uri *endpoint*) slash "_optimize"))
+  ([^String index-name]
+     (join slash [(:uri *endpoint*) index-name "_optimize"])))
+
+(defn index-flush-url
+  ([]
+     (str (:uri *endpoint*) slash "_flush"))
+  ([^String index-name]
+     (join slash [(:uri *endpoint*) index-name "_flush"])))
+
 
 (defn delete-by-query-url
   ([]

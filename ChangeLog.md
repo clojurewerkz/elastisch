@@ -1,6 +1,18 @@
 ## Changes between Elastisch 1.0.0-beta2 and 1.0.0-beta3
 
-No changes yet.
+### More Index Operations
+
+`clojurewerkz.elastisch.rest.index/optimize` is a function that optimizes an index:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/optimize "my-index" :refresh true :max_num_segments 48)
+```
+
+`clojurewerkz.elastisch.rest.index/flush` is a function that flushes an index:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/flush "my-index" :refresh true)
+```
 
 
 
