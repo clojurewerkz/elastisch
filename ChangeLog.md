@@ -55,6 +55,11 @@ It takes the same options as documented in the [ElasticSearch guide on the Clear
 It takes the same options as documented in the [ElasticSearch guide on the Stats Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html)
 
 
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.5.0`.
+
+
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
 
 ### Functions that delete documents by query across all types or globally
