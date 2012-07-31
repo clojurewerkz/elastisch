@@ -238,5 +238,14 @@
   ([index-name & {:as options}]
      (rest/get (rest/index-status-url (join-names index-name)) :query-params options)))
 
+(defn segments
+  "Returns segments information for an index or multiple indexes.
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-segments.html"
+  ([]
+     (rest/get (rest/index-segments-url)))
+  ([index-name]
+     (rest/get (rest/index-status-url (join-names index-name)))))
+
 ;; defn segments
 ;; defn clear-cache

@@ -36,6 +36,14 @@ It takes the same options as documented in the [ElasticSearch guide on the Clear
 (clojurewerkz.elastisch.rest.index/status "my-index" :recovery true :snapshot true)
 ```
 
+#### Segments
+
+`clojurewerkz.elastisch.rest.index/segments` is a function that returns segments information for an index or multiple indexes:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/segments "my-index")
+```
+
 
 ## Changes between Elastisch 1.0.0-beta1 and 1.0.0-beta2
 
