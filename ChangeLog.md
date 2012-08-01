@@ -1,3 +1,9 @@
+## Changes between Elastisch 1.0.0-beta3 and 1.0.0-beta4
+
+No changes yet.
+
+
+
 ## Changes between Elastisch 1.0.0-beta2 and 1.0.0-beta3
 
 ### Index Templates
