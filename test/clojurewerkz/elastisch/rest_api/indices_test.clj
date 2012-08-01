@@ -159,15 +159,27 @@
 ;;
 
 (deftest ^{:indexing true} test-create-an-index-with-two-aliases
-  (let [response (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})]
-    (is (ok? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                                  {:add {:index "aliased-index" :alias "alias2"}}])))
-    (is (= "42s" (get-in (idx/get-settings "alias2") [:aliased-index :settings :index.refresh_interval])))))
+  (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (ok? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
+                                {:add {:index "aliased-index" :alias "alias2"}}])))
+  (is (= "42s" (get-in (idx/get-settings "alias2") [:aliased-index :settings :index.refresh_interval]))))
 
 
 (deftest ^{:indexing true} test-getting-aliases
-  (let [response (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})]
-    (is (ok? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                                  {:add {:index "aliased-index" :alias "alias2" :routing 1}}])))
-    (is (= {:aliased-index {:aliases {:alias2 {} :alias1 {}}}}
-           (idx/get-aliases "aliased-index")))))
+  (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (ok? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
+                                {:add {:index "aliased-index" :alias "alias2" :routing 1}}])))
+  (is (= {:aliased-index {:aliases {:alias2 {} :alias1 {}}}}
+         (idx/get-aliases "aliased-index"))))
+
+;;
+;; Templates
+;;
+
+(deftest ^{:indexing true} test-create-an-index-template-and-fetch-it
+  (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
+  (is (ok? (idx/get-template "accounts"))))
+
+(deftest ^{:indexing true} test-create-an-index-template-and-delete-it
+  (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
+  (is (ok? (idx/delete-template "accounts"))))

@@ -1,6 +1,20 @@
 ## Changes between Elastisch 1.0.0-beta2 and 1.0.0-beta3
 
-### Aliases Support
+### Index Templates
+
+`clojurewerkz.elastisch.rest.index/create-template`, `clojurewerkz.elastisch.rest.index/delete-template`
+and `clojurewerkz.elastisch.rest.index/get-template` are new functions that implement support for [index templates](http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html):
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
+
+(clojurewerkz.elastisch.rest.index/get-template "accounts")
+
+(clojurewerkz.elastisch.rest.index/delete-template "accounts")
+```
+
+
+### Index Aliases
 
 `clojurewerkz.elastisch.rest.index/update-aliases` and `clojurewerkz.elastisch.rest.index/get-aliases`
 are new functions that implement support for [index aliases](http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html):

@@ -3,7 +3,8 @@
 
 (defn reset-indexes*
   []
-  (index/delete "_all"))
+  (index/delete "_all")
+  (index/delete-template "accounts"))
 
 (defn reset-indexes
   [f]

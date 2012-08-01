@@ -169,6 +169,10 @@
   ([^String index-name]
      (join slash [(:uri *endpoint*) index-name "_aliases"])))
 
+(defn index-template-url
+  [^String template-name]
+  (join slash [(:uri *endpoint*) "_template" template-name]))
+
 (defn delete-by-query-url
   ([]
      (str (:uri *endpoint*) "/_all/_query"))

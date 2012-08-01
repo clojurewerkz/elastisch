@@ -239,10 +239,32 @@
 ;; Templates
 ;;
 
-;; defn get-template
-;; defn delete-template
+(defn create-template
+  "Creates or updates a new index template.
 
-;; defn snapshot
+   Accepted options:
+
+   :template : a pattern of index name that this template will be applied to
+   :settigns : the same as for index/create
+   :mappings : the same as for index/create
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html"
+  [^String template-name & {:keys [template settings mappings]}]
+  (rest/post (rest/index-template-url template-name) :body (if mappings
+                                                             {:template template
+                                                              :settings settings
+                                                              :mappings mappings}
+                                                             {:template template
+                                                              :settings settings})))
+
+(defn get-template
+  [^String template-name]
+  (rest/get (rest/index-template-url template-name)))
+
+(defn delete-template
+  [^String template-name]
+  (rest/delete (rest/index-template-url template-name)))
+
 
 (defn status
   "Returns recovery and/or snapshot status of an index.
