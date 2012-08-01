@@ -178,7 +178,11 @@
 
 (deftest ^{:indexing true} test-create-an-index-template-and-fetch-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
-  (is (ok? (idx/get-template "accounts"))))
+  (is (= {:accounts {:template "account*"
+                     :order 0
+                     :settings {:index.refresh_interval "60s"}
+                     :mappings {}}}
+         (idx/get-template "accounts"))))
 
 (deftest ^{:indexing true} test-create-an-index-template-and-delete-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
