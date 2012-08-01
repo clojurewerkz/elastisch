@@ -122,6 +122,13 @@
   [index-name]
   (rest/post (rest/index-close-url index-name)))
 
+(defn snapshot
+  "Takes a snapthot of the index or multiple indexes.
+
+  API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-gateway-snapshot.html"
+  [index-name]
+  (rest/post (rest/index-snapshot-url index-name)))
+
 (defn refresh
   "Refreshes an index manually.
 

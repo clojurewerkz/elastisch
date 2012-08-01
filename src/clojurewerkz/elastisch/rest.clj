@@ -105,6 +105,10 @@
   [^String index-name]
   (join slash [(:uri *endpoint*) index-name "_close"]))
 
+(defn index-snapshot-url
+  [^String index-name]
+  (join slash [(:uri *endpoint*) index-name "_gateway/snapshot"]))
+
 (defn index-mget-url
   ([]
      (str (:uri *endpoint*) slash "_mget"))

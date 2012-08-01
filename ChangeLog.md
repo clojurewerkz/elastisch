@@ -31,6 +31,14 @@ are new functions that implement support for [index aliases](http://www.elastics
 (clojurewerkz.elastisch.rest.index/flush "my-index" :refresh true)
 ```
 
+#### Snapshot
+
+`clojurewerkz.elastisch.rest.index/snapshot` is a function that takes a snapshot of an index or multiple indexes:
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/snapshot "my-index")
+```
+
 #### Clear Cache
 
 `clojurewerkz.elastisch.rest.index/clear-cache` is a function that can be used to clear index caches:

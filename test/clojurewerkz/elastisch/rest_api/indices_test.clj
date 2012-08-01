@@ -91,6 +91,15 @@
     (is (ok? (idx/flush index :refresh true)))))
 
 ;;
+;; Snapshot
+;;
+
+(deftest ^{:indexing true} test-snapshot-index
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (ok? (idx/snapshot index)))))
+
+;;
 ;; Clear cache
 ;;
 
