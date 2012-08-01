@@ -210,11 +210,23 @@
 ;; Aliases
 ;;
 
-;; defn get-aliases
-;; defn add-alias (+ with filter + with routing)
-;; defn add-aliases
-;; defn remove-alias
-;; defn rename-alias
+(defn update-aliases
+  "Performs a batch of alias operations. Takes a collection of actions in the form of
+
+   { :add    { :index \"test1\" :alias \"alias1\" } }
+   { :remove { :index \"test1\" :alias \"alias1\" } }
+
+   and so on, the same as described in the ElasticSearch documentation guide on aliases:
+   http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
+  [& actions]
+  (rest/post (rest/index-aliases-batch-url) :body {:actions actions}))
+
+(defn get-aliases
+  "Fetches and returns aliases for an index or multiple indexes.
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
+  [index-name]
+  (rest/get (rest/index-aliases-url (join-names index-name))))
 
 ;;
 ;; Templates

@@ -1,5 +1,18 @@
 ## Changes between Elastisch 1.0.0-beta2 and 1.0.0-beta3
 
+### Aliases Support
+
+`clojurewerkz.elastisch.rest.index/update-aliases` and `clojurewerkz.elastisch.rest.index/get-aliases`
+are new functions that implement support for [index aliases](http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html):
+
+``` clojure
+(clojurewerkz.elastisch.rest.index/update-aliases [{:add {:index "client0000001" :alias "alias1"}}
+                                                   {:add {:index "client0000002" :alias "alias2"}}])
+
+(clojurewerkz.elastisch.rest.index/get-aliases "client0000001")
+```
+
+
 ### More Index Operations
 
 #### Optimize

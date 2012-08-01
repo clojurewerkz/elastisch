@@ -157,6 +157,13 @@
   ([^String index-name]
      (join slash [(:uri *endpoint*) index-name "_segments"])))
 
+(defn index-aliases-batch-url
+  []
+  (str (:uri *endpoint*) slash "_aliases"))
+
+(defn index-aliases-url
+  ([^String index-name]
+     (join slash [(:uri *endpoint*) index-name "_aliases"])))
 
 (defn delete-by-query-url
   ([]
