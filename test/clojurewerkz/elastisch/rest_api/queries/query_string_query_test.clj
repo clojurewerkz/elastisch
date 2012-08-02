@@ -7,7 +7,7 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response
         [clj-time.core :only [months ago now from-now]]))
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
 
 ;;
@@ -34,3 +34,18 @@
         response     (doc/search-all-indexes-and-types index-name :query (q/query-string :query "Austin" :default_field "title"))]
     (is (= 1 (total-hits response)))
     (is (= #{"4"} (ids-from response)))))
+
+(deftest ^{:query true} test-query-string-query-over-a-text-field-analyzed-with-the-standard-analyzer-case1
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        response (doc/search index-name mapping-type :query (q/query-string :query "cloud+"))
+        hits     (hits-from response)]
+    (is (= 1 (total-hits response)))
+    (is (= "5" (-> hits first :_id)))))
+
+(deftest ^{:query true} test-query-string-query-over-a-text-field-analyzed-with-the-standard-analyzer-case1
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        response (doc/search index-name mapping-type :query (q/query-string :query "cloud AND (NOT adoption)"))
+        hits     (hits-from response)]
+    (is (= 0 (total-hits response)))))

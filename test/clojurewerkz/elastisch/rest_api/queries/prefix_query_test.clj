@@ -5,7 +5,7 @@
             [clojurewerkz.elastisch.fixtures      :as fx])
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
 ;;
 ;; prefix query
@@ -19,3 +19,11 @@
     (is (any-hits? response))
     (is (= 2 (total-hits response)))
     (is (= #{"1" "3"} (set (map :_id hits))))))
+
+(deftest ^{:query true} test-prefix-query-over-a-text-field-analyzed-with-the-standard-analyzer
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        response (doc/search index-name mapping-type :query (q/prefix :text "why"))
+        hits     (hits-from response)]
+    (is (= 1 (total-hits response)))
+    (is (= "4" (-> hits first :_id)))))

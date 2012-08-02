@@ -6,7 +6,7 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
 ;;
 ;; field query
@@ -20,3 +20,14 @@
     (is (any-hits? response))
     (is (= 1 (total-hits response)))
     (is (= "2" (-> hits first :_id)))))
+
+
+;; note that in practical terms, this query does not make much sense and just serves as an
+;; example of the fact that many types of queries work the same way for non-analyzed fields. MK.
+(deftest ^{:query true} test-field-query-over-not-analyzed-fields
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        response (doc/search index-name mapping-type :query (q/field "location.state" "CA"))
+        hits     (hits-from response)]
+    (is (= 1 (total-hits response)))
+    (is (= "5" (-> hits first :_id)))))

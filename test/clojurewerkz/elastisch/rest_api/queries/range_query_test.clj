@@ -6,13 +6,13 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
 ;;
 ;; flt query
 ;;
 
-(deftest ^{:query true} test-range-query
+(deftest ^{:query true} test-range-query-over-numerical-field
   (let [index-name   "people"
         mapping-type "person"
         response     (doc/search index-name mapping-type :query (q/range :age :from 27 :to 29))
@@ -20,3 +20,18 @@
     (is (any-hits? response))
     (is (= 2 (total-hits response)))
     (is (= #{"2" "4"} (set (map :_id hits))))))
+
+
+(let [index-name   "tweets"
+      mapping-type "tweet"]
+  (deftest ^{:query true} test-range-query-over-date-time-field-with-from
+    (let [response (doc/search index-name mapping-type :query (q/range :timestamp :from "20120801T160000+0100"))
+          ids      (ids-from response)]
+      (is (= 2 (total-hits response)))
+      (is (= #{"1" "2"} ids))))
+
+  (deftest ^{:query true} test-range-query-over-date-time-field-with-from-and-to
+     (let [response (doc/search index-name mapping-type :query (q/range :timestamp :from "20120801T160000+0100" :to "20120801T180000+0100"))
+           ids      (ids-from response)]
+       (is (= 1 (total-hits response)))
+       (is (= #{"2"} ids)))))

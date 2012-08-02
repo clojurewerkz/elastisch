@@ -34,7 +34,7 @@
 ;; suite 2
 ;;
 
-(deftest ^{:query true} test-basic-term-query-with-tweet-mapping
+(deftest ^{:query true} test-basic-term-query-over-non-analyzed-usernames
   (are [username id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term :username username))
                                    hits-from
                                    first
@@ -43,3 +43,11 @@
        "ifesdjeen"      "2"
        "michaelklishin" "4"
        "DEVOPS_BORAT"   "5"))
+
+(deftest ^{:query true} test-basic-term-query-over-non-analyzed-embedded-fields
+  (are [state id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term "location.state" state))
+                                   hits-from
+                                   first
+                                   :_id)))
+       "Moscow" "4"
+       "CA"     "5"))
