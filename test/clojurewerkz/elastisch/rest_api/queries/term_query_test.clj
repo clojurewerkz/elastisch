@@ -39,5 +39,7 @@
                                    hits-from
                                    first
                                    :_id)))
-       "ifesdjeen" "2"
-       "michaelklishin" "3"))
+       "clojurewerkz"   "1"
+       "ifesdjeen"      "2"
+       "michaelklishin" "4"
+       "DEVOPS_BORAT"   "5"))
