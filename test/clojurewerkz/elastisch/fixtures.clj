@@ -1,10 +1,11 @@
 (ns clojurewerkz.elastisch.fixtures
-  (:require [clojurewerkz.elastisch.rest.index :as index]))
+  (:require [clojurewerkz.elastisch.rest.index    :as idx]
+            [clojurewerkz.elastisch.rest.document :as doc]))
 
 (defn reset-indexes*
   []
-  (index/delete "_all")
-  (index/delete-template "accounts"))
+  (idx/delete "_all")
+  (idx/delete-template "accounts"))
 
 (defn reset-indexes
   [f]
@@ -160,3 +161,45 @@
    :location  {:country "Russian Federation"
                :state   "Moscow"
                :city    "Moscow"}})
+
+
+(defn prepopulate-people-index
+  [f]
+  (let [index-name   "people"
+        mapping-type "person"]
+    (idx/create index-name :mappings people-mapping)
+
+    (doc/put index-name mapping-type "1" person-jack)
+    (doc/put index-name mapping-type "2" person-mary)
+    (doc/put index-name mapping-type "3" person-joe)
+    (doc/put index-name mapping-type "4" person-tony)
+
+    (idx/refresh index-name)
+    (f)))
+
+(defn prepopulate-articles-index
+  [f]
+  (let [index-name   "articles"
+        mapping-type "article"]
+    (idx/create index-name :mappings articles-mapping)
+
+    (doc/put index-name mapping-type "1" article-on-elasticsearch)
+    (doc/put index-name mapping-type "2" article-on-lucene)
+    (doc/put index-name mapping-type "3" article-on-nueva-york)
+    (doc/put index-name mapping-type "4" article-on-austin)
+    (idx/refresh index-name)
+    (f)))
+
+
+(defn prepopulate-tweets-index
+  [f]
+  (let [index-name   "tweets"
+        mapping-type "tweet"]
+    (idx/create index-name :mappings tweets-mapping)
+
+    (doc/put index-name mapping-type "1" tweet1)
+    (doc/put index-name mapping-type "2" tweet2)
+    (doc/put index-name mapping-type "3" tweet3)
+
+    (idx/refresh index-name)
+    (f)))

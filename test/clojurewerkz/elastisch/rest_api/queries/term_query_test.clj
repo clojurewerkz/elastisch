@@ -7,34 +7,7 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response
         [clj-time.core :only [months ago now from-now]]))
 
-
-(defn prepopulate-people-index
-  [f]
-  (let [index-name   "people"
-        mapping-type "person"]
-    (idx/create index-name :mappings fx/people-mapping)
-
-    (doc/put index-name mapping-type "1" fx/person-jack)
-    (doc/put index-name mapping-type "2" fx/person-mary)
-    (doc/put index-name mapping-type "3" fx/person-joe)
-
-    (idx/refresh index-name)
-    (f)))
-
-(defn prepopulate-tweets-index
-  [f]
-  (let [index-name   "tweets"
-        mapping-type "tweet"]
-    (idx/create index-name :mappings fx/tweets-mapping)
-
-    (doc/put index-name mapping-type "1" fx/tweet1)
-    (doc/put index-name mapping-type "2" fx/tweet2)
-    (doc/put index-name mapping-type "3" fx/tweet3)
-
-    (idx/refresh index-name)
-    (f)))
-
-(use-fixtures :each fx/reset-indexes prepopulate-people-index prepopulate-tweets-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
 
 
@@ -53,7 +26,7 @@
     (is (any-hits? result))
     (is (= 2 (count (hits-from result))))
     ;; but total # of hits is reported w/o respect to the limit. MK.
-    (is (= 3 (total-hits result)))))
+    (is (= 4 (total-hits result)))))
 
 
 
