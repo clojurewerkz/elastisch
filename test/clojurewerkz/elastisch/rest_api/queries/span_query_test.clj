@@ -6,33 +6,7 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
-(defn prepopulate-index
-  [f]
-  (let [index-name "articles"
-        mapping-type "article"]
-    (idx/create index-name :mappings fx/articles-mapping)
-
-    (doc/put index-name mapping-type "1" fx/article-on-elasticsearch)
-    (doc/put index-name mapping-type "2" fx/article-on-lucene)
-    (doc/put index-name mapping-type "3" fx/article-on-nueva-york)
-    (doc/put index-name mapping-type "4" fx/article-on-austin)
-
-    (idx/refresh index-name))
-
-
-  (let [index-name "people"
-        mapping-type "person"]
-    (idx/create index-name :mappings fx/people-mapping)
-
-    (doc/put index-name mapping-type "1" fx/person-jack)
-    (doc/put index-name mapping-type "2" fx/person-mary)
-    (doc/put index-name mapping-type "3" fx/person-joe)
-
-    (idx/refresh index-name))
-
-  (f))
-
-(use-fixtures :each fx/reset-indexes prepopulate-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
 ;;
 ;; Tests
