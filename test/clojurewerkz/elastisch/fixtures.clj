@@ -1,6 +1,8 @@
 (ns clojurewerkz.elastisch.fixtures
   (:require [clojurewerkz.elastisch.rest.index    :as idx]
-            [clojurewerkz.elastisch.rest.document :as doc]))
+            [clojurewerkz.elastisch.rest.document :as doc])
+  (:use clojure.test
+        [clojurewerkz.elastisch.rest.response :only [ok?]]))
 
 (defn reset-indexes*
   []
@@ -125,7 +127,7 @@
 ;; Tweets
 ;;
 
-(def tweets-mapping {:tweet {:properties {:username  {:type "string" :analyzer "simple"}
+(def tweets-mapping {:tweet {:properties {:username  {:type "string" :index "not_analyzed"}
                                           :text      {:type "string" :analyzer "standard"}
                                           :timestamp {:type "date" :include_in_all false :format "basic_date_time_no_millis"}
                                           :retweets  {:type "integer" :include_in_all false}
@@ -137,7 +139,7 @@
 (def tweet1
   {:username  "clojurewerkz"
    :text      "Elastisch beta3 is out, several more @elasticsearch features supported github.com/clojurewerkz/elastisch, improved docs http://clojureelasticsearch.info #clojure"
-   :timestamp "20120802T0112+0100"
+   :timestamp "20120802T101232+0100"
    :retweets  1
    :location  {:country "Russian Federation"
                :state   "Moscow"
@@ -162,6 +164,24 @@
                :state   "Moscow"
                :city    "Moscow"}})
 
+(def tweet4
+  {:username  "michaelklishin"
+   :text      "Why Kafka performs so well (tl;dr: its authors know how shit really works) http://www.quora.com/Apache-Kafka/Kafka-writes-every-message-to-broker-disk-Still-performance-wise-it-is-better-than-some-of-the-in-memory-message-storing-message-queues-Why-is-that/answer/Jay-Kreps"
+   :timestamp "20120731T011200+0300"
+   :retweets  3
+   :location  {:country "Russian Federation"
+               :state   "Moscow"
+               :city    "Moscow"}})
+
+(def tweet5
+  {:username  "DEVOPS_BORAT"
+   :text      "OpenStack is Esperanto of cloud. Same adoption."
+   :timestamp "20120731T232300-0800"
+   :retweets  0
+   :location  {:country "USA"
+               :state   "CA"
+               :city    "San Francisco"}})
+
 
 (defn prepopulate-people-index
   [f]
@@ -169,10 +189,10 @@
         mapping-type "person"]
     (idx/create index-name :mappings people-mapping)
 
-    (doc/put index-name mapping-type "1" person-jack)
-    (doc/put index-name mapping-type "2" person-mary)
-    (doc/put index-name mapping-type "3" person-joe)
-    (doc/put index-name mapping-type "4" person-tony)
+    (is (ok? (doc/put index-name mapping-type "1" person-jack)))
+    (is (ok? (doc/put index-name mapping-type "2" person-mary)))
+    (is (ok? (doc/put index-name mapping-type "3" person-joe)))
+    (is (ok? (doc/put index-name mapping-type "4" person-tony)))
 
     (idx/refresh index-name)
     (f)))
@@ -183,10 +203,10 @@
         mapping-type "article"]
     (idx/create index-name :mappings articles-mapping)
 
-    (doc/put index-name mapping-type "1" article-on-elasticsearch)
-    (doc/put index-name mapping-type "2" article-on-lucene)
-    (doc/put index-name mapping-type "3" article-on-nueva-york)
-    (doc/put index-name mapping-type "4" article-on-austin)
+    (is (ok? (doc/put index-name mapping-type "1" article-on-elasticsearch)))
+    (is (ok? (doc/put index-name mapping-type "2" article-on-lucene)))
+    (is (ok? (doc/put index-name mapping-type "3" article-on-nueva-york)))
+    (is (ok? (doc/put index-name mapping-type "4" article-on-austin)))
     (idx/refresh index-name)
     (f)))
 
@@ -197,9 +217,11 @@
         mapping-type "tweet"]
     (idx/create index-name :mappings tweets-mapping)
 
-    (doc/put index-name mapping-type "1" tweet1)
-    (doc/put index-name mapping-type "2" tweet2)
-    (doc/put index-name mapping-type "3" tweet3)
+    (is (ok? (doc/put index-name mapping-type "1" tweet1)))
+    (is (ok? (doc/put index-name mapping-type "2" tweet2)))
+    (is (ok? (doc/put index-name mapping-type "3" tweet3)))
+    (is (ok? (doc/put index-name mapping-type "4" tweet4)))
+    (is (ok? (doc/put index-name mapping-type "5" tweet5)))
 
     (idx/refresh index-name)
     (f)))
