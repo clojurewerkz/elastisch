@@ -7,36 +7,64 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response
         [clj-time.core :only [months ago now from-now]]))
 
-(def ^{:const true} index-name "people")
-(def ^{:const true} mapping-type "person")
 
-(defn prepopulate-index
+(defn prepopulate-people-index
   [f]
-  (idx/create index-name :mappings fx/people-mapping)
+  (let [index-name   "people"
+        mapping-type "person"]
+    (idx/create index-name :mappings fx/people-mapping)
 
-  (doc/put index-name mapping-type "1" fx/person-jack)
-  (doc/put index-name mapping-type "2" fx/person-mary)
-  (doc/put index-name mapping-type "3" fx/person-joe)
+    (doc/put index-name mapping-type "1" fx/person-jack)
+    (doc/put index-name mapping-type "2" fx/person-mary)
+    (doc/put index-name mapping-type "3" fx/person-joe)
 
-  (idx/refresh index-name)
-  (f))
+    (idx/refresh index-name)
+    (f)))
 
-(use-fixtures :each fx/reset-indexes prepopulate-index)
+(defn prepopulate-tweets-index
+  [f]
+  (let [index-name   "tweets"
+        mapping-type "tweet"]
+    (idx/create index-name :mappings fx/tweets-mapping)
+
+    (doc/put index-name mapping-type "1" fx/tweet1)
+    (doc/put index-name mapping-type "2" fx/tweet2)
+    (doc/put index-name mapping-type "3" fx/tweet3)
+
+    (idx/refresh index-name)
+    (f)))
+
+(use-fixtures :each fx/reset-indexes prepopulate-people-index prepopulate-tweets-index)
+
 
 
 ;;
-;; term query
+;; suite 1
 ;;
 
-(deftest ^{:query true} test-basic-term-query
-  (let [result (doc/search index-name mapping-type :query (q/term :biography "avoid"))]
+(deftest ^{:query true} test-basic-term-query-with-person-mapping
+  (let [result (doc/search "people" "person" :query (q/term :biography "avoid"))]
     (is (any-hits? result))
     (is (= fx/person-jack (:_source (first (hits-from result)))))))
 
 
-(deftest ^{:query true} test-term-query-with-a-limit
-  (let [result (doc/search index-name mapping-type :query (q/term :planet "earth") :size 2)]
+(deftest ^{:query true} test-term-query-with-person-mapping-and-a-limit
+  (let [result (doc/search "people" "person" :query (q/term :planet "earth") :size 2)]
     (is (any-hits? result))
     (is (= 2 (count (hits-from result))))
     ;; but total # of hits is reported w/o respect to the limit. MK.
     (is (= 3 (total-hits result)))))
+
+
+
+;;
+;; suite 2
+;;
+
+(deftest ^{:query true} test-basic-term-query-with-tweet-mapping
+  (are [username id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term :username username))
+                                   hits-from
+                                   first
+                                   :_id)))
+       "ifesdjeen" "2"
+       "michaelklishin" "3"))

@@ -119,3 +119,44 @@
                           :latest-edit {:type       "object"
                                         :properties {:date   {:type "date" :fuzzy_factor 3}
                                                      :author {:type "string" :index "not_analyzed" :null_value "N/A"}}}}}})
+
+;;
+;; Tweets
+;;
+
+(def tweets-mapping {:tweet {:properties {:username  {:type "string" :analyzer "simple"}
+                                          :text      {:type "string" :analyzer "standard"}
+                                          :timestamp {:type "date" :include_in_all false :format "basic_date_time_no_millis"}
+                                          :retweets  {:type "integer" :include_in_all false}
+                                          :promoted  {:type "boolean" :default false :boost 10.0 :include_in_all false}
+                                          :location  {:type "object" :include_in_all false :properties {:country {:type "string" :index "not_analyzed"}
+                                                                                                        :state   {:type "string" :index "not_analyzed"}
+                                                                                                        :city    {:type "string" :index "not_analyzed"}}}}}})
+
+(def tweet1
+  {:username  "clojurewerkz"
+   :text      "Elastisch beta3 is out, several more @elasticsearch features supported github.com/clojurewerkz/elastisch, improved docs http://clojureelasticsearch.info #clojure"
+   :timestamp "20120802T0112+0100"
+   :retweets  1
+   :location  {:country "Russian Federation"
+               :state   "Moscow"
+               :city    "Moscow"}})
+
+
+(def tweet2
+  {:username  "ifesdjeen"
+   :text      "Did I mention that Glitch Mob is amazing?"
+   :timestamp "20120801T174722+0100"
+   :retweets  0
+   :location  {:country "Germany"
+               :state   "Bavaria"
+               :city    "Munich"}})
+
+(def tweet3
+  {:username  "michaelklishin"
+   :text      "I am late to the party but congrats to both @old_sound and VMware on getting him on the team"
+   :timestamp "20120731T223900+0300"
+   :retweets  2
+   :location  {:country "Russian Federation"
+               :state   "Moscow"
+               :city    "Moscow"}})
