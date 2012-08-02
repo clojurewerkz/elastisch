@@ -24,6 +24,12 @@
 
 (let [index-name   "tweets"
       mapping-type "tweet"]
+  (deftest ^{:query true} test-range-query-over-string-field
+    (let [response (doc/search index-name mapping-type :query (q/range :username :from "c" :to "j"))
+          ids      (ids-from response)]
+      (is (= 2 (total-hits response)))
+      (is (= #{"1" "2"} ids))))
+
   (deftest ^{:query true} test-range-query-over-date-time-field-with-from
     (let [response (doc/search index-name mapping-type :query (q/range :timestamp :from "20120801T160000+0100"))
           ids      (ids-from response)]
