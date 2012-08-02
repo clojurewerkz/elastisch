@@ -1,8 +1,6 @@
 # Elastisch, a Clojure client for ElasticSearch
 
-Elastisch is a Clojure client for ElasticSearch, a modern distributed RESTful search engine.
-
-[![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
+Elastisch is a minimalistic Clojure client for [ElasticSearch](http://elasticsearch.org), a modern distributed RESTful search engine.
 
 
 ## Project Goals
@@ -10,7 +8,7 @@ Elastisch is a Clojure client for ElasticSearch, a modern distributed RESTful se
  * Be reasonably feature complete
  * Be well documented
  * Be well tested
- * Closely follow ElasticSearch API structure
+ * Closely follow ElasticSearch API structure, no new abstractions introduced
  * Follow recent ElasticSearch releases & developments
  * Target Clojure 1.3.0 and later from the ground up
 
@@ -60,6 +58,10 @@ Elastisch is built from the ground up for Clojure 1.3 and up.
 Elastisch is part of the group of libraries known as ClojureWerkz, together with
 [Monger](https://github.com/michaelklishin/monger), [Welle](https://github.com/michaelklishin/welle), [Langohr](https://github.com/michaelklishin/langohr), [Neocons](https://github.com/michaelklishin/neocons), [Quartzite](https://github.com/michaelklishin/quartzite) and several others.
 
+
+## Continuous Integration
+
+[![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
 
 
 ## Development
