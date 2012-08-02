@@ -1,6 +1,8 @@
 ## Changes between Elastisch 1.0.0-beta3 and 1.0.0-beta4
 
-No changes yet.
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.5.1`.
 
 
 
