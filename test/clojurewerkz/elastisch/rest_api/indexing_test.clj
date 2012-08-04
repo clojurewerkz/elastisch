@@ -5,7 +5,7 @@
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test
-        [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict?]]
+        [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
         [clj-time.core :only [months ago]]))
 
 (use-fixtures :each fx/reset-indexes)
@@ -131,5 +131,23 @@
     (is (:_id response))
     (are [expected actual] (= expected (actual response))
          index-name :_index
-         index-type  :_type
+         index-type :_type
          1          :_version)))
+
+
+;;
+;; custom analyzers
+;;
+
+(deftest ^{:indexing true} test-a-custom-analyzer-and-stop-word-list
+  (is (ok? (idx/create "alt-tweets"
+                       :settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
+                                                                             :filter    ["standard" "lowercase" "stop"]
+                                                                             :stopwords ["lol" "rockstar" "ninja" "cloud" "event"]}}}}}
+                       :mappings {:tweet {:properties {:text {:type "string" :analyzer "antiposers"}}}})))
+  (is (ok? (doc/create "alt-tweets" "tweet" {:text "I am a ninja rockstar brogrammer, yo. I like that event-driven thing."})))
+  (idx/refresh "alt-tweets")
+  (let [r1 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:thing" :default_field :text))
+        r2 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:(rockstar OR ninja)" :default_field :text))]
+    (is (any-hits? r1))
+    (is (no-hits? r2))))
