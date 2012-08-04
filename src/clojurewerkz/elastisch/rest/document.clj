@@ -15,7 +15,7 @@
      (rest/post (rest/mapping-type-url index mapping-type) :body document :query-params params)))
 
 (defn put
-  "Adds document to the search index, using given document id"
+  "Creates or updates a document in the search index, using the provided document id"
   ([index mapping-type id document]
      (rest/put (rest/record-url index mapping-type id) :body document))
   ([index mapping-type id document & {:as params}]
