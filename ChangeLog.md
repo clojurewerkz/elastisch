@@ -1,3 +1,9 @@
+## Changes between Elastisch 1.0.0-beta4 and 1.0.0-beta5
+
+No changes yet.
+
+
+
 ## Changes between Elastisch 1.0.0-beta3 and 1.0.0-beta4
 
 ### clj-http Update
@@ -8,7 +14,7 @@
 ### Breaking: Text Query Helper Supports Any Field
 
 `clojurewerkz.elastisch.query/text` now takes two arguments, the first being the name of the field.
-It was mistakenly hardcoded previously.
+It was mistakenly hardcoded previously.¯
 
 
 
