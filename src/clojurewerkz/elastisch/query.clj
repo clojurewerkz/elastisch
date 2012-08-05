@@ -20,8 +20,8 @@
   "Text Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html"
-  [query & { :as options}]
-  {:text { :message (merge { :query query } options) } })
+  [field query & { :as options}]
+  {:text {field (merge { :query query } options) }})
 
 (defn bool
   "Boolean Query

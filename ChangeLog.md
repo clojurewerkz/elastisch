@@ -5,6 +5,12 @@
 [clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.5.1`.
 
 
+### Breaking: Text Query Helper Supports Any Field
+
+`clojurewerkz.elastisch.query/text` now takes two arguments, the first being the name of the field.
+It was mistakenly hardcoded previously.
+
+
 
 ## Changes between Elastisch 1.0.0-beta2 and 1.0.0-beta3
 
