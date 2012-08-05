@@ -28,6 +28,11 @@
     ;; but total # of hits is reported w/o respect to the limit. MK.
     (is (= 4 (total-hits result)))))
 
+(deftest ^{:query true} test-basic-term-query-with-tweets-mapping
+         (let [result (doc/search "tweets" "tweet" :query (q/term :text "improved"))]
+    (is (any-hits? result))
+    (is (= fx/tweet1 (-> result hits-from first :_source)))))
+
 (deftest ^{:query true} test-basic-terms-query-with-tweets-mapping
   (let [result (doc/search "tweets" "tweet" :query (q/term :text ["supported" "improved"]))]
     (is (any-hits? result))
