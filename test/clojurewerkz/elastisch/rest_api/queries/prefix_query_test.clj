@@ -20,10 +20,18 @@
     (is (= 2 (total-hits response)))
     (is (= #{"1" "3"} (set (map :_id hits))))))
 
-(deftest ^{:query true} test-prefix-query-over-a-text-field-analyzed-with-the-standard-analyzer
+(deftest ^{:query true} test-full-word-prefix-query-over-a-text-field-analyzed-with-the-standard-analyzer
   (let [index-name   "tweets"
         mapping-type "tweet"
         response (doc/search index-name mapping-type :query (q/prefix :text "why"))
         hits     (hits-from response)]
     (is (= 1 (total-hits response)))
     (is (= "4" (-> hits first :_id)))))
+
+(deftest ^{:query true} test-partial-prefix-query-over-a-text-field
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        response (doc/search index-name mapping-type :query (q/prefix :text "congr"))
+        hits     (hits-from response)]
+    (is (= 1 (total-hits response)))
+    (is (= "3" (-> hits first :_id)))))
