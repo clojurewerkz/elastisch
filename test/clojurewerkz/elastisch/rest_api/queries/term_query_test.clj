@@ -18,7 +18,7 @@
 (deftest ^{:query true} test-basic-term-query-with-person-mapping
   (let [result (doc/search "people" "person" :query (q/term :biography "avoid"))]
     (is (any-hits? result))
-    (is (= fx/person-jack (:_source (first (hits-from result)))))))
+    (is (= fx/person-jack (-> result hits-from first :_source)))))
 
 
 (deftest ^{:query true} test-term-query-with-person-mapping-and-a-limit
@@ -28,6 +28,10 @@
     ;; but total # of hits is reported w/o respect to the limit. MK.
     (is (= 4 (total-hits result)))))
 
+(deftest ^{:query true} test-basic-terms-query-with-tweets-mapping
+  (let [result (doc/search "tweets" "tweet" :query (q/term :text ["supported" "improved"]))]
+    (is (any-hits? result))
+    (is (= fx/tweet1 (-> result hits-from first :_source)))))
 
 
 ;;
