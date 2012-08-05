@@ -1,6 +1,5 @@
 (ns clojurewerkz.elastisch.rest-api.queries.ids-query-test
   (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojure.set :as cs])
