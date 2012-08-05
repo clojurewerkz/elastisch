@@ -5,17 +5,23 @@
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
 ;;
 ;; Tests
 ;;
 
-(deftest ^{:query true} test-trailing-wildcard-query
-  (let [index-name   "articles"
-        mapping-type "article"
-        response     (doc/search index-name mapping-type :query (q/wildcard "latest-edit.author" "Thorw*"))
+(deftest ^{:query true} test-trailing-wildcard-query-with-nested-fields
+  (let [response     (doc/search "articles" "article" :query (q/wildcard "latest-edit.author" "Thorw*"))
         hits         (hits-from response)]
     (is (any-hits? response))
     (is (= 1 (total-hits response)))
     (is (= "2" (-> hits first :_id)))))
+
+
+(deftest ^{:query true} test-leading-wildcard-query-with-non-analyzd-field
+  (let [response     (doc/search "tweets" "tweet" :query (q/wildcard :username "*werkz"))
+        hits         (hits-from response)]
+    (is (any-hits? response))
+    (is (= 1 (total-hits response)))
+    (is (= "1" (-> hits first :_id)))))
