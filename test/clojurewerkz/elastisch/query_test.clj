@@ -18,7 +18,7 @@
          (query/range :foo :gt 5 :lt 10 :include_upper false :include_lower false))))
 
 (deftest text-query-test
-  (is (= {:text {:message {:query "this is a test" :analyzer "my_analyzer" :operator "and"}}}
+  (is (= {:text {"field" {:operator "and", :analyzer "my_analyzer", :query "this is a test"}}}
          (query/text "field" "this is a test" :operator "and" :analyzer "my_analyzer"))))
 
 (deftest bool-query-test
