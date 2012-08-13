@@ -94,12 +94,16 @@
   [& {:as options}]
   {:fuzzy_like_this options})
 
+(def flt fuzzy-like-this)
+
 (defn fuzzy-like-this-field
   "FLT (fuzzy like this) query for a single field
 
    For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/flt-field-query.html"
   [& {:as options}]
   {:fuzzy_like_this_field options})
+
+(def flt-field fuzzy-like-this-field)
 
 (defn fuzzy
   "Fuzzy or Levenshtein (edit distance) query
@@ -117,19 +121,23 @@
   ([& {:as options}]
      {:match_all options}))
 
-(defn mlt
+(defn more-like-this
   "MLT (More Like This) query
 
    For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/mlt-query.html"
   [& {:as options}]
   {:more_like_this options})
 
-(defn mlt-field
+(def mlt more-like-this)
+
+(defn more-like-this-field
   "MLT (More Like This) query that works for a single field
 
    For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/mlt-field-query.html"
   [& {:as options}]
   {:more_like_this_field options})
+
+(def mlt-field more-like-this-field)
 
 (defn query-string
   "Query String query
