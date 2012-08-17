@@ -22,7 +22,7 @@
      (rest/put (rest/record-url index mapping-type id) :body document :query-params params)))
 
 (defn get
-  "Gets Document by Id or returns nil if document is not found."
+  "Fetches and returns a document by id or nil if it does not exist"
   [index mapping-type id & {:as params}]
   (let [result (rest/get (rest/record-url index mapping-type id) :query-params params)]
     (if (not-found? result)
@@ -44,18 +44,18 @@
   (not (nil? (get index mapping-type id))))
 
 (defn multi-get
-  "Multi get returns only items that are present in database."
+  "Multi get returns only documents that are found (exist)"
   ([query]
      (let [results (rest/post (rest/index-mget-url)
-                              :body { :docs query })]
+                              :body {:docs query})]
        (filter :exists (:docs results))))
   ([index query]
      (let [results (rest/post (rest/index-mget-url index)
-                              :body { :docs query })]
+                              :body {:docs query})]
        (filter :exists (:docs results))))
   ([index mapping-type query]
      (let [results (rest/post (rest/index-mget-url index mapping-type)
-                              :body { :docs query })]
+                              :body {:docs query})]
        (filter :exists (:docs results)))))
 
 (defn search
