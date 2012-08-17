@@ -1,21 +1,16 @@
 # Elastisch, a Clojure client for ElasticSearch
 
-Elastisch is a minimalistic Clojure client for [ElasticSearch](http://elasticsearch.org), a modern distributed RESTful search engine.
+Elastisch is a minimalistic [Clojure client for ElasticSearch](http://clojureelasticsearch.info), a modern distributed RESTful search engine.
 
 
 ## Project Goals
 
  * Be reasonably feature complete
- * Be well documented
- * Be well tested
- * Closely follow ElasticSearch API structure, no new abstractions introduced
+ * Be [well documented](http://clojureelasticsearch.info)
+ * Be [well tested](https://github.com/michaelklishin/elastisch/tree/master/test/elastisch/test)
+ * Closely follow [ElasticSearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
  * Follow recent ElasticSearch releases & developments
  * Target Clojure 1.3.0 and later from the ground up
-
-
-## Documentation & Examples
-
-We are working on [documentation guides](http://clojureelasticsearch.info) & examples site for the 1.0 release. In the meantime, please refer to the [test suite](https://github.com/michaelklishin/elastisch/tree/master/test/elastisch/test) for code examples.
 
 
 ## Community
@@ -28,15 +23,16 @@ To subscribe for announcements of releases, important changes and so on, please 
 
 ## Project Maturity
 
-Elastisch is a young project, although it has been used in production since early days. Elastisch API is not fully stabilized, leep that in mind. 1.0 will be released
-when we are confident in the public API, reached feature completeness and documentation guides site is up and in good shape.
+Elastisch is a young project, although it has been used in production since early days. Elastisch API is mostly stabilized by now. 1.0 will be released
+when we are confident in the public API, reached feature completeness and documentation guides site is in good shape.
+
 
 
 ## Artifacts
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.0.0-beta4"]
+    [clojurewerkz/elastisch "1.0.0-rc1"]
 
 
 With Maven:
@@ -44,8 +40,17 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.0.0-beta4</version>
+      <version>1.0.0-rc1</version>
     </dependency>
+
+
+
+## Documentation & Examples
+
+Please see our [documentation guides site](http://clojureelasticsearch.info/).
+
+Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/clojurewerkz/elastisch) also has many code examples.
+
 
 
 ## Supported Clojure versions

@@ -1,6 +1,14 @@
-## Changes between Elastisch 1.0.0-beta4 and 1.0.0-beta5
+## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
 No changes yet.
+
+
+
+## Changes between Elastisch 1.0.0-beta4 and 1.0.0-rc1
+
+### Documentation improvements
+
+[Documentation guides](http://clojureelasticsearch.info) were greatly improved.
 
 
 
