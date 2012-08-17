@@ -9,11 +9,7 @@
   (:import java.util.UUID))
 
 
-(use-fixtures :each fx/reset-indexes)
-
-(def ^{:const true} index-name "people")
-(def ^{:const true} index-type "person")
-
+(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
 ;;
 ;; Versioning
@@ -21,10 +17,31 @@
 
 (deftest test-search-with-multiple-versions-of-a-document-matching-a-query
   (testing "that only one version is stored (versions are just for MVCC, that is, conflict resolution)"
-    (idx/create index-name :mappings fx/people-mapping)
-    (let [id (str (UUID/randomUUID))]
+    (let [index-name   "people"
+          mapping-type "person"
+          id           (str (UUID/randomUUID))]
       (dotimes [n 5]
-        (doc/put index-name index-type id fx/person-jack))
+        (doc/put index-name mapping-type id {:username   "esrob"
+                                             :first-name "Robert"
+                                             :last-name  "White"
+                                             :title      "Chief Naysayer"
+                                             :biography  "Just says no, period"
+                                             :planet     "Earth"
+                                             :age 42}))
       (idx/refresh index-name)
-      (let [result (doc/search index-name index-type :query (q/term :biography "avoid"))]
+      (let [result (doc/search index-name mapping-type :query (q/term :biography "say"))]
         (is (= 1 (total-hits result)))))))
+
+
+;;
+;; Filtering
+;;
+
+(deftest test-search-query-with-basic-filtering
+  (let [index-name   "people"
+        mapping-type "person"
+        hits         (hits-from (doc/search index-name mapping-type
+                                            :query  (q/match-all)
+                                            :filter {:term {:username "esmary"}}))]
+    (is (= 1 (count hits)))
+    (is (= "Lindey" (-> hits first :_source :last-name)))))
