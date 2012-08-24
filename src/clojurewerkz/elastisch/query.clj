@@ -16,11 +16,19 @@
   [key & { :as options}]
   {:range (hash-map key options) })
 
-(defn text
-  "Text Query
+(defn match
+  "Match Query, before 0.19.9 known as Text Query.
 
-  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html"
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/match-query.html"
   [field query & { :as options}]
+  {:match {field (merge { :query query } options) }})
+
+(defn text
+  "Match Query, before 0.19.9 known as Text Query.
+
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/match-query.html"
+  [field query & { :as options}]
+  ;; use :text for now for backwards compatibility. MK.
   {:text {field (merge { :query query } options) }})
 
 (defn bool
