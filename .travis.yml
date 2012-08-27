@@ -1,8 +1,8 @@
 language: clojure
 lein: lein2
+services:
+  - elasticsearch
 before_install:
-  - sudo service elasticsearch start
-  - sleep 3
   - sudo service elasticsearch status
 script: lein2 all test
 jdk:
