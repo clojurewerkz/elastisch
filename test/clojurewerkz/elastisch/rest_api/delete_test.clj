@@ -54,15 +54,3 @@
        1 (doc/count index-name mapping-type (q/term :username "esjack"))
        0 (doc/count index-name mapping-type (q/term :username "esjoe"))
        0 (doc/count index-name mapping-type (q/term :username "esmary"))))
-
-(deftest test-delete-by-query-with-a-term-query-globally
-  (idx/create index-name :mappings fx/people-mapping)
-  (doc/create index-name mapping-type fx/person-jack)
-  (doc/create index-name mapping-type fx/person-joe)
-  (idx/refresh index-name)
-  (doc/delete-by-query-across-all-indexes-and-types (q/term :username "esjoe"))
-  (idx/refresh index-name)
-  (are [c r] (is (= c (count-from r)))
-       1 (doc/count index-name mapping-type (q/term :username "esjack"))
-       0 (doc/count index-name mapping-type (q/term :username "esjoe"))
-       0 (doc/count index-name mapping-type (q/term :username "esmary"))))

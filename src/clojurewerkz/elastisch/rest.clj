@@ -16,7 +16,10 @@
 (defn post
   [^String uri &{ :keys [body] :as options }]
   (io! (json/read-json
-        (:body (http/post uri (merge options { :accept :json :body (json/json-str body) }))))))
+        (:body (try
+                 (http/post uri (merge options { :accept :json :body (json/json-str body) }))
+                 (catch Exception e
+                   (println (.getData e))))))))
 
 (defn put
   [^String uri &{ :keys [body] :as options}]
