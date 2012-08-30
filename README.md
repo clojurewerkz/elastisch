@@ -55,7 +55,7 @@ Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/cloj
 
 ## Supported Clojure versions
 
-Elastisch is built from the ground up for Clojure 1.3 and up.
+Elastisch is built from the ground up for Clojure 1.3 and up. Clojure 1.4 is highly recommended.
 
 
 ## Elastisch Is a ClojureWerkz Project

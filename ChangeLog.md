@@ -1,5 +1,13 @@
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
+### Clojure 1.4 By Default
+
+Elastisch now depends on `org.clojure/clojure` version `1.4.0`. It is still compatible with Clojure 1.3 and if your `project.clj` depends
+on 1.3, it will be used, but 1.4 is the default now.
+
+We encourage all users to upgrade to 1.4, it is a drop-in replacement for the majority of projects out there.
+
+
 ### Match Query Support
 
 [ElasticSearch 0.19.9](http://www.elasticsearch.org/blog/2012/08/23/0.19.9-released.html) renames Text Query to Match Query. Elastisch adapts by introducing `clojurewerkz.elastisch.query/match` that
