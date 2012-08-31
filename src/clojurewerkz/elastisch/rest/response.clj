@@ -47,9 +47,16 @@
 (def no-hits? (complement any-hits?))
 
 (defn hits-from
-  "Returns search hits from a response"
+  "Returns search hits from a response as a collection. To retrieve hits overview, get the :hits
+   key from the response"
   [response]
   (get-in response [:hits :hits]))
+
+(defn facets-from
+  "Returns facets information (overview and actual facets) from a response as a map. Keys in the map depend on
+   the facets query performed"
+  [response]
+  (get response :facets {}))
 
 (defn ids-from
   "Returns search hit ids from a response"

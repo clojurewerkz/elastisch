@@ -22,4 +22,5 @@
   :test-selectors {:focus    :focus
                    :indexing :indexing
                    :query    :query
+                   :facets   :facets
                    :all      (constantly true)})
