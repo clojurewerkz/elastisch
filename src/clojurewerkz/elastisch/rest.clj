@@ -16,35 +16,32 @@
 (defn post
   [^String uri &{ :keys [body] :as options }]
   (io! (json/read-json
-        (:body (try
-                 (http/post uri (merge options { :accept :json :body (json/json-str body) }))
-                 (catch Exception e
-                   (println (.getData e))))))))
+        (:body (http/post uri (merge options {:accept :json :body (json/json-str body)}))))))
 
 (defn put
   [^String uri &{ :keys [body] :as options}]
   (io! (json/read-json
-        (:body (http/put uri (merge options { :accept :json :body (json/json-str body)  :throw-exceptions throw-exceptions }))))))
+        (:body (http/put uri (merge options {:accept :json :body (json/json-str body) :throw-exceptions throw-exceptions}))))))
 
 (defn get
   ([^String uri]
      (io! (json/read-json
-           (:body (http/get uri { :accept :json :throw-exceptions throw-exceptions })))))
+           (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions})))))
   ([^String uri &{ :as options }]
      (io! (json/read-json
            (:body (http/get uri (merge options {:accept :json :throw-exceptions throw-exceptions})))))))
 
 (defn head
   [^String uri]
-  (io! (http/head uri { :accept :json :throw-exceptions throw-exceptions })))
+  (io! (http/head uri {:accept :json :throw-exceptions throw-exceptions})))
 
 (defn delete
   ([^String uri]
      (io! (json/read-json
-           (:body (http/delete uri { :accept :json :throw-exceptions throw-exceptions })))))
-  ([^String uri &{ :keys [body] :as options }]
+           (:body (http/delete uri {:accept :json :throw-exceptions throw-exceptions})))))
+  ([^String uri &{:keys [body] :as options}]
      (io! (json/read-json
-           (:body (http/delete uri (merge options { :accept :json :body (json/json-str body) :throw-exceptions throw-exceptions })))))))
+           (:body (http/delete uri (merge options {:accept :json :body (json/json-str body) :throw-exceptions throw-exceptions})))))))
 
 
 (defn base
