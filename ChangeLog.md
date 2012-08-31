@@ -1,5 +1,12 @@
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
+### New Function for Accessing Facet Responses
+
+`clojurewerkz.elastisch.rest.response/facets-from` is a new convenience function that returns the facets section of a response.
+The exact response format will vary between facet types and queries but it is always returned as an immutable map and has the same
+structure as in the respective ElasticSearch response JSON document.
+
+
 ### Clojure 1.4 By Default
 
 Elastisch now depends on `org.clojure/clojure` version `1.4.0`. It is still compatible with Clojure 1.3 and if your `project.clj` depends
