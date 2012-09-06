@@ -7,7 +7,7 @@
 
 (defn ok?
   [response]
-  (true? (:ok response)))
+  (true? (get response :ok)))
 
 (defn conflict?
   [response]

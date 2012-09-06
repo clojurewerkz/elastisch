@@ -1,5 +1,11 @@
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
+### Cheshire For JSON Serliazation
+
+Elastisch now uses (and depends on) [Cheshire](https://github.com/dakrone/cheshire) for JSON serialization.
+[clojure.data.json](https://github.com/clojure/data.json) is no longer a dependency.
+
+
 ### New Function for Accessing Facet Responses
 
 `clojurewerkz.elastisch.rest.response/facets-from` is a new convenience function that returns the facets section of a response.

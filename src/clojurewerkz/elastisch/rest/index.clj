@@ -1,7 +1,6 @@
 (ns clojurewerkz.elastisch.rest.index
   (:refer-clojure :exclude [flush])
-  (:require [clojure.data.json           :as json]
-            [clojurewerkz.elastisch.rest :as rest]
+  (:require [clojurewerkz.elastisch.rest :as rest]
             [clj-http.client             :as http])
   (:use [clojurewerkz.elastisch.rest.utils :only [join-names]]))
 
