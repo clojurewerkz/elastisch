@@ -1,7 +1,7 @@
 (ns clojurewerkz.elastisch.rest
   (:refer-clojure :exclude [get])
-  (:require [clj-http.client   :as http]
-            [clojure.data.json :as json])
+  (:require [clj-http.client :as http]
+            [cheshire.custom :as json])
   (:use [clojure.string :only [join]]))
 
 (defrecord ElasticSearchEndpoint
@@ -14,22 +14,18 @@
 
 
 (defn post
-  [^String uri &{ :keys [body] :as options }]
-  (io! (json/read-json
-        (:body (http/post uri (merge options {:accept :json :body (json/json-str body)}))))))
+  [^String uri &{:keys [body] :as options }]
+  (io! (json/decode (:body (http/post uri (merge options {:accept :json :body (json/encode body)}))) true)))
 
 (defn put
-  [^String uri &{ :keys [body] :as options}]
-  (io! (json/read-json
-        (:body (http/put uri (merge options {:accept :json :body (json/json-str body) :throw-exceptions throw-exceptions}))))))
+  [^String uri &{:keys [body] :as options}]
+  (io! (json/decode (:body (http/put uri (merge options {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true)))
 
 (defn get
   ([^String uri]
-     (io! (json/read-json
-           (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions})))))
-  ([^String uri &{ :as options }]
-     (io! (json/read-json
-           (:body (http/get uri (merge options {:accept :json :throw-exceptions throw-exceptions})))))))
+     (io! (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions})) true)))
+  ([^String uri &{:as options}]
+     (io! (json/decode (:body (http/get uri (merge options {:accept :json :throw-exceptions throw-exceptions}))) true))))
 
 (defn head
   [^String uri]
@@ -37,11 +33,9 @@
 
 (defn delete
   ([^String uri]
-     (io! (json/read-json
-           (:body (http/delete uri {:accept :json :throw-exceptions throw-exceptions})))))
+     (io! (json/decode (:body (http/delete uri {:accept :json :throw-exceptions throw-exceptions})) true)))
   ([^String uri &{:keys [body] :as options}]
-     (io! (json/read-json
-           (:body (http/delete uri (merge options {:accept :json :body (json/json-str body) :throw-exceptions throw-exceptions})))))))
+     (io! (json/decode (:body (http/delete uri (merge options {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true))))
 
 
 (defn base
