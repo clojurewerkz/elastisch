@@ -1,5 +1,34 @@
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
+### Percolation Support
+
+`clojurewerkz.elastisch.rest.percolation` is a new namespace with functions that implement the [Percolation API](http://www.elasticsearch.org/guide/reference/api/percolate.html).
+
+
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.percolation :as pcl])
+(require '[clojurewerkz.elastisch.rest.response :as r])
+
+;; register a percolator query for the given index
+(pcl/register-query  "myapp" "sample_percolator" :query {:term {:title "search"}})
+
+;; match a document against the percolator
+(let [response (pcl/percolate "myapp" "sample_percolator" :doc {:title "You know, for search"})]
+  (println (r/ok? response))
+  ;; matches 
+  (println (r/matches-from response)))
+
+;; unregister the percolator
+(pcl/unregister-query "myapp" "sample_percolator")
+```
+
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.5.2`.
+
+
 ### Cheshire For JSON Serliazation
 
 Elastisch now uses (and depends on) [Cheshire](https://github.com/dakrone/cheshire) for JSON serialization.
