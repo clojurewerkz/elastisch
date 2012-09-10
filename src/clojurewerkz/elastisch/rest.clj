@@ -179,6 +179,13 @@
   [^String index-name ^String mapping-type id]
   (join slash [(:uri *endpoint*) index-name mapping-type id "_mlt"]))
 
+(defn percolator-url
+  [^String index-name ^String percolator]
+  (join slash [(:uri *endpoint*) "_percolator" index-name percolator]))
+
+(defn index-percolation-url
+  [^String index-name ^String percolator]
+  (join slash [(:uri *endpoint*) index-name percolator "_percolate" ]))
 
 ;;
 ;; API

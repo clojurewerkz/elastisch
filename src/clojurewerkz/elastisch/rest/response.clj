@@ -64,3 +64,8 @@
   (if (any-hits? response)
     (set (map :_id (hits-from response)))
     #{}))
+
+(defn matches-from
+  "Returns matches from a percolation response as a collection."
+  [response]
+  (get response :matches []))
