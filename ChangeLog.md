@@ -1,5 +1,21 @@
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
+### Query Validation Support
+
+`clojurewerkz.elastisch.rest.document/validate-query` is a new function that implements support for the [Validation API](http://www.elasticsearch.org/guide/reference/api/validate.html):
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.document :as doc])
+(require '[clojurewerkz.elastisch.query :as q])
+(require '[clojurewerkz.elastisch.rest.response :as r])
+
+(let [response (doc/validate-query "myproduct_development" (q/field "latest-edit.author" "Thorwald") :explain true)]
+  (println response)
+  (println (r/valid? response)))
+```
+
+Query validation does not execute the query.
+
 ### Percolation Support
 
 `clojurewerkz.elastisch.rest.percolation` is a new namespace with functions that implement the [Percolation API](http://www.elasticsearch.org/guide/reference/api/percolate.html).
