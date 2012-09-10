@@ -1,6 +1,7 @@
 (ns clojurewerkz.elastisch.rest.document
   (:refer-clojure :exclude [get replace count sort])
-  (:require [clojurewerkz.elastisch.rest          :as rest])
+  (:require [clojurewerkz.elastisch.rest :as rest]
+            [cheshire.core :as json])
   (:use     clojure.set
             [clojurewerkz.elastisch.rest.utils :only [join-names]]
             [clojurewerkz.elastisch.rest.response :only [not-found?]]))
@@ -65,7 +66,7 @@
   [index mapping-type & {:as options}]
   (let [qk   [:search_type :scroll]
         qp   (select-keys options qk)
-        body (dissoc options qk)]
+        body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index) (join-names mapping-type))
                :body body
                :query-params qp)))
@@ -75,7 +76,7 @@
   [index & {:as options}]
   (let [qk   [:search_type :scroll]
         qp   (select-keys options qk)
-        body (dissoc options qk)]
+        body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index))
                :body body
                :query-params qp)))
@@ -86,7 +87,7 @@
   [index & {:as options}]
   (let [qk   [:search_type :scroll]
         qp   (select-keys options qk)
-        body (dissoc options qk)]
+        body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url)
                :body body
                :query-params qp)))
@@ -158,5 +159,8 @@
   (rest/get (rest/more-like-this-url index mapping-type id)
             :query-params params))
 
-;; TODO percolate
-;; TODO multi-search
+(defn validate-query
+  "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
+   but does not take the mapping type parameter."
+  [index query & {:as options}]
+  (rest/get (rest/query-validation-url index) :body (json/encode query) :query-params options))

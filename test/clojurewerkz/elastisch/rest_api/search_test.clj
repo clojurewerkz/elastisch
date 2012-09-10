@@ -45,3 +45,13 @@
                                             :filter {:term {:username "esmary"}}))]
     (is (= 1 (count hits)))
     (is (= "Lindey" (-> hits first :_source :last-name)))))
+
+
+;;
+;; Query validation
+;;
+
+(deftest ^{:query true} test-query-validation
+  (let [index-name   "articles"
+        response     (doc/validate-query index-name (q/field "latest-edit.author" "Thorwald") :explain true)]
+    (is (valid? response))))

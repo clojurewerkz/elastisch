@@ -24,6 +24,11 @@
   [response]
   (:acknowledged response))
 
+(defn valid?
+  "Returns true if a validation query response indicates valid query, false otherwise"
+  [response]
+  (:valid response))
+
 (defn timed-out?
   [response]
   (:timed_out response))

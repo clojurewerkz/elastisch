@@ -187,6 +187,10 @@
   [^String index-name ^String percolator]
   (join slash [(:uri *endpoint*) index-name percolator "_percolate" ]))
 
+(defn query-validation-url
+  [^String index-name]
+  (join slash [(:uri *endpoint*) index-name "_validate" "query"]))
+
 ;;
 ;; API
 ;;
