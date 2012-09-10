@@ -17,7 +17,8 @@
   (rest/delete (rest/percolator-url index percolator)))
 
 (defn percolate
-  ""
+  "Percolates a document and see which queries match on it. The document is not indexed, just
+   matched against the queries you register with clojurewerkz.elastisch.rest.percolation/register-query."
   [index percolator & {:as options}]
   ;; rest/get won't serialize the body for us because we don't use GET requests
   ;; w/ body for other features. MK.
