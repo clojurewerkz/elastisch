@@ -6,13 +6,13 @@
 ;; API
 ;;
 
-(defn register
+(defn register-query
   "Registers a percolator for the given index"
   [index percolator & {:as options}]
   (rest/put (rest/percolator-url index percolator) :body options))
 
-(defn unregister
-  "Unregisters a percolator for the given index"
+(defn unregister-query
+  "Unregisters a percolator query for the given index"
   [index percolator]
   (rest/delete (rest/percolator-url index percolator)))
 
