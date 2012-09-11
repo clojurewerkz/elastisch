@@ -16,11 +16,11 @@
 
 Query validation does not execute the query.
 
+
+
 ### Percolation Support
 
 `clojurewerkz.elastisch.rest.percolation` is a new namespace with functions that implement the [Percolation API](http://www.elasticsearch.org/guide/reference/api/percolate.html).
-
-
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.percolation :as pcl])
