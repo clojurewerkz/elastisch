@@ -32,7 +32,7 @@ Query validation does not execute the query.
 ;; match a document against the percolator
 (let [response (pcl/percolate "myapp" "sample_percolator" :doc {:title "You know, for search"})]
   (println (r/ok? response))
-  ;; matches 
+  ;; print matches
   (println (r/matches-from response)))
 
 ;; unregister the percolator
