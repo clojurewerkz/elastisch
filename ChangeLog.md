@@ -1,3 +1,8 @@
+## Changes between Elastisch 1.0.0-rc2 and 1.0.0
+
+No changes yet.
+
+
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2
 
 ### Query Validation Support
