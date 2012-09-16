@@ -29,5 +29,5 @@
                  :archive "https://groups.google.com/group/clojure-elasticsearch"
                  :post "clojure-elasticsearch@googlegroups.com"}
   :plugins [[codox "0.6.1"]]
-  :codox {:sources ["src/clojure"]
+  :codox {:sources ["src"]
           :output-dir "doc/api"})
