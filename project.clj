@@ -24,4 +24,10 @@
                    :query       :query
                    :facets      :facets
                    :percolation :percolation
-                   :all         (constantly true)})
+                   :all         (constantly true)}
+  :mailing-list {:name "clojure-elasticsearch"
+                 :archive "https://groups.google.com/group/clojure-elasticsearch"
+                 :post "clojure-elasticsearch@googlegroups.com"}
+  :plugins [[codox "0.6.1"]]
+  :codox {:sources ["src/clojure"]
+          :output-dir "doc/api"})
