@@ -6,3 +6,5 @@ pom.xml
 .lein-deps-sum
 *~
 debug/*
+doc/*
+deploy.docs.sh
