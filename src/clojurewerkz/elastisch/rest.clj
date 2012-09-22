@@ -77,7 +77,7 @@
 
 (defn record-url
   [^String index-name ^String type id]
-  (url-with-path index-name type id))
+  (url-with-path index-name type (URLEncoder/encode id encoding)))
 
 
 (defn index-mapping-url
@@ -179,7 +179,7 @@
 
 (defn more-like-this-url
   [^String index-name ^String mapping-type id]
-  (url-with-path index-name mapping-type id "_mlt"))
+  (url-with-path index-name mapping-type (URLEncoder/encode id encoding) "_mlt"))
 
 (defn percolator-url
   [^String index-name ^String percolator]
