@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [get])
   (:require [clj-http.client :as http]
             [cheshire.custom :as json])
-  (:use [clojure.string :only [join]]))
+  (:use [clojure.string :only [join]])
+  (:import java.net.URLEncoder))
 
 (defrecord ElasticSearchEndpoint
     [uri version])
@@ -10,11 +11,12 @@
 (def ^{:dynamic true} *endpoint* (ElasticSearchEndpoint. "http://localhost:9200" ""))
 (def ^:const throw-exceptions false)
 
-(def ^{:const true} slash "/")
+(def ^{:const true} slash    "/")
+(def ^{:const true} encoding "UTF-8")
 
 
 (defn post
-  [^String uri &{:keys [body] :as options }]
+  [^String uri &{:keys [body] :as options}]
   (io! (json/decode (:body (http/post uri (merge options {:accept :json :body (json/encode body)}))) true)))
 
 (defn put
@@ -38,17 +40,17 @@
      (io! (json/decode (:body (http/delete uri (merge options {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true))))
 
 
-(defn base
-  []
-  (:uri *endpoint*))
+(defn url-with-path
+  [& segments]
+  (str (:uri *endpoint*) slash (join slash segments)))
 
 (defn index-url
   [index-name]
-  (str (:uri *endpoint*) slash index-name))
+  (url-with-path index-name))
 
 (defn mapping-type-url
   [index-name mapping-type]
-  (join slash [(:uri *endpoint*) index-name mapping-type]))
+  (url-with-path index-name mapping-type))
 
 (defn search-url
   "Constructs search query URI for the given index (or multiple indexes) and mapping types.
@@ -61,135 +63,135 @@
 
    To specify multiple indexes or mapping types, pass them as collections"
   ([]
-     (join slash [(:uri *endpoint*) "_search"]))
+     (url-with-path "_search"))
   ([index-name]
-     (join slash [(:uri *endpoint*) index-name "_search"]))
+     (url-with-path index-name "_search"))
   ([index-name mapping-type]
-     (join slash [(:uri *endpoint*) index-name mapping-type "_search"])))
+     (url-with-path index-name mapping-type "_search")))
 
 (defn count-url
   ([]
-     (str (:uri *endpoint*) slash "_count"))
+     (url-with-path "_count"))
   ([index-name mapping-type]
-     (join slash [(:uri *endpoint*) index-name mapping-type "_count"])))
+     (url-with-path index-name mapping-type "_count")))
 
 (defn record-url
   [^String index-name ^String type id]
-  (join slash [(:uri *endpoint*) index-name type id]))
+  (url-with-path index-name type (URLEncoder/encode id encoding)))
 
 
 (defn index-mapping-url
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_mapping"]))
+     (url-with-path index-name "_mapping"))
   ([^String index-name ^String mapping-type]
-     (join slash [(:uri *endpoint*) index-name mapping-type "_mapping"])))
+     (url-with-path index-name mapping-type "_mapping")))
 
 
 (defn index-settings-url
   ([]
-     (str (:uri *endpoint*) slash "_settings"))
+     (url-with-path "_settings"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_settings"])))
+     (url-with-path index-name "_settings")))
 
 (defn index-open-url
   [^String index-name]
-  (join slash [(:uri *endpoint*) index-name "_open"]))
+  (url-with-path index-name "_open"))
 
 (defn index-close-url
   [^String index-name]
-  (join slash [(:uri *endpoint*) index-name "_close"]))
+  (url-with-path index-name "_close"))
 
 (defn index-snapshot-url
   [^String index-name]
-  (join slash [(:uri *endpoint*) index-name "_gateway/snapshot"]))
+  (url-with-path index-name "_gateway/snapshot"))
 
 (defn index-mget-url
   ([]
-     (str (:uri *endpoint*) slash "_mget"))
+     (url-with-path "_mget"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_mget"]))
+     (url-with-path index-name "_mget"))
   ([^String index-name ^String mapping-type]
-     (join slash [(:uri *endpoint*) index-name mapping-type "_mget"])))
+     (url-with-path index-name mapping-type "_mget")))
 
 (defn index-refresh-url
   ([]
-     (str (:uri *endpoint*) slash "_refresh"))
+     (url-with-path "_refresh"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_refresh"]))
+     (url-with-path index-name "_refresh"))
   ([^String index-name ^String mapping-type]
-     (join slash [(:uri *endpoint*) index-name mapping-type "_refresh"])))
+     (url-with-path index-name mapping-type "_refresh")))
 
 (defn index-optimize-url
   ([]
-     (str (:uri *endpoint*) slash "_optimize"))
+     (url-with-path "_optimize"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_optimize"])))
+     (url-with-path index-name "_optimize")))
 
 (defn index-flush-url
   ([]
-     (str (:uri *endpoint*) slash "_flush"))
+     (url-with-path "_flush"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_flush"])))
+     (url-with-path index-name "_flush")))
 
 (defn index-clear-cache-url
   ([]
-     (str (:uri *endpoint*) slash "_cache/clear"))
+     (url-with-path "_cache/clear"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_cache/clear"])))
+     (url-with-path index-name "_cache/clear")))
 
 (defn index-status-url
   ([]
-     (str (:uri *endpoint*) slash "_status"))
+     (url-with-path "_status"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_status"])))
+     (url-with-path index-name "_status")))
 
 (defn index-stats-url
   ([]
-     (str (:uri *endpoint*) slash "_stats"))
+     (url-with-path "_stats"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_stats"])))
+     (url-with-path index-name "_stats")))
 
 (defn index-segments-url
   ([]
-     (str (:uri *endpoint*) slash "_segments"))
+     (url-with-path "_segments"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_segments"])))
+     (url-with-path index-name "_segments")))
 
 (defn index-aliases-batch-url
   []
-  (str (:uri *endpoint*) slash "_aliases"))
+  (url-with-path "_aliases"))
 
 (defn index-aliases-url
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_aliases"])))
+     (url-with-path index-name "_aliases")))
 
 (defn index-template-url
   [^String template-name]
-  (join slash [(:uri *endpoint*) "_template" template-name]))
+  (url-with-path "_template" template-name))
 
 (defn delete-by-query-url
   ([]
-     (str (:uri *endpoint*) "/_all/_query"))
+     (url-with-path "/_all/_query"))
   ([^String index-name]
-     (join slash [(:uri *endpoint*) index-name "_query"]))
+     (url-with-path index-name "_query"))
   ([^String index-name ^String mapping-type]
-     (join slash [(:uri *endpoint*) index-name mapping-type "_query"])))
+     (url-with-path index-name mapping-type "_query")))
 
 (defn more-like-this-url
   [^String index-name ^String mapping-type id]
-  (join slash [(:uri *endpoint*) index-name mapping-type id "_mlt"]))
+  (url-with-path index-name mapping-type (URLEncoder/encode id encoding) "_mlt"))
 
 (defn percolator-url
   [^String index-name ^String percolator]
-  (join slash [(:uri *endpoint*) "_percolator" index-name percolator]))
+  (url-with-path "_percolator" index-name percolator))
 
 (defn index-percolation-url
   [^String index-name ^String percolator]
-  (join slash [(:uri *endpoint*) index-name percolator "_percolate" ]))
+  (url-with-path index-name percolator "_percolate"))
 
 (defn query-validation-url
   [^String index-name]
-  (join slash [(:uri *endpoint*) index-name "_validate" "query"]))
+  (url-with-path index-name "_validate" "query"))
 
 ;;
 ;; API

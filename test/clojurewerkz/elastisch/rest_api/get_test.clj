@@ -21,18 +21,21 @@
 (deftest test-get-with-non-existing-document
   (is (nil? (doc/get index-name index-type "1"))))
 
+(deftest ^:focus test-get-with-existing-id-that-needs-url-encoding
+  (let [id "http://www.faz.net/artikel/C31325/piratenabwehr-keine-kriegswaffen-fuer-private-dienste-30683040.html"]
+    (doc/put index-name index-type id fx/person-jack)
+    (is (doc/get index-name index-type id))))
 
 ;;
 ;; present?
 ;;
 
-(deftest test-present-on-non-existing-id
+(deftest test-present-with-non-existing-id
   (is (not (doc/present? index-name index-type "1"))))
 
-(deftest test-present-on-existing-id
+(deftest test-present-with-existing-id
   (doc/put index-name index-type "1" fx/person-jack)
   (is (doc/present? index-name index-type "1")))
-
 
 ;;
 ;; count
