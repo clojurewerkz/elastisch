@@ -7,7 +7,12 @@ Elastisch will now URL-encode document ids.
 
 ### clj-http Update
 
-[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.5.4`.
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.5.5`.
+
+
+### Cheshire Update
+
+[Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `4.0.3`.
 
 
 ## Changes between Elastisch 1.0.0-rc1 and 1.0.0-rc2

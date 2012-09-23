@@ -3,8 +3,8 @@
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}
   :dependencies [[org.clojure/clojure   "1.4.0"]
-                 [cheshire              "4.0.2"]
-                 [clj-http              "0.5.3" :exclusions [org.clojure/clojure]]
+                 [cheshire              "4.0.3"]
+                 [clj-http              "0.5.5" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "0.7.0"]]
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
