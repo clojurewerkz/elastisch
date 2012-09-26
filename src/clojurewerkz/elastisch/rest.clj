@@ -8,7 +8,8 @@
 (defrecord ElasticSearchEndpoint
     [uri version])
 
-(def ^{:dynamic true} *endpoint* (ElasticSearchEndpoint. "http://localhost:9200" ""))
+(def ^{:dynamic true} *endpoint* (ElasticSearchEndpoint. (or (System/getenv "ELASTICSEARCH_URL")
+                                                             "http://localhost:9200") ""))
 (def ^:const throw-exceptions false)
 
 (def ^{:const true} slash    "/")
