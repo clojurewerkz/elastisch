@@ -8,7 +8,8 @@
                  [clojurewerkz/support  "0.7.0"]]
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
-                       :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]}
+                       :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
+                       :plugins [[codox "0.6.1"]]}
                  :1.3 {:dependencies [[org.clojure/clojure "1.3.0"]]}
                  :1.5 {:dependencies [[org.clojure/clojure "1.5.0-master-SNAPSHOT"]]}}
   :aliases      {"all" ["with-profile" "dev:dev,1.3:dev,1.5"]}
@@ -16,8 +17,8 @@
                                      :snapshots false
                                      :releases {:checksum :fail :update :always}}
                  "sonatype-snapshots" {:url "http://oss.sonatype.org/content/repositories/snapshots"
-                               :snapshots true
-                               :releases {:checksum :fail :update :always}}}
+                                       :snapshots true
+                                       :releases {:checksum :fail :update :always}}}
   :warn-on-reflection true
   :test-selectors {:focus       :focus
                    :indexing    :indexing
