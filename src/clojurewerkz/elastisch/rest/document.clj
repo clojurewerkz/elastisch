@@ -106,9 +106,9 @@
   ([index mapping-type]
      (rest/get (rest/count-url) (join-names index) (join-names mapping-type)))
   ([index mapping-type query]
-     (rest/get (rest/count-url) (join-names index) (join-names mapping-type) :body query))
+     (rest/post (rest/count-url) (join-names index) (join-names mapping-type) :body query))
   ([index mapping-type query & { :as options }]
-     (rest/get (rest/count-url (join-names index) (join-names mapping-type))
+     (rest/post (rest/count-url (join-names index) (join-names mapping-type))
                 :query-params (select-keys options [:df :analyzer :default_operator])
                 :body query)))
 
