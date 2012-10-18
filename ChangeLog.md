@@ -1,6 +1,16 @@
-## Changes between Elastisch 1.0.0 and 1.0.1
+## Changes between Elastisch 1.0.1 and 1.0.2
 
 No changes yet.
+
+
+## Changes between Elastisch 1.0.0 and 1.0.1
+
+### Count API now uses GET requests
+
+`clojurewerkz.elastisch.rest.document/count` now correctly uses `GET` for requests without
+the query part and`POST` for request that have it.
+
+GH issue: #5.
 
 
 ## Changes between Elastisch 1.0.0-rc2 and 1.0.0
