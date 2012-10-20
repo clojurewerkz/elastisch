@@ -1,6 +1,17 @@
-## Changes between Elastisch 1.0.1 and 1.0.2
+## Changes between Elastisch 1.0.2 and 1.0.3
 
 No changes yet.
+
+
+## Changes between Elastisch 1.0.1 and 1.0.2
+
+### Count API No Longer Ignores Mapping Types
+
+`clojurewerkz.elastisch.rest.document/count` no longer ignores mapping types.
+
+GH issue: clojurewerkz/elastisch#6.
+
+
 
 
 ## Changes between Elastisch 1.0.0 and 1.0.1
