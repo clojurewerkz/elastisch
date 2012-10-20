@@ -1,11 +1,18 @@
 ## Changes between Elastisch 1.0.0 and 1.1.0
 
+### Count API No Longer Ignores Mapping Types
+
+`clojurewerkz.elastisch.rest.document/count` no longer ignores mapping types.
+
+GH issue: clojurewerkz/elastisch#6.
+
+
 ### Count API now uses GET requests
 
 `clojurewerkz.elastisch.rest.document/count` now correctly uses `GET` for requests without
 the query part and`POST` for request that have it.
 
-GH issue: #5.
+GH issue: clojurewerkz/elastisch#5.
 
 
 ## Changes between Elastisch 1.0.0-rc2 and 1.0.0
