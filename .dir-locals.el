@@ -1,1 +1,1 @@
-((clojure-mode . ((clojure-swank-command . "lein2 jack-in %s"))))
+((clojure-mode . ((clojure-swank-command . "~/bin/lein jack-in %s"))))
