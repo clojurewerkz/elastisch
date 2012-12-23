@@ -7,7 +7,7 @@ Elastisch is a minimalistic [Clojure client for ElasticSearch](http://clojureela
 
  * Be reasonably feature complete
  * Be [well documented](http://clojureelasticsearch.info)
- * Be [well tested](https://github.com/michaelklishin/elastisch/tree/master/test/elastisch/test)
+ * Be [well tested](https://github.com/clojurewerkz/elastisch/tree/master/test)
  * Closely follow [ElasticSearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
  * Follow recent ElasticSearch releases & developments
  * Target Clojure 1.3.0 and later from the ground up
