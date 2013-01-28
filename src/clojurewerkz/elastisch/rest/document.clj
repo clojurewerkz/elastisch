@@ -92,9 +92,9 @@
                :body body
                :query-params qp)))
 
-(defn scan
-  "Performs a scroll query, fetching results from a query
-   with search_type scan"
+(defn scroll
+  "Performs a scroll query, fetching the next page of results from a
+   query given a scroll id"
   [scroll-id & {:as options}]
   (let [qk   [:search_type :scroll]
         qp   (assoc (select-keys options qk) :scroll_id scroll-id )
