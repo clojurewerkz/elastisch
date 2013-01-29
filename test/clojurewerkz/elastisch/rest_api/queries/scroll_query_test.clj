@@ -23,7 +23,6 @@
         scan-response (doc/scroll scroll-id :scroll "1m" )
         scan-hits (hits-from scan-response)
         ]
-    (println "scroll_id" scroll-id)
     (is (any-hits? response))
     (is (= 4 (total-hits response)))
     ;; scan queries don't return any hits from the initial
