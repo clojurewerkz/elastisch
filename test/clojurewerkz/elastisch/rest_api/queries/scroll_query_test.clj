@@ -15,12 +15,12 @@
                   mapping-type
                   :query (q/query-string :query "*")
                   :search_type "scan"
-                  :scroll "10m"
+                  :scroll "1m"
                   :size 1
                   )
         initial-hits         (hits-from response)
         scroll-id (:_scroll_id response)
-        scan-response (doc/scan scroll-id :scroll "10m" )
+        scan-response (doc/scroll scroll-id :scroll "1m" )
         scan-hits (hits-from scan-response)
         ]
     (println "scroll_id" scroll-id)
@@ -45,12 +45,36 @@
                   )
         initial-hits         (hits-from response)
         scroll-id (:_scroll_id response)
-        scan-response (doc/scroll scroll-id :scroll "1m" )
-        scan-hits (hits-from scan-response)
+        scroll-response (doc/scroll scroll-id :scroll "1m" )
+        scroll-hits (hits-from scroll-response)
         ]
-    (println "scroll_id" scroll-id)
     (is (any-hits? response))
     (is (= 4 (total-hits response)))
     (is (= 2 (count initial-hits)))
-    (is (= 4 (total-hits scan-response)))
-    (is (= 2 (count scan-hits)))))
+    (is (= 4 (total-hits scroll-response)))
+    (is (= 2 (count scroll-hits)))))
+
+(defn fetch-scroll-results [scroll-id results]
+  (let [scroll-response (doc/scroll scroll-id :scroll "1m")
+        hits (hits-from scroll-response)]
+    (if (seq hits)
+      (recur (:_scroll_id scroll-response) (concat results hits))
+      (concat results hits))))
+
+(deftest ^{:query true} test-scroll-query-more-than-one-page
+  (let [index-name   "articles"
+        mapping-type "article"
+        response (doc/search
+                  index-name
+                  mapping-type
+                  :query (q/query-string :query "*")
+                  :search_type "query_then_fetch"
+                  :scroll "1m"
+                  :size 1
+                  )
+        initial-hits (hits-from response)
+        scroll-id    (:_scroll_id response)
+        all-hits     (fetch-scroll-results scroll-id initial-hits)]
+    (is (any-hits? response))
+    (is (= 4 (total-hits response)))
+    (is (= 4 (count all-hits)))))

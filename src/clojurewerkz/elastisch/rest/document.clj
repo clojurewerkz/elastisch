@@ -99,7 +99,6 @@
   (let [qk   [:search_type :scroll]
         qp   (assoc (select-keys options qk) :scroll_id scroll-id )
         body (apply dissoc (concat [options] qk))]
-    (println (rest/scroll-url))
     (rest/get (rest/scroll-url)
                :query-params qp)))
 
