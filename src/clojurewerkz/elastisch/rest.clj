@@ -70,6 +70,10 @@
   ([index-name mapping-type]
      (url-with-path index-name mapping-type "_search")))
 
+(defn scroll-url
+  ([]
+     (url-with-path "_search" "scroll")))
+
 (defn count-url
   ([]
      (url-with-path "_count"))

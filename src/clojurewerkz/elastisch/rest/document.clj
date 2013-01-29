@@ -92,6 +92,16 @@
                :body body
                :query-params qp)))
 
+(defn scroll
+  "Performs a scroll query, fetching the next page of results from a
+   query given a scroll id"
+  [scroll-id & {:as options}]
+  (let [qk   [:search_type :scroll]
+        qp   (assoc (select-keys options qk) :scroll_id scroll-id )
+        body (apply dissoc (concat [options] qk))]
+    (rest/get (rest/scroll-url)
+               :query-params qp)))
+
 (defn replace
   "Replaces document with given id with a new one"
   [index mapping-type id document]
