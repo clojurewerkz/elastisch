@@ -1,7 +1,8 @@
 (ns clojurewerkz.elastisch.rest.document
   (:refer-clojure :exclude [get replace count sort])
   (:require [clojurewerkz.elastisch.rest :as rest]
-            [cheshire.core :as json])
+            [cheshire.core :as json]
+            [clojure.string :as string])
   (:use     clojure.set
             [clojurewerkz.elastisch.rest.utils :only [join-names]]
             [clojurewerkz.elastisch.rest.response :only [not-found?]]))
@@ -67,7 +68,8 @@
   (let [qk   [:search_type :scroll]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
-    (rest/post (rest/search-url (join-names index) (join-names mapping-type))
+    (rest/post (rest/search-url (join-names index)
+                                (join-names mapping-type))
                :body body
                :query-params qp)))
 
@@ -101,6 +103,16 @@
         body (apply dissoc (concat [options] qk))]
     (rest/get (rest/scroll-url)
                :query-params qp)))
+
+(defn bulk [operations & {:as params}]
+  "Performs a bulk operation"
+  (let [bulk-json (str (->> operations
+                            (map json/encode)
+                            (string/join "\n"))
+                       "\n")]
+    (rest/post-string (rest/bulk-url)
+                      :body bulk-json
+                      :query-params params)))
 
 (defn replace
   "Replaces document with given id with a new one"

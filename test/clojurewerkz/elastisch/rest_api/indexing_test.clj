@@ -2,11 +2,16 @@
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
+            [clojurewerkz.elastisch.rest               :as esr]
             [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.fixtures :as fx])
+
+            [clojurewerkz.elastisch.fixtures :as fx]
+            [cheshire.core :as json]
+            [clj-http.client :as http])
   (:use clojure.test
         [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
-        [clj-time.core :only [months ago]]))
+        [clj-time.core :only [months ago]]
+        [clojure.string :only [join]]))
 
 (use-fixtures :each fx/reset-indexes)
 
@@ -151,3 +156,38 @@
         r2 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:(rockstar OR ninja)" :default_field :text))]
     (is (any-hits? r1))
     (is (no-hits? r2))))
+
+(defn put-op [index mapping-type {id :_id} ]
+  {"index"  {"_index" index
+             "_type"  mapping-type
+             "_id"    id}})
+
+(defn delete-op [index mapping-type id ]
+  {"delete" {"_index" index
+             "_type"  mapping-type
+             "_id"    id}})
+
+(defn bulk-insert
+  "generates the content for a bulk insert"
+  ([index mapping-type documents]
+     (interleave (map (partial put-op index mapping-type) documents) documents)))
+
+(defn delete
+  [index mapping-type ids]
+  (map (partial delete-op index mapping-type) ids))
+
+
+(deftest ^{:indexing true} test-bulk-insert
+  (let [id         "1"
+        document   (assoc fx/person-jack :_id id)
+        response   (doc/bulk (bulk-insert index-name index-type [document]))
+        get-result (doc/get index-name index-type id)]
+    (is (every? ok? (->> response :items (map :index))))
+
+    (is (idx/exists? index-name))
+    (are [expected actual] (= expected (actual get-result))
+         document   :_source
+         index-name :_index
+         index-type :_type
+         id         :_id
+         true       :exists)))
