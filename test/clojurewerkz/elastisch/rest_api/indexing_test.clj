@@ -178,16 +178,17 @@
 
 
 (deftest ^{:indexing true} test-bulk-insert
-  (let [id         "1"
-        document   (assoc fx/person-jack :_id id)
-        response   (doc/bulk (bulk-insert index-name index-type [document]))
-        get-result (doc/get index-name index-type id)]
-    (is (every? ok? (->> response :items (map :index))))
+  (let [document   fx/person-jack
+        index-name "group"
+        response   (doc/bulk (bulk-insert index-name index-type (repeat 10 document)) :refresh true)
+        first-id   (-> response :items first :create :_id)
+        get-result (doc/get index-name index-type first-id)]
+    (is (every? ok? (->> response :items (map :create))))
 
     (is (idx/exists? index-name))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
          index-name :_index
          index-type :_type
-         id         :_id
+         first-id   :_id
          true       :exists)))
