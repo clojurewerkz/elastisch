@@ -156,39 +156,3 @@
         r2 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:(rockstar OR ninja)" :default_field :text))]
     (is (any-hits? r1))
     (is (no-hits? r2))))
-
-(defn put-op [index mapping-type {id :_id} ]
-  {"index"  {"_index" index
-             "_type"  mapping-type
-             "_id"    id}})
-
-(defn delete-op [index mapping-type id ]
-  {"delete" {"_index" index
-             "_type"  mapping-type
-             "_id"    id}})
-
-(defn bulk-insert
-  "generates the content for a bulk insert"
-  ([index mapping-type documents]
-     (interleave (map (partial put-op index mapping-type) documents) documents)))
-
-(defn delete
-  [index mapping-type ids]
-  (map (partial delete-op index mapping-type) ids))
-
-
-(deftest ^{:indexing true} test-bulk-insert
-  (let [document   fx/person-jack
-        index-name "group"
-        response   (doc/bulk (bulk-insert index-name index-type (repeat 10 document)) :refresh true)
-        first-id   (-> response :items first :create :_id)
-        get-result (doc/get index-name index-type first-id)]
-    (is (every? ok? (->> response :items (map :create))))
-
-    (is (idx/exists? index-name))
-    (are [expected actual] (= expected (actual get-result))
-         document   :_source
-         index-name :_index
-         index-type :_type
-         first-id   :_id
-         true       :exists)))

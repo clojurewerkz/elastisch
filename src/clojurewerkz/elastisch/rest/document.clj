@@ -106,10 +106,10 @@
 
 (defn bulk [operations & {:as params}]
   "Performs a bulk operation"
-  (let [bulk-json (str (->> operations
-                            (map json/encode)
-                            (string/join "\n"))
-                       "\n")]
+  (let [bulk-json (map json/encode operations)
+        bulk-json (-> bulk-json
+                      (interleave (repeat "\n"))
+                      (string/join))]
     (rest/post-string (rest/bulk-url)
                       :body bulk-json
                       :query-params params)))
