@@ -20,11 +20,9 @@
   [^String uri &{:keys [body] :as options}]
   (io! (json/decode (:body (http/post uri (merge options {:accept :json :body body}))) true)))
 
-(comment (post-string (assoc options :body (json/encode body))))
 (defn post
   [^String uri &{:keys [body] :as options}]
-  (io! (json/decode (:body (http/post uri (merge options {:accept :json :body (json/encode body)}))) true))
-  )
+  (io! (json/decode (:body (http/post uri (merge options {:accept :json :body (json/encode body)}))) true)))
 
 (defn put
   [^String uri &{:keys [body] :as options}]
