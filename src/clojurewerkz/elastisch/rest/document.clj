@@ -86,7 +86,7 @@
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
    ElasticSearch cluster so use this function with care."
-  [index & {:as options}]
+  [& {:as options}]
   (let [qk   [:search_type :scroll]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
