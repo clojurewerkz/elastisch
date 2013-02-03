@@ -2,11 +2,16 @@
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
+            [clojurewerkz.elastisch.rest               :as esr]
             [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.fixtures :as fx])
+
+            [clojurewerkz.elastisch.fixtures :as fx]
+            [cheshire.core :as json]
+            [clj-http.client :as http])
   (:use clojure.test
         [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
-        [clj-time.core :only [months ago]]))
+        [clj-time.core :only [months ago]]
+        [clojure.string :only [join]]))
 
 (use-fixtures :each fx/reset-indexes)
 

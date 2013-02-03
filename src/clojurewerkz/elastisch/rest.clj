@@ -16,6 +16,10 @@
 (def ^{:const true} encoding "UTF-8")
 
 
+(defn post-string
+  [^String uri &{:keys [body] :as options}]
+  (io! (json/decode (:body (http/post uri (merge options {:accept :json :body body}))) true)))
+
 (defn post
   [^String uri &{:keys [body] :as options}]
   (io! (json/decode (:body (http/post uri (merge options {:accept :json :body (json/encode body)}))) true)))
@@ -73,6 +77,10 @@
 (defn scroll-url
   ([]
      (url-with-path "_search" "scroll")))
+
+(defn bulk-url
+  ([]
+     (url-with-path "_bulk")))
 
 (defn count-url
   ([]
