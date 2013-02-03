@@ -31,7 +31,7 @@
 (deftest ^{:query true} test-query-string-query-across-all-mapping-types
   (let [index-name   "articles"
         mapping-type "article"
-        response     (doc/search-all-indexes-and-types index-name :query (q/query-string :query "Austin" :default_field "title"))]
+        response     (doc/search-all-indexes-and-types :query (q/query-string :query "Austin" :default_field "title"))]
     (is (= 1 (total-hits response)))
     (is (= #{"4"} (ids-from response)))))
 
