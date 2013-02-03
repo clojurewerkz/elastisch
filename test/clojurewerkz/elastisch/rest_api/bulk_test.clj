@@ -13,7 +13,7 @@
         [clojure.string :only [join]]
         ))
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
+(use-fixtures :each fx/reset-indexes)
 
 (def ^{:const true} index-name "people")
 (def ^{:const true} index-type "person")
@@ -48,7 +48,6 @@
 
 (deftest ^{:indexing true} test-bulk-insert
   (let [document          fx/person-jack
-        index-name        "group1"
         insert-operations (bulk-index index-name index-type (repeat 10 document))
         response          (doc/bulk insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
@@ -66,7 +65,6 @@
 
 (deftest ^{:indexing true} test-bulk-delete
   (let [document        fx/person-jack
-        index-name      "group1"
         response        (doc/bulk (bulk-index index-name index-type (repeat 10 document)) :refresh true)
         docs            (->> response :items (map :create) )
         initial-count   (:count (doc/count index-name index-type))
