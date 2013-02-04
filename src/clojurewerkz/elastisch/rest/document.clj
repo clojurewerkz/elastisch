@@ -104,8 +104,9 @@
     (rest/get (rest/scroll-url)
                :query-params qp)))
 
-(defn bulk [operations & {:as params}]
+(defn bulk
   "Performs a bulk operation"
+  [operations & {:as params}]
   (let [bulk-json (map json/encode operations)
         bulk-json (-> bulk-json
                       (interleave (repeat "\n"))

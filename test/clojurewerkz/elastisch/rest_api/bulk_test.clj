@@ -73,5 +73,4 @@
     (is (= 10 initial-count))
 
     (is (every? ok? (->> response :items (map :create))))
-    (is (= 0 (:count (doc/count index-name index-type))))
-    ))
+    (is (= 0 (:count (doc/count index-name index-type))))))
