@@ -80,7 +80,11 @@
 
 (defn bulk-url
   ([]
-     (url-with-path "_bulk")))
+     (url-with-path "_bulk"))
+  ([index-name]
+     (url-with-path index-name "_bulk"))
+  ([index-name mapping-type]
+     (url-with-path index-name mapping-type "_bulk")))
 
 (defn count-url
   ([]
