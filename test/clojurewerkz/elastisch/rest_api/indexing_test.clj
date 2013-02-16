@@ -1,5 +1,4 @@
 (ns clojurewerkz.elastisch.rest-api.indexing-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.rest               :as esr]
