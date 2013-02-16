@@ -5,9 +5,7 @@
             [clojurewerkz.elastisch.rest               :as esr]
             [clojurewerkz.elastisch.query         :as q]
 
-            [clojurewerkz.elastisch.fixtures :as fx]
-            [cheshire.core :as json]
-            [clj-http.client :as http])
+            [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test
         [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
         [clj-time.core :only [months ago]]
