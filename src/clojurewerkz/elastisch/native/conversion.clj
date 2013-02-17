@@ -1,0 +1,205 @@
+(ns clojurewerkz.elastisch.native.conversion
+  (:require [clojure.walk :as wlk])
+  (:import [org.elasticsearch.common.settings Settings ImmutableSettings ImmutableSettings$Builder]
+           [org.elasticsearch.common.transport
+            TransportAddress InetSocketTransportAddress LocalTransportAddress]
+           [org.elasticsearch.action.index IndexRequest IndexResponse]
+           [org.elasticsearch.action.get GetRequest GetResponse]
+           [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
+           java.util.Map
+           clojure.lang.IPersistentMap
+           [org.elasticsearch.common.xcontent XContentType]
+           [org.elasticsearch.index VersionType]))
+
+;;
+;; Implementation
+;;
+
+(def ^{:const true}
+  default-content-type XContentType/JSON)
+
+(defprotocol XContentTypeConversion
+  (^XContentType to-content-type [input] "Picks a content type for given input"))
+
+(extend-protocol XContentTypeConversion
+  clojure.lang.Named
+  (to-content-type [input]
+    (to-content-type (name input)))
+
+  String
+  (to-content-type [^String s]
+    (case (.toLowerCase s)
+      "application/json" XContentType/JSON
+      "text/json"        XContentType/JSON
+      "json"             XContentType/JSON
+
+      "application/smile" XContentType/SMILE
+      "smile"             XContentType/SMILE
+      XContentType/JSON))
+
+  XContentType
+  (to-content-type [input]
+    input))
+
+(defprotocol VersionTypeConversion
+  (^VersionType to-version-type [input] "Picks a content type for given input"))
+
+(extend-protocol VersionTypeConversion
+  clojure.lang.Named
+  (to-version-type [input]
+    (to-version-type (name input)))
+
+  String
+  (to-version-type [^String s]
+    (case (.toLowerCase s)
+      "internal" VersionType/INTERNAL
+      "external" VersionType/EXTERNAL
+      VersionType/INTERNAL))
+
+  VersionType
+  (to-version-type [input]
+    input))
+
+
+;;
+;; API
+;;
+
+;;
+;; Settings
+;;
+
+(defn ^Settings ->settings
+  "Converts a Clojure map into immutable ElasticSearch settings"
+  [m]
+  (let [^ImmutableSettings$Builder sb (ImmutableSettings/settingsBuilder)]
+    (doseq [[k v] m]
+      (.put sb ^String (name k) ^String (name v)))
+    (.build sb)))
+
+;;
+;; Transports
+;;
+
+(defn ^TransportAddress ->socket-transport-address
+  [^String host ^long port]
+  (InetSocketTransportAddress. host port))
+
+(defn ^TransportAddress ->local-transport-address
+  [^String id]
+  (LocalTransportAddress. id))
+
+
+;;
+;; Indexing
+;;
+
+(defn ^IndexRequest ->index-request
+  "Builds an index action request"
+  ([index mapping-type ^Map doc]
+     ;; default content type used by IndexRequest is JSON. MK.
+     (-> (IndexRequest. (name index) (name mapping-type))
+         (.source ^Map (wlk/stringify-keys doc))))
+  ;; non-variadic because it is more convenient and efficient to
+  ;; invoke this internal implementation fn this way. MK.
+  ([index mapping-type ^Map doc ^String {:keys [id
+                                                routing
+                                                parent
+                                                timestamp
+                                                ttl
+                                                op-type
+                                                refresh
+                                                version-type
+                                                percolate
+                                                content-type]}]
+     (let [ir (-> (IndexRequest. (name index) (name mapping-type))
+                  (.source ^Map (wlk/stringify-keys doc)))]
+       (when id
+         (.id ir id))
+       (when content-type
+         (.contentType ir (to-content-type content-type)))
+       (when routing
+         (.routing ir routing))
+       (when parent
+         (.parent ir parent))
+       (when timestamp
+         (.timestamp ir timestamp))
+       (when ttl
+         (.ttl ir ttl))
+       (when op-type
+         (.opType ir ^String (.toLowerCase (name op-type))))
+       (when refresh
+         (.refresh ir))
+       (when version-type
+         (.versionType ir (to-version-type version-type)))
+       (when percolate
+         (.percolate ir percolate))
+       ir)))
+
+(defn ^IPersistentMap index-response->map
+  "Converts an index action response to a Clojure map"
+  [^IndexResponse r]
+    ;; underscored aliases are there to match REST API responses
+  {:index    (.index r)
+   :_index   (.index r)
+   :id       (.id r)
+   :_id      (.id r)
+   :type     (.type r)
+   :_type    (.type r)
+   :version  (.version r)
+   :_version (.version r)
+   :matches  (.matches r)})
+
+
+;;
+;; Get requests
+;;
+
+(defn ^GetRequest ->get-request
+  "Builds a get action request"
+  ([index mapping-type ^String id]
+     (GetRequest. (name index) (name mapping-type) id))
+  ([index mapping-type ^String id {:keys [parent preference
+                                          routing fields]}]
+     (let [gr (GetRequest. (name index) (name mapping-type) id)]
+       (when routing
+         (.routing gr routing))
+       (when parent
+         (.parent gr parent))
+       (when preference
+         (.preference gr preference))
+       (when fields
+         (.fields gr (into-array String fields)))
+       gr)))
+
+(defn ^IPersistentMap get-response->map
+  [^GetResponse r]
+  (let [s (wlk/keywordize-keys (into {} (.sourceAsMap r)))]
+    ;; underscored aliases are there to match REST API responses
+    {:exists? (.exists r)
+     :exists  (.exists r)
+     :index   (.index r)
+     :_index  (.index r)
+     :type    (.type r)
+     :_type   (.type r)
+     :id      (.id r)
+     :_id     (.id r)
+     :version  (.version r)
+     :_version (.version r)
+     :empty?   (.isSourceEmpty r)
+     :source   s
+     :_source  s
+     ;; TODO: convert GetFields to maps
+     :fields   (into {} (.fields r))}))
+
+
+;;
+;; Admin operations
+;;
+
+(defn ^IndicesExistsRequest ->index-exists-request
+  [index-name]
+  (let [ary (if (coll? index-name)
+              (into-array String index-name)
+              (into-array String [index-name]))]
+    (IndicesExistsRequest. ary)))

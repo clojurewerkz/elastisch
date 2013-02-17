@@ -39,8 +39,7 @@
 (defn exists?
   "Used to check if the index (indices) exists or not.
 
-   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"
-  [^String index-name]
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"  [^String index-name]
   (= 200 (:status (rest/head (rest/index-url index-name)))))
 
 (defn delete
