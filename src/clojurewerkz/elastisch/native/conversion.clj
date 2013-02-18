@@ -1,16 +1,19 @@
 (ns clojurewerkz.elastisch.native.conversion
+  (:refer-clojure :exclude [get merge flush])
   (:require [clojure.walk :as wlk])
   (:import [org.elasticsearch.common.settings Settings ImmutableSettings ImmutableSettings$Builder]
            [org.elasticsearch.common.transport
             TransportAddress InetSocketTransportAddress LocalTransportAddress]
+           java.util.Map
+           clojure.lang.IPersistentMap
+           [org.elasticsearch.common.xcontent XContentType]
+           [org.elasticsearch.index VersionType]
            [org.elasticsearch.action.index IndexRequest IndexResponse]
            [org.elasticsearch.action.get GetRequest GetResponse]
            [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
            [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
-           java.util.Map
-           clojure.lang.IPersistentMap
-           [org.elasticsearch.common.xcontent XContentType]
-           [org.elasticsearch.index VersionType]))
+           [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
+           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]))
 
 ;;
 ;; Implementation
@@ -76,7 +79,7 @@
   (if m
     (let [^ImmutableSettings$Builder sb (ImmutableSettings/settingsBuilder)]
       (doseq [[k v] m]
-        (.put sb ^String (name k) ^String (name v)))
+        (.put sb ^String (name k) ^String v))
       (.build sb))
     ImmutableSettings$Builder/EMPTY_SETTINGS))
 
@@ -209,10 +212,47 @@
 
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
-  (let [r (-> (CreateIndexRequest. index-name)
-              (.settings (->settings settings)))
+  (let [r (CreateIndexRequest. index-name)
         m (wlk/stringify-keys mappings)]
+    (when settings
+      (.settings r ^Map settings))
     (when mappings
       (doseq [[k v] m]
         (.mapping r ^String k ^Map v)))
     r))
+
+(defn ^DeleteIndexRequest ->delete-index-request
+  [index-name]
+  (if (coll? index-name)
+    (DeleteIndexRequest. (into-array String [index-name]))
+    (DeleteIndexRequest. ^String index-name)))
+
+(defn ^IndicesStatsRequest ->index-stats-request
+  ([]
+     (let [r (IndicesStatsRequest.)]
+       (.all r)
+       r))
+  ([{:keys [docs store indexing types groups get
+            search merge flush refresh]}]
+     (let [r   (IndicesStatsRequest.)]
+       (when docs
+         (.docs r docs))
+       (when store
+         (.store r store))
+       (when indexing
+         (.indexing r indexing))
+       (when types
+         (.types r (into-array String types)))
+       (when groups
+         (.groups r (into-array String groups)))
+       (when get
+         (.get r get))
+       (when search
+         (.search r search))
+       (when merge
+         (.merge r merge))
+       (when flush
+         (.flush r flush))
+       (when refresh
+         (.refresh r refresh))
+       r)))

@@ -8,7 +8,9 @@
            [org.elasticsearch.action.index IndexRequest]
            [org.elasticsearch.action.get GetRequest]
            [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
-           [org.elasticsearch.action.admin.indices.create CreateIndexRequest]))
+           [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
+           [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
+           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]))
 
 
 
@@ -59,6 +61,12 @@
          (.addTransportAddress tc (cnv/->local-transport-address id)))
        tc)))
 
+(defn connected?
+  "Returns true if current client is connected (*client* is bound)"
+  []
+  (bound? (var *client*)))
+
+
 
 (defn ^ActionFuture index
   "Executes an index action request"
@@ -79,3 +87,13 @@
   "Executes a create index request"
   [^CreateIndexRequest req]
   (-> ^Client *client* .admin .indices (.create req)))
+
+(defn ^ActionFuture admin-index-delete
+  "Executes a delete index request"
+  [^DeleteIndexRequest req]
+  (-> ^Client *client* .admin .indices (.delete req)))
+
+(defn ^ActionFuture admin-index-stats
+  "Executes a indices stats request"
+  [^IndicesStatsRequest req]
+  (-> ^Client *client* .admin .indices (.stats req)))

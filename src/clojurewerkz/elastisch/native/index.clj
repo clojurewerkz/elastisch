@@ -4,6 +4,8 @@
             [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsResponse]
            [org.elasticsearch.action.admin.indices.create CreateIndexResponse]
+           [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest DeleteIndexResponse]
+           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest IndicesStats]
            [org.elasticsearch.action.index IndexResponse]))
 
 ;;
@@ -11,7 +13,7 @@
 ;;
 
 (defn create
-  "The create index API allows to instantiate an index.
+  "Creates an index.
 
    Accepted options are :mappings and :settings. Both accept maps with the same structure as in the REST API.
 
@@ -36,7 +38,7 @@
   [^String index-name & {:keys [settings mappings]}]
   (let [ft                       (es/admin-index-create (cnv/->create-index-request index-name settings mappings))
         ^CreateIndexResponse res (.get ft)]
-    (.acknowledged res)))
+    {:ok true :acknowledged (.acknowledged res)}))
 
 
 (defn exists?
@@ -45,3 +47,38 @@
   (let [ft                        (es/admin-index-exists (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.get ft)]
     (.exists res)))
+
+
+(defn delete
+  "Deletes an existing index"
+  [^String index-name]
+  (let [ft                       (es/admin-index-delete (cnv/->delete-index-request index-name))
+        ^DeleteIndexResponse res (.get ft)]
+    {:ok true :acknowledged (.acknowledged res)}))
+
+(defn stats
+  "Returns statistics about indexes.
+
+   No argument version returns all stats.
+   Options may be used to define what exactly will be contained in the response:
+
+   :docs : the number of documents, deleted documents
+   :store : the size of the index
+   :indexing : indexing statistics
+   :types : document type level stats
+   :groups : search group stats to retrieve the stats for
+   :get : get operation statistics, including missing stats
+   :search : search statistics, including custom grouping using the groups parameter (search operations can be associated with one or more groups)
+   :merge : merge operation stats
+   :flush : flush operation stats
+   :refresh : refresh operation stats"
+  ([]
+     (let [ft                (es/admin-index-stats (cnv/->index-stats-request))
+           ^IndicesStats res (.get ft)]
+       ;; TODO: convert stats into a map
+       res))
+  ([& {:as options}]
+     (let [ft                (es/admin-index-stats (cnv/->index-stats-request options))
+           ^IndicesStats res (.get ft)]
+       ;; TODO: convert stats into a map
+       res)))

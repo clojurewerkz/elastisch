@@ -9,7 +9,7 @@
 ;;
 
 (defn create
-  "The create index API allows to instantiate an index.
+  "Creates an index.
 
    Accepted options are :mappings and :settings. Both accept maps with the same structure as in the REST API.
 
@@ -43,7 +43,7 @@
   (= 200 (:status (rest/head (rest/index-url index-name)))))
 
 (defn delete
-  "The delete index API allows to delete an existing index.
+  "Deletes an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
   [^String index-name]
