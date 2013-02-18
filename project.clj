@@ -28,7 +28,8 @@
                    :facets      :facets
                    :percolation :percolation
                    :all         (constantly true)
-                   :default     (constantly true)}
+                   :default     (constantly true)
+                   :ci          (fn [m] (not (:native m)))}
   :mailing-list {:name "clojure-elasticsearch"
                  :archive "https://groups.google.com/group/clojure-elasticsearch"
                  :post "clojure-elasticsearch@googlegroups.com"}
