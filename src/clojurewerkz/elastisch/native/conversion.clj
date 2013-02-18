@@ -13,7 +13,8 @@
            [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
            [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
            [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
-           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]))
+           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]
+           [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]))
 
 ;;
 ;; Implementation
@@ -226,6 +227,15 @@
   (if (coll? index-name)
     (DeleteIndexRequest. (into-array String [index-name]))
     (DeleteIndexRequest. ^String index-name)))
+
+(defn ^UpdateSettingsRequest ->update-settings-request
+  [index-name settings]
+  (let [ary (if (coll? index-name)
+              (into-array String index-name)
+              (into-array String [index-name]))
+        m   (wlk/stringify-keys settings)]
+    (doto (UpdateSettingsRequest. ary)
+      (.settings ^Map m))))
 
 (defn ^IndicesStatsRequest ->index-stats-request
   ([]

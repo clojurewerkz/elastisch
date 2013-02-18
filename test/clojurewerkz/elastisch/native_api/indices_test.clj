@@ -38,25 +38,11 @@
 ;; Settings
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-getting-index-settings
+(deftest ^{:indexing true :native true} testing-updating-specific-index-settings
   (let [index     "people"
         settings  {:index {:refresh_interval "1s"}}
-        _         (idx/create index :settings settings :mappings fx/people-mapping)]
-    (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
-
-#_ (deftest ^{:indexing true :native true} test-updating-global-index-settings
-  (let [index     "people"
-        settings  {:index {:refresh_interval "1s"}}
-        _         (idx/create index :mappings fx/people-mapping)
-        response  (idx/update-settings settings)]
-    (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
-
-#_ (deftest ^{:indexing true :native true} testing-updating-specific-index-settings
-  (let [index     "people"
-        settings  { :index { :refresh_interval "1s" } }
-        _         (idx/create index :mappings fx/people-mapping)
-        response  (idx/update-settings index settings)]
-    (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (idx/update-settings index settings))))
 
 ;;
 ;; Open/close

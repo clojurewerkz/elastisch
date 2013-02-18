@@ -10,7 +10,8 @@
            [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
            [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
            [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
-           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]))
+           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]
+           [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]))
 
 
 
@@ -92,6 +93,11 @@
   "Executes a delete index request"
   [^DeleteIndexRequest req]
   (-> ^Client *client* .admin .indices (.delete req)))
+
+(defn ^ActionFuture admin-update-index-settings
+  "Executes an update index settings request"
+  [^UpdateSettingsRequest req]
+  (-> ^Client *client* .admin .indices (.updateSettings req)))
 
 (defn ^ActionFuture admin-index-stats
   "Executes a indices stats request"

@@ -56,6 +56,15 @@
         ^DeleteIndexResponse res (.get ft)]
     {:ok true :acknowledged (.acknowledged res)}))
 
+
+(defn update-settings
+  "Updates index settings. No argument version updates index settings globally"
+  ([index-name settings]
+     (let [ft (es/admin-update-index-settings (cnv/->update-settings-request index-name settings))]
+       (.get ft)
+       true)))
+
+
 (defn stats
   "Returns statistics about indexes.
 
