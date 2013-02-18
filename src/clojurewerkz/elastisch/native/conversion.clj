@@ -6,6 +6,7 @@
            [org.elasticsearch.action.index IndexRequest IndexResponse]
            [org.elasticsearch.action.get GetRequest GetResponse]
            [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
+           [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
            java.util.Map
            clojure.lang.IPersistentMap
            [org.elasticsearch.common.xcontent XContentType]
@@ -72,10 +73,12 @@
 (defn ^Settings ->settings
   "Converts a Clojure map into immutable ElasticSearch settings"
   [m]
-  (let [^ImmutableSettings$Builder sb (ImmutableSettings/settingsBuilder)]
-    (doseq [[k v] m]
-      (.put sb ^String (name k) ^String (name v)))
-    (.build sb)))
+  (if m
+    (let [^ImmutableSettings$Builder sb (ImmutableSettings/settingsBuilder)]
+      (doseq [[k v] m]
+        (.put sb ^String (name k) ^String (name v)))
+      (.build sb))
+    ImmutableSettings$Builder/EMPTY_SETTINGS))
 
 ;;
 ;; Transports
@@ -139,7 +142,7 @@
 (defn ^IPersistentMap index-response->map
   "Converts an index action response to a Clojure map"
   [^IndexResponse r]
-    ;; underscored aliases are there to match REST API responses
+  ;; underscored aliases are there to match REST API responses
   {:index    (.index r)
    :_index   (.index r)
    :id       (.id r)
@@ -203,3 +206,13 @@
               (into-array String index-name)
               (into-array String [index-name]))]
     (IndicesExistsRequest. ary)))
+
+(defn ^CreateIndexRequest ->create-index-request
+  [index-name settings mappings]
+  (let [r (-> (CreateIndexRequest. index-name)
+              (.settings (->settings settings)))
+        m (wlk/stringify-keys mappings)]
+    (when mappings
+      (doseq [[k v] m]
+        (.mapping r ^String k ^Map v)))
+    r))

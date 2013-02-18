@@ -56,7 +56,8 @@
 
 
 (defn get
-  "Fetches and returns a document by id or nil if it does not exist"
+  "Fetches and returns a document by id or nil if it does not exist.
+   Waits for response."
   ([index mapping-type id]
      (let [res (es/get (cnv/->get-request index
                                           mapping-type
@@ -68,6 +69,14 @@
                                           id
                                           params))]
        (cnv/get-response->map (.get res)))))
+
+(defn async-get
+  "Fetches and returns a document by id or nil if it does not exist.
+   Returns a future without waiting."
+  ([index mapping-type id]
+     (future (get index mapping-type id)))
+  ([index mapping-type id & {:as params}]
+     (future (get index mapping-type id params))))
 
 (defn delete
   "Deletes document from the index.

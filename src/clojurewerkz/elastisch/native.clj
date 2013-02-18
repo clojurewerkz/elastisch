@@ -7,7 +7,8 @@
            org.elasticsearch.action.ActionFuture
            [org.elasticsearch.action.index IndexRequest]
            [org.elasticsearch.action.get GetRequest]
-           [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]))
+           [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
+           [org.elasticsearch.action.admin.indices.create CreateIndexRequest]))
 
 
 
@@ -73,3 +74,8 @@
   "Executes an indices exist request"
   [^IndicesExistsRequest req]
   (-> ^Client *client* .admin .indices (.exists req)))
+
+(defn ^ActionFuture admin-index-create
+  "Executes a create index request"
+  [^CreateIndexRequest req]
+  (-> ^Client *client* .admin .indices (.create req)))

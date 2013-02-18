@@ -15,8 +15,10 @@
 
    Examples:
 
-    (clojurewerkz.elastisch.rest.index/create \"myapp_development\")
-    (clojurewerkz.elastisch.rest.index/create \"myapp_development\" :settings {\"number_of_shards\" 1})
+    (require '[clojurewerkz.elastisch.rest.index :as idx])
+
+    (idx/create \"myapp_development\")
+    (idx/create \"myapp_development\" :settings {\"number_of_shards\" 1})
 
     (let [mapping-types {:person {:properties {:username   {:type \"string\" :store \"yes\"}
                                                :first-name {:type \"string\" :store \"yes\"}
@@ -25,9 +27,7 @@
                                                :title      {:type \"string\" :analyzer \"snowball\"}
                                                :planet     {:type \"string\"}
                                                :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
-      (clojurewerkz.elastisch.rest.index/create \"myapp_development\" :mappings mapping-types))
-
-
+      (idx/create \"myapp_development\" :mappings mapping-types))
 
    Related ElasticSearch API Reference section:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"

@@ -126,7 +126,7 @@
 ;; document/create
 ;;
 
-(deftest ^{:indexing true} put-create-autogenerate-id-test
+(deftest ^{:indexing true} test-put-create-autogenerate-id-test
   (let [response (doc/create index-name index-type fx/person-jack)]
     (is (ok? response))
     (is (:_id response))
