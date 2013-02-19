@@ -93,7 +93,7 @@
 
 
 (defn get-settings
-  "The get settings API allows to retrieve settings of index/indices
+  "The get settings API allows to retrieve settings of an index or multiple indices
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html
   "
@@ -107,21 +107,21 @@
 ;;
 
 (defn open
-  "Opens the index.
+  "Opens an index.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [index-name]
   (rest/post (rest/index-open-url index-name)))
 
 (defn close
-  "Closes the index.
+  "Closes an index.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [index-name]
   (rest/post (rest/index-close-url index-name)))
 
 (defn snapshot
-  "Takes a snapthot of the index or multiple indexes.
+  "Takes a snapthot of an index or multiple indexes.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-gateway-snapshot.html"
   [index-name]

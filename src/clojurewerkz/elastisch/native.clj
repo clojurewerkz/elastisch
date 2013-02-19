@@ -10,6 +10,8 @@
            [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
            [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
            [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
+           [org.elasticsearch.action.admin.indices.open OpenIndexRequest]
+           [org.elasticsearch.action.admin.indices.close CloseIndexRequest]
            [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]
            [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]))
 
@@ -98,6 +100,16 @@
   "Executes an update index settings request"
   [^UpdateSettingsRequest req]
   (-> ^Client *client* .admin .indices (.updateSettings req)))
+
+(defn ^ActionFuture admin-open-index
+  "Executes an open index request"
+  [^OpenIndexRequest req]
+  (-> ^Client *client* .admin .indices (.open req)))
+
+(defn ^ActionFuture admin-close-index
+  "Executes a close index request"
+  [^CloseIndexRequest req]
+  (-> ^Client *client* .admin .indices (.close req)))
 
 (defn ^ActionFuture admin-index-stats
   "Executes a indices stats request"

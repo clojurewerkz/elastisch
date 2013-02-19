@@ -6,7 +6,9 @@
            [org.elasticsearch.action.admin.indices.create CreateIndexResponse]
            [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest DeleteIndexResponse]
            [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest IndicesStats]
-           [org.elasticsearch.action.index IndexResponse]))
+           [org.elasticsearch.action.index IndexResponse]
+           [org.elasticsearch.action.admin.indices.open OpenIndexResponse]
+           [org.elasticsearch.action.admin.indices.close CloseIndexResponse]))
 
 ;;
 ;; API
@@ -54,7 +56,7 @@
   [^String index-name]
   (let [ft                       (es/admin-index-delete (cnv/->delete-index-request index-name))
         ^DeleteIndexResponse res (.get ft)]
-    {:ok true :acknowledged (.acknowledged res)}))
+    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
 
 
 (defn update-settings
@@ -64,6 +66,20 @@
        (.get ft)
        true)))
 
+
+(defn open
+  "Opens an index"
+  [index-name]
+  (let [ft                     (es/admin-open-index (cnv/->open-index-request index-name))
+        ^OpenIndexResponse res (.get ft)]
+    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+
+(defn close
+  "Closes an index"
+  [index-name]
+  (let [ft                     (es/admin-close-index (cnv/->close-index-request index-name))
+        ^CloseIndexResponse res (.get ft)]
+    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
 
 (defn stats
   "Returns statistics about indexes.

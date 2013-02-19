@@ -48,11 +48,11 @@
 ;; Open/close
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-open-close-index
+(deftest ^{:indexing true :native true} test-open-close-index
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/open index))
-    (println (idx/close index))))
+    (is (acknowledged? (idx/open index)))
+    (is (acknowledged? (idx/close index)))))
 
 ;;
 ;; Optimize

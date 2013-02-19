@@ -14,7 +14,9 @@
            [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
            [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
            [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]
-           [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]))
+           [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]
+           [org.elasticsearch.action.admin.indices.open OpenIndexRequest]
+           [org.elasticsearch.action.admin.indices.close CloseIndexRequest]))
 
 ;;
 ;; Implementation
@@ -236,6 +238,14 @@
         m   (wlk/stringify-keys settings)]
     (doto (UpdateSettingsRequest. ary)
       (.settings ^Map m))))
+
+(defn ^OpenIndexRequest ->open-index-request
+  [index-name]
+  (OpenIndexRequest. index-name))
+
+(defn ^CloseIndexRequest ->close-index-request
+  [index-name]
+  (CloseIndexRequest. index-name))
 
 (defn ^IndicesStatsRequest ->index-stats-request
   ([]
