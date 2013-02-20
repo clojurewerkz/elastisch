@@ -27,6 +27,7 @@
                    :query       :query
                    :facets      :facets
                    :percolation :percolation
+                   :native      :native
                    :all         (constantly true)
                    :default     (constantly true)
                    :ci          (fn [m] (not (:native m)))}
