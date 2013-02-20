@@ -1,5 +1,98 @@
 ## Changes between Elastisch 1.0.0 and 1.1.0
 
+### Native Client
+
+Elastisch `1.1.0` includes a major new feature: native ElasticSearch client.
+The client uses ElasticSearch's Java API, and can be used with
+both transport and node clients.
+
+#### Rationale
+
+Native client is more bandwidth efficient. It also can use SMILE (binary JSON format) to be more
+efficient on the wire.
+
+#### Namespace Layout
+
+Native client API in Elastisch is nearly identical to that of the REST API client
+and resides in `clojurewerkz.elastisch.native` and `clojurewerkz.elastisch.native.*`
+namespaces (similarly to how `clojurewerkz.elastisch.rest` `clojurewerkz.elastisch.rest.*`
+namespaces are organized).
+
+#### Connections
+
+Transport client (used for TCP/remote connections) connections are set up using
+`clojurewerkz.elastisch.native/connect!`. Note that you need to provide node
+configuration that at least has cluster name in it:
+
+``` clojure
+(require '[clojurewerkz.elastisch.native :as es])
+
+;; note that transport client uses port 9300 by default.
+;; it also can connect to multiple cluster nodes
+(es/connect! [["127.0.0.1" 9300]]
+             {"cluster.name" "elasticsearch_antares" })
+```
+Cluster name and transport node addresses can be retrieved via HTTP API, for example:
+
+```
+curl http://localhost:9200/_cluster/nodes
+{"ok":true,"cluster_name":"elasticsearch_antares","nodes":...}}
+```
+
+#### Performing Operations
+
+The Native client tries to be as close as possible to the existing REST client API.
+For example, document operation functions in `clojurewerkz.elastisch.native.document`,
+such as `clojurewerkz.elastisch.native.document/create`,
+follow `clojurewerkz.elastisch.rest.document` function signatures as closely as
+possible:
+
+``` clojure
+;; in the REPL
+(require '[clojurewerkz.elastisch.native :as es])
+(require '[clojurewerkz.elastisch.native.document :as doc])
+
+(es/connect! [["127.0.0.1" 9300]]
+             {"cluster.name" "elasticsearch_antares" })
+
+(doc/put index-name index-type id document)
+(doc/get index-name index-type id)
+```
+
+The same with returned results. Note, however, that ES transport client
+does have (very) minor differences with the REST API and it is not always possible
+for Elastisch to completely cover such differences.
+
+#### Async Operations
+
+Native client offers a choice of synchronous (blocking calling thread until a response
+is received) and asynchronous (returns a future) versions of multiple API operations:
+
+``` clojure
+;; in the REPL
+(require '[clojurewerkz.elastisch.native :as es])
+(require '[clojurewerkz.elastisch.native.document :as doc])
+
+(es/connect! [["127.0.0.1" 9300]]
+             {"cluster.name" "elasticsearch_antares" })
+
+(doc/put index-name index-type id document)
+
+;; returns a response
+(doc/get index-name index-type id)
+;; returns a future that will eventually
+;; contain a response
+(doc/async-get index-name index-type id)
+```
+
+One notable exception to this is administrative operations (such as opening or closing
+an index). The rationale for this is that they are rarely executed on the hot
+code path (e.g. in tight loops), so convenience and better error visibility is more
+important for them.
+
+GH issues: #17, #18, #20.
+
+
 ### Cheshire Update
 
 [Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.0.2`.
