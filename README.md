@@ -133,5 +133,5 @@ Distributed under the Eclipse Public License, the same as Clojure.
 
 ### Will Native Java API Be Supported?
 
-Elastisch will support ES' native (non-HTTP) Java API in one of the next
+Elastisch will support ES' native (non-HTTP) Java API in one of the future
 releases.
