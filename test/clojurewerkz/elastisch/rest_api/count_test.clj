@@ -4,7 +4,8 @@
             [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.rest.response))
+  (:use clojure.test
+        [clojurewerkz.elastisch.rest.response :only [count-from]]))
 
 (use-fixtures :each fx/reset-indexes)
 
