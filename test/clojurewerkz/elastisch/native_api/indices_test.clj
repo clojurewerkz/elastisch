@@ -11,12 +11,11 @@
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
 
-(defn- successful-broadcast-operation?
+(defn- broadcast-operation-response?
   [m]
-  (and (:total-shards response)
-       (:successful-shards response)
-       (:failed-shards response)
-       (empty? (:shards-failures response))))
+  (and (:total-shards m)
+       (:successful-shards m)
+       (:failed-shards m)))
 
 
 ;;
@@ -70,7 +69,7 @@
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/optimize index :only_expunge_deletes 1)]
-    (is (successful-broadcast-operation? response))))
+    (is (broadcast-operation-response? response))))
 
 ;;
 ;; Flush
@@ -80,7 +79,7 @@
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/flush index :refresh true)]
-    (is (successful-broadcast-operation? response))))
+    (is (broadcast-operation-response? response))))
 
 ;;
 ;; Snapshot
@@ -90,7 +89,7 @@
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/snapshot index)]
-    (is (successful-broadcast-operation? response))))
+    (is (broadcast-operation-response? response))))
 
 ;;
 ;; Clear cache
@@ -100,22 +99,23 @@
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/clear-cache index :filter true :field_data true)]
-    (is (successful-broadcast-operation? response))))
+    (is (broadcast-operation-response? response))))
 
 
 ;;
 ;; Status
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-index-status
+(deftest ^{:indexing true :native true} test-index-status
      (let [index     "people"
-           _         (idx/create index :mappings fx/people-mapping)]
-       (println (idx/status index :recovery true))))
+           _         (idx/create index :mappings fx/people-mapping)
+           response  (idx/status index :recovery true)]
+       (is (broadcast-operation-response? response))))
 
-#_ (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
+(deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
      (idx/create "group1")
      (idx/create "group2")
-     (println (idx/status ["group1" "group2"] :recovery true :snapshot true)))
+     (is (broadcast-operation-response? (idx/status ["group1" "group2"] :recovery true :snapshot true))))
 
 
 ;;

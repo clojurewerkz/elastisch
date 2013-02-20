@@ -112,7 +112,6 @@
         ^ClearIndicesCacheResponse res (.get ft)]
     (cnv/broadcast-operation-response->map res)))
 
-
 (defn stats
   "Returns statistics about indexes.
 
@@ -139,3 +138,15 @@
            ^IndicesStats res (.get ft)]
        ;; TODO: convert stats into a map
        res)))
+
+(defn status
+  "Returns status for one or more indices.
+
+   Options may be used to define what exactly will be contained in the response:
+
+   :recovery (boolean, default: false): should the status include recovery information?
+   :snapshot (boolean, default: false): should the status include snapshot information?"
+  [index-name & {:as options}]
+  (let [ft                         (es/admin-status (cnv/->indices-status-request index-name options))
+        ^IndicesStatusResponse res (.get ft)]
+    (cnv/broadcast-operation-response->map res)))

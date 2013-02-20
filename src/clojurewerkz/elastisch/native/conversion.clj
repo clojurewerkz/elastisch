@@ -22,7 +22,8 @@
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
-           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest))
+           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
+           org.elasticsearch.action.admin.indices.status.IndicesStatusRequest))
 
 ;;
 ;; Implementation
@@ -343,3 +344,13 @@
        (when refresh
          (.refresh r refresh))
        r)))
+
+(defn ^IndicesStatusRequest ->indices-status-request
+  [index-name {:keys [recovery snapshot]}]
+  (let [ary (->string-array index-name)
+        r   (IndicesStatusRequest. ary)]
+    (when recovery
+      (.recovery r))
+    (when snapshot
+      (.snapshot r))
+    r))

@@ -17,7 +17,8 @@
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
-           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest))
+           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
+           org.elasticsearch.action.admin.indices.status.IndicesStatusRequest))
 
 
 
@@ -134,6 +135,11 @@
   "Executes a cache clear request"
   [^ClearIndicesCacheRequest req]
   (-> ^Client *client* .admin .indices (.clearCache req)))
+
+(defn ^ActionFuture admin-status
+  "Executes a status request"
+  [^IndicesStatusRequest req]
+  (-> ^Client *client* .admin .indices (.status req)))
 
 (defn ^ActionFuture admin-index-stats
   "Executes a indices stats request"
