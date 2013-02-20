@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"}
   :dependencies [[org.clojure/clojure   "1.4.0"]
                  [cheshire              "4.0.3"]
-                 [clj-http              "0.5.5" :exclusions [org.clojure/clojure]]
+                 [clj-http              "0.6.4" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "0.12.0"]
                  ;; to get the Java client. MK.
                  [org.elasticsearch/elasticsearch "0.20.5"]]
