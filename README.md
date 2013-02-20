@@ -81,7 +81,7 @@ The most recent stable release is highly recommended.
 
 ## Elastisch Is a ClojureWerkz Project
 
-Elastisch is part of the group of libraries known as ClojureWerkz, together with
+Elastisch is part of the group of [Clojure libraries](http://clojurewerkz.org) known as ClojureWerkz, together with
 
  * [Monger](https://clojuremongodb.info)
  * [Welle](https://clojureriak.info)
