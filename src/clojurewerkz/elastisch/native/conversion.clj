@@ -21,6 +21,7 @@
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
            org.elasticsearch.action.admin.indices.flush.FlushRequest
+           org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
@@ -285,6 +286,10 @@
     (when refresh
       (.refresh r))
     r))
+
+(defn ^RefreshRequest ->refresh-index-request
+  [index-name]
+  (RefreshRequest. (->string-array index-name)))
 
 (defn ^IPersistentMap shard-operation-failed-exception->map
   [^ShardOperationFailedException e]

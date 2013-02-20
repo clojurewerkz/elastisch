@@ -81,6 +81,18 @@
         response  (idx/flush index :refresh true)]
     (is (broadcast-operation-response? response))))
 
+
+;;
+;; Refresh
+;;
+
+(deftest ^{:indexing true :native true} test-refresh-index
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/refresh index)]
+    (is (broadcast-operation-response? response))))
+
+
 ;;
 ;; Snapshot
 ;;

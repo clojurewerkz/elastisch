@@ -11,6 +11,7 @@
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
            org.elasticsearch.action.admin.indices.flush.FlushResponse
+           org.elasticsearch.action.admin.indices.refresh.RefreshResponse
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse
@@ -99,6 +100,13 @@
   [index-name & {:as options}]
   (let [ft                 (es/admin-flush-index (cnv/->flush-index-request index-name options))
         ^FlushResponse res (.get ft)]
+    (cnv/broadcast-operation-response->map res)))
+
+(defn refresh
+  "Refreshes an index or multiple indices"
+  [index-name]
+  (let [ft                 (es/admin-refresh-index (cnv/->refresh-index-request index-name))
+        ^RefreshResponse res (.get ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn snapshot
