@@ -107,15 +107,15 @@
 ;;
 
 (deftest ^{:indexing true :native true} test-index-status
-     (let [index     "people"
-           _         (idx/create index :mappings fx/people-mapping)
-           response  (idx/status index :recovery true)]
-       (is (broadcast-operation-response? response))))
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/status index :recovery true)]
+    (is (broadcast-operation-response? response))))
 
 (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
-     (idx/create "group1")
-     (idx/create "group2")
-     (is (broadcast-operation-response? (idx/status ["group1" "group2"] :recovery true :snapshot true))))
+  (idx/create "group1")
+  (idx/create "group2")
+  (is (broadcast-operation-response? (idx/status ["group1" "group2"] :recovery true :snapshot true))))
 
 
 ;;
@@ -123,14 +123,14 @@
 ;;
 
 (deftest ^{:indexing true :native true} test-index-status
-     (let [index     "people"
-           _         (idx/create index :mappings fx/people-mapping)]
-       (is (broadcast-operation-response? (idx/segments index)))))
+  (let [index     "people"
+        _         (idx/create index :mappings fx/people-mapping)]
+    (is (broadcast-operation-response? (idx/segments index)))))
 
 (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
-     (idx/create "group1")
-     (idx/create "group2")
-     (is (broadcast-operation-response? (idx/segments ["group1" "group2"]))))
+  (idx/create "group1")
+  (idx/create "group2")
+  (is (broadcast-operation-response? (idx/segments ["group1" "group2"]))))
 
 
 ;;
@@ -147,19 +147,10 @@
 ;; Aliases
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases
-     (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
-     (println (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                                   {:add {:index "aliased-index" :alias "alias2"}}]))
-     (is (= "42s" (get-in (idx/get-settings "alias2") [:aliased-index :settings :index.refresh_interval]))))
-
-
-#_ (deftest ^{:indexing true :native true} test-getting-aliases
-     (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
-     (println (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                                   {:add {:index "aliased-index" :alias "alias2" :routing 1}}]))
-     (is (= {:aliased-index {:aliases {:alias2 {} :alias1 {}}}}
-            (idx/get-aliases "aliased-index"))))
+(deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases
+  (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
+                                          {:add {:index "aliased-index" :alias "alias2"}}]))))
 
 ;;
 ;; Templates

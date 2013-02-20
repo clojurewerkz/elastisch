@@ -11,7 +11,8 @@
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
            org.elasticsearch.action.admin.indices.flush.FlushResponse
-           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse))
+           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse
+           org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse))
 
 ;;
 ;; API
@@ -158,3 +159,13 @@
         ^IndicesSegmentsResponse res (.get ft)]
     (merge (cnv/broadcast-operation-response->map res)
            (cnv/indices-segments-response->map res))))
+
+(defn update-aliases
+  "Performs a batch of alias operations. Takes a collection of actions in the form of
+
+   { :add    { :index \"test1\" :alias \"alias1\" } }
+   { :remove { :index \"test1\" :alias \"alias1\" } }"
+  [ops & {:as options}]
+  (let [ft                          (es/admin-update-aliases (cnv/->indices-aliases-request ops options))
+        ^IndicesAliasesResponse res (.get ft)]
+    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))

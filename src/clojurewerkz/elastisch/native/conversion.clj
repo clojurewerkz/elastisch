@@ -24,7 +24,8 @@
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
-           [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]))
+           [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
+           org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest))
 
 ;;
 ;; Implementation
@@ -371,3 +372,28 @@
             (assoc m idx (index-segments->map segs)))
           {}
           (.getIndices r)))
+
+
+(defn- apply-add-alias
+  [^IndicesAliasesRequest req {:keys [index alias filter]}]
+  (if filter
+    (.addAlias req ^String index ^String alias ^Map filter)
+    (.addAlias req ^String index ^String alias))
+  req)
+
+(defn- apply-remove-alias
+  [^IndicesAliasesRequest req {:keys {index alias}}]
+  (.removeAlias req ^String index ^String alias)
+  req)
+
+(defn ^IndicesAliasesRequest ->indices-aliases-request
+  [ops {:keys [timeout]}]
+  (let [r (IndicesAliasesRequest.)]
+    (doseq [{:keys [add remove timeout]} ops]
+      (when add
+        (apply-add-alias r add))
+      (when remove
+        (apply-remove-alias r remove)))
+    (when timeout
+      (.setTimeout r ^String timeout))
+    r))
