@@ -12,7 +12,9 @@
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
            org.elasticsearch.action.admin.indices.flush.FlushResponse
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse
-           org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse))
+           org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
+           org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse))
 
 ;;
 ;; API
@@ -169,3 +171,22 @@
   (let [ft                          (es/admin-update-aliases (cnv/->indices-aliases-request ops options))
         ^IndicesAliasesResponse res (.get ft)]
     {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+
+(defn create-template
+  [^String template-name & {:as options}]
+  (let [ft                            (es/admin-put-index-template (cnv/->create-index-template-request template-name options))
+        ^PutIndexTemplateResponse res (.get ft)]
+    {:ok true :acknowledged (.acknowledged res)}))
+
+(defn put-template
+  [^String template-name & {:as options}]
+  (let [ft                            (es/admin-put-index-template (cnv/->put-index-template-request template-name options))
+        ^PutIndexTemplateResponse res (.get ft)]
+    {:ok true :acknowledged (.acknowledged res)}))
+
+(defn delete-template
+  [^String template-name]
+  (let [ft                               (es/admin-delete-index-template (cnv/->delete-index-template-request template-name))
+        ^DeleteIndexTemplateResponse res (.get ft)]
+    {:ok true :acknowledged (.acknowledged res)}))
+  

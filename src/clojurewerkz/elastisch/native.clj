@@ -20,7 +20,9 @@
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest
-           org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest))
+           org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
+           org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest))
 
 
 
@@ -157,3 +159,13 @@
   "Executes an update aliases request"
   [^IndicesAliasesRequest req]
   (-> ^Client *client* .admin .indices (.aliases req)))
+
+(defn ^ActionFuture admin-put-index-template
+  "Executes a put index template request"
+  [^PutIndexTemplateRequest req]
+  (-> ^Client *client* .admin .indices (.putTemplate req)))
+
+(defn ^ActionFuture admin-delete-index-template
+  "Executes a delete index template request"
+  [^DeleteIndexTemplateRequest req]
+  (-> ^Client *client* .admin .indices (.deleteTemplate req)))

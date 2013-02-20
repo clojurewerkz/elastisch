@@ -25,7 +25,9 @@
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
-           org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest))
+           org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
+           org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest))
 
 ;;
 ;; Implementation
@@ -397,3 +399,27 @@
     (when timeout
       (.setTimeout r ^String timeout))
     r))
+
+(defn ^PutIndexTemplateRequest ->put-index-template-request
+  [template-name {:keys [template settings mappings order cause]}]
+  (let [r (doto (PutIndexTemplateRequest. template-name)
+            (.template template))]
+    (when settings
+      (.settings r ^Map (wlk/stringify-keys settings)))
+    (when mappings
+      (doseq [[k v] (wlk/stringify-keys mappings)]
+        (.mapping r ^String k ^Map v)))
+    (when order
+      (.order r order))
+    (when cause
+      (.cause r cause))
+    r))
+
+(defn ^PutIndexTemplateRequest ->create-index-template-request
+  [template-name {:as options}]
+  (doto (->put-index-template-request template-name options)
+    (.create)))
+
+(defn ^DeleteIndexTemplateRequest ->delete-index-template-request
+  [template-name]
+  (DeleteIndexTemplateRequest. template-name))

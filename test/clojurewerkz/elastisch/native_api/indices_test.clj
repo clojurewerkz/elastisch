@@ -156,14 +156,10 @@
 ;; Templates
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-create-an-index-template-and-fetch-it
-     (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
-     (is (= {:accounts {:template "account*"
-                        :order 0
-                        :settings {:index.refresh_interval "60s"}
-                        :mappings {}}}
-            (idx/get-template "accounts"))))
+(deftest ^{:indexing true :native true} test-create-an-index-template-and-fetch-it
+  (let [response (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})]
+    (is (acknowledged? response))))
 
-#_ (deftest ^{:indexing true :native true} test-create-an-index-template-and-delete-it
-     (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
-     (println (idx/delete-template "accounts")))
+(deftest ^{:indexing true :native true} test-create-an-index-template-and-delete-it
+   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
+   (is (acknowledged? (idx/delete-template "accounts"))))
