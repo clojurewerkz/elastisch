@@ -122,15 +122,15 @@
 ;; Segments
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-index-status
+(deftest ^{:indexing true :native true} test-index-status
      (let [index     "people"
            _         (idx/create index :mappings fx/people-mapping)]
-       (println (idx/segments index))))
+       (is (broadcast-operation-response? (idx/segments index)))))
 
-#_ (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
+(deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
      (idx/create "group1")
      (idx/create "group2")
-     (println (idx/segments ["group1" "group2"])))
+     (is (broadcast-operation-response? (idx/segments ["group1" "group2"]))))
 
 
 ;;

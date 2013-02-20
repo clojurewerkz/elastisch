@@ -101,8 +101,8 @@
 (defn snapshot
   "Performs a snapshot through the gateway for one or multiple indices"
   [index-name]
-  (let [ft                 (es/admin-gateway-snapshot (cnv/->gateway-snapshot-request index-name))
-        ^FlushResponse res (.get ft)]
+  (let [ft                           (es/admin-gateway-snapshot (cnv/->gateway-snapshot-request index-name))
+        ^GatewaySnapshotResponse res (.get ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn clear-cache
@@ -150,3 +150,11 @@
   (let [ft                         (es/admin-status (cnv/->indices-status-request index-name options))
         ^IndicesStatusResponse res (.get ft)]
     (cnv/broadcast-operation-response->map res)))
+
+(defn segments
+  "Returns segments information for one or more indices."
+  [index-name]
+  (let [ft                           (es/admin-index-segments (cnv/->indices-segments-request index-name))
+        ^IndicesSegmentsResponse res (.get ft)]
+    (merge (cnv/broadcast-operation-response->map res)
+           (cnv/indices-segments-response->map res))))

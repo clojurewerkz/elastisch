@@ -18,7 +18,8 @@
            org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
-           org.elasticsearch.action.admin.indices.status.IndicesStatusRequest))
+           org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
+           org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest))
 
 
 
@@ -142,6 +143,11 @@
   (-> ^Client *client* .admin .indices (.status req)))
 
 (defn ^ActionFuture admin-index-stats
-  "Executes a indices stats request"
+  "Executes an indices stats request"
   [^IndicesStatsRequest req]
   (-> ^Client *client* .admin .indices (.stats req)))
+
+(defn ^ActionFuture admin-index-segments
+  "Executes an indices segments request"
+  [^IndicesSegmentsRequest req]
+  (-> ^Client *client* .admin .indices (.segments req)))
