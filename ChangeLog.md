@@ -1,5 +1,13 @@
 ## Changes between Elastisch 1.0.0 and 1.1.0
 
+### Cheshire Update
+
+[Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.0.2`.
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.6.4`.
+
 ### Count API No Longer Ignores Mapping Types
 
 `clojurewerkz.elastisch.rest.document/count` no longer ignores mapping types.
@@ -13,6 +21,7 @@ GH issue: clojurewerkz/elastisch#6.
 the query part and`POST` for request that have it.
 
 GH issue: clojurewerkz/elastisch#5.
+
 
 
 ## Changes between Elastisch 1.0.0-rc2 and 1.0.0
