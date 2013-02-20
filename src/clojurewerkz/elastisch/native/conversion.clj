@@ -6,17 +6,21 @@
             TransportAddress InetSocketTransportAddress LocalTransportAddress]
            java.util.Map
            clojure.lang.IPersistentMap
-           [org.elasticsearch.common.xcontent XContentType]
-           [org.elasticsearch.index VersionType]
+           org.elasticsearch.common.xcontent.XContentType
+           org.elasticsearch.index.VersionType
+           org.elasticsearch.action.ShardOperationFailedException
            [org.elasticsearch.action.index IndexRequest IndexResponse]
            [org.elasticsearch.action.get GetRequest GetResponse]
-           [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
-           [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
-           [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
-           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]
-           [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]
-           [org.elasticsearch.action.admin.indices.open OpenIndexRequest]
-           [org.elasticsearch.action.admin.indices.close CloseIndexRequest]))
+           org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
+           org.elasticsearch.action.admin.indices.create.CreateIndexRequest
+           org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+           org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
+           org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
+           org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
+           org.elasticsearch.action.admin.indices.open.OpenIndexRequest
+           org.elasticsearch.action.admin.indices.close.CloseIndexRequest
+           org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
+           org.elasticsearch.action.admin.indices.flush.FlushRequest))
 
 ;;
 ;; Implementation
@@ -246,6 +250,52 @@
 (defn ^CloseIndexRequest ->close-index-request
   [index-name]
   (CloseIndexRequest. index-name))
+
+(defn ^OptimizeRequest ->optimize-index-request
+  [index-name {:keys [wait-for-merge max-num-segments only-expunge-deletes flush refresh]}]
+  (let [ary (if (coll? index-name)
+              (into-array String index-name)
+              (into-array String [index-name]))
+        r   (OptimizeRequest. ary)]
+    (when wait-for-merge
+      (.waitForMerge r))
+    (when max-num-segments
+      (.maxNumSegments r max-num-segments))
+    (when only-expunge-deletes
+      (.onlyExpungeDeletes r))
+    (when flush
+      (.flush r))
+    (when refresh
+      (.refresh r))
+    r))
+
+
+(defn ^FlushRequest ->flush-index-request
+  [index-name {:keys [refresh force full]}]
+  (let [ary (if (coll? index-name)
+              (into-array String index-name)
+              (into-array String [index-name]))
+        r   (FlushRequest. ary)]
+    (when force
+      (.force r))
+    (when full
+      (.full r))
+    (when refresh
+      (.refresh r))
+    r))
+
+(defn ^IPersistentMap shard-operation-failed-exception->map
+  [^ShardOperationFailedException e]
+  {:index    (.index e)
+   :shard-id (.shardId e)
+   :reason   (.reason e)})
+
+(defn ^IPersistentMap broadcast-operation-response->map
+  [^BroadcastOperationResponse res]
+  {:total-shards      (.totalShards res)
+   :successful-shards (.successfulShards res)
+   :failed-shards     (.failedShards res)
+   :shard-failures    (map shard-operation-failed-exception->map (.shardFailures res))})
 
 (defn ^IndicesStatsRequest ->index-stats-request
   ([]

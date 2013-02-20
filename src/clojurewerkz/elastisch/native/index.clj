@@ -2,13 +2,15 @@
   (:refer-clojure :exclude [flush])
   (:require [clojurewerkz.elastisch.native :as es]
             [clojurewerkz.elastisch.native.conversion :as cnv])
-  (:import [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsResponse]
-           [org.elasticsearch.action.admin.indices.create CreateIndexResponse]
-           [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest DeleteIndexResponse]
-           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest IndicesStats]
-           [org.elasticsearch.action.index IndexResponse]
-           [org.elasticsearch.action.admin.indices.open OpenIndexResponse]
-           [org.elasticsearch.action.admin.indices.close CloseIndexResponse]))
+  (:import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse
+           org.elasticsearch.action.admin.indices.create.CreateIndexResponse
+           org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
+           org.elasticsearch.action.admin.indices.stats.IndicesStats
+           org.elasticsearch.action.index.IndexResponse
+           org.elasticsearch.action.admin.indices.open.OpenIndexResponse
+           org.elasticsearch.action.admin.indices.close.CloseIndexResponse
+           org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
+           org.elasticsearch.action.admin.indices.flush.FlushResponse))
 
 ;;
 ;; API
@@ -40,7 +42,7 @@
   [^String index-name & {:keys [settings mappings]}]
   (let [ft                       (es/admin-index-create (cnv/->create-index-request index-name settings mappings))
         ^CreateIndexResponse res (.get ft)]
-    {:ok true :acknowledged (.acknowledged res)}))
+    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
 
 
 (defn exists?
@@ -80,6 +82,21 @@
   (let [ft                     (es/admin-close-index (cnv/->close-index-request index-name))
         ^CloseIndexResponse res (.get ft)]
     {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+
+(defn optimize
+  "Optimizes an index or multiple indices"
+  [index-name & {:as options}]
+  (let [ft                    (es/admin-optimize-index (cnv/->optimize-index-request index-name options))
+        ^OptimizeResponse res (.get ft)]
+    (cnv/broadcast-operation-response->map res)))
+
+(defn flush
+  "Flushes an index or multiple indices"
+  [index-name & {:as options}]
+  (let [ft                 (es/admin-flush-index (cnv/->flush-index-request index-name options))
+        ^FlushResponse res (.get ft)]
+    (cnv/broadcast-operation-response->map res)))
+
 
 (defn stats
   "Returns statistics about indexes.

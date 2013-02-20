@@ -58,19 +58,27 @@
 ;; Optimize
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-optimize-index
+(deftest ^{:indexing true :native true} test-optimize-index
   (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/optimize index :only_expunge_deletes 1))))
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/optimize index :only_expunge_deletes 1)]
+    (is (:total-shards response))
+    (is (:successful-shards response))
+    (is (:failed-shards response))
+    (is (empty? (:shards-failures response)))))
 
 ;;
 ;; Flush
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-flush-index-with-refresh
+(deftest ^{:indexing true :native true} test-flush-index-with-refresh
   (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/flush index :refresh true))))
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/flush index :refresh true)]
+    (is (:total-shards response))
+    (is (:successful-shards response))
+    (is (:failed-shards response))
+    (is (empty? (:shards-failures response)))))
 
 ;;
 ;; Snapshot

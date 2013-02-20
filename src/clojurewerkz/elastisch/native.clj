@@ -1,19 +1,21 @@
 (ns clojurewerkz.elastisch.native
   (:refer-clojure :exclude [get])
   (:require [clojurewerkz.elastisch.native.conversion :as cnv])
-  (:import [org.elasticsearch.client Client]
-           [org.elasticsearch.client.transport TransportClient]
-           [org.elasticsearch.common.settings Settings]
+  (:import org.elasticsearch.client.Client
+           org.elasticsearch.client.transport.TransportClient
+           org.elasticsearch.common.settings.Settings
            org.elasticsearch.action.ActionFuture
-           [org.elasticsearch.action.index IndexRequest]
-           [org.elasticsearch.action.get GetRequest]
-           [org.elasticsearch.action.admin.indices.exists.indices IndicesExistsRequest]
-           [org.elasticsearch.action.admin.indices.create CreateIndexRequest]
-           [org.elasticsearch.action.admin.indices.delete DeleteIndexRequest]
-           [org.elasticsearch.action.admin.indices.open OpenIndexRequest]
-           [org.elasticsearch.action.admin.indices.close CloseIndexRequest]
-           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest]
-           [org.elasticsearch.action.admin.indices.settings UpdateSettingsRequest]))
+           org.elasticsearch.action.index.IndexRequest
+           org.elasticsearch.action.get.GetRequest
+           org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
+           org.elasticsearch.action.admin.indices.create.CreateIndexRequest
+           org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+           org.elasticsearch.action.admin.indices.open.OpenIndexRequest
+           org.elasticsearch.action.admin.indices.close.CloseIndexRequest
+           org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
+           org.elasticsearch.action.admin.indices.flush.FlushRequest
+           org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
+           org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest))
 
 
 
@@ -110,6 +112,16 @@
   "Executes a close index request"
   [^CloseIndexRequest req]
   (-> ^Client *client* .admin .indices (.close req)))
+
+(defn ^ActionFuture admin-optimize-index
+  "Executes a optimize index request"
+  [^OptimizeRequest req]
+  (-> ^Client *client* .admin .indices (.optimize req)))
+
+(defn ^ActionFuture admin-flush-index
+  "Executes a flush index request"
+  [^FlushRequest req]
+  (-> ^Client *client* .admin .indices (.flush req)))
 
 (defn ^ActionFuture admin-index-stats
   "Executes a indices stats request"
