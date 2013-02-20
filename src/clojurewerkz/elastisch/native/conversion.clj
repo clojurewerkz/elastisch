@@ -210,12 +210,16 @@
 ;; Admin operations
 ;;
 
+(defn- ^"[Ljava.lang.String;" ->index-names-array
+  "Coerces argument to an array of index names (strings)"
+  [index-name]
+  (if (coll? index-name)
+    (into-array String index-name)
+    (into-array String [index-name])))
+
 (defn ^IndicesExistsRequest ->index-exists-request
   [index-name]
-  (let [ary (if (coll? index-name)
-              (into-array String index-name)
-              (into-array String [index-name]))]
-    (IndicesExistsRequest. ary)))
+  (IndicesExistsRequest. (->index-names-array index-name)))
 
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
@@ -230,15 +234,11 @@
 
 (defn ^DeleteIndexRequest ->delete-index-request
   [index-name]
-  (if (coll? index-name)
-    (DeleteIndexRequest. (into-array String [index-name]))
-    (DeleteIndexRequest. ^String index-name)))
+  (DeleteIndexRequest. (->index-names-array index-name)))
 
 (defn ^UpdateSettingsRequest ->update-settings-request
   [index-name settings]
-  (let [ary (if (coll? index-name)
-              (into-array String index-name)
-              (into-array String [index-name]))
+  (let [ary (->index-names-array index-name)
         m   (wlk/stringify-keys settings)]
     (doto (UpdateSettingsRequest. ary)
       (.settings ^Map m))))
@@ -253,9 +253,7 @@
 
 (defn ^OptimizeRequest ->optimize-index-request
   [index-name {:keys [wait-for-merge max-num-segments only-expunge-deletes flush refresh]}]
-  (let [ary (if (coll? index-name)
-              (into-array String index-name)
-              (into-array String [index-name]))
+  (let [ary (->index-names-array index-name)
         r   (OptimizeRequest. ary)]
     (when wait-for-merge
       (.waitForMerge r))
@@ -272,9 +270,7 @@
 
 (defn ^FlushRequest ->flush-index-request
   [index-name {:keys [refresh force full]}]
-  (let [ary (if (coll? index-name)
-              (into-array String index-name)
-              (into-array String [index-name]))
+  (let [ary (->index-names-array index-name)
         r   (FlushRequest. ary)]
     (when force
       (.force r))
