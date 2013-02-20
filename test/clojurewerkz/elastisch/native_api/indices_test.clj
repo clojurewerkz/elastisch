@@ -11,6 +11,14 @@
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
 
+(defn- successful-broadcast-operation?
+  [m]
+  (and (:total-shards response)
+       (:successful-shards response)
+       (:failed-shards response)
+       (empty? (:shards-failures response))))
+
+
 ;;
 ;; create, delete, exists?
 ;;
@@ -62,10 +70,7 @@
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/optimize index :only_expunge_deletes 1)]
-    (is (:total-shards response))
-    (is (:successful-shards response))
-    (is (:failed-shards response))
-    (is (empty? (:shards-failures response)))))
+    (is (successful-broadcast-operation? response))))
 
 ;;
 ;; Flush
@@ -75,28 +80,27 @@
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/flush index :refresh true)]
-    (is (:total-shards response))
-    (is (:successful-shards response))
-    (is (:failed-shards response))
-    (is (empty? (:shards-failures response)))))
+    (is (successful-broadcast-operation? response))))
 
 ;;
 ;; Snapshot
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-snapshot-index
+(deftest ^{:indexing true :native true} test-snapshot-index
   (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/snapshot index))))
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/snapshot index)]
+    (is (successful-broadcast-operation? response))))
 
 ;;
 ;; Clear cache
 ;;
 
-#_ (deftest ^{:indexing true :native true} test-clear-index-cache-with-refresh
+(deftest ^{:indexing true :native true} test-clear-index-cache-with-refresh
   (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/clear-cache index :filter true :field_data true))))
+        _         (idx/create index :mappings fx/people-mapping)
+        response  (idx/clear-cache index :filter true :field_data true)]
+    (is (successful-broadcast-operation? response))))
 
 
 ;;
@@ -104,14 +108,14 @@
 ;;
 
 #_ (deftest ^{:indexing true :native true} test-index-status
-  (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/status index :recovery true))))
+     (let [index     "people"
+           _         (idx/create index :mappings fx/people-mapping)]
+       (println (idx/status index :recovery true))))
 
 #_ (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
-  (idx/create "group1")
-  (idx/create "group2")
-  (println (idx/status ["group1" "group2"] :recovery true :snapshot true)))
+     (idx/create "group1")
+     (idx/create "group2")
+     (println (idx/status ["group1" "group2"] :recovery true :snapshot true)))
 
 
 ;;
@@ -119,14 +123,14 @@
 ;;
 
 #_ (deftest ^{:indexing true :native true} test-index-status
-  (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (println (idx/segments index))))
+     (let [index     "people"
+           _         (idx/create index :mappings fx/people-mapping)]
+       (println (idx/segments index))))
 
 #_ (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
-  (idx/create "group1")
-  (idx/create "group2")
-  (println (idx/segments ["group1" "group2"])))
+     (idx/create "group1")
+     (idx/create "group2")
+     (println (idx/segments ["group1" "group2"])))
 
 
 ;;
@@ -144,31 +148,31 @@
 ;;
 
 #_ (deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases
-  (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
-  (println (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                       {:add {:index "aliased-index" :alias "alias2"}}]))
-  (is (= "42s" (get-in (idx/get-settings "alias2") [:aliased-index :settings :index.refresh_interval]))))
+     (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+     (println (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
+                                   {:add {:index "aliased-index" :alias "alias2"}}]))
+     (is (= "42s" (get-in (idx/get-settings "alias2") [:aliased-index :settings :index.refresh_interval]))))
 
 
 #_ (deftest ^{:indexing true :native true} test-getting-aliases
-  (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
-  (println (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                       {:add {:index "aliased-index" :alias "alias2" :routing 1}}]))
-  (is (= {:aliased-index {:aliases {:alias2 {} :alias1 {}}}}
-         (idx/get-aliases "aliased-index"))))
+     (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+     (println (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
+                                   {:add {:index "aliased-index" :alias "alias2" :routing 1}}]))
+     (is (= {:aliased-index {:aliases {:alias2 {} :alias1 {}}}}
+            (idx/get-aliases "aliased-index"))))
 
 ;;
 ;; Templates
 ;;
 
 #_ (deftest ^{:indexing true :native true} test-create-an-index-template-and-fetch-it
-  (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
-  (is (= {:accounts {:template "account*"
-                     :order 0
-                     :settings {:index.refresh_interval "60s"}
-                     :mappings {}}}
-         (idx/get-template "accounts"))))
+     (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
+     (is (= {:accounts {:template "account*"
+                        :order 0
+                        :settings {:index.refresh_interval "60s"}
+                        :mappings {}}}
+            (idx/get-template "accounts"))))
 
 #_ (deftest ^{:indexing true :native true} test-create-an-index-template-and-delete-it
-  (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
-  (println (idx/delete-template "accounts")))
+     (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
+     (println (idx/delete-template "accounts")))

@@ -10,7 +10,8 @@
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
-           org.elasticsearch.action.admin.indices.flush.FlushResponse))
+           org.elasticsearch.action.admin.indices.flush.FlushResponse
+           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse))
 
 ;;
 ;; API
@@ -95,6 +96,20 @@
   [index-name & {:as options}]
   (let [ft                 (es/admin-flush-index (cnv/->flush-index-request index-name options))
         ^FlushResponse res (.get ft)]
+    (cnv/broadcast-operation-response->map res)))
+
+(defn snapshot
+  "Performs a snapshot through the gateway for one or multiple indices"
+  [index-name]
+  (let [ft                 (es/admin-gateway-snapshot (cnv/->gateway-snapshot-request index-name))
+        ^FlushResponse res (.get ft)]
+    (cnv/broadcast-operation-response->map res)))
+
+(defn clear-cache
+  "Clears caches index or multiple indices"
+  [index-name & {:as options}]
+  (let [ft                             (es/admin-clear-cache (cnv/->clear-indices-cache-request index-name options))
+        ^ClearIndicesCacheResponse res (.get ft)]
     (cnv/broadcast-operation-response->map res)))
 
 

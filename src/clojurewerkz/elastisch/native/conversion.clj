@@ -20,7 +20,9 @@
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
-           org.elasticsearch.action.admin.indices.flush.FlushRequest))
+           org.elasticsearch.action.admin.indices.flush.FlushRequest
+           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
+           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest))
 
 ;;
 ;; Implementation
@@ -210,8 +212,8 @@
 ;; Admin operations
 ;;
 
-(defn- ^"[Ljava.lang.String;" ->index-names-array
-  "Coerces argument to an array of index names (strings)"
+(defn- ^"[Ljava.lang.String;" ->string-array
+  "Coerces argument to an array of strings"
   [index-name]
   (if (coll? index-name)
     (into-array String index-name)
@@ -219,7 +221,7 @@
 
 (defn ^IndicesExistsRequest ->index-exists-request
   [index-name]
-  (IndicesExistsRequest. (->index-names-array index-name)))
+  (IndicesExistsRequest. (->string-array index-name)))
 
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
@@ -234,11 +236,11 @@
 
 (defn ^DeleteIndexRequest ->delete-index-request
   [index-name]
-  (DeleteIndexRequest. (->index-names-array index-name)))
+  (DeleteIndexRequest. (->string-array index-name)))
 
 (defn ^UpdateSettingsRequest ->update-settings-request
   [index-name settings]
-  (let [ary (->index-names-array index-name)
+  (let [ary (->string-array index-name)
         m   (wlk/stringify-keys settings)]
     (doto (UpdateSettingsRequest. ary)
       (.settings ^Map m))))
@@ -253,7 +255,7 @@
 
 (defn ^OptimizeRequest ->optimize-index-request
   [index-name {:keys [wait-for-merge max-num-segments only-expunge-deletes flush refresh]}]
-  (let [ary (->index-names-array index-name)
+  (let [ary (->string-array index-name)
         r   (OptimizeRequest. ary)]
     (when wait-for-merge
       (.waitForMerge r))
@@ -267,10 +269,9 @@
       (.refresh r))
     r))
 
-
 (defn ^FlushRequest ->flush-index-request
   [index-name {:keys [refresh force full]}]
-  (let [ary (->index-names-array index-name)
+  (let [ary (->string-array index-name)
         r   (FlushRequest. ary)]
     (when force
       (.force r))
@@ -292,6 +293,26 @@
    :successful-shards (.successfulShards res)
    :failed-shards     (.failedShards res)
    :shard-failures    (map shard-operation-failed-exception->map (.shardFailures res))})
+
+
+(defn ^GatewaySnapshotRequest ->gateway-snapshot-request
+  [index-name]
+  (GatewaySnapshotRequest. (->string-array index-name)))
+
+(defn ^ClearIndicesCacheRequest ->clear-indices-cache-request
+  [index-name {:keys [filter-cache field-data-cache id-cache fields]}]
+  (let [ary (->string-array index-name)
+        r   (ClearIndicesCacheRequest. ary)]
+    (when filter-cache
+      (.filterCache r))
+    (when field-data-cache
+      (.fieldDataCache r))
+    (when id-cache
+      (.idCache r))
+    (when fields
+      (.fields r (->string-array fields)))
+    r))
+
 
 (defn ^IndicesStatsRequest ->index-stats-request
   ([]

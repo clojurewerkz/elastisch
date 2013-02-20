@@ -15,7 +15,9 @@
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
-           org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest))
+           org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
+           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
+           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest))
 
 
 
@@ -122,6 +124,16 @@
   "Executes a flush index request"
   [^FlushRequest req]
   (-> ^Client *client* .admin .indices (.flush req)))
+
+(defn ^ActionFuture admin-gateway-snapshot
+  "Executes a gateway snapshot request"
+  [^GatewaySnapshotRequest req]
+  (-> ^Client *client* .admin .indices (.gatewaySnapshot req)))
+
+(defn ^ActionFuture admin-clear-cache
+  "Executes a cache clear request"
+  [^ClearIndicesCacheRequest req]
+  (-> ^Client *client* .admin .indices (.clearCache req)))
 
 (defn ^ActionFuture admin-index-stats
   "Executes a indices stats request"
