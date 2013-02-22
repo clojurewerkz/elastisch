@@ -8,3 +8,4 @@ pom.xml
 debug/*
 doc/*
 deploy.docs.sh
+.lein-*
