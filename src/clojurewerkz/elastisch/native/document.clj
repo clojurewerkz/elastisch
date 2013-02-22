@@ -92,6 +92,47 @@
   [index mapping-type id]
   (not (nil? (get index mapping-type id))))
 
+(defn multi-get
+  "Multi get returns only documents that are found (exist).
+
+   Queries can passed as a collection of maps with three keys: :_index,
+   :_type and :_id:
+
+   (doc/multi-get [{:_index index-name :_type mapping-type :_id \"1\"}
+                   {:_index index-name :_type mapping-type :_id \"2\"}])
+
+   
+   2-argument version accepts an index name that eliminates the need to include
+   :_index in every query map:
+
+   (doc/multi-get index-name [{:_type mapping-type :_id \"1\"}
+                              {:_type mapping-type :_id \"2\"}])
+
+   3-argument version also accepts a mapping type that eliminates the need to include
+   :_type in every query map:
+
+   (doc/multi-get index-name mapping-type [{:_id \"1\"}
+                                           {:_id \"2\"}])"
+  ([queries]
+     ;; example response from the REST API:
+     ;; ({:_index people, :_type person, :_id 1, :_version 1, :exists true, :_source {...}})
+     (let [ft                    (es/multi-get (cnv/->multi-get-request queries))
+           ^MultiGetResponse res (.get ft)
+           results               (cnv/multi-get-response->seq res)]
+       (filter :exists results)))
+  ([index queries]
+     (let [qs                    (map #(assoc % :_index index) queries)
+           ft                    (es/multi-get (cnv/->multi-get-request qs))
+           ^MultiGetResponse res (.get ft)
+           results               (cnv/multi-get-response->seq res)]
+       (filter :exists results)))
+  ([index mapping-type queries]
+     (let [qs                    (map #(assoc % :_index index :_type mapping-type) queries)
+           ft                    (es/multi-get (cnv/->multi-get-request qs))
+           ^MultiGetResponse res (.get ft)
+           results               (cnv/multi-get-response->seq res)]
+       (filter :exists results))))
+
 (defn delete
   "Deletes document from the index."
   ([index mapping-type id]
@@ -122,6 +163,5 @@
 ;; TODO: search
 ;; TODO: search-all-types
 ;; TODO: search-all-indexes-and-types
-;; TODO: multi-get
 ;; TODO: scroll
 ;; TODO: replace

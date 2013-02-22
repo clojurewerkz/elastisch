@@ -46,7 +46,7 @@
 ;; mget
 ;;
 
-#_ (deftest ^{:native true} multi-get-test
+(deftest ^{:native true} multi-get-test
   (doc/put index-name mapping-type "1" fx/person-jack)
   (doc/put index-name mapping-type "2" fx/person-mary)
   (doc/put index-name mapping-type "3" fx/person-joe)

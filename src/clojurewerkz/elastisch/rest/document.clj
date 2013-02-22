@@ -47,7 +47,26 @@
   (not (nil? (get index mapping-type id))))
 
 (defn multi-get
-  "Multi get returns only documents that are found (exist)"
+  "Multi get returns only documents that are found (exist).
+
+   Queries can passed as a collection of maps with three keys: :_index,
+   :_type and :_id:
+
+   (doc/multi-get [{:_index index-name :_type mapping-type :_id \"1\"}
+                   {:_index index-name :_type mapping-type :_id \"2\"}])
+
+   
+   2-argument version accepts an index name that eliminates the need to include
+   :_index in every query map:
+
+   (doc/multi-get index-name [{:_type mapping-type :_id \"1\"}
+                              {:_type mapping-type :_id \"2\"}])
+
+   3-argument version also accepts a mapping type that eliminates the need to include
+   :_type in every query map:
+
+   (doc/multi-get index-name mapping-type [{:_id \"1\"}
+                                           {:_id \"2\"}])"
   ([query]
      (let [results (rest/post (rest/index-mget-url)
                               :body {:docs query})]

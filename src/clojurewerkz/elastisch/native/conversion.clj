@@ -11,7 +11,7 @@
            ;; Actions
            org.elasticsearch.action.ShardOperationFailedException
            [org.elasticsearch.action.index IndexRequest IndexResponse]
-           [org.elasticsearch.action.get GetRequest GetResponse]
+           [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
            ;; Administrative Actions
@@ -223,6 +223,38 @@
      :_source  s
      ;; TODO: convert GetFields to maps
      :fields   (into {} (.getFields r))}))
+
+(defn ^IPersistentMap multi-get-item-response->map
+  [^MultiGetItemResponse i]
+  (let [r  (.getResponse i)
+        s  (wlk/keywordize-keys (into {} (.getSourceAsMap r)))]
+    {:exists   (.isExists r)
+     :_index   (.getIndex r)
+     :_type    (.getType r)
+     :_id      (.getId r)
+     :_version (.getVersion r)
+     :_source  s}))
+
+(defn multi-get-response->seq
+  [^MultiGetResponse r]
+  (let [items (.getResponses r)]
+    (map multi-get-item-response->map items)))
+
+(defn ^MultiGetRequest ->multi-get-request
+  "Builds a multi-get action request"
+  ([queries]
+     (->multi-get-request queries {}))
+  ([queries {:keys [preference refresh realtime]}]
+     (let [r (MultiGetRequest.)]
+       (doseq [q queries]
+         (.add r (:_index q) (:_type q) (:_id q)))
+       (when preference
+         (.setPreference r preference))
+       (when refresh
+         (.setRefresh r refresh))
+       (when realtime
+         (.setRealtime r realtime))
+       r)))
 
 (defn ^CountRequest ->count-request
   ([index-name options]

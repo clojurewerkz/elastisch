@@ -7,7 +7,7 @@
            ;; Actions
            org.elasticsearch.action.ActionFuture
            org.elasticsearch.action.index.IndexRequest
-           org.elasticsearch.action.get.GetRequest
+           [org.elasticsearch.action.get GetRequest MultiGetRequest]
            org.elasticsearch.action.delete.DeleteRequest
            org.elasticsearch.action.count.CountRequest
            ;; Admin Client
@@ -98,6 +98,11 @@
   "Executes a get action request"
   [^GetRequest req]
   (.get ^Client *client* req))
+
+(defn ^ActionFuture multi-get
+  "Executes a multi-get action request"
+  [^MultiGetRequest req]
+  (.multiGet ^Client *client* req))
 
 (defn ^ActionFuture delete
   "Executes a delete action request"
