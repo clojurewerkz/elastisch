@@ -4,6 +4,7 @@
             [clojurewerkz.elastisch.native.conversion :as cnv]
             [clojurewerkz.elastisch.query  :as q])
   (:import clojure.lang.IPersistentMap
+           org.elasticsearch.action.get.GetResponse
            org.elasticsearch.action.count.CountResponse
            org.elasticsearch.action.delete.DeleteResponse))
 
@@ -62,16 +63,20 @@
   "Fetches and returns a document by id or nil if it does not exist.
    Waits for response."
   ([index mapping-type id]
-     (let [res (es/get (cnv/->get-request index
-                                          mapping-type
-                                          id))]
-       (cnv/get-response->map (.get res))))
+     (let [ft               (es/get (cnv/->get-request index
+                                                       mapping-type
+                                                       id))
+           ^GetResponse res (.get ft)]
+       (when (.isExists res)
+         (cnv/get-response->map res))))
   ([index mapping-type id & {:as params}]
-     (let [res (es/get (cnv/->get-request index
-                                          mapping-type
-                                          id
-                                          params))]
-       (cnv/get-response->map (.get res)))))
+     (let [ft               (es/get (cnv/->get-request index
+                                                       mapping-type
+                                                       id
+                                                       params))
+           ^GetResponse res (.get ft)]
+       (when (.isExists res)
+         (cnv/get-response->map (.get ft))))))
 
 (defn async-get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -80,6 +85,12 @@
      (future (get index mapping-type id)))
   ([index mapping-type id & {:as params}]
      (future (get index mapping-type id params))))
+
+(defn present?
+  "Returns true if a document with the given id is present in the provided index
+   with the given mapping type."
+  [index mapping-type id]
+  (not (nil? (get index mapping-type id))))
 
 (defn delete
   "Deletes document from the index."
@@ -103,13 +114,11 @@
               (cnv/broadcast-operation-response->map res))))
   ([index mapping-type query & {:as options}]
      (let [ft (es/count (cnv/->count-request index mapping-type (merge options
-                                                                      {:query query})))
+                                                                       {:query query})))
            ^CountResponse res (.get ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res)))))
 
-
-;; TODO: present?
 ;; TODO: search
 ;; TODO: search-all-types
 ;; TODO: search-all-indexes-and-types

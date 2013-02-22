@@ -3,10 +3,12 @@
   (:require [clojurewerkz.elastisch.native.document :as doc]
             [clojurewerkz.elastisch.native.index    :as idx]
             [clojurewerkz.elastisch.query           :as q]
-            [clojurewerkz.elastisch.fixtures        :as fx])
+            [clojurewerkz.elastisch.fixtures        :as fx]
+            [clojurewerkz.elastisch.test.helpers    :as th])
   (:use clojure.test
         [clojurewerkz.elastisch.native.response :only [count-from]]))
 
+(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
 
 ;;

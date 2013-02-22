@@ -1,12 +1,14 @@
-(ns clojurewerkz.elastisch.rest-api.get-test
+(ns clojurewerkz.elastisch.native-api.get-test
   (:refer-clojure :exclude [replace])
-  (:require [clojurewerkz.elastisch.rest.document      :as doc]
-            [clojurewerkz.elastisch.rest.index         :as idx]
-            [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.rest.response))
+  (:require [clojurewerkz.elastisch.native.document :as doc]
+            [clojurewerkz.elastisch.native.index    :as idx]
+            [clojurewerkz.elastisch.query           :as q]
+            [clojurewerkz.elastisch.fixtures        :as fx]
+            [clojurewerkz.elastisch.test.helpers    :as th])
+  (:use clojure.test clojurewerkz.elastisch.native.response))
 
 
+(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
 
 (def ^{:const true} index-name "people")
@@ -17,10 +19,11 @@
 ;; get
 ;;
 
-(deftest test-get-with-non-existing-document
-  (is (nil? (doc/get index-name mapping-type "1"))))
+(deftest ^{:native true} test-get-with-non-existing-document
+  (doc/create index-name mapping-type {:name "Michael"})
+  (is (nil? (doc/get index-name mapping-type "1999999"))))
 
-(deftest test-get-with-existing-id-that-needs-url-encoding
+(deftest ^{:native true} test-get-with-existing-id-that-needs-url-encoding
   (let [id "http://www.faz.net/artikel/C31325/piratenabwehr-keine-kriegswaffen-fuer-private-dienste-30683040.html"]
     (doc/put index-name mapping-type id fx/person-jack)
     (is (doc/get index-name mapping-type id))))
@@ -29,19 +32,21 @@
 ;; present?
 ;;
 
-(deftest test-present-with-non-existing-id
+(deftest ^{:native true} test-present-with-non-existing-id
+  (doc/put index-name mapping-type "10" fx/person-jack)
   (is (not (doc/present? index-name mapping-type "1"))))
 
-(deftest test-present-with-existing-id
+(deftest ^{:native true} test-present-with-existing-id
   (doc/put index-name mapping-type "1" fx/person-jack)
   (is (doc/present? index-name mapping-type "1")))
+
 
 
 ;;
 ;; mget
 ;;
 
-(deftest multi-get-test
+#_ (deftest ^{:native true} multi-get-test
   (doc/put index-name mapping-type "1" fx/person-jack)
   (doc/put index-name mapping-type "2" fx/person-mary)
   (doc/put index-name mapping-type "3" fx/person-joe)

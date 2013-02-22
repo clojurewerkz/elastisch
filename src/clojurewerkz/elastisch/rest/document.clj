@@ -41,7 +41,8 @@
      (rest/delete (rest/record-url index mapping-type id) :query-params params)))
 
 (defn present?
-  "Returns true if a document with the given id is present in the provided index / mapping type."
+  "Returns true if a document with the given id is present in the provided index
+   with the given mapping type."
   [index mapping-type id]
   (not (nil? (get index mapping-type id))))
 
