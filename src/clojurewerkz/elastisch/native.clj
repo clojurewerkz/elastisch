@@ -1,12 +1,16 @@
 (ns clojurewerkz.elastisch.native
-  (:refer-clojure :exclude [get])
+  (:refer-clojure :exclude [get count])
   (:require [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import org.elasticsearch.client.Client
            org.elasticsearch.client.transport.TransportClient
            org.elasticsearch.common.settings.Settings
+           ;; Actions
            org.elasticsearch.action.ActionFuture
            org.elasticsearch.action.index.IndexRequest
            org.elasticsearch.action.get.GetRequest
+           org.elasticsearch.action.delete.DeleteRequest
+           org.elasticsearch.action.count.CountRequest
+           ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
@@ -81,6 +85,10 @@
 
 
 
+;;
+;; Core
+;;
+
 (defn ^ActionFuture index
   "Executes an index action request"
   [^IndexRequest req]
@@ -90,6 +98,21 @@
   "Executes a get action request"
   [^GetRequest req]
   (.get ^Client *client* req))
+
+(defn ^ActionFuture delete
+  "Executes a delete action request"
+  [^DeleteRequest req]
+  (.delete ^Client *client* req))
+
+(defn ^ActionFuture count
+  "Executes a count action request"
+  [^CountRequest req]
+  (.count ^Client *client* req))
+
+
+;;
+;; Admin Client
+;;
 
 (defn ^ActionFuture admin-index-exists
   "Executes an indices exist request"

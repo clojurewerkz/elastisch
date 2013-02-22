@@ -1,8 +1,11 @@
 (ns clojurewerkz.elastisch.native.document
   (:refer-clojure :exclude [get replace count sort])
   (:require [clojurewerkz.elastisch.native :as es]
-            [clojurewerkz.elastisch.native.conversion :as cnv])
-  (:import clojure.lang.IPersistentMap))
+            [clojurewerkz.elastisch.native.conversion :as cnv]
+            [clojurewerkz.elastisch.query  :as q])
+  (:import clojure.lang.IPersistentMap
+           org.elasticsearch.action.count.CountResponse
+           org.elasticsearch.action.delete.DeleteResponse))
 
 (defn ^IPersistentMap create
   "Adds document to the search index and waits for the response.
@@ -79,10 +82,37 @@
      (future (get index mapping-type id params))))
 
 (defn delete
-  "Deletes document from the index.
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete.html"
+  "Deletes document from the index."
   ([index mapping-type id]
-     )
-  ([index mapping-type id & {:as params}]
-     ))
+     (let [ft                  (es/delete (cnv/->delete-request index mapping-type id))
+           ^DeleteResponse res (.get ft)]
+       (cnv/delete-response->map res)))
+  ([index mapping-type id & {:as options}]
+     (let [ft                  (es/delete (cnv/->delete-request index mapping-type id options))
+           ^DeleteResponse res (.get ft)]
+       (cnv/delete-response->map res))))
+
+(defn count
+  "Performs a count query."
+  ([index mapping-type]
+     (count index mapping-type (q/match-all)))
+  ([index mapping-type query]
+     (let [ft (es/count (cnv/->count-request index mapping-type {:query query}))
+           ^CountResponse res (.get ft)]
+       (merge {:count (.getCount res)}
+              (cnv/broadcast-operation-response->map res))))
+  ([index mapping-type query & {:as options}]
+     (let [ft (es/count (cnv/->count-request index mapping-type (merge options
+                                                                      {:query query})))
+           ^CountResponse res (.get ft)]
+       (merge {:count (.getCount res)}
+              (cnv/broadcast-operation-response->map res)))))
+
+
+;; TODO: present?
+;; TODO: search
+;; TODO: search-all-types
+;; TODO: search-all-indexes-and-types
+;; TODO: multi-get
+;; TODO: scroll
+;; TODO: replace

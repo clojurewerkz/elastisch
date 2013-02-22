@@ -13,9 +13,9 @@
 
 (defn- broadcast-operation-response?
   [m]
-  (and (:total-shards m)
-       (:successful-shards m)
-       (:failed-shards m)))
+  (and (get-in m [:_shards :total])
+       (get-in m [:_shards :successful])
+       (get-in m [:_shards :failed])))
 
 
 ;;

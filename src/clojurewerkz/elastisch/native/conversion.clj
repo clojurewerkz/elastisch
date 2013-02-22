@@ -8,9 +8,13 @@
            clojure.lang.IPersistentMap
            org.elasticsearch.common.xcontent.XContentType
            org.elasticsearch.index.VersionType
+           ;; Actions
            org.elasticsearch.action.ShardOperationFailedException
            [org.elasticsearch.action.index IndexRequest IndexResponse]
            [org.elasticsearch.action.get GetRequest GetResponse]
+           [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
+           [org.elasticsearch.action.count CountRequest CountResponse]
+           ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
@@ -33,6 +37,13 @@
 ;;
 ;; Implementation
 ;;
+
+(defn- ^"[Ljava.lang.String;" ->string-array
+  "Coerces argument to an array of strings"
+  [index-name]
+  (if (coll? index-name)
+    (into-array String index-name)
+    (into-array String [index-name])))
 
 (def ^{:const true}
   default-content-type XContentType/JSON)
@@ -120,7 +131,7 @@
   ([index mapping-type ^Map doc]
      ;; default content type used by IndexRequest is JSON. MK.
      (-> (IndexRequest. (name index) (name mapping-type))
-         (.source ^Map (wlk/stringify-keys doc))))
+         (.setSource ^Map (wlk/stringify-keys doc))))
   ;; non-variadic because it is more convenient and efficient to
   ;; invoke this internal implementation fn this way. MK.
   ([index mapping-type ^Map doc ^String {:keys [id
@@ -134,46 +145,46 @@
                                                 percolate
                                                 content-type]}]
      (let [ir (-> (IndexRequest. (name index) (name mapping-type))
-                  (.source ^Map (wlk/stringify-keys doc)))]
+                  (.setSource ^Map (wlk/stringify-keys doc)))]
        (when id
-         (.id ir id))
+         (.setId ir id))
        (when content-type
-         (.contentType ir (to-content-type content-type)))
+         (.setContentType ir (to-content-type content-type)))
        (when routing
-         (.routing ir routing))
+         (.setRouting ir routing))
        (when parent
-         (.parent ir parent))
+         (.setParent ir parent))
        (when timestamp
-         (.timestamp ir timestamp))
+         (.setTimestamp ir timestamp))
        (when ttl
-         (.ttl ir ttl))
+         (.setTtl ir ttl))
        (when op-type
-         (.opType ir ^String (.toLowerCase (name op-type))))
+         (.setOpType ir ^String (.toLowerCase (name op-type))))
        (when refresh
-         (.refresh ir))
+         (.setRefresh ir refresh))
        (when version-type
-         (.versionType ir (to-version-type version-type)))
+         (.setVersionType ir (to-version-type version-type)))
        (when percolate
-         (.percolate ir percolate))
+         (.setPercolate ir percolate))
        ir)))
 
 (defn ^IPersistentMap index-response->map
   "Converts an index action response to a Clojure map"
   [^IndexResponse r]
   ;; underscored aliases are there to match REST API responses
-  {:index    (.index r)
-   :_index   (.index r)
-   :id       (.id r)
-   :_id      (.id r)
-   :type     (.type r)
-   :_type    (.type r)
-   :version  (.version r)
-   :_version (.version r)
-   :matches  (.matches r)})
+  {:index    (.getIndex r)
+   :_index   (.getIndex r)
+   :id       (.getId r)
+   :_id      (.getId r)
+   :type     (.getType r)
+   :_type    (.getType r)
+   :version  (.getVersion r)
+   :_version (.getVersion r)
+   :matches  (.getMatches r)})
 
 
 ;;
-;; Get requests
+;; Actions
 ;;
 
 (defn ^GetRequest ->get-request
@@ -184,46 +195,82 @@
                                           routing fields]}]
      (let [gr (GetRequest. (name index) (name mapping-type) id)]
        (when routing
-         (.routing gr routing))
+         (.setRouting gr routing))
        (when parent
-         (.parent gr parent))
+         (.setParent gr parent))
        (when preference
-         (.preference gr preference))
+         (.setPreference gr preference))
        (when fields
-         (.fields gr (into-array String fields)))
+         (.setFields gr (into-array String fields)))
        gr)))
 
 (defn ^IPersistentMap get-response->map
   [^GetResponse r]
-  (let [s (wlk/keywordize-keys (into {} (.sourceAsMap r)))]
+  (let [s (wlk/keywordize-keys (into {} (.getSourceAsMap r)))]
     ;; underscored aliases are there to match REST API responses
-    {:exists? (.exists r)
-     :exists  (.exists r)
-     :index   (.index r)
-     :_index  (.index r)
-     :type    (.type r)
-     :_type   (.type r)
-     :id      (.id r)
-     :_id     (.id r)
-     :version  (.version r)
-     :_version (.version r)
+    {:exists? (.isExists r)
+     :exists  (.isExists r)
+     :index   (.getIndex r)
+     :_index  (.getIndex r)
+     :type    (.getType r)
+     :_type   (.getType r)
+     :id      (.getId r)
+     :_id     (.getId r)
+     :version  (.getVersion r)
+     :_version (.getVersion r)
      :empty?   (.isSourceEmpty r)
      :source   s
      :_source  s
      ;; TODO: convert GetFields to maps
-     :fields   (into {} (.fields r))}))
+     :fields   (into {} (.getFields r))}))
 
+(defn ^CountRequest ->count-request
+  ([index-name options]
+     (->count-request index-name [] options))
+  ([index-name mapping-type {:keys [query min-score routing]}]
+     (let [r (CountRequest. (->string-array index-name))]
+       (.setTypes r (->string-array mapping-type))
+       (when query
+         (.setQuery r ^Map (wlk/stringify-keys query)))
+       (when min-score
+         (.setMinScore r min-score))
+       (when routing
+         (.setRouting r (->string-array routing)))
+       r)))
+
+(defn ^DeleteRequest ->delete-request
+  ([index-name mapping-type id]
+     (DeleteRequest. index-name mapping-type id))
+  ([index-name mapping-type id {:keys [routing refresh version version-type parent]}]
+     (let [r (DeleteRequest. index-name mapping-type id)]
+       (when routing
+         (.setRouting r routing))
+       (when refresh
+         (.setRefresh r refresh))
+       (when refresh
+         (.setRefresh r refresh))
+       (when version
+         (.setVersion r version))
+       (when version-type
+         (.setVersionType r version-type))
+       (when parent
+         (.setParent r parent))
+       r)))
+
+(defn ^IPersistentMap delete-response->map
+  [^DeleteResponse r]
+  ;; matches REST API responses
+  {:found    (not (.isNotFound r))
+   :found?   (not (.isNotFound r))
+   :_index   (.getIndex r)
+   :_type    (.getType r)
+   :_version (.getVersion r)
+   :_id      (.getId r)
+   :ok       true})
 
 ;;
-;; Admin operations
+;; Administrative Actions
 ;;
-
-(defn- ^"[Ljava.lang.String;" ->string-array
-  "Coerces argument to an array of strings"
-  [index-name]
-  (if (coll? index-name)
-    (into-array String index-name)
-    (into-array String [index-name])))
 
 (defn ^IndicesExistsRequest ->index-exists-request
   [index-name]
@@ -234,10 +281,10 @@
   (let [r (CreateIndexRequest. index-name)
         m (wlk/stringify-keys mappings)]
     (when settings
-      (.settings r ^Map settings))
+      (.setSettings r ^Map settings))
     (when mappings
       (doseq [[k v] m]
-        (.mapping r ^String k ^Map v)))
+        (.addMapping r ^String k ^Map v)))
     r))
 
 (defn ^DeleteIndexRequest ->delete-index-request
@@ -249,7 +296,7 @@
   (let [ary (->string-array index-name)
         m   (wlk/stringify-keys settings)]
     (doto (UpdateSettingsRequest. ary)
-      (.settings ^Map m))))
+      (.setSettings ^Map m))))
 
 (defn ^OpenIndexRequest ->open-index-request
   [index-name]
@@ -264,15 +311,15 @@
   (let [ary (->string-array index-name)
         r   (OptimizeRequest. ary)]
     (when wait-for-merge
-      (.waitForMerge r))
+      (.setWaitForMerge r wait-for-merge))
     (when max-num-segments
-      (.maxNumSegments r max-num-segments))
+      (.setMaxNumSegments r max-num-segments))
     (when only-expunge-deletes
-      (.onlyExpungeDeletes r))
+      (.setOnlyExpungeDeletes r only-expunge-deletes))
     (when flush
-      (.flush r))
+      (.setFlush r flush))
     (when refresh
-      (.refresh r))
+      (.setRefresh r refresh))
     r))
 
 (defn ^FlushRequest ->flush-index-request
@@ -280,11 +327,11 @@
   (let [ary (->string-array index-name)
         r   (FlushRequest. ary)]
     (when force
-      (.force r))
+      (.setForce r force))
     (when full
-      (.full r))
+      (.setFull r full))
     (when refresh
-      (.refresh r))
+      (.setRefresh r refresh))
     r))
 
 (defn ^RefreshRequest ->refresh-index-request
@@ -299,10 +346,11 @@
 
 (defn ^IPersistentMap broadcast-operation-response->map
   [^BroadcastOperationResponse res]
-  {:total-shards      (.totalShards res)
-   :successful-shards (.successfulShards res)
-   :failed-shards     (.failedShards res)
-   :shard-failures    (map shard-operation-failed-exception->map (.shardFailures res))})
+  ;; matches REST API responses
+  {:_shards {:total      (.getTotalShards res)
+             :successful (.getSuccessfulShards res)
+             :failed     (.getFailedShards res)
+             :failures   (map shard-operation-failed-exception->map (.getShardFailures res))}})
 
 
 (defn ^GatewaySnapshotRequest ->gateway-snapshot-request
@@ -314,13 +362,13 @@
   (let [ary (->string-array index-name)
         r   (ClearIndicesCacheRequest. ary)]
     (when filter-cache
-      (.filterCache r))
+      (.setFilterCache r filter-cache))
     (when field-data-cache
-      (.fieldDataCache r))
+      (.setFieldDataCache r field-data-cache))
     (when id-cache
-      (.idCache r))
+      (.setIdCache r id-cache))
     (when fields
-      (.fields r (->string-array fields)))
+      (.setFields r (->string-array fields)))
     r))
 
 
@@ -333,25 +381,25 @@
             search merge flush refresh]}]
      (let [r   (IndicesStatsRequest.)]
        (when docs
-         (.docs r docs))
+         (.setDocs r docs))
        (when store
-         (.store r store))
+         (.setStore r store))
        (when indexing
-         (.indexing r indexing))
+         (.setIndexing r indexing))
        (when types
-         (.types r (into-array String types)))
+         (.setTypes r (into-array String types)))
        (when groups
-         (.groups r (into-array String groups)))
+         (.setGroups r (into-array String groups)))
        (when get
-         (.get r get))
+         (.setGet r get))
        (when search
-         (.search r search))
+         (.setSearch r search))
        (when merge
-         (.merge r merge))
+         (.setMerge r merge))
        (when flush
-         (.flush r flush))
+         (.setFlush r flush))
        (when refresh
-         (.refresh r refresh))
+         (.setRefresh r refresh))
        r)))
 
 (defn ^IndicesStatusRequest ->indices-status-request
@@ -359,9 +407,9 @@
   (let [ary (->string-array index-name)
         r   (IndicesStatusRequest. ary)]
     (when recovery
-      (.recovery r))
+      (.setRecovery r recovery))
     (when snapshot
-      (.snapshot r))
+      (.setSnapshot r snapshot))
     r))
 
 (defn ^IndicesSegmentsRequest ->indices-segments-request

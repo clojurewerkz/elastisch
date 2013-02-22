@@ -47,7 +47,7 @@
   [^String index-name & {:keys [settings mappings]}]
   (let [ft                       (es/admin-index-create (cnv/->create-index-request index-name settings mappings))
         ^CreateIndexResponse res (.get ft)]
-    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 
 (defn exists?
@@ -55,7 +55,7 @@
   [index-name]
   (let [ft                        (es/admin-index-exists (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.get ft)]
-    (.exists res)))
+    (.isExists res)))
 
 
 (defn delete
@@ -63,7 +63,7 @@
   [^String index-name]
   (let [ft                       (es/admin-index-delete (cnv/->delete-index-request index-name))
         ^DeleteIndexResponse res (.get ft)]
-    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 
 (defn update-settings
@@ -79,14 +79,14 @@
   [index-name]
   (let [ft                     (es/admin-open-index (cnv/->open-index-request index-name))
         ^OpenIndexResponse res (.get ft)]
-    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn close
   "Closes an index"
   [index-name]
   (let [ft                     (es/admin-close-index (cnv/->close-index-request index-name))
         ^CloseIndexResponse res (.get ft)]
-    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn optimize
   "Optimizes an index or multiple indices"
@@ -178,23 +178,23 @@
   [ops & {:as options}]
   (let [ft                          (es/admin-update-aliases (cnv/->indices-aliases-request ops options))
         ^IndicesAliasesResponse res (.get ft)]
-    {:ok (.acknowledged res) :acknowledged (.acknowledged res)}))
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn create-template
   [^String template-name & {:as options}]
   (let [ft                            (es/admin-put-index-template (cnv/->create-index-template-request template-name options))
         ^PutIndexTemplateResponse res (.get ft)]
-    {:ok true :acknowledged (.acknowledged res)}))
+    {:ok true :acknowledged (.isAcknowledged res)}))
 
 (defn put-template
   [^String template-name & {:as options}]
   (let [ft                            (es/admin-put-index-template (cnv/->put-index-template-request template-name options))
         ^PutIndexTemplateResponse res (.get ft)]
-    {:ok true :acknowledged (.acknowledged res)}))
+    {:ok true :acknowledged (.isAcknowledged res)}))
 
 (defn delete-template
   [^String template-name]
   (let [ft                               (es/admin-delete-index-template (cnv/->delete-index-template-request template-name))
         ^DeleteIndexTemplateResponse res (.get ft)]
-    {:ok true :acknowledged (.acknowledged res)}))
+    {:ok true :acknowledged (.isAcknowledged res)}))
   
