@@ -6,8 +6,10 @@
                  [cheshire              "5.0.2"]
                  [clj-http              "0.6.4" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "0.12.0"]
-                 ;; to get the Java client. MK.
-                 [org.elasticsearch/elasticsearch "0.20.5"]]
+                 ;; used by the native client. Note that 0.21.x introduces major
+                 ;; API breakages (see https://github.com/elasticsearch/elasticsearch/commit/cc83c2f848be69a77f1275fe1ff5363dcdd4c955)
+                 ;; and is not currently released so we have to use snapshots. MK.
+                 [org.elasticsearch/elasticsearch "0.21.0.Beta1-SNAPSHOT"]]
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
