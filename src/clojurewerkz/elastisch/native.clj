@@ -10,6 +10,7 @@
            [org.elasticsearch.action.get GetRequest MultiGetRequest]
            org.elasticsearch.action.delete.DeleteRequest
            org.elasticsearch.action.count.CountRequest
+           org.elasticsearch.action.search.SearchRequest
            ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -113,6 +114,11 @@
   "Executes a count action request"
   [^CountRequest req]
   (.count ^Client *client* req))
+
+(defn ^ActionFuture search
+  "Executes a search action request"
+  [^SearchRequest req]
+  (.search ^Client *client* req))
 
 
 ;;

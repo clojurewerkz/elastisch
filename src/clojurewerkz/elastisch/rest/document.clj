@@ -85,7 +85,7 @@
 
    Passing index name as \"_all\" means searching across all indexes."
   [index mapping-type & {:as options}]
-  (let [qk   [:search_type :scroll]
+  (let [qk   [:search_type :scroll :routing :preference]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index)
@@ -96,7 +96,7 @@
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
   [index & {:as options}]
-  (let [qk   [:search_type :scroll]
+  (let [qk   [:search_type :scroll :routing :preference]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index))
@@ -107,7 +107,7 @@
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
    ElasticSearch cluster so use this function with care."
   [& {:as options}]
-  (let [qk   [:search_type :scroll]
+  (let [qk   [:search_type :scroll :routing :preference]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url)
@@ -118,7 +118,7 @@
   "Performs a scroll query, fetching the next page of results from a
    query given a scroll id"
   [scroll-id & {:as options}]
-  (let [qk   [:search_type :scroll]
+  (let [qk   [:search_type :scroll :routing :preference]
         qp   (assoc (select-keys options qk) :scroll_id scroll-id)
         body (apply dissoc (concat [options] qk))]
     (rest/get (rest/scroll-url)

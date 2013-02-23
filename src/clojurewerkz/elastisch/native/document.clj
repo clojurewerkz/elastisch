@@ -6,7 +6,8 @@
   (:import clojure.lang.IPersistentMap
            org.elasticsearch.action.get.GetResponse
            org.elasticsearch.action.count.CountResponse
-           org.elasticsearch.action.delete.DeleteResponse))
+           org.elasticsearch.action.delete.DeleteResponse
+           org.elasticsearch.action.search.SearchResponse))
 
 (defn ^IPersistentMap create
   "Adds document to the search index and waits for the response.
@@ -160,7 +161,15 @@
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res)))))
 
-;; TODO: search
+(defn search
+  "Performs a search query across one or more indexes and one or more mapping types.
+
+   Passing index name as \"_all\" means searching across all indexes."
+  [index mapping-type & {:as options}]
+  (let [ft                  (es/search (cnv/->search-request index mapping-type options))
+        ^SearchResponse res (.get ft)]
+    (cnv/search-response->seq res)))
+
 ;; TODO: search-all-types
 ;; TODO: search-all-indexes-and-types
 ;; TODO: scroll

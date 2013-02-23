@@ -14,6 +14,8 @@
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
+           [org.elasticsearch.action.search SearchRequest SearchResponse]
+           [org.elasticsearch.search SearchHits SearchHit]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -299,6 +301,78 @@
    :_version (.getVersion r)
    :_id      (.getId r)
    :ok       true})
+
+(defn ^SearchRequest ->search-request
+  [index-name mapping-type {:keys [search-type scroll routing
+                                   preference] :as options}]
+  (let [r  (doto (SearchRequest. (->string-array index-name))
+             (.setTypes (->string-array mapping-type)))
+        excludes [:search_type :scroll :routing :preference]
+        source   (apply dissoc (concat [options] excludes))
+        m        (wlk/stringify-keys source)]
+    (.setSource r ^Map m)
+    (when search-type
+      (.setSearchType r ^String search-type))
+    (when routing
+      (.setRouting r ^String routing))
+    (when scroll
+      (.setScroll r ^String scroll))
+    r))
+
+(defn- ^IPersistentMap search-hit->map
+  [^SearchHit sh]
+  {:_index    (.getIndex sh)
+   :_type     (.getType sh)
+   :_id       (.getId sh)
+   :_score    (.getScore sh)
+   :_version  (.getVersion sh)
+   :_source   (wlk/keywordize-keys (into {} (.getSource sh)))})
+
+(defn- search-hits->seq
+  [^SearchHits hits]
+  {:total     (.getTotalHits hits)
+   :max_score (.getMaxScore hits)
+   :hits      (map search-hit->map (.getHits hits))})
+
+(defn search-response->seq
+  [^SearchResponse r]
+  ;; Example REST API response:
+  ;; 
+  ;; {:took 18,
+  ;;  :timed_out false,
+  ;;  :_shards {:total 5, :successful 5, :failed 0},
+  ;;  :hits {
+  ;;    :total 4,
+  ;;    :max_score 1.0,
+  ;;    :hits [{:_index "articles",
+  ;;       :_type "article",
+  ;;       :_id 1,
+  ;;       :_score 1.0,
+  ;;       :_source {:latest-edit {:date "2012-03-26T06:07:00", :author nil},
+  ;;                 :number-of-edits 10,
+  ;;                 :language "English",
+  ;;                 :title "ElasticSearch",
+  ;;                 :url "http://en.wikipedia.org/wiki/ElasticSearch",
+  ;;                 :summary "...",
+  ;;                 :tags "..." }}
+  ;;       {:_index "articles",
+  ;;       :_type "article",
+  ;;       :_id 2,
+  ;;       :_score 1.0,
+  ;;       :_source {:latest-edit {:date "2012-03-11T02:19:00", :author "..." },
+  ;;                 :number-of-edits 48,
+  ;;                 :language "English",
+  ;;                 :title "Apache Lucene",
+  ;;                 :url "http://en.wikipedia.org/wiki/Apache_Lucene",
+  ;;                 :summary "..." }}]
+  ;;  }
+  ;; }
+  {:took      (.getTookInMillis r)
+   :timed_out (.isTimedOut r)
+   :_shards   {:total      (.getTotalShards r)
+               :successful (.getSuccessfulShards r)
+               :failed     (.getFailedShards r)}
+   :hits      (search-hits->seq (.getHits r))})
 
 ;;
 ;; Administrative Actions
