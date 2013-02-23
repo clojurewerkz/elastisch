@@ -1,8 +1,7 @@
 # Elastisch, a Clojure client for ElasticSearch
 
 Elastisch is a minimalistic [Clojure client for
-ElasticSearch](http://clojureelasticsearch.info), a modern distributed
-RESTful search engine.
+ElasticSearch](http://clojureelasticsearch.info), a modern distributed search engine.
 
 
 ## Project Goals
@@ -79,6 +78,13 @@ Elastisch is built from the ground up for Clojure 1.3 and up.
 The most recent stable release is highly recommended.
 
 
+## REST and Native Clients
+
+Elastisch `1.0` only offers a REST API client. Elastisch `1.1` will feature
+a native (transport) client with nearly identical API.
+
+
+
 ## Elastisch Is a ClojureWerkz Project
 
 Elastisch is part of the group of [Clojure libraries](http://clojurewerkz.org) known as ClojureWerkz, together with
@@ -126,12 +132,3 @@ with your changes and all tests pass, submit a pull request on GitHub.
 Copyright (C) 2011-2013 Alex Petrov, Michael S. Klishin
 
 Distributed under the Eclipse Public License, the same as Clojure.
-
-
-
-## FAQ
-
-### Will Native Java API Be Supported?
-
-Elastisch will support ES' native (non-HTTP) Java API in one of the future
-releases.
