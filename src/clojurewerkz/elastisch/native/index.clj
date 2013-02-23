@@ -5,7 +5,7 @@
   (:import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse
            org.elasticsearch.action.admin.indices.create.CreateIndexResponse
            org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
-           org.elasticsearch.action.admin.indices.stats.IndicesStats
+           org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse
            org.elasticsearch.action.index.IndexResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
@@ -140,13 +140,13 @@
    :flush : flush operation stats
    :refresh : refresh operation stats"
   ([]
-     (let [ft                (es/admin-index-stats (cnv/->index-stats-request))
-           ^IndicesStats res (.get ft)]
+     (let [ft                        (es/admin-index-stats (cnv/->index-stats-request))
+           ^IndicesStatsResponse res (.get ft)]
        ;; TODO: convert stats into a map
        res))
   ([& {:as options}]
-     (let [ft                (es/admin-index-stats (cnv/->index-stats-request options))
-           ^IndicesStats res (.get ft)]
+     (let [ft                        (es/admin-index-stats (cnv/->index-stats-request options))
+           ^IndicesStatsResponse res (.get ft)]
        ;; TODO: convert stats into a map
        res)))
 
