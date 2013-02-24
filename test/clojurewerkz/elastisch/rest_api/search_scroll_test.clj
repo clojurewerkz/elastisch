@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.rest-api.queries.scroll-query-test
+(ns clojurewerkz.elastisch.rest-api.search-scroll-test
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
@@ -7,7 +7,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest ^{:query true} test-basic-scan-query
+(deftest  test-basic-scan-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
@@ -27,7 +27,7 @@
     (is (= 4 (total-hits scan-response)))
     (is (= 4 (count scan-hits)))))
 
-(deftest ^{:query true} test-basic-scroll-query
+(deftest  test-basic-scroll-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
@@ -53,7 +53,7 @@
       (recur (:_scroll_id scroll-response) (concat results hits))
       (concat results hits))))
 
-(deftest ^{:query true} test-scroll-query-more-than-one-page
+(deftest test-scroll-query-more-than-one-page
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
