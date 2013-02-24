@@ -7,7 +7,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest  test-basic-scan-query
+(deftest ^{:rest true} test-basic-scan-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
@@ -27,7 +27,7 @@
     (is (= 4 (total-hits scan-response)))
     (is (= 4 (count scan-hits)))))
 
-(deftest  test-basic-scroll-query
+(deftest ^{:rest true} test-basic-scroll-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
