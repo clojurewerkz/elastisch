@@ -16,6 +16,5 @@
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/match-all))
         hits         (hits-from response)]
-    (println response)
     (is (any-hits? response))
     (is (= 4 (total-hits response)))))

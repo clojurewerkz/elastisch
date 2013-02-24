@@ -15,7 +15,7 @@
 ;; more-like-this
 ;;
 
-(deftest test-more-like-this
+(deftest ^{:rest true} test-more-like-this
   (let [index "articles"
         type  "article"]
     (idx/create index :mappings fx/articles-mapping)

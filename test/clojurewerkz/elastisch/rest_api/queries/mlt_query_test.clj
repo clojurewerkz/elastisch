@@ -14,7 +14,7 @@
 ;; mlt query
 ;;
 
-(deftest test-more-like-this-query
+(deftest ^{:query true :rest true} test-more-like-this-query
   (let [index-name   "articles"
         mapping-type "article"
         response (doc/search index-name mapping-type :query (q/mlt :like_text "technology, opensource, search, full-text search, distributed, software, lucene"
