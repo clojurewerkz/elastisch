@@ -170,7 +170,31 @@
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
 
-;; TODO: search-all-types
-;; TODO: search-all-indexes-and-types
-;; TODO: scroll
-;; TODO: replace
+(defn search-all-types
+  "Performs a search query across one or more indexes and all mapping types."
+  [index & {:as options}]
+  (let [ft                  (es/search (cnv/->search-request index "_all" options))
+        ^SearchResponse res (.get ft)]
+    (cnv/search-response->seq res)))
+
+(defn search-all-indexes-and-types
+  "Performs a search query across all indexes and all mapping types. This may put very high load on your
+   ElasticSearch cluster so use this function with care."
+  [& {:as options}]
+  (let [ft                  (es/search (cnv/->search-request "_all" "_all" options))
+        ^SearchResponse res (.get ft)]
+    (cnv/search-response->seq res)))
+
+(defn scroll
+  "Performs a scroll query, fetching the next page of results from a
+   query given a scroll id"
+  [scroll-id & {:as options}]
+  (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id))
+        ^SearchResponse res (.get ft)]
+    (cnv/search-response->seq res)))
+
+(defn replace
+  "Replaces document with given id with a new one"
+  [index mapping-type id document]
+  (delete index mapping-type id)
+  (put index mapping-type id document))

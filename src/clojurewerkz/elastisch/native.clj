@@ -10,7 +10,7 @@
            [org.elasticsearch.action.get GetRequest MultiGetRequest]
            org.elasticsearch.action.delete.DeleteRequest
            org.elasticsearch.action.count.CountRequest
-           org.elasticsearch.action.search.SearchRequest
+           [org.elasticsearch.action.search SearchRequest SearchScrollRequest]
            ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -119,6 +119,11 @@
   "Executes a search action request"
   [^SearchRequest req]
   (.search ^Client *client* req))
+
+(defn ^ActionFuture search-scroll
+  "Executes a search action request"
+  [^SearchScrollRequest req]
+  (.searchScroll ^Client *client* req))
 
 
 ;;

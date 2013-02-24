@@ -14,7 +14,7 @@
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
-           [org.elasticsearch.action.search SearchRequest SearchResponse]
+           [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
            [org.elasticsearch.search SearchHits SearchHit]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
@@ -317,6 +317,34 @@
       (.scroll r ^String scroll))
     r))
 
+(defn ^SearchScrollRequest ->search-scroll-request
+  [^String scroll-id]
+  (doto (SearchScrollRequest. scroll-id)
+    (.scroll)))
+
+(defprotocol ToClojure
+  "Auxilliary protocol that is used to recursively convert
+   Java maps to Clojure maps"
+  (->clj [o]))
+
+(extend-protocol ToClojure
+  java.util.Map
+  (->clj [o] (reduce (fn [m [^String k v]]
+                       (assoc m (keyword k) (->clj v)))
+                     {} (.entrySet o)))
+
+  java.util.List
+  (->clj [o] (vec (map ->clj o)))
+
+  java.lang.Object
+  (->clj [o] o)
+
+  nil
+  (->clj [_] nil))
+
+
+
+
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
   {:_index    (.getIndex sh)
@@ -324,7 +352,7 @@
    :_id       (.getId sh)
    :_score    (.getScore sh)
    :_version  (.getVersion sh)
-   :_source   (wlk/keywordize-keys (into {} (.getSource sh)))})
+   :_source   (wlk/keywordize-keys (->clj (.getSource sh)))})
 
 (defn- search-hits->seq
   [^SearchHits hits]
