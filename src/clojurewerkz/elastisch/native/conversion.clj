@@ -19,6 +19,7 @@
            [org.elasticsearch.search SearchHits SearchHit]
            [org.elasticsearch.search.facet Facets Facet]
            [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
+           [org.elasticsearch.search.facet.range RangeFacet RangeFacet$Entry]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -395,26 +396,8 @@
    :hits      (map search-hit->map (.getHits hits))})
 
 (defprotocol FacetConversion
-  (facet-to-map [facet] "Converts a facet into a Clojure map"))
+  (^IPersistentMap facet-to-map [facet] "Converts a facet into a Clojure map"))
 (extend-protocol FacetConversion
-  TermsFacet
-  (facet-to-map [^TermsFacet ft]
-    {:_type "terms"
-     :missing (.getMissingCount ft)
-     :total   (.getTotalCount ft)
-     :other   (.getOtherCount ft)
-     :terms   (map (fn [^TermsFacet$Entry et]
-                     ;; TODO: terms may have bytes and not string representation. MK.
-                     {:term (-> et .getTerm .string) :count (.getCount et)})
-                   (.getEntries ft))}))
-
-
-
-
-(defn- search-facets->seq
-  [^Facets facets]
-  ;; Example facets response from the REST API:
-  ;;
   ;; {:tags {:_type terms,
   ;;         :missing 0,
   ;;         :total 26,
@@ -429,6 +412,36 @@
   ;;                 {:term historia, :count 2}
   ;;                 {:term geografía, :count 2}
   ;;                 {:term full, :count 2}]}}
+  TermsFacet
+  (facet-to-map [^TermsFacet ft]
+    {:_type TermsFacet/TYPE
+     :missing (.getMissingCount ft)
+     :total   (.getTotalCount ft)
+     :other   (.getOtherCount ft)
+     :terms (map (fn [^TermsFacet$Entry et]
+                   ;; TODO: terms may have bytes and not string representation. MK.
+                   {:term (-> et .getTerm .string) :count (.getCount et)})
+                 (.getEntries ft))})
+
+  ;; {:ages {:_type range,
+  ;;         :ranges [{:from 18.0, :to 20.0, :count 0, :total_count 0, :total 0.0, :mean 0.0}
+  ;;                  {:from 21.0, :to 25.0, :count 1, :min 22.0, :max 22.0, :total_count 1, :total 22.0, :mean 22.0}
+  ;;                  {:from 26.0, :to 30.0, :count 2, :min 28.0, :max 29.0, :total_count 2, :total 57.0, :mean 28.5}
+  ;;                  {:from 30.0, :to 35.0, :count 0, :total_count 0, :total 0.0, :mean 0.0}
+  ;;                  {:to 45.0, :count 4, :min 22.0, :max 37.0, :total_count 4, :total 116.0, :mean 29.0}]}}
+  RangeFacet
+  (facet-to-map [^RangeFacet ft]
+    {:_type  RangeFacet/TYPE
+     :ranges (map (fn [^RangeFacet$Entry et]
+                    {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
+                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                  (.getEntries ft))}))
+
+
+
+
+(defn- search-facets->seq
+  [^Facets facets]
   (when facets
     (reduce (fn [acc [^String name ^Facet facet]]
               (assoc acc (keyword name) (facet-to-map facet)))

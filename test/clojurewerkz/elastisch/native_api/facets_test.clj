@@ -8,7 +8,7 @@
   (:use clojure.test clojurewerkz.elastisch.native.response))
 
 (th/maybe-connect-native-client)
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index)
 
 (deftest ^{:facets true :native true} test-term-facet-on-tags
   (let [index-name   "articles"
@@ -37,3 +37,18 @@
     ;; each term is a map with 2 keys: :term and :count
     (is (-> facets :tags :terms first :term))
     (is (-> facets :tags :terms first :count))))
+
+(deftest ^{:facets true :native true} test-range-facet-over-age
+  (let [index-name   "people"
+        mapping-type "person"
+        result       (doc/search index-name mapping-type
+                                 :query (q/match-all)
+                                 :facets {:ages {:range {:field "age"
+                                                         :ranges [{:from 18 :to 20}
+                                                                  {:from 21 :to 25}
+                                                                  {:from 26 :to 30}
+                                                                  {:from 30 :to 35}
+                                                                  {:to 45}]}}})
+        facets       (facets-from result)]
+    (is (>= 1 (-> facets :ages :ranges second :count)))
+    (is (>= 4 (-> facets :ages :ranges last :count)))))
