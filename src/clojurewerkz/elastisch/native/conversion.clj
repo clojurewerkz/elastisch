@@ -509,6 +509,8 @@
                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
                  (.getEntries ft))})
 
+  ;; TODO: filter facets
+
   QueryFacet
   (facet-to-map [^QueryFacet ft]
     {:_type   QueryFacet/TYPE
