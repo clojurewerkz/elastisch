@@ -24,6 +24,7 @@
            [org.elasticsearch.search.facet.datehistogram DateHistogramFacet DateHistogramFacet$Entry]
            org.elasticsearch.search.facet.statistical.StatisticalFacet
            [org.elasticsearch.search.facet.termsstats TermsStatsFacet TermsStatsFacet$Entry]
+           [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -497,6 +498,14 @@
                    ;; TODO: terms may have bytes and not string representation. MK.
                    {:term (-> et .getTerm .string) :count (.getCount et) :total_count (.getTotalCount et)
                     :min (.getMin et) :max (.getMax et) :total (.getTotal et) :mean (.getMean et)})
+                 (.getEntries ft))})
+
+  GeoDistanceFacet
+  (facet-to-map [^GeoDistanceFacet ft]
+    {:_type GeoDistanceFacet/TYPE
+     :terms (map (fn [^GeoDistanceFacet$Entry et]
+                   {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
+                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
                  (.getEntries ft))}))
 
 
