@@ -15,7 +15,9 @@
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
+           [org.elasticsearch.search.builder SearchSourceBuilder]
            [org.elasticsearch.search SearchHits SearchHit]
+           [org.elasticsearch.search.facet Facets Facet]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -302,12 +304,37 @@
 
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
-                                   preference] :as options}]
-  (let [r        (SearchRequest.)
-        excludes [:search_type :search-type :scroll :routing :preference]
-        source   (apply dissoc (concat [options] excludes))
-        m        (wlk/stringify-keys source)]
-    (.source r ^Map m)
+                                   preference
+                                   query facets from size timeout filter
+                                   min_score version fields sort stats] :as options}]
+  (let [r                       (SearchRequest.)
+        ^SearchSourceBuilder sb (SearchSourceBuilder.)]
+
+    ;; source
+    (when query
+      (.query sb ^Map (wlk/stringify-keys query)))
+    (when facets
+      (.facets sb ^Map (wlk/stringify-keys facets)))
+    (when from
+      (.from sb from))
+    (when size
+      (.size sb size))
+    (when timeout
+      (.timeout sb ^String timeout))
+    (when filter
+      (.filter sb ^Map (wlk/stringify-keys filter)))
+    (when fields
+      (.fields sb ^java.util.List fields))
+    (when version
+      (.version sb version))
+    ;; TODO: map support, asc/desc
+    (when sort
+      (.sort sb ^String sort))
+    (when stats
+      (.stats sb ->string-array stats))
+    (.source r sb)
+
+    ;; non-source
     (when index-name
       (.indices r (->string-array index-name)))
     (when mapping-type
@@ -318,6 +345,7 @@
       (.routing r ^String routing))
     (when scroll
       (.scroll r ^String scroll))
+
     r))
 
 (defn ^SearchScrollRequest ->search-scroll-request
@@ -365,10 +393,34 @@
    :max_score (.getMaxScore hits)
    :hits      (map search-hit->map (.getHits hits))})
 
+(defn- search-facets->seq
+  [^Facets facets]
+  ;; Example facets response from the REST API:
+  ;;
+  ;; {:tags {:_type terms,
+  ;;         :missing 0,
+  ;;         :total 26,
+  ;;         :other 6,
+  ;;         :terms [{:term text, :count 2}
+  ;;                 {:term technology, :count 2}
+  ;;                 {:term software, :count 2}
+  ;;                 {:term search, :count 2}
+  ;;                 {:term opensource, :count 2}
+  ;;                 {:term norteamérica, :count 2}
+  ;;                 {:term lucene, :count 2}
+  ;;                 {:term historia, :count 2}
+  ;;                 {:term geografía, :count 2}
+  ;;                 {:term full, :count 2}]}}
+  (when facets
+    (reduce (fn [acc [^String name ^Facet facet]]
+              (assoc acc (keyword name) facet))
+            {}
+            (.facetsAsMap facets))))
+
 (defn search-response->seq
   [^SearchResponse r]
   ;; Example REST API response:
-  ;; 
+  ;;
   ;; {:took 18,
   ;;  :timed_out false,
   ;;  :_shards {:total 5, :successful 5, :failed 0},
@@ -401,6 +453,7 @@
   {:took       (.getTookInMillis r)
    :timed_out  (.isTimedOut r)
    :_scroll_id (.getScrollId r)
+   :facets     (search-facets->seq (.getFacets r))
    ;; TODO: facets
    ;; TODO: suggestions
    :_shards    {:total      (.getTotalShards r)
