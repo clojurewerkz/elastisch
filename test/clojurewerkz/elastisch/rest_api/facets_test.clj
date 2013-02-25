@@ -13,7 +13,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         ;; match-all here makes faceting act effectively as with :global true but that's fine for this test
-        result       (doc/search index-name mapping-type :query (q/match-all) :facets {:tags {:terms {:field :tags}}})
+        result       (doc/search index-name mapping-type :query (q/match-all) :facets {:tags {:terms {:field "tags"}}})
         facets       (facets-from result)]
     (is (= 0 (-> facets :tags :missing)))
     (is (> (-> facets :tags :total) 25))
@@ -25,7 +25,7 @@
 (deftest ^{:facets true} test-term-facet-on-tags-with-global-scope
   (let [index-name   "articles"
         mapping-type "article"
-        result       (doc/search index-name mapping-type :query (q/query-string :query "T*") :facets {:tags {:terms {:field :tags} :global true}})
+        result       (doc/search index-name mapping-type :query (q/query-string :query "T*") :facets {:tags {:terms {:field "tags"} :global true}})
         facets       (facets-from result)]
     (is (= 0 (-> facets :tags :missing)))
     (is (> (-> facets :tags :total) 25))
