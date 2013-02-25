@@ -325,22 +325,22 @@
 (defprotocol ToClojure
   "Auxilliary protocol that is used to recursively convert
    Java maps to Clojure maps"
-  (->clj [o]))
+  (as-clj [o]))
 
 (extend-protocol ToClojure
   java.util.Map
-  (->clj [o] (reduce (fn [m [^String k v]]
-                       (assoc m (keyword k) (->clj v)))
+  (as-clj [o] (reduce (fn [m [^String k v]]
+                       (assoc m (keyword k) (as-clj v)))
                      {} (.entrySet o)))
 
   java.util.List
-  (->clj [o] (vec (map ->clj o)))
+  (as-clj [o] (vec (map as-clj o)))
 
   java.lang.Object
-  (->clj [o] o)
+  (as-clj [o] o)
 
   nil
-  (->clj [_] nil))
+  (as-clj [_] nil))
 
 
 
