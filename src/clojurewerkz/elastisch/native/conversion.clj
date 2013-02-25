@@ -564,7 +564,6 @@
    :timed_out  (.isTimedOut r)
    :_scroll_id (.getScrollId r)
    :facets     (search-facets->seq (.getFacets r))
-   ;; TODO: facets
    ;; TODO: suggestions
    :_shards    {:total      (.getTotalShards r)
                 :successful (.getSuccessfulShards r)
