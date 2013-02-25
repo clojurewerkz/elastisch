@@ -23,6 +23,7 @@
            [org.elasticsearch.search.facet.histogram HistogramFacet HistogramFacet$Entry]
            [org.elasticsearch.search.facet.datehistogram DateHistogramFacet DateHistogramFacet$Entry]
            org.elasticsearch.search.facet.statistical.StatisticalFacet
+           [org.elasticsearch.search.facet.termsstats TermsStatsFacet TermsStatsFacet$Entry]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -480,7 +481,23 @@
     {:_type   StatisticalFacet/TYPE
      :count (.getCount ft) :total (.getTotal ft) :sum_of_squares (.getSumOfSquares ft)
      :mean (.getMean ft) :min (.getMin ft) :max (.getMax ft) :variance (.getVariance ft)
-     :std_deviation (.getStdDeviation ft)}))
+     :std_deviation (.getStdDeviation ft)})
+
+  ;; {:comments {:_type "terms_stats",
+  ;;             :missing 0,
+  ;;             :terms ({:term "boom", :count 2, :total_count 2, :min 100.0, :max 388.0, :total 488.0, :mean 244.0}
+  ;;                     {:term "aha", :count 2, :total_count 2, :min 20.0, :max 120.0, :total 140.0, :mean 70.0}
+  ;;                     {:term "wheeeeeha", :count 1, :total_count 1, :min 4.0, :max 4.0, :total 4.0, :mean 4.0}
+  ;;                     {:term "booya", :count 1, :total_count 1, :min 44.0, :max 44.0, :total 44.0, :mean 44.0})}}
+  TermsStatsFacet
+  (facet-to-map [^TermsStatsFacet ft]
+    {:_type TermsStatsFacet/TYPE
+     :missing (.getMissingCount ft)
+     :terms (map (fn [^TermsStatsFacet$Entry et]
+                   ;; TODO: terms may have bytes and not string representation. MK.
+                   {:term (-> et .getTerm .string) :count (.getCount et) :total_count (.getTotalCount et)
+                    :min (.getMin et) :max (.getMax et) :total (.getTotal et) :mean (.getMean et)})
+                 (.getEntries ft))}))
 
 
 
