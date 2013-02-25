@@ -18,12 +18,12 @@
 ;;
 
 (deftest test-get-with-non-existing-document
-  (is (nil? (doc/get index-name mapping-type "1"))))
+  (is (nil? (doc/get "pages" "page" "as8d8as882jk2jk9#d77$%88s7"))))
 
 (deftest test-get-with-existing-id-that-needs-url-encoding
   (let [id "http://www.faz.net/artikel/C31325/piratenabwehr-keine-kriegswaffen-fuer-private-dienste-30683040.html"]
-    (doc/put index-name mapping-type id fx/person-jack)
-    (is (doc/get index-name mapping-type id))))
+    (doc/put "pages" "page" id {:url id})
+    (is (doc/get "pages" "page" id))))
 
 ;;
 ;; present?

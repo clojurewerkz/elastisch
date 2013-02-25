@@ -20,13 +20,9 @@
 ;;
 
 (deftest ^{:native true} test-get-with-non-existing-document
-  (doc/create index-name mapping-type {:name "Michael"})
-  (is (nil? (doc/get index-name mapping-type "1999999"))))
+  (doc/create "things" "thing" {:name "Thingy"})
+  (is (nil? (doc/get "things" "thing" "1999999"))))
 
-(deftest ^{:native true} test-get-with-existing-id-that-needs-url-encoding
-  (let [id "http://www.faz.net/artikel/C31325/piratenabwehr-keine-kriegswaffen-fuer-private-dienste-30683040.html"]
-    (doc/put index-name mapping-type id fx/person-jack)
-    (is (doc/get index-name mapping-type id))))
 
 ;;
 ;; present?

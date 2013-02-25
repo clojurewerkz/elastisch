@@ -7,7 +7,7 @@
 (defn reset-indexes*
   []
   (doseq [i ["articles" "people" "tweets" "aliased-index" "group1" "group2" "alt-tweets"
-             "elastisch-index-without-mappings"]]
+             "elastisch-index-without-mappings" "things" "pages"]]
     (idx/delete i))
   (idx/delete-template "accounts"))
 
