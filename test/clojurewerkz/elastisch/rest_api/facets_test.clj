@@ -1,10 +1,9 @@
 (ns clojurewerkz.elastisch.rest-api.facets-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest     :as rest]
+            [clojurewerkz.elastisch.rest          :as rest]
             [clojurewerkz.elastisch.rest.index    :as idx]
-            [clojurewerkz.elastisch.query    :as q]
-            [clojurewerkz.elastisch.fixtures :as fx])
+            [clojurewerkz.elastisch.query         :as q]
+            [clojurewerkz.elastisch.fixtures      :as fx])
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
