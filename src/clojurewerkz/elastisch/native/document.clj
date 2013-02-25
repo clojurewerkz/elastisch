@@ -173,7 +173,7 @@
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
   [index & {:as options}]
-  (let [ft                  (es/search (cnv/->search-request index "_all" options))
+  (let [ft                  (es/search (cnv/->search-request index nil options))
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
 
@@ -181,7 +181,7 @@
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
    ElasticSearch cluster so use this function with care."
   [& {:as options}]
-  (let [ft                  (es/search (cnv/->search-request "_all" "_all" options))
+  (let [ft                  (es/search (cnv/->search-request [] nil options))
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
 

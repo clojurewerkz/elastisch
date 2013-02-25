@@ -303,12 +303,15 @@
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type scroll routing
                                    preference] :as options}]
-  (let [r  (doto (SearchRequest. (->string-array index-name))
-             (.types (->string-array mapping-type)))
+  (let [r        (SearchRequest.)
         excludes [:search_type :scroll :routing :preference]
         source   (apply dissoc (concat [options] excludes))
         m        (wlk/stringify-keys source)]
     (.source r ^Map m)
+    (when index-name
+      (.indices r (->string-array index-name)))
+    (when mapping-type
+      (.types r (->string-array mapping-type)))
     (when search-type
       (.searchType r ^String search-type))
     (when routing
@@ -352,7 +355,7 @@
    :_id       (.getId sh)
    :_score    (.getScore sh)
    :_version  (.getVersion sh)
-   :_source   (wlk/keywordize-keys (->clj (.getSource sh)))})
+   :_source   (wlk/keywordize-keys (as-clj (.getSource sh)))})
 
 (defn- search-hits->seq
   [^SearchHits hits]
