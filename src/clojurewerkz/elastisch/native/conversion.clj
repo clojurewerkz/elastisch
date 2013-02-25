@@ -25,6 +25,7 @@
            org.elasticsearch.search.facet.statistical.StatisticalFacet
            [org.elasticsearch.search.facet.termsstats TermsStatsFacet TermsStatsFacet$Entry]
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
+           org.elasticsearch.search.facet.query.QueryFacet
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -506,7 +507,12 @@
      :terms (map (fn [^GeoDistanceFacet$Entry et]
                    {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
-                 (.getEntries ft))}))
+                 (.getEntries ft))})
+
+  QueryFacet
+  (facet-to-map [^QueryFacet ft]
+    {:_type   QueryFacet/TYPE
+     :count   (.getCount ft)}))
 
 
 
