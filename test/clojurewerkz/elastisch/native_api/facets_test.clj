@@ -18,7 +18,6 @@
                                  :query (q/match-all)
                                  :facets {:tags {:terms {:field "tags"}}})
         facets       (facets-from result)]
-    (println facets)
     (is (= 0 (-> facets :tags :missing)))
     (is (> (-> facets :tags :total) 25))
     ;; each term is a map with 2 keys: :term and :count
