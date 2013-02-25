@@ -312,8 +312,8 @@
       (.indices r (->string-array index-name)))
     (when mapping-type
       (.types r (->string-array mapping-type)))
-    (when (or search-type search_type)
-      (.searchType r ^String (or search-type search_type)))
+    (when-let [s (or search-type search_type)]
+      (.searchType r ^String s))
     (when routing
       (.routing r ^String routing))
     (when scroll
