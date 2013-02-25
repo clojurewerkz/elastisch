@@ -61,7 +61,6 @@
                                  :facets {:ages {:histogram {:field    "age"
                                                              :interval 5}}})
         facets       (facets-from result)]
-    (println facets)
     (is (>= 1 (-> facets :ages :entries first :count)))
     (is (>= 2 (-> facets :ages :entries second :count)))
     (is (>= 1 (-> facets :ages :entries last :count)))))
