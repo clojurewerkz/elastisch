@@ -22,6 +22,7 @@
            [org.elasticsearch.search.facet.range RangeFacet RangeFacet$Entry]
            [org.elasticsearch.search.facet.histogram HistogramFacet HistogramFacet$Entry]
            [org.elasticsearch.search.facet.datehistogram DateHistogramFacet DateHistogramFacet$Entry]
+           org.elasticsearch.search.facet.statistical.StatisticalFacet
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -447,9 +448,9 @@
   (facet-to-map [^HistogramFacet ft]
     {:_type   HistogramFacet/TYPE
      :entries (map (fn [^HistogramFacet$Entry et]
-                    {:key (.getKey et) :count (.getCount et) :total_count (.getTotalCount et)
-                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
-                  (.getEntries ft))})
+                     {:key (.getKey et) :count (.getCount et) :total_count (.getTotalCount et)
+                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                   (.getEntries ft))})
 
   ;; {:dates {:_type date_histogram,
   ;;          :entries [{:time 1343685600000, :count 1}
@@ -459,11 +460,27 @@
   ;;                    {:time 1343898000000, :count 1}]}}
   DateHistogramFacet
   (facet-to-map [^DateHistogramFacet ft]
-    {:_type   HistogramFacet/TYPE
+    {:_type   DateHistogramFacet/TYPE
      :entries (map (fn [^DateHistogramFacet$Entry et]
-                    {:time (.getTime et) :count (.getCount et) :total_count (.getTotalCount et)
-                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
-                  (.getEntries ft))}))
+                     {:time (.getTime et) :count (.getCount et) :total_count (.getTotalCount et)
+                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                   (.getEntries ft))})
+
+  ;; {:comments {:total 68.0,
+  ;;             :mean 22.666666666666668,
+  ;;             :count 3,
+  ;;             :max 44.0,
+  ;;             :std_deviation 16.438437341250605,
+  ;;             :sum_of_squares 2352.0,
+  ;;             :min 4.0,
+  ;;             :variance 270.22222222222223,
+  ;;             :_type "statistical"}}
+  StatisticalFacet
+  (facet-to-map [^StatisticalFacet ft]
+    {:_type   StatisticalFacet/TYPE
+     :count (.getCount ft) :total (.getTotal ft) :sum_of_squares (.getSumOfSquares ft)
+     :mean (.getMean ft) :min (.getMin ft) :max (.getMax ft) :variance (.getVariance ft)
+     :std_deviation (.getStdDeviation ft)}))
 
 
 
