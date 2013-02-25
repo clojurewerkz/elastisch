@@ -18,6 +18,7 @@
            [org.elasticsearch.search.builder SearchSourceBuilder]
            [org.elasticsearch.search SearchHits SearchHit]
            [org.elasticsearch.search.facet Facets Facet]
+           [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -393,6 +394,23 @@
    :max_score (.getMaxScore hits)
    :hits      (map search-hit->map (.getHits hits))})
 
+(defprotocol FacetConversion
+  (facet-to-map [facet] "Converts a facet into a Clojure map"))
+(extend-protocol FacetConversion
+  TermsFacet
+  (facet-to-map [^TermsFacet ft]
+    {:_type "terms"
+     :missing (.getMissingCount ft)
+     :total   (.getTotalCount ft)
+     :other   (.getOtherCount ft)
+     :terms   (map (fn [^TermsFacet$Entry et]
+                     ;; TODO: terms may have bytes and not string representation. MK.
+                     {:term (-> et .getTerm .string) :count (.getCount et)})
+                   (.getEntries ft))}))
+
+
+
+
 (defn- search-facets->seq
   [^Facets facets]
   ;; Example facets response from the REST API:
@@ -413,7 +431,7 @@
   ;;                 {:term full, :count 2}]}}
   (when facets
     (reduce (fn [acc [^String name ^Facet facet]]
-              (assoc acc (keyword name) facet))
+              (assoc acc (keyword name) (facet-to-map facet)))
             {}
             (.facetsAsMap facets))))
 
