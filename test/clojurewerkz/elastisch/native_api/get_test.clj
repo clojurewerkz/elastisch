@@ -14,16 +14,6 @@
 (def ^{:const true} index-name "people")
 (def ^{:const true} mapping-type "person")
 
-
-;;
-;; get
-;;
-
-(deftest ^{:native true} test-get-with-non-existing-document
-  (doc/create "things" "thing" {:name "Thingy"})
-  (is (nil? (doc/get "things" "thing" "1999999"))))
-
-
 ;;
 ;; present?
 ;;
