@@ -7,7 +7,7 @@
   (:use clojure.test clojurewerkz.elastisch.rest.response))
 
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
 (deftest ^{:facets true :rest true} test-term-facet-on-tags
   (let [index-name   "articles"
@@ -45,5 +45,31 @@
                                                                   {:from 30 :to 35}
                                                                   {:to 45}]}}})
         facets       (facets-from result)]
-    (is (>= 1 (-> facets :ages :ranges second :count)))
-    (is (>= 4 (-> facets :ages :ranges last :count)))))
+    (is (>= (-> facets :ages :ranges second :count) 1))
+    (is (>= (-> facets :ages :ranges last :count))) 4))
+
+(deftest ^{:facets true :rest true} test-range-facet-over-age
+  (let [index-name   "people"
+        mapping-type "person"
+        result       (doc/search index-name mapping-type
+                                 :query (q/match-all)
+                                 :facets {:ages {:histogram {:field    "age"
+                                                             :interval 5}}})
+        facets       (facets-from result)]
+    (is (>= (-> facets :ages :entries first :count) 1))
+    (is (>= (-> facets :ages :entries second :count) 2))
+    (is (>= (-> facets :ages :entries last :count))) 1))
+
+(deftest ^{:facets true :rest true} test-date-histogram-facet-on-post-dates
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        result       (doc/search index-name mapping-type
+                                 :query (q/match-all)
+                                 :facets {:dates {:date_histogram {:field   "timestamp"
+                                                                   :interval "day"}}})
+        facets       (facets-from result)]
+    (is (= [{:time 1343606400000 :count 1}
+            {:time 1343692800000 :count 1}
+            {:time 1343779200000 :count 2}
+            {:time 1343865600000 :count 1}]
+           (-> facets :dates :entries)))))

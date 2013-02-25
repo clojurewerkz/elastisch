@@ -8,7 +8,7 @@
   (:use clojure.test clojurewerkz.elastisch.native.response))
 
 (th/maybe-connect-native-client)
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
 (deftest ^{:facets true :native true} test-term-facet-on-tags
   (let [index-name   "articles"
@@ -52,3 +52,27 @@
         facets       (facets-from result)]
     (is (>= 1 (-> facets :ages :ranges second :count)))
     (is (>= 4 (-> facets :ages :ranges last :count)))))
+
+(deftest ^{:facets true :native true} test-range-facet-over-age
+  (let [index-name   "people"
+        mapping-type "person"
+        result       (doc/search index-name mapping-type
+                                 :query (q/match-all)
+                                 :facets {:ages {:histogram {:field    "age"
+                                                             :interval 5}}})
+        facets       (facets-from result)]
+    (println facets)
+    (is (>= 1 (-> facets :ages :entries first :count)))
+    (is (>= 2 (-> facets :ages :entries second :count)))
+    (is (>= 1 (-> facets :ages :entries last :count)))))
+
+(deftest ^{:facets true :native true} test-date-histogram-facet-on-post-dates
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        result       (doc/search index-name mapping-type
+                                 :query (q/match-all)
+                                 :facets {:dates {:date_histogram {:field   "timestamp"
+                                                                   :interval "day"}}})
+        facets       (facets-from result)]
+    (is (= [1343606400000 1343692800000 1343779200000 1343865600000]
+           (vec (map :time (get-in facets [:dates :entries])))))))

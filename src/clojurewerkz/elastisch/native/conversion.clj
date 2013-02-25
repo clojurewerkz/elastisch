@@ -20,6 +20,8 @@
            [org.elasticsearch.search.facet Facets Facet]
            [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
            [org.elasticsearch.search.facet.range RangeFacet RangeFacet$Entry]
+           [org.elasticsearch.search.facet.histogram HistogramFacet HistogramFacet$Entry]
+           [org.elasticsearch.search.facet.datehistogram DateHistogramFacet DateHistogramFacet$Entry]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -434,6 +436,32 @@
     {:_type  RangeFacet/TYPE
      :ranges (map (fn [^RangeFacet$Entry et]
                     {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
+                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                  (.getEntries ft))})
+
+  ;; {:ages {:_type histogram,
+  ;;         :entries [{:key 20, :count 1}
+  ;;                   {:key 25, :count 2}
+  ;;                   {:key 35, :count 1}]}}
+  HistogramFacet
+  (facet-to-map [^HistogramFacet ft]
+    {:_type   HistogramFacet/TYPE
+     :entries (map (fn [^HistogramFacet$Entry et]
+                    {:key (.getKey et) :count (.getCount et) :total_count (.getTotalCount et)
+                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                  (.getEntries ft))})
+
+  ;; {:dates {:_type date_histogram,
+  ;;          :entries [{:time 1343685600000, :count 1}
+  ;;                    {:time 1343761200000, :count 1}
+  ;;                    {:time 1343804400000, :count 1}
+  ;;                    {:time 1343836800000, :count 1}
+  ;;                    {:time 1343898000000, :count 1}]}}
+  DateHistogramFacet
+  (facet-to-map [^DateHistogramFacet ft]
+    {:_type   HistogramFacet/TYPE
+     :entries (map (fn [^DateHistogramFacet$Entry et]
+                    {:time (.getTime et) :count (.getCount et) :total_count (.getTotalCount et)
                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
                   (.getEntries ft))}))
 
