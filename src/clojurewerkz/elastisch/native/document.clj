@@ -189,7 +189,7 @@
   "Performs a scroll query, fetching the next page of results from a
    query given a scroll id"
   [scroll-id & {:as options}]
-  (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id))
+  (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id options))
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
 

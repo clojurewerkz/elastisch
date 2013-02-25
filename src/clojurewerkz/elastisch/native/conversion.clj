@@ -301,10 +301,10 @@
    :ok       true})
 
 (defn ^SearchRequest ->search-request
-  [index-name mapping-type {:keys [search-type scroll routing
+  [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference] :as options}]
   (let [r        (SearchRequest.)
-        excludes [:search_type :scroll :routing :preference]
+        excludes [:search_type :search-type :scroll :routing :preference]
         source   (apply dissoc (concat [options] excludes))
         m        (wlk/stringify-keys source)]
     (.source r ^Map m)
@@ -312,8 +312,8 @@
       (.indices r (->string-array index-name)))
     (when mapping-type
       (.types r (->string-array mapping-type)))
-    (when search-type
-      (.searchType r ^String search-type))
+    (when (or search-type search_type)
+      (.searchType r ^String (or search-type search_type)))
     (when routing
       (.routing r ^String routing))
     (when scroll
@@ -321,9 +321,11 @@
     r))
 
 (defn ^SearchScrollRequest ->search-scroll-request
-  [^String scroll-id]
-  (doto (SearchScrollRequest. scroll-id)
-    (.scroll)))
+  [^String scroll-id {:keys [scroll]}]
+  (let [r (SearchScrollRequest. scroll-id)]
+    (when scroll
+      (.scroll r ^String scroll))
+    r))
 
 (defprotocol ToClojure
   "Auxilliary protocol that is used to recursively convert
@@ -333,8 +335,8 @@
 (extend-protocol ToClojure
   java.util.Map
   (as-clj [o] (reduce (fn [m [^String k v]]
-                       (assoc m (keyword k) (as-clj v)))
-                     {} (.entrySet o)))
+                        (assoc m (keyword k) (as-clj v)))
+                      {} (.entrySet o)))
 
   java.util.List
   (as-clj [o] (vec (map as-clj o)))
@@ -396,12 +398,15 @@
   ;;                 :summary "..." }}]
   ;;  }
   ;; }
-  {:took      (.getTookInMillis r)
-   :timed_out (.isTimedOut r)
-   :_shards   {:total      (.getTotalShards r)
-               :successful (.getSuccessfulShards r)
-               :failed     (.getFailedShards r)}
-   :hits      (search-hits->seq (.getHits r))})
+  {:took       (.getTookInMillis r)
+   :timed_out  (.isTimedOut r)
+   :_scroll_id (.getScrollId r)
+   ;; TODO: facets
+   ;; TODO: suggestions
+   :_shards    {:total      (.getTotalShards r)
+                :successful (.getSuccessfulShards r)
+                :failed     (.getFailedShards r)}
+   :hits       (search-hits->seq (.getHits r))})
 
 ;;
 ;; Administrative Actions
