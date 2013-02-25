@@ -428,8 +428,10 @@
     r))
 
 (defn ^DeleteIndexRequest ->delete-index-request
-  [index-name]
-  (DeleteIndexRequest. (->string-array index-name)))
+  ([]
+     (DeleteIndexRequest. (->string-array [])))
+  ([index-name]
+     (DeleteIndexRequest. (->string-array index-name))))
 
 (defn ^UpdateSettingsRequest ->update-settings-request
   [index-name settings]

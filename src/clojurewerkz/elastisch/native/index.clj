@@ -60,10 +60,14 @@
 
 (defn delete
   "Deletes an existing index"
-  [^String index-name]
-  (let [ft                       (es/admin-index-delete (cnv/->delete-index-request index-name))
-        ^DeleteIndexResponse res (.get ft)]
-    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
+  ([]
+     (let [ft                       (es/admin-index-delete (cnv/->delete-index-request))
+           ^DeleteIndexResponse res (.get ft)]
+       {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
+  ([^String index-name]
+     (let [ft                       (es/admin-index-delete (cnv/->delete-index-request index-name))
+           ^DeleteIndexResponse res (.get ft)]
+       {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
 
 (defn update-settings
@@ -197,4 +201,3 @@
   (let [ft                               (es/admin-delete-index-template (cnv/->delete-index-template-request template-name))
         ^DeleteIndexTemplateResponse res (.get ft)]
     {:ok true :acknowledged (.isAcknowledged res)}))
-  

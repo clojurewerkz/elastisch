@@ -40,14 +40,16 @@
   "Used to check if the index (indices) exists or not.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"  [^String index-name]
-  (= 200 (:status (rest/head (rest/index-url index-name)))))
+   (= 200 (:status (rest/head (rest/index-url index-name)))))
 
 (defn delete
   "Deletes an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
-  [^String index-name]
-  (rest/delete (rest/index-url index-name)))
+  ([]
+     (rest/delete (rest/index-url "_all")))
+  ([^String index-name]
+     (rest/delete (rest/index-url index-name))))
 
 ;;
 ;; Mappings
