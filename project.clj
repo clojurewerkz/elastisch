@@ -1,4 +1,4 @@
-(defproject clojurewerkz/elastisch "1.1.0-SNAPSHOT"
+(defproject clojurewerkz/elastisch "1.1.0-beta1"
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}
@@ -6,10 +6,11 @@
                  [cheshire              "5.0.2"]
                  [clj-http              "0.6.4" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "0.12.0"]
-                 ;; used by the native client. Note that 0.21.x introduces major
+                 ;; used by the native client. Note that 0.90.x introduced major
                  ;; API breakages (see https://github.com/elasticsearch/elasticsearch/commit/cc83c2f848be69a77f1275fe1ff5363dcdd4c955)
-                 ;; and is not currently released so we have to use snapshots. MK.
-                 [org.elasticsearch/elasticsearch "0.21.0.Beta1-SNAPSHOT"]]
+                 ;; and we follow edge development closely to not have to
+                 ;; change the native client way too much in the future. MK.
+                 [org.elasticsearch/elasticsearch "0.90.0.Beta1"]]
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
