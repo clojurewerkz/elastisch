@@ -92,6 +92,52 @@ important for them.
 
 GH issues: #17, #18, #20.
 
+Note that native ElasticSearch client currently relies on [ElasticSearch 0.90.0.Beta1](http://www.elasticsearch.org/blog/2013/02/26/0.90.0.Beta1-released.html)
+client libraries and some operations will only work with that version.
+
+
+### Bulk Request Support
+
+Bulk requests are now supported. All the relevant code is in the `clojurewerkz.elastisch.rest.bulk`
+namespace. Here is a small example of bulk document indexing using this new API:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.bulk :as eb])
+
+(eb/bulk (eb/bulk-index doc1 doc2 doc3) :refresh true)
+```
+
+Contributed by Davie Moston.
+
+
+### Scroll Queries Support
+
+Scroll queries are now easier to perform thanks to the new `clojurewerkz.elastisch.rest.document/scroll`
+function that takes a scroll id and amount of time retrieved documents and related information
+will be kept in memory for future retrieval. They are analogous to database cursors.
+
+A short code example:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.document :as doc])
+(require '[clojurewerkz.elastisch.query :as q])
+(require '[clojurewerkz.elastisch.rest.response :refer [hits-from]])
+
+(let [index-name   "articles"
+      mapping-type "article"
+      response     (doc/search index-name mapping-type
+                               :query (q/query-string :query "*")
+                               :search_type "scan"
+                               :scroll "1m"
+                               :size 1)
+      scroll-id     (:_scroll_id response)
+      scan-response (doc/scroll scroll-id :scroll "1m")
+      scan-hits     (hits-from scan-response)]
+  (println scan-hits))
+```
+
+Contributed by Davie Moston.
+
 
 ### Cheshire Update
 
@@ -105,7 +151,7 @@ GH issues: #17, #18, #20.
 
 `clojurewerkz.elastisch.rest.document/count` no longer ignores mapping types.
 
-GH issue: clojurewerkz/elastisch#6.
+GH issue: #6.
 
 
 ### Count API now uses GET requests
@@ -113,7 +159,7 @@ GH issue: clojurewerkz/elastisch#6.
 `clojurewerkz.elastisch.rest.document/count` now correctly uses `GET` for requests without
 the query part and`POST` for request that have it.
 
-GH issue: clojurewerkz/elastisch#5.
+GH issue: #5.
 
 
 
