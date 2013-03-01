@@ -7,6 +7,7 @@
            org.elasticsearch.action.get.GetResponse
            org.elasticsearch.action.count.CountResponse
            org.elasticsearch.action.delete.DeleteResponse
+           org.elasticsearch.action.deletebyquery.DeleteByQueryResponse
            org.elasticsearch.action.search.SearchResponse))
 
 (defn ^IPersistentMap create
@@ -144,6 +145,17 @@
      (let [ft                  (es/delete (cnv/->delete-request index mapping-type id options))
            ^DeleteResponse res (.get ft)]
        (cnv/delete-response->map res))))
+
+(defn delete-by-query
+  "Performs a delete-by-query operation."
+  ([index mapping-type query]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query))
+           ^DeleteByQueryResponse res (.get ft)]
+       (cnv/delete-by-query-response->map res)))
+  ([index mapping-type query & {:as options}]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query options))
+           ^DeleteByQueryResponse res (.get ft)]
+       (cnv/delete-by-query-response->map res))))
 
 (defn count
   "Performs a count query."

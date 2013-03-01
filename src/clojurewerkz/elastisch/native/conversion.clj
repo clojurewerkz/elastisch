@@ -13,6 +13,7 @@
            [org.elasticsearch.action.index IndexRequest IndexResponse]
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
+           [org.elasticsearch.action.deletebyquery DeleteByQueryRequest DeleteByQueryResponse IndexDeleteByQueryResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
            [org.elasticsearch.search.builder SearchSourceBuilder]
@@ -310,6 +311,30 @@
    :_id      (.getId r)
    :ok       true})
 
+(defn ^DeleteByQueryRequest ->delete-by-query-request
+  ([index mapping-type ^Map query]
+     (doto (DeleteByQueryRequest. (->string-array index))
+       (.query query)))
+  ([index mapping-type query {:keys [routing]}]
+     (let [r (doto (DeleteByQueryRequest. (->string-array index))
+               (.query ^Map (wlk/stringify-keys query)))]
+       (when routing
+         (.routing r (->string-array routing)))
+       r)))
+
+(defn- ^IPersistentMap index-delete-by-query-response->map
+  [^IndexDeleteByQueryResponse r]
+  {(keyword (.getIndex r)) {:_shards {:total      (.getTotalShards r)
+                                      :successful (.getSuccessfulShards r)
+                                      :failed     (.getFailedShards r)}}})
+
+(defn ^IPersistentMap delete-by-query-response->map
+  [^DeleteByQueryResponse r]
+  ;; Example REST API response:
+  ;; {:ok true, :_indices {:people {:_shards {:total 5, :successful 5, :failed 0}}}}
+  {:ok       true
+   :_indices (map index-delete-by-query-response->map (.getIndices r))})
+
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference
@@ -506,7 +531,7 @@
     {:_type GeoDistanceFacet/TYPE
      :terms (map (fn [^GeoDistanceFacet$Entry et]
                    {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
-                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                    :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
                  (.getEntries ft))})
 
   ;; TODO: filter facets
