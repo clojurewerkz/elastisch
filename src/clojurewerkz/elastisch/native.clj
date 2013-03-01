@@ -9,6 +9,7 @@
            org.elasticsearch.action.index.IndexRequest
            [org.elasticsearch.action.get GetRequest MultiGetRequest]
            org.elasticsearch.action.delete.DeleteRequest
+           org.elasticsearch.action.deletebyquery.DeleteByQueryRequest
            org.elasticsearch.action.count.CountRequest
            [org.elasticsearch.action.search SearchRequest SearchScrollRequest]
            ;; Admin Client
@@ -109,6 +110,11 @@
   "Executes a delete action request"
   [^DeleteRequest req]
   (.delete ^Client *client* req))
+
+(defn ^ActionFuture delete-by-query
+  "Executes a delete by query action request"
+  [^DeleteByQueryRequest req]
+  (.deleteByQuery ^Client *client* req))
 
 (defn ^ActionFuture count
   "Executes a count action request"
