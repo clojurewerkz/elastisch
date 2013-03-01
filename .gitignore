@@ -9,3 +9,4 @@ debug/*
 doc/*
 deploy.docs.sh
 .lein-*
+data/*

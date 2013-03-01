@@ -4,6 +4,7 @@
   (:import org.elasticsearch.client.Client
            org.elasticsearch.client.transport.TransportClient
            org.elasticsearch.common.settings.Settings
+           [org.elasticsearch.node NodeBuilder Node]
            ;; Actions
            org.elasticsearch.action.ActionFuture
            org.elasticsearch.action.index.IndexRequest
@@ -46,7 +47,7 @@
 
 (defn ^Client connect
   "Connects to one or more ElasticSearch cluster nodes using
-   TCP/IP communication transport"
+   TCP/IP communication transport. Returns the client."
   ([]
      (TransportClient.))
   ([pairs]
@@ -62,23 +63,35 @@
 
 (defn ^Client connect!
   "Connects to one or more ElasticSearch cluster nodes using
-   TCP/IP communication transport"
+   TCP/IP communication transport. Alters the *client* var root."
   [& args]
   (alter-var-root (var *client*) (constantly (apply connect args))))
 
-(defn ^Client connect-to-local-nodes
+(defn ^Node build-local-node
+  [settings]
+  (let [is (cnv/->settings settings)
+        nb (.. NodeBuilder nodeBuilder
+               (settings is)
+               (client true))]
+    (.build ^NodeBuilder nb)))
+
+(defn ^Thread start-local-node
+  [^Node node]
+  (.start node)
+  node)
+
+(defn ^Client connect-to-local-node
+  "Connects to a local ElasticSearch cluster nodes using
+   local transport. Returns the client. Supposed to be used for automated testing."
+  [^Node node]
+  (.client node))
+
+(defn ^Client connect-to-local-node!
   "Connects to one or more local ElasticSearch cluster nodes using
-   TCP/IP communication transport"
-  ([ids]
-     (let [tc (TransportClient.)]
-       (doseq [id ids]
-         (.addTransportAddress tc (cnv/->local-transport-address id)))
-       tc))
-  ([ids settings]
-     (let [tc (TransportClient. (cnv/->settings settings))]
-       (doseq [id ids]
-         (.addTransportAddress tc (cnv/->local-transport-address id)))
-       tc)))
+   local transport. Returns the client. Alters the *client* var root.
+   Supposed to be used for automated testing."
+  [^Node node]
+  (alter-var-root (var *client*) (constantly (connect-to-local-node node))))
 
 (defn connected?
   "Returns true if current client is connected (*client* is bound)"
