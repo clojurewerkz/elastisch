@@ -117,7 +117,7 @@
   (if m
     (let [^ImmutableSettings$Builder sb (ImmutableSettings/settingsBuilder)]
       (doseq [[k v] m]
-        (.put sb ^String (name k) ^String v))
+        (.put sb ^String (name k) v))
       (.build sb))
     ImmutableSettings$Builder/EMPTY_SETTINGS))
 
