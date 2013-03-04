@@ -157,6 +157,29 @@
            ^DeleteByQueryResponse res (.get ft)]
        (cnv/delete-by-query-response->map res))))
 
+(defn delete-by-query-across-all-types
+  "Performs a delete-by-query operation across all mapping types."
+  ([index query]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query))
+           ^DeleteByQueryResponse res (.get ft)]
+       (cnv/delete-by-query-response->map res)))
+  ([index query & {:as options}]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query options))
+           ^DeleteByQueryResponse res (.get ft)]
+       (cnv/delete-by-query-response->map res))))
+
+(defn delete-by-query-across-all-indexes-and-types
+  "Performs a delete-by-query operation across all indexes and mapping types.
+   This may put very high load on your ElasticSearch cluster so use this function with care."
+  ([query]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query))
+           ^DeleteByQueryResponse res (.get ft)]
+       (cnv/delete-by-query-response->map res)))
+  ([query & {:as options}]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query options))
+           ^DeleteByQueryResponse res (.get ft)]
+       (cnv/delete-by-query-response->map res))))
+
 (defn count
   "Performs a count query."
   ([index mapping-type]

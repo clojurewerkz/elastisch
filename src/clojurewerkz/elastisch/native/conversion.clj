@@ -314,26 +314,50 @@
 (defn ^DeleteByQueryRequest ->delete-by-query-request
   ([index mapping-type ^Map query]
      (doto (DeleteByQueryRequest. (->string-array index))
-       (.query query)))
+       (.query ^Map (wlk/stringify-keys query))
+       (.types (->string-array mapping-type))))
   ([index mapping-type query {:keys [routing]}]
+     (let [r (doto (DeleteByQueryRequest. (->string-array index))
+               (.query ^Map (wlk/stringify-keys query))
+               (.types (->string-array mapping-type)))]
+       (when routing
+         (.routing r (->string-array routing)))
+       r)))
+
+(defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-types
+  ([index ^Map query]
+     (doto (DeleteByQueryRequest. (->string-array index))
+       (.query ^Map (wlk/stringify-keys query))))
+  ([index query {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest. (->string-array index))
                (.query ^Map (wlk/stringify-keys query)))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
 
+(defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-indices-and-types
+  ([^Map query]
+     (doto (DeleteByQueryRequest.)
+       (.query ^Map (wlk/stringify-keys query))))
+  ([query {:keys [routing]}]
+     (let [r (doto (DeleteByQueryRequest.)
+               (.query ^Map (wlk/stringify-keys query)))]
+       (when routing
+         (.routing r (->string-array routing)))
+       r)))
+
 (defn- ^IPersistentMap index-delete-by-query-response->map
-  [^IndexDeleteByQueryResponse r]
-  {(keyword (.getIndex r)) {:_shards {:total      (.getTotalShards r)
-                                      :successful (.getSuccessfulShards r)
-                                      :failed     (.getFailedShards r)}}})
+  [m [^String k ^IndexDeleteByQueryResponse v]]
+  (assoc m (keyword k) {:_shards {:total      (.getTotalShards v)
+                                  :successful (.getSuccessfulShards v)
+                                  :failed     (.getFailedShards v)}}))
 
 (defn ^IPersistentMap delete-by-query-response->map
   [^DeleteByQueryResponse r]
   ;; Example REST API response:
   ;; {:ok true, :_indices {:people {:_shards {:total 5, :successful 5, :failed 0}}}}
   {:ok       true
-   :_indices (map index-delete-by-query-response->map (.getIndices r))})
+   :_indices (reduce index-delete-by-query-response->map {} (.getIndices r))})
 
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
