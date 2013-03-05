@@ -96,6 +96,14 @@ Note that native ElasticSearch client currently relies on [ElasticSearch 0.90.0.
 client libraries and some operations will only work with that version.
 
 
+### Clojure 1.5 By Default
+
+Elastisch now depends on `org.clojure/clojure` version `1.5.0`. It is still compatible with Clojure 1.3+ and if your `project.clj` depends
+on 1.3 or 1.4, it will be used, but 1.5 is the default now.
+
+We encourage all users to upgrade to 1.5, it is a drop-in replacement for the majority of projects out there.
+
+
 ### Bulk Request Support
 
 Bulk requests are now supported. All the relevant code is in the `clojurewerkz.elastisch.rest.bulk`
