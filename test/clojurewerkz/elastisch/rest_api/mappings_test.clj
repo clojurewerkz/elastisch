@@ -14,11 +14,11 @@
 ;;
 
 (deftest ^{:rest true} test-getting-index-mapping
-  (let [index    "people"
+  (let [index    "people1"
         mappings fx/people-mapping
         response (idx/create index :mappings mappings)]
     (is (ok? response))
-    (is (-> (idx/get-mapping index) :people :person :properties :username :store))))
+    (is (-> (idx/get-mapping index) :people1 :person :properties :username :store))))
 
 (deftest ^{:rest true} test-updating-index-mapping
   (let [index    "people2"
