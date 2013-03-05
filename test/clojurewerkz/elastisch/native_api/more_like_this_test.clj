@@ -1,0 +1,31 @@
+(ns clojurewerkz.elastisch.native-api.more-like-this-test
+  (:refer-clojure :exclude [replace])
+  (:require [clojurewerkz.elastisch.native.document :as doc]
+            [clojurewerkz.elastisch.native          :as se]
+            [clojurewerkz.elastisch.native.index    :as idx]
+            [clojurewerkz.elastisch.query           :as q]
+            [clojurewerkz.elastisch.fixtures        :as fx]
+            [clojurewerkz.elastisch.test.helpers    :as th])
+  (:use clojure.test
+        [clojurewerkz.elastisch.native.response :only [total-hits hits-from]]))
+
+(th/maybe-connect-native-client)
+(use-fixtures :each fx/reset-indexes)
+
+
+;;
+;; more-like-this
+;;
+
+(deftest ^{:native true} test-more-like-this
+  (let [index "articles"
+        type  "article"]
+    (idx/create index :mappings fx/articles-mapping)
+    (doc/put index type "1" fx/article-on-elasticsearch)
+    (doc/put index type "2" fx/article-on-lucene)
+    (doc/put index type "3" fx/article-on-nueva-york)
+    (doc/put index type "4" fx/article-on-austin)
+    (idx/refresh index)
+    (let [response (doc/more-like-this index type "2" :mlt_fields ["tags"] :min_term_freq 1 :min_doc_freq 1)]
+      (is (= 1 (total-hits response)))
+      (is (= fx/article-on-elasticsearch (-> (hits-from response) first :_source))))))

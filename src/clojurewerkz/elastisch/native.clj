@@ -13,6 +13,7 @@
            org.elasticsearch.action.deletebyquery.DeleteByQueryRequest
            org.elasticsearch.action.count.CountRequest
            [org.elasticsearch.action.search SearchRequest SearchScrollRequest]
+           org.elasticsearch.action.mlt.MoreLikeThisRequest
            ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -143,6 +144,11 @@
   "Executes a search action request"
   [^SearchScrollRequest req]
   (.searchScroll ^Client *client* req))
+
+(defn ^ActionFuture more-like-this
+  "Executes a more-like-this action request"
+  [^MoreLikeThisRequest req]
+  (.moreLikeThis ^Client *client* req))
 
 
 ;;

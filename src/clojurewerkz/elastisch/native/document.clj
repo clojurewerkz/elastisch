@@ -233,3 +233,12 @@
   [index mapping-type id document]
   (delete index mapping-type id)
   (put index mapping-type id document))
+
+(defn more-like-this
+  "Performs a More Like This (MLT) query."
+  [index mapping-type id &{:as options}]
+  (let [ft                  (es/more-like-this (cnv/->more-like-this-request index mapping-type id options))
+        ^SearchResponse res (.get ft)]
+    (cnv/search-response->seq res)))
+
+;; TODO: 

@@ -27,6 +27,7 @@
            [org.elasticsearch.search.facet.termsstats TermsStatsFacet TermsStatsFacet$Entry]
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            org.elasticsearch.search.facet.query.QueryFacet
+           org.elasticsearch.action.mlt.MoreLikeThisRequest
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -411,6 +412,50 @@
     (when scroll
       (.scroll r ^String scroll))
     r))
+
+(defn ^MoreLikeThisRequest ->more-like-this-request
+  [^String index ^String mapping-type ^String id {:keys [routing fields mlt_fields
+                                                         percent-terms-to-match percent_terms_to_match
+                                                         max-query-terms max_query_terms
+                                                         stop-words stop_words
+                                                         min-doc-freq min_doc_freq
+                                                         min-word-len min_word_len
+                                                         max-word-len max_word_len
+                                                         boost-terms boost_terms
+                                                         query source
+                                                         search-type search_type
+                                                         size from]}]
+  (let [r (doto (MoreLikeThisRequest. index)
+            (.type mapping-type)
+            (.id id))]
+    (when routing
+      (.routing r routing))
+    (when-let [xs (or mlt_fields fields)]
+      (.fields r (->string-array xs)))
+    (when-let [v (or percent-terms-to-match percent_terms_to_match)]
+      (.percentTermsToMatch r (Float/valueOf ^double v)))
+    (when-let [v (or max-query-terms max_query_terms)]
+      (.maxQueryTerms r (Integer/valueOf ^long v)))
+    (when-let [v (or stop-words stop_words)]
+      (.stopWords r (->string-array v)))
+    (when-let [v (or min-doc-freq min_doc_freq)]
+      (.minDocFreq r (Integer/valueOf ^long v)))
+    (when-let [v (or min-word-len min_word_len)]
+      (.minWordLen r (Integer/valueOf ^long v)))
+    (when-let [v (or max-word-len max_word_len)]
+      (.maxWordLen r (Integer/valueOf ^long v)))
+    (when-let [v (or boost-terms boost_terms)]
+      (.boostTerms r (Float/valueOf ^double v)))
+    (when-let [q (or query source)]
+     (.searchSource r ^Map (wlk/stringify-keys q)))
+    (when-let [v (or search-type search_type)]
+      (.searchType r ^String v))
+    (when size
+      (.searchSize r (Integer/valueOf ^long size)))
+    (when from
+      (.searchFrom r (Integer/valueOf ^long from)))
+    r))
+
 
 (defprotocol ToClojure
   "Auxilliary protocol that is used to recursively convert
