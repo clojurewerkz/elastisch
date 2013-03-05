@@ -240,5 +240,3 @@
   (let [ft                  (es/more-like-this (cnv/->more-like-this-request index mapping-type id options))
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
-
-;; TODO: 

@@ -74,7 +74,7 @@
             :body mapping :query-params {:ignore_conflicts ignore_conflicts}))
 
 (defn delete-mapping
-  "Allow to delete a mapping (type) along with its data. The REST endpoint is /{index}/{type} with DELETE method.
+  "Allow to delete a mapping (type) along with its data.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
   [^String index-name ^String type-name]

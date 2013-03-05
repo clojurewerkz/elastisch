@@ -7,6 +7,8 @@
            org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
            org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse
            org.elasticsearch.action.index.IndexResponse
+           org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
+           org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
@@ -69,6 +71,21 @@
            ^DeleteIndexResponse res (.get ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
+
+(defn update-mapping
+  "The put mapping API allows to register or modify specific mapping definition for a specific type."
+  [^String index-name ^String mapping-type & {:as options}]
+  (let [ft                       (es/admin-put-mapping (cnv/->put-mapping-request index-name mapping-type options))
+        ^PutMappingResponse res (.get ft)]
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
+
+
+(defn delete-mapping
+  "Allow to delete a mapping (type) along with its data."
+  [^String index-name ^String mapping-type]
+  (let [ft                       (es/admin-delete-mapping (cnv/->delete-mapping-request index-name mapping-type))
+        ^PutMappingResponse res (.get ft)]
+    {:ok true}))
 
 (defn update-settings
   "Updates index settings. No argument version updates index settings globally"

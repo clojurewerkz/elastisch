@@ -18,6 +18,8 @@
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+           org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
+           org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
@@ -174,6 +176,16 @@
   "Executes an update index settings request"
   [^UpdateSettingsRequest req]
   (-> ^Client *client* .admin .indices (.updateSettings req)))
+
+(defn ^ActionFuture admin-put-mapping
+  "Executes a put mapping request"
+  [^PutMappingRequest req]
+  (-> ^Client *client* .admin .indices (.putMapping req)))
+
+(defn ^ActionFuture admin-delete-mapping
+  "Executes a delete mapping request"
+  [^DeleteMappingRequest req]
+  (-> ^Client *client* .admin .indices (.deleteMapping req)))
 
 (defn ^ActionFuture admin-open-index
   "Executes an open index request"

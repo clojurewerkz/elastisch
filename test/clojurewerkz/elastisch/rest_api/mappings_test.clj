@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.rest-api.indices-test
+(ns clojurewerkz.elastisch.rest-api.mappings-test
   (:refer-clojure :exclude [get replace count])
   (:require [clojurewerkz.elastisch.rest       :as rest]
             [clojurewerkz.elastisch.rest.index :as idx]
@@ -13,40 +13,37 @@
 ;; Mappings
 ;;
 
-(deftest test-getting-index-mapping
+(deftest ^{:rest true} test-getting-index-mapping
   (let [index    "people"
         mappings fx/people-mapping
         response (idx/create index :mappings mappings)]
     (is (ok? response))
-    (is (= mappings (:people (idx/get-mapping index))))
-    (is (= mappings (:people (idx/get-mapping [index, "shmeople"]))))
-    (is (= mappings (idx/get-mapping index "person")))))
+    (is (-> (idx/get-mapping index) :people :person :properties :username :store))))
 
-(deftest test-updating-index-mapping
-  (let [index    "people"
+(deftest ^{:rest true} test-updating-index-mapping
+  (let [index    "people2"
         mapping  fx/people-mapping
         _        (idx/create index :mappings {:person {:properties {:first-name {:type "string"}}}})
         response (idx/update-mapping index "person" :mapping mapping)]
-    (is (= (ok? response)))
-    (is (= mapping (:people (idx/get-mapping index))))))
+    (is (ok? response))))
 
-(deftest test-updating-index-mapping
-  (let [index    "people"
+(deftest ^{:rest true} test-updating-index-mapping-ignoring-conflicts
+  (let [index    "people3"
         mapping  fx/people-mapping
         _        (idx/create index :mappings {:person {:properties {:first-name {:type "string" :store "no"}}}})
-        response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts false)]
-    (is (= (ok? response)))))
+        response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts true)]
+    (is (ok? response))))
 
-(deftest test-creating-index-mapping
-  (let [index    "people"
+(deftest ^{:rest true} test-updating-blank-index-mapping
+  (let [index    "people4"
         mapping  fx/people-mapping
         _        (idx/create index :mappings {})
         response (idx/update-mapping index "person" :mapping mapping)]
     (is (ok? response))
-    (is (= mapping (:people (idx/get-mapping index))))))
+    (is (-> (idx/get-mapping index) :people4 :person :properties :username :store))))
 
-(deftest test-delete-index-mapping
-  (let [index        "people"
+(deftest ^{:rest true} test-delete-index-mapping
+  (let [index        "people5"
         mapping-type "person"
         _            (idx/create index :mappings fx/people-mapping)
         response     (idx/delete-mapping index mapping-type)]

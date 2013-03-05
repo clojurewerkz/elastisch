@@ -32,6 +32,8 @@
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+           org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
+           org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
            org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
@@ -691,10 +693,22 @@
 
 (defn ^UpdateSettingsRequest ->update-settings-request
   [index-name settings]
-  (let [ary (->string-array index-name)
-        m   (wlk/stringify-keys settings)]
-    (doto (UpdateSettingsRequest. ary)
-      (.settings ^Map m))))
+  (doto (UpdateSettingsRequest. (->string-array index-name))
+    (.settings ^Map (wlk/stringify-keys settings))))
+
+(defn ^PutMappingRequest ->put-mapping-request
+  [index-name ^String mapping-type {:keys [mapping mappings ignore_conflicts ignore-conflicts]}]
+  (let [r (doto (PutMappingRequest. (->string-array index-name))
+            (.type mapping-type)
+            (.source ^Map (wlk/stringify-keys (or mapping mappings))))]
+    (when-let [v (or ignore_conflicts ignore-conflicts)]
+      (.ignoreConflicts r v))
+    r))
+
+(defn ^DeleteMappingRequest ->delete-mapping-request
+  [index-name ^String mapping-type]
+  (doto (DeleteMappingRequest. (->string-array index-name))
+    (.type mapping-type)))
 
 (defn ^OpenIndexRequest ->open-index-request
   [index-name]
