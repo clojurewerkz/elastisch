@@ -1,11 +1,13 @@
-(ns clojurewerkz.elastisch.rest-api.update-test
+(ns clojurewerkz.elastisch.native-api.update-test
   (:refer-clojure :exclude [replace])
-  (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest.index    :as idx]
-            [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.fixtures      :as fx])
-  (:use clojure.test clojurewerkz.elastisch.rest.response))
+  (:require [clojurewerkz.elastisch.native.document :as doc]
+            [clojurewerkz.elastisch.native.index    :as idx]
+            [clojurewerkz.elastisch.query           :as q]
+            [clojurewerkz.elastisch.fixtures        :as fx]
+            [clojurewerkz.elastisch.test.helpers    :as th])
+  (:use clojure.test clojurewerkz.elastisch.native.response))
 
+(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
 
 
