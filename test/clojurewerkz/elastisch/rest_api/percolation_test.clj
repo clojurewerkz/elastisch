@@ -10,7 +10,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest ^{:percolation true} test-percolation-case-1
+(deftest ^{:rest true :percolation true} test-percolation-case-1
   (let [index-name   "articles"
         percolator   "article"
         result1      (pcl/register-query index-name percolator :query {:term {:title "search"}})

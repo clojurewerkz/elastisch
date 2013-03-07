@@ -14,7 +14,7 @@
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest ^{:percolation true} test-percolation-case-1
+(deftest ^{:native true :percolation true} test-percolation-case-1
   (let [index-name   "test"
         query-name   "kuku"
         _            (idx/create index-name :settings {"index.number_of_shards" 1})
