@@ -62,6 +62,21 @@ With Maven:
       <version>1.0.2</version>
     </dependency>
 
+### The Most Recent Preview Release
+
+With Leiningen:
+
+    [clojurewerkz/elastisch "1.1.0-beta2"]
+
+
+With Maven:
+
+    <dependency>
+      <groupId>clojurewerkz</groupId>
+      <artifactId>elastisch</artifactId>
+      <version>1.1.0-beta2</version>
+    </dependency>
+
 
 
 ## Documentation & Examples
