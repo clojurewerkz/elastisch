@@ -28,6 +28,7 @@
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            org.elasticsearch.search.facet.query.QueryFacet
            org.elasticsearch.action.mlt.MoreLikeThisRequest
+           [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -150,16 +151,16 @@
          (.source ^Map (wlk/stringify-keys doc))))
   ;; non-variadic because it is more convenient and efficient to
   ;; invoke this internal implementation fn this way. MK.
-  ([index mapping-type ^Map doc ^String {:keys [id
-                                                routing
-                                                parent
-                                                timestamp
-                                                ttl
-                                                op-type
-                                                refresh
-                                                version-type
-                                                percolate
-                                                content-type]}]
+  ([index mapping-type ^Map doc {:keys [id
+                                        routing
+                                        parent
+                                        timestamp
+                                        ttl
+                                        op-type
+                                        refresh
+                                        version-type
+                                        percolate
+                                        content-type]}]
      (let [ir (-> (IndexRequest. (name index) (name mapping-type))
                   (.source ^Map (wlk/stringify-keys doc)))]
        (when id
@@ -449,7 +450,7 @@
     (when-let [v (or boost-terms boost_terms)]
       (.boostTerms r (Float/valueOf ^double v)))
     (when-let [q (or query source)]
-     (.searchSource r ^Map (wlk/stringify-keys q)))
+      (.searchSource r ^Map (wlk/stringify-keys q)))
     (when-let [v (or search-type search_type)]
       (.searchType r ^String v))
     (when size
@@ -665,6 +666,19 @@
                 :successful (.getSuccessfulShards r)
                 :failed     (.getFailedShards r)}
    :hits       (search-hits->seq (.getHits r))})
+
+
+
+(def ^:const percolator-index "_percolator")
+
+(defn ^PercolateRequest ->percolate-request
+  [^String index ^String mapping-type options]
+  (doto (PercolateRequest. index mapping-type)
+    (.source ^Map (wlk/stringify-keys options))))
+
+(defn ^IPersistentMap percolate-response->map
+  [^PercolateResponse r]
+  {:ok true :matches (into [] (.getMatches r))})
 
 ;;
 ;; Administrative Actions

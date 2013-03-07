@@ -14,6 +14,7 @@
            org.elasticsearch.action.count.CountRequest
            [org.elasticsearch.action.search SearchRequest SearchScrollRequest]
            org.elasticsearch.action.mlt.MoreLikeThisRequest
+           [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
            ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -151,6 +152,11 @@
   "Executes a more-like-this action request"
   [^MoreLikeThisRequest req]
   (.moreLikeThis ^Client *client* req))
+
+(defn ^ActionFuture percolate
+  "Executes a more-like-this action request"
+  [^PercolateRequest req]
+  (.percolate ^Client *client* req))
 
 
 ;;
