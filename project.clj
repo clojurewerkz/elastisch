@@ -2,10 +2,10 @@
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}
-  :dependencies [[org.clojure/clojure   "1.5.0"]
+  :dependencies [[org.clojure/clojure   "1.5.1"]
                  [cheshire              "5.0.2"]
                  [clj-http              "0.6.4" :exclusions [org.clojure/clojure]]
-                 [clojurewerkz/support  "0.14.0"]
+                 [clojurewerkz/support  "0.15.0"]
                  ;; used by the native client. Note that 0.90.x introduced major
                  ;; API breakages (see https://github.com/elasticsearch/elasticsearch/commit/cc83c2f848be69a77f1275fe1ff5363dcdd4c955)
                  ;; and we follow edge development closely to not have to
