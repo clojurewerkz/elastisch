@@ -10,7 +10,7 @@
                  ;; API breakages (see https://github.com/elasticsearch/elasticsearch/commit/cc83c2f848be69a77f1275fe1ff5363dcdd4c955)
                  ;; and we follow edge development closely to not have to
                  ;; change the native client way too much in the future. MK.
-                 [org.elasticsearch/elasticsearch "0.90.0.Beta1"]]
+                 [org.elasticsearch/elasticsearch "0.90.0.RC2"]]
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
