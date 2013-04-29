@@ -149,11 +149,11 @@ Contributed by Davie Moston.
 
 ### Cheshire Update
 
-[Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.0.2`.
+[Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.1.1`.
 
 ### clj-http Update
 
-[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.6.4`.
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.7.2`.
 
 ### Count API No Longer Ignores Mapping Types
 
