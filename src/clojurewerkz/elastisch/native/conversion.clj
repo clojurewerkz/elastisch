@@ -222,6 +222,7 @@
        gr)))
 
 (defn- convert-source-result
+  "Copied from clj-elasticsearch. More performant than doing wlk/keywordize-keys."
   [src]
   (cond
    (instance? java.util.HashMap src) (into {}
