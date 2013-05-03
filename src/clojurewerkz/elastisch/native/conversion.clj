@@ -221,9 +221,19 @@
          (.fields gr (into-array String fields)))
        gr)))
 
+(defn- convert-source-result
+  [src]
+  (cond
+   (instance? java.util.HashMap src) (into {}
+                                           (map (fn [^java.util.Map$Entry e]
+                                                  [(keyword (.getKey e))
+                                                   (convert-source-result (.getValue e))]) src))
+   (instance? java.util.ArrayList src) (into [] (map convert-source-result src))
+   :else src))
+
 (defn ^IPersistentMap get-response->map
   [^GetResponse r]
-  (let [s (wlk/keywordize-keys (into {} (.getSourceAsMap r)))]
+  (let [s (convert-source-result (.getSourceAsMap r))]
     ;; underscored aliases are there to match REST API responses
     {:exists? (.isExists r)
      :exists  (.isExists r)
@@ -490,7 +500,7 @@
    :_id       (.getId sh)
    :_score    (.getScore sh)
    :_version  (.getVersion sh)
-   :_source   (wlk/keywordize-keys (as-clj (.getSource sh)))})
+   :_source   (convert-source-result (as-clj (.getSource sh)))})
 
 (defn- search-hits->seq
   [^SearchHits hits]
