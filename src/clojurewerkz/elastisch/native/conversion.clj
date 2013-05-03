@@ -221,9 +221,20 @@
          (.fields gr (into-array String fields)))
        gr)))
 
+(defn- convert-source-result
+  "Copied from clj-elasticsearch. More performant than doing wlk/keywordize-keys."
+  [src]
+  (cond
+   (instance? java.util.HashMap src) (into {}
+                                           (map (fn [^java.util.Map$Entry e]
+                                                  [(keyword (.getKey e))
+                                                   (convert-source-result (.getValue e))]) src))
+   (instance? java.util.ArrayList src) (into [] (map convert-source-result src))
+   :else src))
+
 (defn ^IPersistentMap get-response->map
   [^GetResponse r]
-  (let [s (wlk/keywordize-keys (into {} (.getSourceAsMap r)))]
+  (let [s (convert-source-result (.getSourceAsMap r))]
     ;; underscored aliases are there to match REST API responses
     {:exists? (.isExists r)
      :exists  (.isExists r)
@@ -244,7 +255,7 @@
 (defn ^IPersistentMap multi-get-item-response->map
   [^MultiGetItemResponse i]
   (let [r  (.getResponse i)
-        s  (wlk/keywordize-keys (into {} (.getSourceAsMap r)))]
+        s  (convert-source-result (.getSourceAsMap r))]
     {:exists   (.isExists r)
      :_index   (.getIndex r)
      :_type    (.getType r)
@@ -459,30 +470,6 @@
       (.searchFrom r (Integer/valueOf ^long from)))
     r))
 
-
-(defprotocol ToClojure
-  "Auxilliary protocol that is used to recursively convert
-   Java maps to Clojure maps"
-  (as-clj [o]))
-
-(extend-protocol ToClojure
-  java.util.Map
-  (as-clj [o] (reduce (fn [m [^String k v]]
-                        (assoc m (keyword k) (as-clj v)))
-                      {} (.entrySet o)))
-
-  java.util.List
-  (as-clj [o] (vec (map as-clj o)))
-
-  java.lang.Object
-  (as-clj [o] o)
-
-  nil
-  (as-clj [_] nil))
-
-
-
-
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
   {:_index    (.getIndex sh)
@@ -490,7 +477,7 @@
    :_id       (.getId sh)
    :_score    (.getScore sh)
    :_version  (.getVersion sh)
-   :_source   (wlk/keywordize-keys (as-clj (.getSource sh)))})
+   :_source   (convert-source-result (.getSource sh))})
 
 (defn- search-hits->seq
   [^SearchHits hits]
