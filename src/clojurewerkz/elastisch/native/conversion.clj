@@ -470,30 +470,6 @@
       (.searchFrom r (Integer/valueOf ^long from)))
     r))
 
-
-(defprotocol ToClojure
-  "Auxilliary protocol that is used to recursively convert
-   Java maps to Clojure maps"
-  (as-clj [o]))
-
-(extend-protocol ToClojure
-  java.util.Map
-  (as-clj [o] (reduce (fn [m [^String k v]]
-                        (assoc m (keyword k) (as-clj v)))
-                      {} (.entrySet o)))
-
-  java.util.List
-  (as-clj [o] (vec (map as-clj o)))
-
-  java.lang.Object
-  (as-clj [o] o)
-
-  nil
-  (as-clj [_] nil))
-
-
-
-
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
   {:_index    (.getIndex sh)
@@ -501,7 +477,7 @@
    :_id       (.getId sh)
    :_score    (.getScore sh)
    :_version  (.getVersion sh)
-   :_source   (convert-source-result (as-clj (.getSource sh)))})
+   :_source   (convert-source-result (.getSource sh))})
 
 (defn- search-hits->seq
   [^SearchHits hits]
