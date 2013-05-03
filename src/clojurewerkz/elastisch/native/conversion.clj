@@ -254,7 +254,7 @@
 (defn ^IPersistentMap multi-get-item-response->map
   [^MultiGetItemResponse i]
   (let [r  (.getResponse i)
-        s  (wlk/keywordize-keys (into {} (.getSourceAsMap r)))]
+        s  (convert-source-result (.getSourceAsMap r))]
     {:exists   (.isExists r)
      :_index   (.getIndex r)
      :_type    (.getType r)
