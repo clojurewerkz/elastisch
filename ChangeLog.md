@@ -1,4 +1,15 @@
-## Changes between Elastisch 1.0.0 and 1.1.0
+## Changes between Elastisch 1.1.0-RC1 and 1.1.0-RC2
+
+### Native Client Performance Improvements
+
+Native client is now over 50% faster on most commonly used operations
+thanks to much lower conversion overhead from ElasticSearch native client
+data structures to Clojure maps.
+
+Contributed by Jon Pither.
+
+
+## Changes between Elastisch 1.0.0 and 1.1.0-RC1
 
 ### Native Client
 
