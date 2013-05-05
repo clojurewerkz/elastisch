@@ -10,6 +10,7 @@ ElasticSearch](http://clojureelasticsearch.info), a modern distributed search en
  * Be [well documented](http://clojureelasticsearch.info)
  * Be [well tested](https://github.com/clojurewerkz/elastisch/tree/master/test)
  * Closely follow [ElasticSearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
+ * Support multiple transports: HTTP, native ES client, possibly more (e.g. Memcached)
  * Follow recent ElasticSearch releases & developments
  * Target Clojure 1.3.0 and later from the ground up
 
@@ -28,7 +29,7 @@ on Twitter.
 
 ## Project Maturity
 
-Elastisch is a not a young project. About a year old, it has been used
+Elastisch is a not a young project. Started in late 2011, it has been used
 in production since early days.  Elastisch API is stabilized. 1.0 has
 been released in September 2012.
 
@@ -66,7 +67,7 @@ With Maven:
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.1.0-beta2"]
+    [clojurewerkz/elastisch "1.1.0-rc2"]
 
 
 With Maven:
@@ -74,7 +75,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.1.0-beta2</version>
+      <version>1.1.0-rc2</version>
     </dependency>
 
 
