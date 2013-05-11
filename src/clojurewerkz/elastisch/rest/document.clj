@@ -48,7 +48,7 @@
      (rest/put (rest/record-url index mapping-type id) :body document :query-params params)))
 
 (defn update-with-script
-  "Updates a document, e.g. using a script"
+  "Updates a document using a script"
   ([index mapping-type id script]
      (rest/post (rest/record-update-url index mapping-type id) :body {:script script}))
   ([index mapping-type id script params]
