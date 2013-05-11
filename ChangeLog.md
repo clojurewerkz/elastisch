@@ -1,3 +1,24 @@
+## Changes between Elastisch 1.1.0-RC2 and 1.1.0-RC3
+
+### Updates With Scripts
+
+`clojurewerkz.elastisch.rest.document/update-with-script` is a new function
+that updates a document with a provided script:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.document :as doc])
+
+;; initializes a counter at 1
+(doc/update-with-script index-name mapping-type "1"
+      "ctx._source.counter = 1")
+
+;; increments the counter by 4
+(doc/update-with-script index-name mapping-type "1"
+      "ctx._source.counter += inc"
+      {"inc" 4})
+```
+
+
 ## Changes between Elastisch 1.1.0-RC1 and 1.1.0-RC2
 
 ### Native Client Performance Improvements

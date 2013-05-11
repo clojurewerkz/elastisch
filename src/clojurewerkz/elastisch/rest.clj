@@ -96,6 +96,10 @@
   [^String index-name ^String type id]
   (url-with-path index-name type (URLEncoder/encode id encoding)))
 
+(defn record-update-url
+  [^String index-name ^String type id]
+  (url-with-path index-name type (URLEncoder/encode id encoding) "_update"))
+
 
 (defn index-mapping-url
   ([^String index-name]
