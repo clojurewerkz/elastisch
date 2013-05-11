@@ -18,6 +18,9 @@ that updates a document with a provided script:
       {"inc" 4})
 ```
 
+`clojurewerkz.elastisch.native.document/update-with-script` is the native
+client counterpart that takes the same arguments.
+
 
 ## Changes between Elastisch 1.1.0-RC1 and 1.1.0-RC2
 
