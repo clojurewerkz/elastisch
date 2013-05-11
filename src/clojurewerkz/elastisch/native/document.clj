@@ -8,7 +8,8 @@
            org.elasticsearch.action.count.CountResponse
            org.elasticsearch.action.delete.DeleteResponse
            org.elasticsearch.action.deletebyquery.DeleteByQueryResponse
-           org.elasticsearch.action.search.SearchResponse))
+           org.elasticsearch.action.search.SearchResponse
+           java.util.Map))
 
 (defn ^IPersistentMap create
   "Adds document to the search index and waits for the response.
@@ -82,6 +83,22 @@
   ([index mapping-type id document & {:as params}]
      (future (put index mapping-type id document params))))
 
+
+(defn update-with-script
+  "Updates a document using a script"
+  ([index mapping-type ^String id ^String script]
+     (let [res (es/update (cnv/->update-request index
+                                                mapping-type
+                                                id
+                                                {:script script}))]
+       (cnv/update-response->map (.get res))))
+  ([index mapping-type ^String id ^String script ^Map params]
+     (let [res (es/update (cnv/->update-request index
+                                                mapping-type
+                                                id
+                                                script
+                                                params))]
+       (cnv/update-response->map (.get res)))))
 
 
 (defn get

@@ -10,6 +10,7 @@
            org.elasticsearch.action.index.IndexRequest
            [org.elasticsearch.action.get GetRequest MultiGetRequest]
            org.elasticsearch.action.delete.DeleteRequest
+           org.elasticsearch.action.update.UpdateRequest
            org.elasticsearch.action.deletebyquery.DeleteByQueryRequest
            org.elasticsearch.action.count.CountRequest
            [org.elasticsearch.action.search SearchRequest SearchScrollRequest]
@@ -122,6 +123,11 @@
   "Executes a multi-get action request"
   [^MultiGetRequest req]
   (.multiGet ^Client *client* req))
+
+(defn ^ActionFuture update
+  "Executes a update action request"
+  [^UpdateRequest req]
+  (.update ^Client *client* req))
 
 (defn ^ActionFuture delete
   "Executes a delete action request"

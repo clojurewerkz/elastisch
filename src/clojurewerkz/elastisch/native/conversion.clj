@@ -13,6 +13,7 @@
            [org.elasticsearch.action.index IndexRequest IndexResponse]
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
+           [org.elasticsearch.action.update UpdateRequest UpdateResponse]
            [org.elasticsearch.action.deletebyquery DeleteByQueryRequest DeleteByQueryResponse IndexDeleteByQueryResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
@@ -325,6 +326,40 @@
    :_version (.getVersion r)
    :_id      (.getId r)
    :ok       true})
+
+(defn ^UpdateRequest ->update-request
+  ([index-name mapping-type ^String id ^String script]
+     (doto (UpdateRequest. index-name mapping-type id)
+       (.script script)))
+  ([index-name mapping-type ^String id ^String script ^Map params]
+     (let [r (UpdateRequest. index-name mapping-type id)]
+       (.script r script)
+       (.scriptParams r ^Map params)
+       r))
+  ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh fields parent percolate]}]
+     (let [r (UpdateRequest. index-name mapping-type id)]
+       (.script r script)
+       (.scriptParams r ^Map params)
+       (when refresh
+         (.refresh r))
+       (when routing
+         (.routing r routing))
+       (when parent
+         (.parent r parent))
+       (when percolate
+         (.percolate r percolate))
+       (when fields
+         (.fields r (->string-array fields)))
+       r)))
+
+
+(defn ^IPersistentMap update-response->map
+  [^UpdateResponse r]
+  ;; matches REST API responses
+  ;; example: {:ok true, :_index people, :_type person, :_id 1, :_version 2}
+  {:ok true :_index (.getIndex r) :type (.getType r) :_id (.getId r)
+   :matches (when-let [xs (.getMatches r)]
+              (into [] xs))})
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request
   ([index mapping-type ^Map query]
