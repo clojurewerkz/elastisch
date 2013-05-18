@@ -57,7 +57,7 @@
   ([index mapping-type document]
      (future (create index mapping-type document)))
   ([index mapping-type document & {:as params}]
-     (future (create index mapping-type document params))))
+     (future (apply create (concat [index mapping-type document] params)))))
 
 (defn put
   "Creates or updates a document in the search index using the provided document id
@@ -81,7 +81,7 @@
   ([index mapping-type id document]
      (future (put index mapping-type id document)))
   ([index mapping-type id document & {:as params}]
-     (future (put index mapping-type id document params))))
+     (future (apply put (concat [index mapping-type id document] params)))))
 
 
 (defn update-with-script
@@ -132,7 +132,7 @@
   ([index mapping-type id]
      (future (get index mapping-type id)))
   ([index mapping-type id & {:as params}]
-     (future (get index mapping-type id params))))
+     (future (apply get (concat [index mapping-type id] params)))))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
