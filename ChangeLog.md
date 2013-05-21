@@ -1,4 +1,4 @@
-## Changes between Elastisch 1.1.0-RC2 and 1.1.0-RC3
+## Changes between Elastisch 1.1.0-RC2 and 1.1.0
 
 ### Updates With Scripts
 
