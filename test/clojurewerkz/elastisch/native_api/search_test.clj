@@ -65,7 +65,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/match-all)
-                                 :sort {"title" "desc"})
+                                 :sort (array-map "title" "desc"))
         hits         (hits-from response)]
     (is (= 4 (total-hits response)))
     (is (= "Nueva York" (-> hits first :_source :title)))
@@ -75,7 +75,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/match-all)
-                                 :sort {"title" "asc"})
+                                 :sort (array-map "title" "asc"))
         hits         (hits-from response)]
     (is (= 4 (total-hits response)))
     (is (= "Nueva York" (-> hits last :_source :title)))

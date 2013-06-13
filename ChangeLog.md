@@ -14,7 +14,7 @@ Elastisch now depends on ElasticSearch native client version `0.90.1`.
 
 ``` clojure
 (doc/search index-name mapping-type :query (q/match-all)
-                                    :sort {"title" "asc"})
+                                    :sort  (array-map "title" "asc")
 ```
 
 This is identical to how the option works with the REST client.
