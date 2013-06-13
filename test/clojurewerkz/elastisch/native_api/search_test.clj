@@ -56,3 +56,27 @@
   (let [index-name   "articles"
         response     (doc/validate-query index-name (q/field "latest-edit.author" "Thorwald") :explain true)]
     (is (valid? response))))
+
+;;
+;; Sorting
+;;
+
+(deftest test-basic-sorting-over-string-field-with-desc-order
+  (let [index-name   "articles"
+        mapping-type "article"
+        response     (doc/search index-name mapping-type :query (q/match-all)
+                                 :sort {"title" "desc"})
+        hits         (hits-from response)]
+    (is (= 4 (total-hits response)))
+    (is (= "Nueva York" (-> hits first :_source :title)))
+    (is (= "Austin" (-> hits last :_source :title)))))
+
+(deftest test-basic-sorting-over-string-field-with-asc-order
+  (let [index-name   "articles"
+        mapping-type "article"
+        response     (doc/search index-name mapping-type :query (q/match-all)
+                                 :sort {"title" "asc"})
+        hits         (hits-from response)]
+    (is (= 4 (total-hits response)))
+    (is (= "Nueva York" (-> hits last :_source :title)))
+    (is (= "Apache Lucene" (-> hits first :_source :title)))))

@@ -18,6 +18,7 @@
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
            [org.elasticsearch.search.builder SearchSourceBuilder]
+           org.elasticsearch.search.sort.SortOrder
            [org.elasticsearch.search SearchHits SearchHit]
            [org.elasticsearch.search.facet Facets Facet]
            [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
@@ -409,6 +410,19 @@
   {:ok       true
    :_indices (reduce index-delete-by-query-response->map {} (.getIndices r))})
 
+(defn ^SortOrder ^:private ->sort-order
+  [s]
+  (SortOrder/valueOf (.toUpperCase (name s))))
+
+(defn ^SearchSourceBuilder ^:private set-sort
+  [^SearchSourceBuilder sb sort]
+  (if (instance? String sort)
+    (.sort sb ^String sort)
+    ;; map
+    (doseq [[k v] sort]
+      (.sort sb (name k) (->sort-order (name v)))))
+  sb)
+
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference
@@ -434,9 +448,8 @@
       (.fields sb ^java.util.List fields))
     (when version
       (.version sb version))
-    ;; TODO: map support, asc/desc
     (when sort
-      (.sort sb ^String sort))
+      (set-sort sb sort))
     (when stats
       (.stats sb ->string-array stats))
     (.source r sb)

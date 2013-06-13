@@ -1,3 +1,17 @@
+## Changes between Elastisch 1.1.0 and 1.2.0-beta1
+
+### Sort Improvements for Search Queries
+
+`clojurewerkz.elastisch.native.document/search` now accepts maps as
+`:search` option values:
+
+``` clojure
+(doc/search index-name mapping-type :query (q/match-all)
+                                    :sort {"title" "asc"})
+```
+
+This is identical to how the option works with the REST client.
+
 ## Changes between Elastisch 1.1.0-RC2 and 1.1.0
 
 ### Updates With Scripts
