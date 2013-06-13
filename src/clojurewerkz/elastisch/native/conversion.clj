@@ -29,6 +29,7 @@
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            org.elasticsearch.search.facet.query.QueryFacet
            org.elasticsearch.action.mlt.MoreLikeThisRequest
+           [org.elasticsearch.search.sort SortOrder]
            [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
@@ -434,9 +435,15 @@
       (.fields sb ^java.util.List fields))
     (when version
       (.version sb version))
-    ;; TODO: map support, asc/desc
+    ;; TODO: map support
     (when sort
-      (.sort sb ^String sort))
+      (cond 
+       (string? sort)
+       (.sort sb ^String sort)
+       (vector? sort)
+       (let [[^String sort-field ^String sort-order] sort
+             sort-order' (if (= sort-order "asc") SortOrder/ASC SortOrder/DESC)]
+         (.sort sb sort-field sort-order'))))
     (when stats
       (.stats sb ->string-array stats))
     (.source r sb)
