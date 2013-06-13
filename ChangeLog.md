@@ -1,3 +1,10 @@
+## Changes between Elastisch 1.2.0-beta1 and 1.2.0-beta2
+
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `0.90.1`.
+
+
 ## Changes between Elastisch 1.1.0 and 1.2.0-beta1
 
 ### Sort Improvements for Search Queries
