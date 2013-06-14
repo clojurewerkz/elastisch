@@ -60,6 +60,14 @@
   [& {:as options}]
   {:custom_score options})
 
+(defn custom-boost-factor
+  "Custom Boost Factor
+
+  For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/custom-boost-factor-query/"
+  [factor query]
+  {:custom_boost_factor {:query query
+                         :boost_factor factor}})
+
 (defn constant-score
   "Constant Score Query
 
