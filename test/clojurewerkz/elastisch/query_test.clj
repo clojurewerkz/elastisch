@@ -78,6 +78,16 @@
          params   (:params custom-score)
          script   (:script custom-score))))
 
+(deftest custom-boosting-factor
+  (let [query {:term {:foo [:bar :baz]}}
+        factor 3.4
+        result (query/custom-boost-factor factor query)
+        custom-boost-factor (:custom_boost_factor result)]
+
+    (are [expected actual] (= expected actual)
+         query  (:query  custom-boost-factor)
+         factor (:boost_factor custom-boost-factor))))
+
 (deftest constant-score-query-test
   (let [query   {:terms {:foo [:bar :baz]}}
         boost   2.0
