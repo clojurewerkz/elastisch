@@ -233,6 +233,15 @@
    (instance? java.util.ArrayList src) (into [] (map convert-source-result src))
    :else src))
 
+(defn- convert-fields-result
+  "Get fields from search result, i.e. when filtering returned fields."
+  [fields]
+  (cond
+   (instance? java.util.Map fields) (into {} (map (fn [^java.util.Map$Entry e]
+                                                    [(keyword (.getKey e))
+                                                     (.. e getValue getValue)]) fields))
+   :else fields))
+
 (defn ^IPersistentMap get-response->map
   [^GetResponse r]
   (let [s (convert-source-result (.getSourceAsMap r))]
@@ -507,12 +516,16 @@
 
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
-  {:_index    (.getIndex sh)
-   :_type     (.getType sh)
-   :_id       (.getId sh)
-   :_score    (.getScore sh)
-   :_version  (.getVersion sh)
-   :_source   (convert-source-result (.getSource sh))})
+  (let [source (.getSource sh)
+        source-or-fields (if source
+                           {:_source (convert-source-result source)}
+                           {:_fields (convert-fields-result (.getFields sh))})]
+    (clojure.core/merge source-or-fields
+                        {:_index    (.getIndex sh)
+                         :_type     (.getType sh)
+                         :_id       (.getId sh)
+                         :_score    (.getScore sh)
+                         :_version  (.getVersion sh)})))
 
 (defn- search-hits->seq
   [^SearchHits hits]
