@@ -1,5 +1,12 @@
 ## Changes between Elastisch 1.2.0-beta1 and 1.2.0-beta2
 
+### Search Queries with a Subset of Fields are Converted Correctly
+
+Search queries that only retrieve a subset of fields using
+the `:fields` option are now correctly converted to Clojure maps.
+
+Contributed by Soren Macbeth.
+
 ### ElasticSearch Native Client Upgrade
 
 Elastisch now depends on ElasticSearch native client version `0.90.1`.
