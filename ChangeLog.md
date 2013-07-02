@@ -1,3 +1,14 @@
+## Changes between Elastisch 1.1.0 and 1.1.1
+
+### Search Queries with a Subset of Fields are Converted Correctly
+
+Search queries that only retrieve a subset of fields using
+the `:fields` option are now correctly converted to Clojure maps.
+
+Contributed by Soren Macbeth.
+
+
+
 ## Changes between Elastisch 1.1.0-RC2 and 1.1.0
 
 ### Updates With Scripts
