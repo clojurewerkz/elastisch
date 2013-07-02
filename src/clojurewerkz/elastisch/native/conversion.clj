@@ -239,8 +239,8 @@
   [fields]
   (cond
    (instance? java.util.Map fields) (into {} (map (fn [^java.util.Map$Entry e]
-                                                        [(keyword (.getKey e))
-                                                         (.. e getValue getValue)]) fields))
+                                                    [(keyword (.getKey e))
+                                                     (.. e getValue getValue)]) fields))
    :else fields))
 
 (defn ^IPersistentMap get-response->map
@@ -529,13 +529,16 @@
 
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
-  {:_index    (.getIndex sh)
-   :_type     (.getType sh)
-   :_id       (.getId sh)
-   :_score    (.getScore sh)
-   :_version  (.getVersion sh)
-   :_source   (convert-source-result (.getSource sh))
-   :_fields   (convert-fields-result (.getFields sh))})
+  (let [source (.getSource sh)
+        source-or-fields (if source
+                           {:_source (convert-source-result source)}
+                           {:_fields (convert-fields-result (.getFields sh))})]
+    (clojure.core/merge source-or-fields
+                        {:_index    (.getIndex sh)
+                         :_type     (.getType sh)
+                         :_id       (.getId sh)
+                         :_score    (.getScore sh)
+                         :_version  (.getVersion sh)})))
 
 (defn- search-hits->seq
   [^SearchHits hits]
