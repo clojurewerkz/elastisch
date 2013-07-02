@@ -237,9 +237,11 @@
 (defn- convert-fields-result
   "Get fields from search result, i.e. when filtering returned fields."
   [fields]
-  (into {} (map (fn [^java.util.Map$Entry e]
-                  [(keyword (.getKey e))
-                   (.. e getValue getValue)]))))
+  (cond
+   (instance? java.util.Map fields) (into {} (map (fn [^java.util.Map$Entry e]
+                                                        [(keyword (.getKey e))
+                                                         (.. e getValue getValue)]) fields))
+   :else fields))
 
 (defn ^IPersistentMap get-response->map
   [^GetResponse r]
