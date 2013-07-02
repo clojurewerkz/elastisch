@@ -234,6 +234,13 @@
    (instance? java.util.ArrayList src) (into [] (map convert-source-result src))
    :else src))
 
+(defn- convert-fields-result
+  "Get fields from search result, i.e. when filtering returned fields."
+  [fields]
+  (into {} (map (fn [^java.util.Map$Entry e]
+                  [(keyword (.getKey e))
+                   (.. e getValue getValue)]))))
+
 (defn ^IPersistentMap get-response->map
   [^GetResponse r]
   (let [s (convert-source-result (.getSourceAsMap r))]
@@ -525,7 +532,8 @@
    :_id       (.getId sh)
    :_score    (.getScore sh)
    :_version  (.getVersion sh)
-   :_source   (convert-source-result (.getSource sh))})
+   :_source   (convert-source-result (.getSource sh))
+   :_fields   (convert-fields-result (.getFields sh))})
 
 (defn- search-hits->seq
   [^SearchHits hits]
