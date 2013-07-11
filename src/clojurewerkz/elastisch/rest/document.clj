@@ -130,7 +130,7 @@
 
    (doc/search \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [index mapping-type & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference]
+  (let [qk   [:search_type :scroll :routing :preference :ignore_indices]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index)
@@ -141,7 +141,7 @@
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
   [index & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference]
+  (let [qk   [:search_type :scroll :routing :preference :ignore_indices]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index))
@@ -194,7 +194,7 @@
      (rest/post (rest/count-url (join-names index) (join-names mapping-type)) :body query))
   ([index mapping-type query & { :as options }]
      (rest/post (rest/count-url (join-names index) (join-names mapping-type))
-                :query-params (select-keys options [:df :analyzer :default_operator])
+                :query-params (select-keys options [:df :analyzer :default_operator :ignore_indices])
                 :body query)))
 
 (def ^{:doc "Optional parameters that all query-based delete functions share"
@@ -209,7 +209,7 @@
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body query))
   ([index mapping-type query & { :as options }]
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
-                  :query-params (select-keys options optional-delete-query-parameters)
+                  :query-params (select-keys options (conj optional-delete-query-parameters :ignore_indices))
                   :body query)))
 
 (defn delete-by-query-across-all-types
@@ -220,7 +220,7 @@
      (rest/delete (rest/delete-by-query-url (join-names index)) :body query))
   ([index query & {:as options}]
      (rest/delete (rest/delete-by-query-url (join-names index))
-                  :query-params (select-keys options optional-delete-query-parameters)
+                  :query-params (select-keys options (conj optional-delete-query-parameters :ignore_indices))
                   :body query)))
 
 (defn delete-by-query-across-all-indexes-and-types
