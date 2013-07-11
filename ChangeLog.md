@@ -5,10 +5,9 @@
 `clojurewerkz.elastisch.rest.document/search`, `clojurewerkz.elastisch.rest.document/search-all-types`, `clojurewerkz.elastisch.rest.document/count`, `clojurewerkz.elastisch.rest.document/delete-by-query` and `clojurewerkz.elastisch.rest.document/delete-by-query-across-all-types` now accepts `:ignore_indices` option:
 
 ``` clojure
-(doc/search [index-name, missing-index-name,...]
-	    mapping-type
-	    :query (q/match-all)
-            :ignore_indices "missing")
+(doc/search [index-name, missing-index-name,...] mapping-type
+	:query (q/match-all)
+        :ignore_indices "missing")
 ```
 
 See also [elasticsearch/guide/reference/api](http://www.elasticsearch.org/guide/reference/api/) 
