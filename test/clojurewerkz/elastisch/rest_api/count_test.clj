@@ -5,7 +5,7 @@
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx])
   (:use clojure.test
-        [clojurewerkz.elastisch.rest.response :only [count-from]]))
+        [clojurewerkz.elastisch.rest.response :only [count-from ok?]]))
 
 (use-fixtures :each fx/reset-indexes)
 
@@ -54,17 +54,14 @@
 ;;
 
 (deftest test-count-with-ignore-indices
-  (let [index-name "people"
-        index-type "person"
+  (let [index-name         "people"
+        index-type         "person"
         missing-index-name "foo"]
     (idx/create index-name :mappings fx/people-mapping)
     (doc/create index-name index-type fx/person-jack)
     (doc/create index-name index-type fx/person-joe)
     (idx/refresh index-name)
-    (is (thrown? Exception 
-                 (count-from 
-                  (doc/count [index-name, missing-index-name] index-type))))
-    (is (= 2 
-           (count-from 
-            (doc/count [index-name, missing-index-name] index-type :ignore_indices "missing"))))))
-
+    (is (not (ok? (doc/count [index-name missing-index-name] index-type))))
+    (is (= 2
+           (count-from
+            (doc/count [index-name missing-index-name] index-type (q/match-all) :ignore_indices "missing"))))))
