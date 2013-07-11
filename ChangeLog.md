@@ -1,3 +1,20 @@
+## Changes between Elastisch 1.2.0-beta2 and 1.2.0-beta3
+
+### Support for :ignore_indices in REST api client
+
+`clojurewerkz.elastisch.rest.document/search`, `clojurewerkz.elastisch.rest.document/search-all-types`, `clojurewerkz.elastisch.rest.document/count`, `clojurewerkz.elastisch.rest.document/delete-by-query` and `clojurewerkz.elastisch.rest.document/delete-by-query-across-all-types` now accepts `:ignore_indices` option:
+
+``` clojure
+(doc/search [index-name, missing-index-name,...]
+	    mapping-type
+	    :query (q/match-all)
+            :ignore_indices "missing")
+```
+
+See also [elasticsearch/guide/reference/api](http://www.elasticsearch.org/guide/reference/api/) 
+
+Contributed by Joachim De Beule
+
 ## Changes between Elastisch 1.2.0-beta1 and 1.2.0-beta2
 
 ### Search Queries with a Subset of Fields are Converted Correctly
