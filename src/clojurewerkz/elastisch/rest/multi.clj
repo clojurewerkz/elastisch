@@ -16,14 +16,14 @@
 (defn search
   "Performs multi search"
   [queries & params]
-  (apply msearch-with-url (rest/multi-search-url) queries params))
+  (:responses (apply msearch-with-url (rest/multi-search-url) queries params)))
 
 (defn search-with-index
   "Performs multi search defaulting to the index specified"
   [index queries & params]
-  (apply msearch-with-url (rest/multi-search-url index) queries params))
+  (:responses (apply msearch-with-url (rest/multi-search-url index) queries params)))
 
 (defn search-with-index-and-type
   "Performs multi search defaulting to the index and type specified"
   [index mapping-type queries & params]
-  (apply msearch-with-url (rest/multi-search-url index mapping-type) queries params))
+  (:responses (apply msearch-with-url (rest/multi-search-url index mapping-type) queries params)))
