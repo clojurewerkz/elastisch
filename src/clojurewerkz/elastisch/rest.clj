@@ -86,6 +86,14 @@
   ([index-name mapping-type]
      (url-with-path index-name mapping-type "_bulk")))
 
+(defn multi-search-url
+  ([]
+     (url-with-path "_msearch"))
+  ([index-name]
+     (url-with-path index-name "_msearch"))
+  ([index-name mapping-type]
+     (url-with-path index-name mapping-type "_msearch")))
+
 (defn count-url
   ([]
      (url-with-path "_count"))
