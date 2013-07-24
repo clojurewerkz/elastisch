@@ -19,7 +19,8 @@
 (defn bulk
   "Performs a bulk operation"
   [operations & params]
-  (apply bulk-with-url (rest/bulk-url) operations params))
+  (when (not-empty operations)
+    (apply bulk-with-url (rest/bulk-url) operations params)))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
