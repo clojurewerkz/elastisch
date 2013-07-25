@@ -1,6 +1,10 @@
 ## Changes between Elastisch 1.2.0-beta3 and 1.2.0-beta4
 
-No changes yet.
+### Empty Bulk Operations are Ignored
+
+Elastisch now will not perform a bulk operation if its list of operations is empty.
+
+Contributed by Baptiste Fontaine.
 
 
 
