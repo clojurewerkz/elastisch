@@ -1,3 +1,10 @@
+## Changes between Elastisch 1.2.0-beta4 and 1.2.0
+
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `0.90.3`.
+
+
 ## Changes between Elastisch 1.2.0-beta3 and 1.2.0-beta4
 
 ### Empty Bulk Operations are Ignored
