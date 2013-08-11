@@ -30,7 +30,7 @@ on Twitter.
 ## Project Maturity
 
 Elastisch is a not a young project. Started in late 2011, it has been used
-in production since early days.  Elastisch API is stabilized. 1.0 has
+in production since the early days.  Elastisch API is stabilized. 1.0 has
 been released in September 2012.
 
 
@@ -52,7 +52,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.1.1"]
+    [clojurewerkz/elastisch "1.2.0"]
 
 
 With Maven:
@@ -60,7 +60,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.1.1</version>
+      <version>1.2.0</version>
     </dependency>
 
 
