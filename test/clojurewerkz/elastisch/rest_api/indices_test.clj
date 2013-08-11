@@ -63,16 +63,6 @@
     (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
 ;;
-;; Open/close
-;;
-
-(deftest ^{:indexing true} test-open-close-index
-  (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (is (ok? (idx/open index)))
-    (is (ok? (idx/close index)))))
-
-;;
 ;; Optimize
 ;;
 
