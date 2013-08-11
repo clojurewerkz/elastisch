@@ -52,16 +52,6 @@
     (is (idx/update-settings index settings))))
 
 ;;
-;; Open/close
-;;
-
-(deftest ^{:indexing true :native true} test-open-close-index
-  (let [index     "people"
-        _         (idx/create index :mappings fx/people-mapping)]
-    (is (acknowledged? (idx/open index)))
-    (is (acknowledged? (idx/close index)))))
-
-;;
 ;; Optimize
 ;;
 
