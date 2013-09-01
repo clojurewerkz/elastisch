@@ -1,7 +1,7 @@
 (ns clojurewerkz.elastisch.rest
   (:refer-clojure :exclude [get])
   (:require [clj-http.client :as http]
-            [cheshire.custom :as json])
+            [cheshire.core :as json])
   (:use [clojure.string :only [join]])
   (:import java.net.URLEncoder))
 
