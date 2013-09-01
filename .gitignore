@@ -10,3 +10,4 @@ doc/*
 deploy.docs.sh
 .lein-*
 data/*
+target
