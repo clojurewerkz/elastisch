@@ -1,3 +1,14 @@
+## Changes between Elastisch 1.2.0 and 1.3.0-beta1
+
+### Cheshire Update
+
+[Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.2.0`.
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.7.6`.
+
+
 ## Changes between Elastisch 1.2.0-beta3 and 1.2.0
 
 ### ElasticSearch Native Client Upgrade
