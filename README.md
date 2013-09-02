@@ -12,7 +12,6 @@ ElasticSearch](http://clojureelasticsearch.info), a modern distributed search en
  * Closely follow [ElasticSearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
  * Support multiple transports: HTTP, native ES client, possibly more (e.g. Memcached)
  * Follow recent ElasticSearch releases & developments
- * Target Clojure 1.3.0 and later from the ground up
 
 
 ## Community
@@ -75,7 +74,7 @@ Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/cloj
 
 ## Supported Clojure Versions
 
-Elastisch is built from the ground up for Clojure 1.3 and up.
+Elastisch requires Clojure 1.4.
 The most recent stable release is highly recommended.
 
 
