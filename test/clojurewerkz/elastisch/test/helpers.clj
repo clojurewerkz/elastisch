@@ -21,7 +21,5 @@
 
 (defn maybe-connect-native-client
   []
-  (if (not (ci?))
-    (when (not (es/connected?))
-      (connect-native-client))
-    (println "ES_CLUSTER_NAME env variable is not set. Please set it to your local ES cluster name.")))
+  (when (not (es/connected?))
+    (connect-native-client)))
