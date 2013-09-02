@@ -32,14 +32,16 @@
   [index mapping-type operations & params]
   (apply bulk-with-url (rest/bulk-url index mapping-type) operations params))
 
+(def ^:private special-operation-keys
+  [:_index :_type :_id :_routing :_percolate :_parent :_timestamp :_ttl])
+
 (defn index-operation
   [doc]
-  {"index"
-   (select-keys doc [:_index :_type :_id])})
+  {"index" (select-keys doc special-operation-keys)})
 
 (defn delete-operation
   [doc]
-  {"delete"  (select-keys doc [:_index :_type :_id])})
+  {"delete" (select-keys doc special-operation-keys)})
 
 (defn bulk-index
   "generates the content for a bulk insert operation"
