@@ -1,5 +1,12 @@
 ## Changes between Elastisch 1.3.0-beta1 and 1.3.0-beta2
 
+### Bulk Index and Delete Operations Support More Options
+
+Bulk index and delete operations support `_parent` and `_routing`
+keys.
+
+Contributed by Baptiste Fontaine.
+
 ### Clojure 1.3 Support Dropped
 
 Elastisch now requires Clojure 1.4.
