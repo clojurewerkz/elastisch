@@ -1,3 +1,11 @@
+## Changes between Elastisch 1.3.0-beta1 and 1.3.0-beta2
+
+### Clojure 1.3 Support Dropped
+
+Elastisch now requires Clojure 1.4.
+
+
+
 ## Changes between Elastisch 1.2.0 and 1.3.0-beta1
 
 ### Cheshire Update
