@@ -35,6 +35,6 @@
   :mailing-list {:name "clojure-elasticsearch"
                  :archive "https://groups.google.com/group/clojure-elasticsearch"
                  :post "clojure-elasticsearch@googlegroups.com"}
-  :plugins [[codox "0.6.1"]]
+  :plugins [[codox "0.6.4"]]
   :codox {:sources ["src"]
           :output-dir "doc/api"})
