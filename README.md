@@ -80,8 +80,8 @@ The most recent stable release is highly recommended.
 
 ## REST and Native Clients
 
-Elastisch `1.0` only offers a REST API client. Elastisch `1.1` will feature
-a native (transport) client with nearly identical API.
+Elastisch provides HTTP and native (transport) clients with nearly
+identical API as of `1.1.0`.
 
 
 
