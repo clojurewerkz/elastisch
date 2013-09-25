@@ -532,7 +532,9 @@
   (let [source (.getSource sh)
         source-or-fields (if source
                            {:_source (convert-source-result source)}
-                           {:_fields (convert-fields-result (.getFields sh))})]
+                           (let [fs (convert-fields-result (.getFields sh))]
+                             {:_fields fs
+                              :fields  fs}))]
     (clojure.core/merge source-or-fields
                         {:_index    (.getIndex sh)
                          :_type     (.getType sh)
