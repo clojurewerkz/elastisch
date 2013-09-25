@@ -1,3 +1,18 @@
+## Changes between Elastisch 1.3.0-beta2 and 1.3.0-beta3
+
+### Fields in Search Hit Results in Native Client
+
+Native client now returns the same value in `:fields` and `:_fields`
+keys in search hits. This makes it both backwards compatible with
+earlier versions and the format ElasticSearch HTTP API uses.
+
+
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `0.90.5`.
+
+
+
 ## Changes between Elastisch 1.3.0-beta1 and 1.3.0-beta2
 
 ### Bulk Index and Delete Operations Support More Options
