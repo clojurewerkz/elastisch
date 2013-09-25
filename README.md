@@ -99,24 +99,6 @@ Elastisch is part of the group of [Clojure libraries](http://clojurewerkz.org) k
 and several others.
 
 
-## Running Tests
-
-To run Elastisch tests, make sure you have ElasticSearch running. It must be the same
-version that Elastisch depends on due to binary protocol changes between releases.
-[project.clj](project.clj) or [project page on Clojars](https://clojars.org/clojurewerkz/elastisch)
-can help find that out.
-
-Next you need to have `ES_CLUSTER_NAME` exported to something unique. Again, this is
-an ElasticSearch binary client requirement.
-
-Finally, run the tests as
-
-    lein all test
-
-To run only HTTP client tests, use
-
-    lein all test :ci
-
 ## Continuous Integration
 
 [![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
@@ -132,6 +114,22 @@ with the name of the local cluster. To find it out, use
 ```
 curl http://localhost:9200/_cluster/nodes
 ```
+
+### Running Tests
+
+To run Elastisch tests, make sure you have ElasticSearch running. It must be the same
+version that Elastisch depends on due to binary protocol changes between releases.
+[project.clj](project.clj) or [project page on Clojars](https://clojars.org/clojurewerkz/elastisch)
+can help find that out.
+
+Finally, run all tests with
+
+    lein all test
+
+To run only HTTP client tests, use
+
+    lein all test :ci
+
 
 ### Leiningen
 
