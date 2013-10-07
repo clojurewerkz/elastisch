@@ -613,7 +613,7 @@
     {:_type   DateHistogramFacet/TYPE
      :entries (map (fn [^DateHistogramFacet$Entry et]
                      {:time (.getTime et) :count (.getCount et) :total_count (.getTotalCount et)
-                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
+                      :mean (.getMean et) :min (.getMin et) :max (.getMax et) :total (.getTotal et)})
                    (.getEntries ft))})
 
   ;; {:comments {:total 68.0,
