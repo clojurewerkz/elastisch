@@ -1,3 +1,12 @@
+## Changes between Elastisch 1.3.0-beta3 and 1.3.0-beta4
+
+### Date Histogram Fix
+
+Date histogram in the native client now includes `:total` field.
+
+Contributed by Jim Dunn.
+
+
 ## Changes between Elastisch 1.3.0-beta2 and 1.3.0-beta3
 
 ### Fields in Search Hit Results in Native Client
