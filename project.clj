@@ -5,7 +5,7 @@
   :dependencies [[org.clojure/clojure   "1.5.1"]
                  [cheshire              "5.2.0"]
                  [clj-http              "0.7.6" :exclusions [org.clojure/clojure]]
-                 [clojurewerkz/support  "0.17.0"]
+                 [clojurewerkz/support  "0.20.0"]
                  ;; used by the native client
                  [org.elasticsearch/elasticsearch "0.90.5"]]
   :min-lein-version "2.0.0"
