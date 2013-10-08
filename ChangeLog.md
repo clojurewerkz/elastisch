@@ -1,5 +1,10 @@
 ## Changes between Elastisch 1.3.0-beta3 and 1.3.0-beta4
 
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.7.7`.
+
+
 ### Date Histogram Fix
 
 Date histogram in the native client now includes `:total` field.
