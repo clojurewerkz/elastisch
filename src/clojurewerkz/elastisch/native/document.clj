@@ -83,6 +83,14 @@
   ([index mapping-type id document & {:as params}]
      (future (apply put (concat [index mapping-type id document] params)))))
 
+(defn upsert
+  "Updates or creates a document using provided data"
+  ([index mapping-type ^String id ^Map doc]
+    (let [res (es/update (cnv/->upsert-request index
+                                               mapping-type
+                                               id
+                                               doc))]
+      (cnv/update-response->map (.get res)))))
 
 (defn update-with-script
   "Updates a document using a script"
