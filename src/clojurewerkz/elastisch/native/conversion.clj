@@ -362,6 +362,13 @@
          (.fields r (->string-array fields)))
        r)))
 
+(defn ^UpdateRequest ->upsert-request
+  ([index-name mapping-type ^String id ^Map doc]
+   (let [doc (wlk/stringify-keys doc)
+         r   (UpdateRequest. index-name mapping-type id)]
+     (.doc r ^Map doc)
+     (.upsert r ^Map doc)
+     r)))
 
 (defn ^IPersistentMap update-response->map
   [^UpdateResponse r]
