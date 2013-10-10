@@ -1,3 +1,18 @@
+## Changes between Elastisch 1.3.0-beta4 and 1.3.0-beta5
+
+### Upserts in Native Client
+
+Native client now supports upserts of documents:
+
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
+
+(doc/upsert "people" "person" "elastisch" {:name "Elastisch" :language "Clojure"})
+```
+
+
+
+
 ## Changes between Elastisch 1.3.0-beta3 and 1.3.0-beta4
 
 ### clj-http Update
