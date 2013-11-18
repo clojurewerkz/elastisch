@@ -46,7 +46,7 @@
 ;;
 
 (deftest ^{:query true :native true} test-basic-term-query-over-non-analyzed-usernames
-  (are [username id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term :username username))
+  (are [username id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term :username username) :sort {:timestamp "asc"})
                                    hits-from
                                    first
                                    :_id)))
@@ -56,7 +56,7 @@
        "DEVOPS_BORAT"   "5"))
 
 (deftest ^{:query true :native true} test-basic-term-query-over-non-analyzed-embedded-fields
-  (are [state id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term "location.state" state))
+  (are [state id] (is (= id (-> (doc/search "tweets" "tweet" :query (q/term "location.state" state) :sort {:timestamp "asc"})
                                    hits-from
                                    first
                                    :_id)))
