@@ -806,15 +806,13 @@
     r))
 
 (defn ^FlushRequest ->flush-index-request
-  [index-name {:keys [refresh force full]}]
+  [index-name {:keys [force full]}]
   (let [ary (->string-array index-name)
         r   (FlushRequest. ary)]
     (when force
       (.force r force))
     (when full
       (.full r full))
-    (when refresh
-      (.refresh r refresh))
     r))
 
 (defn ^RefreshRequest ->refresh-index-request
