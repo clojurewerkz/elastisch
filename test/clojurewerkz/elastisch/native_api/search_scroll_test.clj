@@ -69,3 +69,17 @@
     (is (any-hits? response))
     (is (= 4 (total-hits response)))
     (is (= 4 (count all-hits)))))
+
+(deftest ^{:native true} test-scroll-as-lazy-seq
+  (let [index-name   "articles"
+        mapping-type "article"
+        res-seq      (doc/scroll-each
+                       (doc/search index-name mapping-type
+                                   :query (q/query-string :query "*")
+                                   :search_type "query_then_fetch"
+                                   :scroll "1m"
+                                   :size 2))]
+    (is (= false (realized? res-seq)))
+    (is (= 4 (count res-seq)))
+    (is (= 4 (count (distinct res-seq))))
+    (is (= true (realized? res-seq)))))
