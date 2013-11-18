@@ -65,10 +65,10 @@
 ;; Flush
 ;;
 
-(deftest ^{:indexing true :native true} test-flush-index-with-refresh
+(deftest ^{:indexing true :native true} test-flush-index
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
-        response  (idx/flush index :refresh true)]
+        response  (idx/flush index)]
     (is (broadcast-operation-response? response))))
 
 
