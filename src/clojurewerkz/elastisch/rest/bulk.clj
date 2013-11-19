@@ -46,7 +46,8 @@
 (defn bulk-index
   "generates the content for a bulk insert operation"
   ([documents]
-     (let [operations (map index-operation documents)]
+     (let [operations (map index-operation documents)
+           documents  (map #(dissoc % :_index :_type) documents)]
        (interleave operations documents))))
 
 (defn bulk-delete

@@ -19,8 +19,9 @@
 (def ^{:const true} index-type "person")
 
 (deftest ^{:indexing true} test-bulk-insert
-  (let [document          (assoc fx/person-jack :_index index-name :_type index-type)
-        insert-operations (bulk/bulk-index (repeat 10 document))
+  (let [document          fx/person-jack
+        for-index         (assoc document :_index index-name :_type index-type)
+        insert-operations (bulk/bulk-index (repeat 10 for-index))
         response          (bulk/bulk insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
@@ -36,8 +37,9 @@
          true       :exists)))
 
 (deftest ^{:indexing true} test-bulk-with-index
-  (let [document          (assoc fx/person-jack :_type index-type)
-        insert-operations (bulk/bulk-index (repeat 10 document))
+  (let [document          fx/person-jack
+        for-index         (assoc document :_type index-type)
+        insert-operations (bulk/bulk-index (repeat 10 for-index))
         response          (bulk/bulk-with-index index-name insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
