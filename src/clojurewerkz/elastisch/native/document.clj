@@ -310,6 +310,7 @@
     (cnv/search-response->seq res)))
 
 (defn scroll-seq
+  "Returns a lazy sequence of all documents for a given scroll query"
   [prev-resp]
   (let [hits      (r/hits-from prev-resp)
         scroll-id (:_scroll_id prev-resp)]

@@ -67,3 +67,30 @@
     (is (any-hits? response))
     (is (= 4 (total-hits response)))
     (is (= 4 (count all-hits)))))
+
+(deftest ^{:rest true} test-scroll-seq
+  (let [index-name   "articles"
+        mapping-type "article"
+        res-seq      (doc/scroll-seq
+                       (doc/search index-name mapping-type
+                                   :query (q/query-string :query "*")
+                                   :search_type "query_then_fetch"
+                                   :scroll "1m"
+                                   :size 2))]
+    (is (= false (realized? res-seq)))
+    (is (= 4 (count res-seq)))
+    (is (= 4 (count (distinct res-seq))))
+    (is (= true (realized? res-seq)))))
+
+(deftest ^{:rest true} test-scroll-seq-with-no-results
+  (let [index-name   "articles"
+        mapping-type "article"
+        res-seq      (doc/scroll-seq
+                       (doc/search index-name mapping-type
+                                   :query (q/term :title "Emptiness")
+                                   :search_type "query_then_fetch"
+                                   :scroll "1m"
+                                   :size 2))]
+    (is (= 0 (count res-seq)))
+    (is (= true (realized? res-seq)))
+    (is (= true (seq? res-seq)))))
