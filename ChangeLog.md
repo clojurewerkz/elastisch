@@ -1,3 +1,32 @@
+## Changes between Elastisch 1.3.0-beta5 and 1.3.0-rc1
+
+### Result Scrolling as Lazy Sequences
+
+`clojurewerkz.elastisch.native.document/scroll-seq` and
+`clojurewerkz.elastisch.rest.document/scroll-seq`
+are new functions that accept a search query response
+and return a lazy sequence of paginated search results.
+
+This makes working with result sets that require pagination
+much more natural:
+
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
+
+(let [index-name   "articles"
+      mapping-type "article"
+      res-seq      (doc/scroll-seq
+                       (doc/search index-name mapping-type
+                                   :query (q/term :title "Emptiness")
+                                   :search_type "query_then_fetch"
+                                   :scroll "1m"
+                                   :size 2))]
+    res-seq))
+```
+
+Contributed by Max Barnash.
+
+
 ## Changes between Elastisch 1.3.0-beta4 and 1.3.0-beta5
 
 ### Upserts in Native Client
