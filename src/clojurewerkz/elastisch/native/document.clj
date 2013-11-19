@@ -309,12 +309,12 @@
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
 
-(defn scroll-each
+(defn scroll-seq
   [prev-resp]
   (let [hits      (r/hits-from prev-resp)
         scroll-id (:_scroll_id prev-resp)]
     (if (seq hits)
-      (concat hits (lazy-seq (scroll-each (scroll scroll-id :scroll "1m"))))
+      (concat hits (lazy-seq (scroll-seq (scroll scroll-id :scroll "1m"))))
       nil)))
 
 (defn replace

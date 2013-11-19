@@ -73,7 +73,7 @@
 (deftest ^{:native true} test-scroll-as-lazy-seq
   (let [index-name   "articles"
         mapping-type "article"
-        res-seq      (doc/scroll-each
+        res-seq      (doc/scroll-seq
                        (doc/search index-name mapping-type
                                    :query (q/query-string :query "*")
                                    :search_type "query_then_fetch"
