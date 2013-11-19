@@ -1,5 +1,12 @@
 ## Changes between Elastisch 1.3.0-beta5 and 1.3.0-rc1
 
+### Bulk Indexing Fix
+
+Elastisch no longer erroneously inserts `_index` and `_type` fields
+into documents inserted via bulk API.
+
+Contributed by Max Barnash.
+
 ### Result Scrolling as Lazy Sequences
 
 `clojurewerkz.elastisch.native.document/scroll-seq` and
