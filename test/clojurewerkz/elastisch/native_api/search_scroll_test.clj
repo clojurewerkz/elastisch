@@ -94,5 +94,4 @@
                                    :scroll "1m"
                                    :size 2))]
     (is (= 0 (count res-seq)))
-    (is (= true (realized? res-seq)))
-    (is (= true (seq? res-seq)))))
+    (is (= true (coll? res-seq)))))
