@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [get replace count sort])
   (:require [clojurewerkz.elastisch.native :as es]
             [clojurewerkz.elastisch.native.conversion :as cnv]
-            [clojurewerkz.elastisch.query  :as q])
+            [clojurewerkz.elastisch.query  :as q]
+            [clojurewerkz.elastisch.native.response :as r])
   (:import clojure.lang.IPersistentMap
            org.elasticsearch.action.get.GetResponse
            org.elasticsearch.action.count.CountResponse
@@ -307,6 +308,15 @@
   (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id options))
         ^SearchResponse res (.get ft)]
     (cnv/search-response->seq res)))
+
+(defn scroll-seq
+  "Returns a lazy sequence of all documents for a given scroll query"
+  [prev-resp]
+  (let [hits      (r/hits-from prev-resp)
+        scroll-id (:_scroll_id prev-resp)]
+    (if (seq hits)
+      (concat hits (lazy-seq (scroll-seq (scroll scroll-id :scroll "1m"))))
+      hits)))
 
 (defn replace
   "Replaces document with given id with a new one"

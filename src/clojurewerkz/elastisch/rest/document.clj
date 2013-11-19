@@ -5,7 +5,7 @@
             [clojure.string :as string])
   (:use     clojure.set
             [clojurewerkz.elastisch.rest.utils :only [join-names]]
-            [clojurewerkz.elastisch.rest.response :only [not-found?]]))
+            [clojurewerkz.elastisch.rest.response :only [not-found? hits-from]]))
 
 ;;
 ;; API
@@ -93,7 +93,7 @@
    (doc/multi-get [{:_index index-name :_type mapping-type :_id \"1\"}
                    {:_index index-name :_type mapping-type :_id \"2\"}])
 
-   
+
    2-argument version accepts an index name that eliminates the need to include
    :_index in every query map:
 
@@ -168,6 +168,15 @@
         body (apply dissoc (concat [options] qk))]
     (rest/get (rest/scroll-url)
                :query-params qp)))
+
+(defn scroll-seq
+  "Returns a lazy sequence of all documents for a given scroll query"
+  [prev-resp]
+  (let [hits      (hits-from prev-resp)
+        scroll-id (:_scroll_id prev-resp)]
+    (if (seq hits)
+      (concat hits (lazy-seq (scroll-seq (scroll scroll-id :scroll "1m"))))
+      hits)))
 
 (defn replace
   "Replaces document with given id with a new one"
