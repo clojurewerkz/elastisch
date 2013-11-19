@@ -315,7 +315,7 @@
         scroll-id (:_scroll_id prev-resp)]
     (if (seq hits)
       (concat hits (lazy-seq (scroll-seq (scroll scroll-id :scroll "1m"))))
-      nil)))
+      (concat hits '()))))
 
 (defn replace
   "Replaces document with given id with a new one"
