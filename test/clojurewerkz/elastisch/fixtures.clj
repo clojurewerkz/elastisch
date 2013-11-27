@@ -1,8 +1,8 @@
 (ns clojurewerkz.elastisch.fixtures
   (:require [clojurewerkz.elastisch.rest.index    :as idx]
-            [clojurewerkz.elastisch.rest.document :as doc])
-  (:use clojure.test
-        [clojurewerkz.elastisch.rest.response :only [ok?]]))
+            [clojurewerkz.elastisch.rest.document :as doc]
+            [clojure.test :refer :all]
+            [clojurewerkz.elastisch.rest.response :refer [ok?]]))
 
 (defn reset-indexes*
   []
