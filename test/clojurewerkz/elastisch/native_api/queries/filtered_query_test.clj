@@ -4,9 +4,10 @@
             [clojurewerkz.elastisch.native.index    :as idx]
             [clojurewerkz.elastisch.query           :as q]
             [clojurewerkz.elastisch.fixtures        :as fx]
-            [clojurewerkz.elastisch.test.helpers    :as th])
-  (:use clojure.test clojurewerkz.elastisch.native.response
-        [clj-time.core :only [months ago now from-now]]))
+            [clojurewerkz.elastisch.test.helpers    :as th]
+            [clojurewerkz.elastisch.native.response :refer :all]
+            [clojure.test :refer :all]
+            [clj-time.core :refer [months ago now from-now]]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
