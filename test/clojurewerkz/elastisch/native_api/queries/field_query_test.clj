@@ -3,8 +3,9 @@
             [clojurewerkz.elastisch.native.index      :as idx]
             [clojurewerkz.elastisch.query             :as q]
             [clojurewerkz.elastisch.fixtures          :as fx]
-            [clojurewerkz.elastisch.test.helpers      :as th])
-  (:use clojure.test clojurewerkz.elastisch.native.response))
+            [clojurewerkz.elastisch.test.helpers      :as th]
+            [clojurewerkz.elastisch.native.response :refer :all]
+            [clojure.test :refer :all]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-tweets-index)
