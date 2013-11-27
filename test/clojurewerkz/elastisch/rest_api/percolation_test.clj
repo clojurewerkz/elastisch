@@ -4,8 +4,9 @@
             [clojurewerkz.elastisch.rest.index       :as idx]
             [clojurewerkz.elastisch.query            :as q]
             [clojurewerkz.elastisch.fixtures         :as fx]
-            [clojurewerkz.elastisch.rest.percolation :as pcl])
-  (:use clojure.test clojurewerkz.elastisch.rest.response))
+            [clojurewerkz.elastisch.rest.percolation :as pcl]
+            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojure.test :refer :all]))
 
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
