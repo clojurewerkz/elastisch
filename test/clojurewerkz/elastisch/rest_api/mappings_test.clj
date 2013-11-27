@@ -2,10 +2,10 @@
   (:refer-clojure :exclude [get replace count])
   (:require [clojurewerkz.elastisch.rest       :as rest]
             [clojurewerkz.elastisch.rest.index :as idx]
-            [clojurewerkz.elastisch.fixtures   :as fx])
-  (:use clojurewerkz.elastisch.rest.document
-        clojurewerkz.elastisch.rest.response
-        clojure.test))
+            [clojurewerkz.elastisch.fixtures   :as fx]
+            [clojurewerkz.elastisch.rest.document :refer :all]
+            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes)
 
