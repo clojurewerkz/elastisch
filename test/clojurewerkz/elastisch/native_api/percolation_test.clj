@@ -6,8 +6,9 @@
             [clojurewerkz.elastisch.fixtures           :as fx]
             [clojurewerkz.elastisch.native.percolation :as pcl]
             [clojurewerkz.elastisch.test.helpers       :as th]
-            [clojure.walk :as wlk])
-  (:use clojure.test clojurewerkz.elastisch.native.response)
+            [clojure.walk :as wlk]
+            [clojurewerkz.elastisch.native.response :refer :all]
+            [clojure.test :refer :all])
   (:import java.util.Map
            org.elasticsearch.client.Client))
 
