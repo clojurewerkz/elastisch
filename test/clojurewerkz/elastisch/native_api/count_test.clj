@@ -4,9 +4,9 @@
             [clojurewerkz.elastisch.native.index    :as idx]
             [clojurewerkz.elastisch.query           :as q]
             [clojurewerkz.elastisch.fixtures        :as fx]
-            [clojurewerkz.elastisch.test.helpers    :as th])
-  (:use clojure.test
-        [clojurewerkz.elastisch.native.response :only [count-from]]))
+            [clojurewerkz.elastisch.test.helpers    :as th]
+            [clojure.test :refer :all]
+            [clojurewerkz.elastisch.native.response :refer [count-from]]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
