@@ -3,11 +3,11 @@
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
 
-            [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test
-        [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
-        [clj-time.core :only [months ago]]
-        [clojure.string :only [join]]))
+            [clojurewerkz.elastisch.fixtures :as fx]
+            [clojurewerkz.elastisch.rest.response :refer [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
+            [clojure.test :refer :all]
+            [clj-time.core :refer [months ago]]
+            [clojure.string :refer [join]]))
 
 (use-fixtures :each fx/reset-indexes)
 
