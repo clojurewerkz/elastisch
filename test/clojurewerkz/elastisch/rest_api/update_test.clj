@@ -4,8 +4,9 @@
             [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures      :as fx]
-            [clojure.stacktrace :as s])
-  (:use clojure.test clojurewerkz.elastisch.rest.response))
+            [clojure.stacktrace :as s]
+            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes)
 
