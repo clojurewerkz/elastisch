@@ -2,9 +2,9 @@
   (:refer-clojure :exclude [get replace count])
   (:require [clojurewerkz.elastisch.native.index :as idx]
             [clojurewerkz.elastisch.fixtures     :as fx]
-            [clojurewerkz.elastisch.test.helpers :as th])
-  (:use clojure.test
-        clojurewerkz.elastisch.native.response))
+            [clojurewerkz.elastisch.test.helpers :as th]
+            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojure.test :refer :all]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
