@@ -1,6 +1,6 @@
 (ns clojurewerkz.elastisch.internal.rest-test
-  (:require [clojurewerkz.elastisch.rest :as rest])
-  (:use clojure.test))
+  (:require [clojurewerkz.elastisch.rest :as rest]
+            [clojure.test :refer :all]))
 
 (println (str "Using Clojure version " *clojure-version*))
 
