@@ -5,11 +5,11 @@
             [clojurewerkz.elastisch.native.index    :as idx]
             [clojurewerkz.elastisch.query           :as q]
             [clojurewerkz.elastisch.fixtures        :as fx]
-            [clojurewerkz.elastisch.test.helpers    :as th])
-  (:use clojure.test
-        [clojurewerkz.elastisch.native.response :only [hits-from any-hits? no-hits?]]
-        [clojure.string :only [join]]
-        [clj-time.core :only [months ago]]))
+            [clojurewerkz.elastisch.test.helpers    :as th]
+            [clojurewerkz.elastisch.native.response :refer [hits-from any-hits? no-hits?]]
+            [clojure.test :refer :all]
+            [clj-time.core :refer [months ago]]
+            [clojure.string :refer [join]]))
 
 (def ^{:const true} index-name "people")
 (def ^{:const true} index-type "person")
