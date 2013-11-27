@@ -1,6 +1,6 @@
 (ns clojurewerkz.elastisch.internal.utils-test
-  (:require [clojurewerkz.elastisch.rest.utils :as utils])
-  (:use clojure.test))
+  (:require [clojurewerkz.elastisch.rest.utils :as utils]
+            [clojure.test :refer :all]))
 
 (deftest join-names-test
   (is (= "name" (utils/join-names "name")))
