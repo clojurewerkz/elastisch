@@ -7,11 +7,10 @@
             [clojurewerkz.elastisch.query              :as q]
             [clojurewerkz.elastisch.fixtures           :as fx]
             [cheshire.core :as json]
-            [clj-http.client :as http])
-  (:use clojure.test
-        [clojurewerkz.elastisch.rest.response :only [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
-        [clojure.string :only [join]]
-        ))
+            [clj-http.client :as http]
+            [clojure.test :refer :all]
+            [clojurewerkz.elastisch.rest.response :refer [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
+            [clojure.string :refer [join]]))
 
 (use-fixtures :each fx/reset-indexes)
 
