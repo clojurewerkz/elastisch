@@ -5,8 +5,9 @@
             [clojurewerkz.elastisch.native.index    :as idx]
             [clojurewerkz.elastisch.query           :as q]
             [clojurewerkz.elastisch.fixtures        :as fx]
-            [clojurewerkz.elastisch.test.helpers    :as th])
-  (:use clojure.test clojurewerkz.elastisch.rest.response)
+            [clojurewerkz.elastisch.test.helpers    :as th]
+            [clojurewerkz.elastisch.native.response :refer :all]
+            [clojure.test :refer :all])
   (:import java.util.UUID))
 
 (th/maybe-connect-native-client)
