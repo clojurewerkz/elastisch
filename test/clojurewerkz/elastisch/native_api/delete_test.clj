@@ -6,9 +6,9 @@
             [clojurewerkz.elastisch.query           :as q]
             [clojurewerkz.elastisch.fixtures        :as fx]
             [clojurewerkz.elastisch.test.helpers    :as th]
-            [clojure.stacktrace :as s])
-  (:use clojure.test
-        [clojurewerkz.elastisch.native.response :only [count-from ok?]]))
+            [clojure.stacktrace :as s]
+            [clojurewerkz.elastisch.native.response :refer [count-from ok?]]
+            [clojure.test :refer :all]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
