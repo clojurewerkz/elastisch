@@ -4,9 +4,9 @@
             [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.native.index  :as idx]
             [clojurewerkz.elastisch.fixtures      :as fx]
-            [clojurewerkz.elastisch.test.helpers  :as th])
-  (:use clojure.test
-        [clojurewerkz.elastisch.rest.response :only [acknowledged?]]))
+            [clojurewerkz.elastisch.test.helpers  :as th]
+            [clojurewerkz.elastisch.native.response :refer [acknowledged?]]
+            [clojure.test :refer :all]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
