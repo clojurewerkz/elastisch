@@ -2,8 +2,9 @@
   (:require [clojurewerkz.elastisch.rest.document      :as doc]
             [clojurewerkz.elastisch.rest.index         :as idx]
             [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.fixtures :as fx])
-  (:use clojure.test clojurewerkz.elastisch.rest.response))
+            [clojurewerkz.elastisch.fixtures :as fx]
+            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
