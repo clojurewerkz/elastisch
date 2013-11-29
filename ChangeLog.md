@@ -1,3 +1,10 @@
+## Changes between Elastisch 1.3.0-rc1 and 1.3.0-rc2
+
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `0.90.7`.
+
+
 ## Changes between Elastisch 1.3.0-beta5 and 1.3.0-rc1
 
 ### Bulk Indexing Fix
