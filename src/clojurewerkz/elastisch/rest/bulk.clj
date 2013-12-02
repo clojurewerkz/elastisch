@@ -3,9 +3,7 @@
   (:require [clojurewerkz.elastisch.rest :as rest]
             [cheshire.core :as json]
             [clojure.string :as string]
-            [clojure.set :refer :all]
-            [clojurewerkz.elastisch.rest.utils :refer [join-names]]
-            [clojurewerkz.elastisch.rest.response :refer [not-found?]]))
+            [clojure.set :refer :all]))
 
 (defn ^:private bulk-with-url
   [url operations & {:as params}]
