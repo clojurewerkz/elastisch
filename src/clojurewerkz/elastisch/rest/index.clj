@@ -1,8 +1,8 @@
 (ns clojurewerkz.elastisch.rest.index
   (:refer-clojure :exclude [flush])
   (:require [clojurewerkz.elastisch.rest :as rest]
-            [clj-http.client             :as http])
-  (:use [clojurewerkz.elastisch.rest.utils :only [join-names]]))
+            [clj-http.client             :as http]
+            [clojurewerkz.elastisch.rest.utils :refer [join-names]]))
 
 ;;
 ;; create, delete, exists?
