@@ -2,10 +2,10 @@
   (:refer-clojure :exclude [get replace count sort])
   (:require [clojurewerkz.elastisch.rest :as rest]
             [cheshire.core :as json]
-            [clojure.string :as string])
-  (:use     clojure.set
-            [clojurewerkz.elastisch.rest.utils :only [join-names]]
-            [clojurewerkz.elastisch.rest.response :only [not-found? hits-from]]))
+            [clojure.string :as string]
+            [clojure.set :refer :all]
+            [clojurewerkz.elastisch.rest.utils :refer [join-names]]
+            [clojurewerkz.elastisch.rest.response :refer [not-found? hits-from]]))
 
 ;;
 ;; API
