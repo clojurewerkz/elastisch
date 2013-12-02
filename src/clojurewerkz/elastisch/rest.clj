@@ -1,8 +1,8 @@
 (ns clojurewerkz.elastisch.rest
   (:refer-clojure :exclude [get])
   (:require [clj-http.client :as http]
-            [cheshire.core :as json])
-  (:use [clojure.string :only [join]])
+            [cheshire.core :as json]
+            [clojure.string :refer [join]])
   (:import java.net.URLEncoder))
 
 (defrecord ElasticSearchEndpoint
