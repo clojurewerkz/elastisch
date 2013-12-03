@@ -18,7 +18,7 @@
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
            [org.elasticsearch.search.builder SearchSourceBuilder]
-           org.elasticsearch.search.sort.SortOrder
+           [org.elasticsearch.search.sort SortBuilder SortOrder]
            [org.elasticsearch.search SearchHits SearchHit]
            [org.elasticsearch.search.facet Facets Facet]
            [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
