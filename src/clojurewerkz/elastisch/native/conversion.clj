@@ -432,11 +432,13 @@
 
 (defn ^SearchSourceBuilder ^:private set-sort
   [^SearchSourceBuilder sb sort]
-  (if (instance? String sort)
-    (.sort sb ^String sort)
-    ;; map
-    (doseq [[k v] sort]
-      (.sort sb (name k) (->sort-order (name v)))))
+  (cond 
+   (instance? String sort)       (.sort sb ^String sort)
+   ;; Allow 'sort' to be a SortBuilder, such as a GeoDistanceSortBuilder.
+   (instance? SortBuilder sort)  (.sort sb ^SortBuilder sort)
+   ;; map
+   :else  (doseq [[k v] sort]
+            (.sort sb (name k) (->sort-order (name v)))))
   sb)
 
 (defn ^SearchRequest ->search-request
