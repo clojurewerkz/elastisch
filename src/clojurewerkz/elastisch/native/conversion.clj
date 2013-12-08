@@ -18,7 +18,7 @@
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
            [org.elasticsearch.search.builder SearchSourceBuilder]
-           org.elasticsearch.search.sort.SortOrder
+           [org.elasticsearch.search.sort SortBuilder SortOrder]
            [org.elasticsearch.search SearchHits SearchHit]
            [org.elasticsearch.search.facet Facets Facet]
            [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
@@ -432,11 +432,13 @@
 
 (defn ^SearchSourceBuilder ^:private set-sort
   [^SearchSourceBuilder sb sort]
-  (if (instance? String sort)
-    (.sort sb ^String sort)
-    ;; map
-    (doseq [[k v] sort]
-      (.sort sb (name k) (->sort-order (name v)))))
+  (cond 
+   (instance? String sort)       (.sort sb ^String sort)
+   ;; Allow 'sort' to be a SortBuilder, such as a GeoDistanceSortBuilder.
+   (instance? SortBuilder sort)  (.sort sb ^SortBuilder sort)
+   ;; map
+   :else  (doseq [[k v] sort]
+            (.sort sb (name k) (->sort-order (name v)))))
   sb)
 
 (defn ^SearchRequest ->search-request
