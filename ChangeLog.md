@@ -5,6 +5,7 @@
 `:sort` option can now be a `com.elasticsearch.search.sort.SortBuilder` instance
 and not just a string.
 
+Contributed by Mark Wong-VanHaren.
 
 
 ## Changes between Elastisch 1.3.0-rc1 and 1.3.0-rc2
