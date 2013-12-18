@@ -40,7 +40,7 @@
 ;; scripts
 ;;
 
-(deftest test-assigning-with-a-script
+(deftest test-assigning-with-a-script-1
   (let [index-name "people"
         mapping-type "person"
         id         "1"]
@@ -52,7 +52,7 @@
     (is (= 1
            (get-in (doc/get index-name mapping-type "1") [:_source :counter])))))
 
-(deftest test-assigning-with-a-script
+(deftest test-assigning-with-a-script-2
   (let [index-name "people"
         mapping-type "person"
         id         "1"]
