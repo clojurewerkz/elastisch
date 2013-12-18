@@ -103,12 +103,12 @@
 ;; Status
 ;;
 
-(deftest ^{:indexing true} test-index-status
+(deftest ^{:indexing true} test-index-status-1
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (ok? (idx/status index :recovery true)))))
 
-(deftest ^{:indexing true} test-index-status-for-multiple-indexes
+(deftest ^{:indexing true} test-index-status-for-multiple-indexes-1
   (idx/create "group1")
   (idx/create "group2")
   (is (ok? (idx/status ["group1" "group2"] :recovery true :snapshot true))))
@@ -118,12 +118,12 @@
 ;; Segments
 ;;
 
-(deftest ^{:indexing true} test-index-status
+(deftest ^{:indexing true} test-index-status-2
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (ok? (idx/segments index)))))
 
-(deftest ^{:indexing true} test-index-status-for-multiple-indexes
+(deftest ^{:indexing true} test-index-status-for-multiple-indexes-2
   (idx/create "group1")
   (idx/create "group2")
   (is (ok? (idx/segments ["group1" "group2"]))))

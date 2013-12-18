@@ -108,13 +108,13 @@
 ;; Status
 ;;
 
-(deftest ^{:indexing true :native true} test-index-status
+(deftest ^{:indexing true :native true} test-index-status-1
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)
         response  (idx/status index :recovery true)]
     (is (broadcast-operation-response? response))))
 
-(deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
+(deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes-1
   (idx/create "group1")
   (idx/create "group2")
   (is (broadcast-operation-response? (idx/status ["group1" "group2"] :recovery true :snapshot true))))
@@ -124,12 +124,12 @@
 ;; Segments
 ;;
 
-(deftest ^{:indexing true :native true} test-index-status
+(deftest ^{:indexing true :native true} test-index-status-2
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (broadcast-operation-response? (idx/segments index)))))
 
-(deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes
+(deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes-2
   (idx/create "group1")
   (idx/create "group2")
   (is (broadcast-operation-response? (idx/segments ["group1" "group2"]))))
