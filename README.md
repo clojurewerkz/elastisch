@@ -148,3 +148,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 Copyright (C) 2011-2013 Alex Petrov, Michael S. Klishin
 
 Distributed under the Eclipse Public License, the same as Clojure.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/clojurewerkz/elastisch/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
