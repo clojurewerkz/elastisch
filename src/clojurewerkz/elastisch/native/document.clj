@@ -5,7 +5,7 @@
             [clojurewerkz.elastisch.query  :as q]
             [clojurewerkz.elastisch.native.response :as r])
   (:import clojure.lang.IPersistentMap
-           org.elasticsearch.action.get.GetResponse
+           [org.elasticsearch.action.get GetResponse MultiGetResponse]
            org.elasticsearch.action.count.CountResponse
            org.elasticsearch.action.delete.DeleteResponse
            org.elasticsearch.action.deletebyquery.DeleteByQueryResponse

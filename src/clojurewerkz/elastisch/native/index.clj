@@ -17,6 +17,9 @@
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse
+           org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheResponse
+           org.elasticsearch.action.admin.indices.status.IndicesStatusResponse
+           org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse))
 
 ;;
@@ -187,7 +190,7 @@
   "Returns segments information for one or more indices."
   [index-name]
   (let [ft                           (es/admin-index-segments (cnv/->indices-segments-request index-name))
-        ^IndicesSegmentsResponse res (.get ft)]
+        ^IndicesSegmentResponse res (.get ft)]
     (merge (cnv/broadcast-operation-response->map res)
            (cnv/indices-segments-response->map res))))
 
