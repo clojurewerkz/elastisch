@@ -34,7 +34,7 @@
     (is (-> facets :tags :terms first :term))
     (is (-> facets :tags :terms first :count))))
 
-(deftest ^{:facets true :rest true} test-range-facet-over-age
+(deftest ^{:facets true :rest true} test-range-facet-over-age-1
   (let [index-name   "people"
         mapping-type "person"
         result       (doc/search index-name mapping-type
@@ -49,7 +49,7 @@
     (is (>= (-> facets :ages :ranges second :count) 1))
     (is (>= (-> facets :ages :ranges last :count))) 4))
 
-(deftest ^{:facets true :rest true} test-range-facet-over-age
+(deftest ^{:facets true :rest true} test-range-facet-over-age-2
   (let [index-name   "people"
         mapping-type "person"
         result       (doc/search index-name mapping-type
