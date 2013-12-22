@@ -1,3 +1,12 @@
+## Changes between Elastisch 1.3.0 and 2.0.0
+
+### `clojurewerkz.elastisch.native.document/update-with-script` Fix
+
+`clojurewerkz.elastisch.native.document/update-with-script` invoked without
+script parameters no longer raises an exception.
+
+
+
 ## Changes between Elastisch 1.3.0-rc2 and 1.3.0
 
 ### :sort Option Can Be a SortBuilder
