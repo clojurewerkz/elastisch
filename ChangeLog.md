@@ -1,5 +1,9 @@
 ## Changes between Elastisch 1.3.0 and 2.0.0
 
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `0.90.8`.
+
 ### `clojurewerkz.elastisch.native.document/update-with-script` Fix
 
 `clojurewerkz.elastisch.native.document/update-with-script` invoked without
