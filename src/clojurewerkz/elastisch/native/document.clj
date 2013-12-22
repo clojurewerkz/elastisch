@@ -99,7 +99,7 @@
      (let [res (es/update (cnv/->update-request index
                                                 mapping-type
                                                 id
-                                                {:script script}))]
+                                                script))]
        (cnv/update-response->map (.get res))))
   ([index mapping-type ^String id ^String script ^Map params]
      (let [res (es/update (cnv/->update-request index
