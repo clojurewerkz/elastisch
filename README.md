@@ -145,7 +145,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 
 ## License
 
-Copyright (C) 2011-2013 Alex Petrov, Michael S. Klishin
+Copyright (C) 2011-2014 Alex Petrov, Michael S. Klishin
 
 Distributed under the Eclipse Public License, the same as Clojure.
 
