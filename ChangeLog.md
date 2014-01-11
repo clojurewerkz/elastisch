@@ -1,4 +1,13 @@
-## Changes between Elastisch 1.3.0 and 2.0.0
+## Changes between Elastisch 1.3.0 and 1.4.0
+
+### ElasticSearch Exceptions
+
+Elastisch now uses ElasticSearch exceptions instead of generic ones in the native
+client.
+
+Contributed by Richie Vos (Groupon).
+
+GH issues: #54, #57.
 
 ### ElasticSearch Native Client Upgrade
 
