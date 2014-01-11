@@ -44,13 +44,13 @@
                                               mapping-type
                                               document
                                               {:op-type "create"}))]
-       (cnv/index-response->map (.get res))))
+       (cnv/index-response->map (.actionGet res))))
   ([index mapping-type document & {:as params}]
      (let [res (es/index (cnv/->index-request index
                                               mapping-type
                                               document
                                               (merge params {:op-type "create"})))]
-       (cnv/index-response->map (.get res)))))
+       (cnv/index-response->map (.actionGet res)))))
 
 (defn async-create
   "Adds document to the search index and returns a future without waiting
@@ -68,13 +68,13 @@
                                               mapping-type
                                               document
                                               {:id id :op-type "index"}))]
-       (cnv/index-response->map (.get res))))
+       (cnv/index-response->map (.actionGet res))))
   ([index mapping-type id document & {:as params}]
      (let [res (es/index (cnv/->index-request index
                                               mapping-type
                                               document
                                               (merge params {:id id :op-type "index"})))]
-       (cnv/index-response->map (.get res)))))
+       (cnv/index-response->map (.actionGet res)))))
 
 (defn async-put
   "Creates or updates a document in the search index using the provided document id
@@ -91,7 +91,7 @@
                                                mapping-type
                                                id
                                                doc))]
-      (cnv/update-response->map (.get res)))))
+      (cnv/update-response->map (.actionGet res)))))
 
 (defn update-with-script
   "Updates a document using a script"
@@ -100,14 +100,14 @@
                                                 mapping-type
                                                 id
                                                 script))]
-       (cnv/update-response->map (.get res))))
+       (cnv/update-response->map (.actionGet res))))
   ([index mapping-type ^String id ^String script ^Map params]
      (let [res (es/update (cnv/->update-request index
                                                 mapping-type
                                                 id
                                                 script
                                                 params))]
-       (cnv/update-response->map (.get res)))))
+       (cnv/update-response->map (.actionGet res)))))
 
 
 (defn get
@@ -123,7 +123,7 @@
      (let [ft               (es/get (cnv/->get-request index
                                                        mapping-type
                                                        id))
-           ^GetResponse res (.get ft)]
+           ^GetResponse res (.actionGet ft)]
        (when (.isExists res)
          (cnv/get-response->map res))))
   ([index mapping-type id & {:as params}]
@@ -131,9 +131,9 @@
                                                        mapping-type
                                                        id
                                                        params))
-           ^GetResponse res (.get ft)]
+           ^GetResponse res (.actionGet ft)]
        (when (.isExists res)
-         (cnv/get-response->map (.get ft))))))
+         (cnv/get-response->map (.actionGet ft))))))
 
 (defn async-get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -174,19 +174,19 @@
      ;; example response from the REST API:
      ;; ({:_index people, :_type person, :_id 1, :_version 1, :exists true, :_source {...}})
      (let [ft                    (es/multi-get (cnv/->multi-get-request queries))
-           ^MultiGetResponse res (.get ft)
+           ^MultiGetResponse res (.actionGet ft)
            results               (cnv/multi-get-response->seq res)]
        (filter :exists results)))
   ([index queries]
      (let [qs                    (map #(assoc % :_index index) queries)
            ft                    (es/multi-get (cnv/->multi-get-request qs))
-           ^MultiGetResponse res (.get ft)
+           ^MultiGetResponse res (.actionGet ft)
            results               (cnv/multi-get-response->seq res)]
        (filter :exists results)))
   ([index mapping-type queries]
      (let [qs                    (map #(assoc % :_index index :_type mapping-type) queries)
            ft                    (es/multi-get (cnv/->multi-get-request qs))
-           ^MultiGetResponse res (.get ft)
+           ^MultiGetResponse res (.actionGet ft)
            results               (cnv/multi-get-response->seq res)]
        (filter :exists results))))
 
@@ -200,11 +200,11 @@
    (doc/delete \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   ([index mapping-type id]
      (let [ft                  (es/delete (cnv/->delete-request index mapping-type id))
-           ^DeleteResponse res (.get ft)]
+           ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res)))
   ([index mapping-type id & {:as options}]
      (let [ft                  (es/delete (cnv/->delete-request index mapping-type id options))
-           ^DeleteResponse res (.get ft)]
+           ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res))))
 
 (defn delete-by-query
@@ -218,22 +218,22 @@
    (doc/delete-by-query \"people\" \"person\" (q/term :username \"appleseed\"))"
   ([index mapping-type query]
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query))
-           ^DeleteByQueryResponse res (.get ft)]
+           ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res)))
   ([index mapping-type query & {:as options}]
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query options))
-           ^DeleteByQueryResponse res (.get ft)]
+           ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res))))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation across all mapping types."
   ([index query]
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query))
-           ^DeleteByQueryResponse res (.get ft)]
+           ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res)))
   ([index query & {:as options}]
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query options))
-           ^DeleteByQueryResponse res (.get ft)]
+           ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res))))
 
 (defn delete-by-query-across-all-indexes-and-types
@@ -241,11 +241,11 @@
    This may put very high load on your ElasticSearch cluster so use this function with care."
   ([query]
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query))
-           ^DeleteByQueryResponse res (.get ft)]
+           ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res)))
   ([query & {:as options}]
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query options))
-           ^DeleteByQueryResponse res (.get ft)]
+           ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res))))
 
 (defn count
@@ -262,13 +262,13 @@
      (count index mapping-type (q/match-all)))
   ([index mapping-type query]
      (let [ft (es/count (cnv/->count-request index mapping-type {:query query}))
-           ^CountResponse res (.get ft)]
+           ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res))))
   ([index mapping-type query & {:as options}]
      (let [ft (es/count (cnv/->count-request index mapping-type (merge options
                                                                        {:query query})))
-           ^CountResponse res (.get ft)]
+           ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res)))))
 
@@ -283,14 +283,14 @@
    (doc/search \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [index mapping-type & {:as options}]
   (let [ft                  (es/search (cnv/->search-request index mapping-type options))
-        ^SearchResponse res (.get ft)]
+        ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
   [index & {:as options}]
   (let [ft                  (es/search (cnv/->search-request index nil options))
-        ^SearchResponse res (.get ft)]
+        ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn search-all-indexes-and-types
@@ -298,7 +298,7 @@
    ElasticSearch cluster so use this function with care."
   [& {:as options}]
   (let [ft                  (es/search (cnv/->search-request [] nil options))
-        ^SearchResponse res (.get ft)]
+        ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn scroll
@@ -306,7 +306,7 @@
    query given a scroll id"
   [scroll-id & {:as options}]
   (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id options))
-        ^SearchResponse res (.get ft)]
+        ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn scroll-seq
@@ -328,5 +328,5 @@
   "Performs a More Like This (MLT) query."
   [index mapping-type id &{:as options}]
   (let [ft                  (es/more-like-this (cnv/->more-like-this-request index mapping-type id options))
-        ^SearchResponse res (.get ft)]
+        ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))

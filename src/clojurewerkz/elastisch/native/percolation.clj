@@ -24,7 +24,7 @@
                                                       query-name)
                                    (.setSource ^Map (wlk/stringify-keys source)))
         ft                       (.execute irb)
-        ^IndexResponse res       (.get ft)]
+        ^IndexResponse res       (.actionGet ft)]
     (merge (cnv/index-response->map res) {:ok true})))
 
 (defn unregister-query
@@ -33,7 +33,7 @@
   (let [ft (es/delete (cnv/->delete-request percolator-index
                                             index
                                             percolator))
-        ^DeleteResponse res (.get ft)]
+        ^DeleteResponse res (.actionGet ft)]
     (merge (cnv/delete-response->map res) {:ok true})))
 
 (defn percolate
@@ -43,5 +43,5 @@
   (let [ft (es/percolate (cnv/->percolate-request index
                                                   mapping-type
                                                   options))
-        ^PercolateResponse res (.get ft)]
+        ^PercolateResponse res (.actionGet ft)]
     (cnv/percolate-response->map res)))
