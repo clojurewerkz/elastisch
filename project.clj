@@ -3,7 +3,7 @@
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}
   :dependencies [[org.clojure/clojure   "1.5.1"]
-                 [cheshire              "5.2.0"]
+                 [cheshire              "5.3.1"]
                  [clj-http              "0.7.8" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "0.20.0"]
                  ;; used by the native client
