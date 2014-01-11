@@ -53,13 +53,13 @@
       (doc/put index-name index-type id (assoc fx/person-jack :biography "brilliant2") :version original-version)
 
       ; Now should have the new data
-      (is (= "brilliant2" (get-in (doc/get index-name index-type id) [:source :biography])))
+      (is (= "brilliant2" (get-in (doc/get index-name index-type id) [:_source :biography])))
 
       ; Can't perform a write when we pass the wrong version
       (is (thrown? VersionConflictEngineException (doc/put index-name index-type id (assoc fx/person-jack :biography "brilliant3") :version original-version)))
 
       ; Still should have the new data
-      (is (= "brilliant2" (get-in (doc/get index-name index-type id) [:source :biography]))))))
+      (is (= "brilliant2" (get-in (doc/get index-name index-type id) [:_source :biography]))))))
 
 ;;
 ;; scripts
