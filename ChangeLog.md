@@ -1,5 +1,14 @@
 ## Changes between Elastisch 1.3.0 and 1.4.0
 
+### Native Document Supports Optimistic Locking
+
+The native document API now supports the same :version option for optimistic
+locking that the REST api does.
+
+Contributed by Richie Vos (Groupon).
+
+GH issues: #54.
+
 ### ElasticSearch Exceptions
 
 Elastisch now uses ElasticSearch exceptions instead of generic ones in the native
