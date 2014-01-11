@@ -19,6 +19,11 @@ Elastisch now depends on ElasticSearch native client version `0.90.8`.
 script parameters no longer raises an exception.
 
 
+### Cheshire Upgrade
+
+Cheshire dependency has been updated to `5.3.1`.
+
+
 
 ## Changes between Elastisch 1.3.0-rc2 and 1.3.0
 
