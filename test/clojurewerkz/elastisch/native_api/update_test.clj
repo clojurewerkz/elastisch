@@ -6,7 +6,8 @@
             [clojurewerkz.elastisch.fixtures        :as fx]
             [clojurewerkz.elastisch.test.helpers    :as th]
             [clojurewerkz.elastisch.native.response :refer :all]
-            [clojure.test :refer :all]))
+            [clojure.test :refer :all])
+  (:import [org.elasticsearch.index.engine VersionConflictEngineException]))
 
 (th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes)
@@ -35,6 +36,30 @@
     (is (any-hits? (doc/search index-name index-type :query (q/term :biography "brilliant"))))
     ;; TODO: investigate this. MK.
     (is (no-hits? (doc/search index-name index-type :query (q/term :biography "nice"))))))
+
+(deftest test-versioning
+  (let [index-name "people"
+        index-type "person"
+        id         "1"]
+    (idx/create index-name :mappings fx/people-mapping)
+
+    (doc/create index-name index-type (assoc fx/person-jack :biography "brilliant1") :id id)
+    (idx/refresh index-name)
+
+    (let [original-document (doc/get index-name index-type id)
+          original-version (:_version original-document)]
+
+      ; Can perform a write when we say the correct version
+      (doc/put index-name index-type id (assoc fx/person-jack :biography "brilliant2") :version original-version)
+
+      ; Now should have the new data
+      (is (= "brilliant2" (get-in (doc/get index-name index-type id) [:source :biography])))
+
+      ; Can't perform a write when we pass the wrong version
+      (is (thrown? VersionConflictEngineException (doc/put index-name index-type id (assoc fx/person-jack :biography "brilliant3") :version original-version)))
+
+      ; Still should have the new data
+      (is (= "brilliant2" (get-in (doc/get index-name index-type id) [:source :biography]))))))
 
 ;;
 ;; scripts

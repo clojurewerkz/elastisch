@@ -160,6 +160,7 @@
                                         ttl
                                         op-type
                                         refresh
+                                        version
                                         version-type
                                         percolate
                                         content-type]}]
@@ -181,6 +182,8 @@
          (.opType ir ^String (.toLowerCase (name op-type))))
        (when refresh
          (.refresh ir refresh))
+       (when version
+         (.version ir version))
        (when version-type
          (.versionType ir (to-version-type version-type)))
        (when percolate
