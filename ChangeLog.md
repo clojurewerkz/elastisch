@@ -7,7 +7,7 @@ locking that the REST api does.
 
 Contributed by Richie Vos (Groupon).
 
-GH issues: #54.
+GH issues: #56.
 
 ### ElasticSearch Exceptions
 
