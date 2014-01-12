@@ -1,3 +1,11 @@
+## Changes between Elastisch 1.4.0 and 1.5.0
+
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `0.90.10`.
+
+
+
 ## Changes between Elastisch 1.3.0 and 1.4.0
 
 ### Native Document Supports Optimistic Locking
