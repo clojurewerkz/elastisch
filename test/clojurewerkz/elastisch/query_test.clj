@@ -119,7 +119,7 @@
   (let [raw-query "+ - && & || | ! ( ) { } [ ] ^ \" ~ * ? : \\"
         escaped-query "\\+ \\- \\&& & \\|| | \\! \\( \\) \\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\"
         result-with-default-escaping (query/query-string :query raw-query)
-        result-with-explicit-escape-fn (query/query-string :query raw-query :escape identity)]
+        result-with-explicit-escape-fn (query/query-string :query raw-query :escape-with identity)]
     (is (= escaped-query
            (get-in result-with-default-escaping [:query_string :query])))
     (is (= raw-query

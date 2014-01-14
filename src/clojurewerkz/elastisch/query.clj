@@ -161,7 +161,7 @@
 
    For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html"
   [& {:as options}]
-  (let [escape-fn (or (:escape options) escape/escape-query-string-characters)
+  (let [escape-fn (or (:escape-with options) escape/escape-query-string-characters)
         options (if-let [query (:query options)]
                   (assoc options :query (escape-fn query))
                   options)]
