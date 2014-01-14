@@ -1,5 +1,6 @@
 (ns clojurewerkz.elastisch.query
-  (:refer-clojure :exclude [range]))
+  (:refer-clojure :exclude [range])
+  (:require [clojurewerkz.elastisch.escape :as escape]))
 
 (defn term
   "Term Query
@@ -160,7 +161,11 @@
 
    For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html"
   [& {:as options}]
-  {:query_string options})
+  (let [escape-fn (or (:escape options) escape/escape-query-string-characters)
+        options (if-let [query (:query options)]
+                  (assoc options :query (escape-fn query))
+                  options)]
+    {:query_string options}))
 
 (defn span-first
   "Span First query
