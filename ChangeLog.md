@@ -2,7 +2,7 @@
 
 ### Query String Escaping
 
-`clojurewerkz.elastisch.query/query-string` accepts a new option, `:escape`,
+`clojurewerkz.elastisch.query/query-string` accepts a new option, `:escape-with`,
 which is a function that performs escaping of special characters in query string
 queries.
 
