@@ -1,5 +1,16 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
+### Query String Escaping
+
+`clojurewerkz.elastisch.query/query-string` accepts a new option, `:escape`,
+which is a function that performs escaping of special characters in query string
+queries.
+
+By default `clojurewerkz.elastisch.escape/escape-query-string-characters` is used.
+
+Contributed by Ben Reinhart (Groupon).
+
+
 ### ElasticSearch Native Client Upgrade
 
 Elastisch now depends on ElasticSearch native client version `0.90.10`.
