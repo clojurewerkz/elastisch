@@ -1,5 +1,23 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
+### Support for _cluster/state REST API
+
+Added `(clojureworkz.elastisch.rest.admin/cluster-state)`
+
+See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html]
+
+Examples:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.admin :as admin])
+
+(admin/cluster-state)
+(admin/cluster-health :filter_nodes true)
+```
+
+Contributed by Joachim De Beule
+
+
 ### Support for _cluster/health REST API
 
 Added `(clojureworkz.elastisch.rest.admin/cluster-health & {:as params})`
@@ -12,9 +30,9 @@ Examples:
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
 (admin/cluster-health)
-(admin/cluster-health :index \"index1\")
-(admin/cluster-health :index [\"index1\",\"index2\"])
-(admin/cluster-health :index \"index1\" :pretty true :level \"indices\")"
+(admin/cluster-health :index "index1")
+(admin/cluster-health :index ["index1","index2"])
+(admin/cluster-health :index "index1" :pretty true :level "indices")
 ```
 
 Contributed by Joachim De Beule
@@ -32,10 +50,10 @@ Examples:
 (require '[clojurewerkz.elastisch.rest.document :as doc])
 
 (doc/analyze \"foo bar baz\")
-(doc/analyze \"foo bar baz\" :index \"some-index-name\")
-(doc/analyze \"foo bar baz\" :analyzer \"whitespace\")
-(doc/analyze \"foo bar baz\" :tokenizer \"keyword\" :filters \"lowercase\")
-(doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")
+(doc/analyze \"foo bar baz\" :index "some-index-name")
+(doc/analyze \"foo bar baz\" :analyzer "whitespace\")
+(doc/analyze \"foo bar baz\" :tokenizer "keyword" :filters "lowercase")
+(doc/analyze \"foo bar baz\" :index "some-index-name" :field "some-field-name")
 ```
 
 Contributed by Joachim De Beule
