@@ -229,6 +229,8 @@
 (defn cluster-health-url 
   ([& index-names] (url-with-path "_cluster/health" (apply str (interpose "," index-names)))))
 
+(defn cluster-state-url 
+  ([] (url-with-path "_cluster/state")))
 
 ;;
 ;; API
