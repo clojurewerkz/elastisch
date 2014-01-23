@@ -9,12 +9,12 @@ See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/
 Examples:
 
 ``` clojure
-(require '[clojurewerkz.elastisch.rest :as rest])
+(require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-(rest/cluster-health)
-(rest/cluster-health :index \"index1\")
-(rest/cluster-health :index [\"index1\",\"index2\"])
-(rest/cluster-health :index \"index1\" :pretty true :level \"indices\")"
+(admin/cluster-health)
+(admin/cluster-health :index \"index1\")
+(admin/cluster-health :index [\"index1\",\"index2\"])
+(admin/cluster-health :index \"index1\" :pretty true :level \"indices\")"
 ```
 
 Contributed by Joachim De Beule
