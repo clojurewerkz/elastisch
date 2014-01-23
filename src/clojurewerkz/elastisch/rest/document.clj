@@ -258,3 +258,27 @@
    but does not take the mapping type parameter."
   [index query & {:as options}]
   (rest/get (rest/query-validation-url index) :body (json/encode query) :query-params options))
+
+
+(defn analyze 
+  "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html
+
+   Examples:
+
+   (require '[clojurewerkz.elastisch.rest.document :as doc])
+
+   (doc/analyze \"foo bar baz\")
+   (doc/analyze \"foo bar baz\" :index \"some-index-name\")
+   (doc/analyze \"foo bar baz\" :analyzer \"whitespace\")
+   (doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
+  ([text & {:as params}] (rest/get (rest/analyze-url (:index params))
+                                   :query-params (assoc params :text text))))
+
+
+
+
+
+
+
+
+

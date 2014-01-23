@@ -222,6 +222,10 @@
   [^String index-name]
   (url-with-path index-name "_validate" "query"))
 
+(defn analyze-url 
+  ([] (url-with-path "_analyze"))
+  ([^String index-name] (url-with-path index-name "_analyze")))
+
 ;;
 ;; API
 ;;

@@ -1,5 +1,14 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
+### Support for analyze in REST API client
+
+Added `(doc/analyze text & {:as params})` where `params` can be :index, :analyzer and :field 
+
+See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html]
+
+Contributed by Joachim De Beule
+
+
 ### Query String Escaping
 
 `clojurewerkz.elastisch.query/query-string` accepts a new option, `:escape-with`,
