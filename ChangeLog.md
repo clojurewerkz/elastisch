@@ -2,7 +2,7 @@
 
 ### Support for _cluster/state REST API
 
-Added `(clojureworkz.elastisch.rest.admin/cluster-state)`
+Added `(clojureworkz.elastisch.rest.admin/cluster-state & {:as params})`
 
 See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html]
 
