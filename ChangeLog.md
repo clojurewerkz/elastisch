@@ -2,7 +2,7 @@
 
 ### Support for analyze in REST API client
 
-Added `(doc/analyze text & {:as params})` where `params` can be `:index`, `:analyzer` and `:field` 
+Added `(doc/analyze text & {:as params})`
 
 See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html]
 
@@ -14,7 +14,8 @@ Examples:
 (doc/analyze \"foo bar baz\")
 (doc/analyze \"foo bar baz\" :index \"some-index-name\")
 (doc/analyze \"foo bar baz\" :analyzer \"whitespace\")
-(doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
+(doc/analyze \"foo bar baz\" :tokenizer \"keyword\" :filters \"lowercase\")
+(doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")
 ```
 
 Contributed by Joachim De Beule
