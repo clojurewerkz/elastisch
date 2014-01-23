@@ -2,9 +2,20 @@
 
 ### Support for analyze in REST API client
 
-Added `(doc/analyze text & {:as params})` where `params` can be :index, :analyzer and :field 
+Added `(doc/analyze text & {:as params})` where `params` can be `:index`, `:analyzer` and `:field` 
 
 See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html]
+
+Examples:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.document :as doc])
+
+(doc/analyze \"foo bar baz\")
+(doc/analyze \"foo bar baz\" :index \"some-index-name\")
+(doc/analyze \"foo bar baz\" :analyzer \"whitespace\")
+(doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
+```
 
 Contributed by Joachim De Beule
 
