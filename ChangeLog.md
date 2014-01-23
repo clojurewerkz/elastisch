@@ -4,9 +4,7 @@
 
 Added `(clojureworkz.elastisch.rest.admin/cluster-state & {:as params})`
 
-See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html]
-
-Examples:
+Example:
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
@@ -15,16 +13,16 @@ Examples:
 (admin/cluster-health :filter_nodes true)
 ```
 
-Contributed by Joachim De Beule
+See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html) for more info.
+
+Contributed by Joachim De Beule.
 
 
 ### Support for _cluster/health REST API
 
 Added `(clojureworkz.elastisch.rest.admin/cluster-health & {:as params})`
 
-See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html]
-
-Examples:
+Example:
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
@@ -35,7 +33,9 @@ Examples:
 (admin/cluster-health :index "index1" :pretty true :level "indices")
 ```
 
-Contributed by Joachim De Beule
+See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html) for more info.
+
+Contributed by Joachim De Beule.
 
 
 ### Support for analyze in REST API client
