@@ -226,6 +226,10 @@
   ([] (url-with-path "_analyze"))
   ([^String index-name] (url-with-path index-name "_analyze")))
 
+(defn cluster-health-url 
+  ([& index-names] (url-with-path "_cluster/health" (apply str (interpose "," index-names)))))
+
+
 ;;
 ;; API
 ;;
@@ -240,3 +244,4 @@
   "Alters default ElasticSearch connection endpoint"
   [uri]
   (alter-var-root (var *endpoint*) (constantly (connect uri))))
+

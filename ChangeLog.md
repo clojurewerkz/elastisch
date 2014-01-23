@@ -1,5 +1,25 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
+### Support for _cluster/health REST API
+
+Added `(clojureworkz.elastisch.rest.admin/cluster-health & {:as params})`
+
+See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html]
+
+Examples:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.admin :as admin])
+
+(admin/cluster-health)
+(admin/cluster-health :index \"index1\")
+(admin/cluster-health :index [\"index1\",\"index2\"])
+(admin/cluster-health :index \"index1\" :pretty true :level \"indices\")"
+```
+
+Contributed by Joachim De Beule
+
+
 ### Support for analyze in REST API client
 
 Added `(doc/analyze text & {:as params})`
