@@ -1,16 +1,38 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
+### Support for cluster nodes stats and info REST APIs
+
+Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})` and `(clojureworkz.elastisch.rest.admin/nodes-stats & {:as params})`
+
+Examples:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.admin :as admin])
+
+(admin/nodes-stats)
+(admin/nodes-stats :nodes nodes-spec)
+(admin/nodes-stats :nodes nodes-spec :indices false :os true)
+
+(admin/nodes-info)
+(admin/nodes-info :nodes nodes-spec)
+(admin/nodes-info :nodes nodes-spec :network true :os false)
+```
+
+See [ElasticSearch nodes stats documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html), [ElasticSearch nodes info documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html) and [ElasticSearch node specification documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster.html#cluster-nodes) for more info.
+
+Contributed by Joachim De Beule.
+
 ### Support for _cluster/state REST API
 
 Added `(clojureworkz.elastisch.rest.admin/cluster-state & {:as params})`
 
-Example:
+Examples:
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
 (admin/cluster-state)
-(admin/cluster-health :filter_nodes true)
+(admin/cluster-state :filter_nodes true)
 ```
 
 See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html) for more info.
@@ -42,18 +64,18 @@ Contributed by Joachim De Beule.
 
 Added `(doc/analyze text & {:as params})`
 
-See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html]
+See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html) for more info.
 
 Examples:
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.document :as doc])
 
-(doc/analyze \"foo bar baz\")
-(doc/analyze \"foo bar baz\" :index "some-index-name")
-(doc/analyze \"foo bar baz\" :analyzer "whitespace\")
-(doc/analyze \"foo bar baz\" :tokenizer "keyword" :filters "lowercase")
-(doc/analyze \"foo bar baz\" :index "some-index-name" :field "some-field-name")
+(doc/analyze "foo bar baz")
+(doc/analyze "foo bar baz" :index "some-index-name")
+(doc/analyze "foo bar baz" :analyzer "whitespace")
+(doc/analyze "foo bar baz" :tokenizer "keyword" :filters "lowercase")
+(doc/analyze "foo bar baz" :index "some-index-name" :field "some-field-name")
 ```
 
 Contributed by Joachim De Beule

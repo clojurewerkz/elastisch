@@ -227,10 +227,16 @@
   ([^String index-name] (url-with-path index-name "_analyze")))
 
 (defn cluster-health-url 
-  ([& index-names] (url-with-path "_cluster/health" (apply str (interpose "," index-names)))))
+  ([^String index-name] (url-with-path "_cluster/health" index-name)))
 
 (defn cluster-state-url 
   ([] (url-with-path "_cluster/state")))
+
+(defn cluster-nodes-stats-url 
+  ([^String node-specification] (url-with-path "_nodes" node-specification "stats")))
+
+(defn cluster-nodes-info-url 
+  ([^String node-specification] (url-with-path "_nodes" node-specification)))
 
 ;;
 ;; API
