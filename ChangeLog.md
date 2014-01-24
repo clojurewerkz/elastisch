@@ -1,8 +1,8 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
-### Support for _nodes/stats and _nodes/info REST APIs
+### Support for cluster nodes stats and info REST APIs
 
-Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})` and `(clojureworkz.elastisch.rest.admin/nodes-state & {:as params})`
+Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})` and `(clojureworkz.elastisch.rest.admin/nodes-stats & {:as params})`
 
 Examples:
 
