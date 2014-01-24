@@ -10,7 +10,7 @@ Example:
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
 (admin/cluster-state)
-(admin/cluster-health :filter_nodes true)
+(admin/cluster-state :filter_nodes true)
 ```
 
 See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html) for more info.
@@ -42,7 +42,7 @@ Contributed by Joachim De Beule.
 
 Added `(doc/analyze text & {:as params})`
 
-See also [http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html]
+See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html) for more info.
 
 Examples:
 
