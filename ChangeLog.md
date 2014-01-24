@@ -1,10 +1,33 @@
 ## Changes between Elastisch 1.4.0 and 1.5.0
 
+### Support for _nodes/stats and _nodes/info REST APIs
+
+Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})`
+Added `(clojureworkz.elastisch.rest.admin/nodes-state & {:as params})`
+
+Examples:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.admin :as admin])
+
+(admin/nodes-state)
+(admin/nodes-stats :nodes nodes-spec)
+(admin/nodes-stats :nodes nodes-spec :indices false :os true)
+
+(admin/nodes-info)
+(admin/nodes-info :nodes nodes-spec)
+(admin/nodes-info :nodes nodes-spec :network true :os false)
+```
+
+See [ElasticSearch nodes stats documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html), [ElasticSearch nodes info documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html) and [ElasticSearch node specification documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster.html#cluster-nodes) for more info.
+
+Contributed by Joachim De Beule.
+
 ### Support for _cluster/state REST API
 
 Added `(clojureworkz.elastisch.rest.admin/cluster-state & {:as params})`
 
-Example:
+Examples:
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.admin :as admin])

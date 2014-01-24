@@ -33,3 +33,33 @@
   [& {:as params}] 
   (rest/get (rest/cluster-state-url) :query-params params))
 
+
+(defn nodes-stats
+  "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html
+
+   Examples:
+
+   (require '[clojurewerkz.elastisch.rest.admin :as admin])
+
+   (admin/nodes-stats)
+   (admin/nodes-stats :nodes [\"10.0.0.1\", \"10.0.0.2\"] :os true :process true)
+"
+  [& {:as params}] 
+  (rest/get (rest/cluster-nodes-stats-url (join-names (:nodes params)))
+            :query-params (dissoc params :nodes)))
+
+(defn nodes-info
+  "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html
+
+   Examples:
+
+   (require '[clojurewerkz.elastisch.rest.admin :as admin])
+
+   (admin/nodes-info)
+   (admin/nodes-info :nodes [\"10.0.0.1\", \"10.0.0.2\"] :os true :process true)
+"
+  [& {:as params}] 
+  (rest/get (rest/cluster-nodes-info-url (join-names (:nodes params)))
+            :query-params (dissoc params :nodes)))
+
+
