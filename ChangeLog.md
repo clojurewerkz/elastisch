@@ -2,15 +2,14 @@
 
 ### Support for _nodes/stats and _nodes/info REST APIs
 
-Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})`
-Added `(clojureworkz.elastisch.rest.admin/nodes-state & {:as params})`
+Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})` and `(clojureworkz.elastisch.rest.admin/nodes-state & {:as params})`
 
 Examples:
 
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-(admin/nodes-state)
+(admin/nodes-stats)
 (admin/nodes-stats :nodes nodes-spec)
 (admin/nodes-stats :nodes nodes-spec :indices false :os true)
 
@@ -72,11 +71,11 @@ Examples:
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.document :as doc])
 
-(doc/analyze \"foo bar baz\")
-(doc/analyze \"foo bar baz\" :index "some-index-name")
-(doc/analyze \"foo bar baz\" :analyzer "whitespace\")
-(doc/analyze \"foo bar baz\" :tokenizer "keyword" :filters "lowercase")
-(doc/analyze \"foo bar baz\" :index "some-index-name" :field "some-field-name")
+(doc/analyze "foo bar baz")
+(doc/analyze "foo bar baz" :index "some-index-name")
+(doc/analyze "foo bar baz" :analyzer "whitespace")
+(doc/analyze "foo bar baz" :tokenizer "keyword" :filters "lowercase")
+(doc/analyze "foo bar baz" :index "some-index-name" :field "some-field-name")
 ```
 
 Contributed by Joachim De Beule
