@@ -381,8 +381,9 @@
   ;; matches REST API responses
   ;; example: {:ok true, :_index people, :_type person, :_id 1, :_version 2}
   {:ok true :_index (.getIndex r) :type (.getType r) :_id (.getId r)
-   :matches (when-let [xs (.getMatches r)]
-              (into [] xs))})
+   :get-result (when-let [gr (.getGetResult r)]
+                 ;; TODO
+                 gr)})
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request
   ([index mapping-type ^Map source]
