@@ -77,7 +77,7 @@
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
-        response (doc/put index-name index-type id fx/person-joe :version 1)]
+        response (doc/put index-name index-type id fx/person-joe :version 2)]
     (is (:_index response))
     (is (:_type response))))
 
@@ -85,15 +85,15 @@
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
-        response (doc/put index-name index-type id fx/person-joe :version 1 :version_type "external")]
+        response (doc/put index-name index-type id fx/person-joe :version 2 :version_type "external")]
     (is (:_index response))
     (is (:_type response))))
 
 (deftest ^{:indexing true :native true} test-sync-put-with-new-document-version
   (let [id       "1"
-        _        (doc/put index-name index-type id fx/person-jack :version 1 :version_type "external")
-        _        (doc/put index-name index-type id fx/person-mary :version 2 :version_type "external")
-        response (doc/put index-name index-type id fx/person-joe  :version 3 :version_type "external")]
+        _        (doc/put index-name index-type id fx/person-jack :version_type "external")
+        _        (doc/put index-name index-type id fx/person-mary :version 1 :version_type "external")
+        response (doc/put index-name index-type id fx/person-joe  :version 2 :version_type "external")]
     (is (= 3 (:_version response)))
     (is (:_index response))
     (is (:_type response))))
