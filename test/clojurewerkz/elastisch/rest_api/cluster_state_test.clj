@@ -5,19 +5,7 @@
             [clojure.test :refer :all]))
 
 (deftest ^{:rest true} cluster-state
-  (is (= (into #{} (keys (admin/cluster-state)))
-         #{:cluster_name
-           :master_node
-           :blocks
-           :nodes
-          :metadata
-          :routing_table
-           :routing_nodes
-           :allocations}))
-  (is (= (into #{} (keys (admin/cluster-state :filter_nodes true)))
-         #{:cluster_name
-           :blocks
-           :metadata
-           :routing_table
-           :routing_nodes
-           :allocations})))
+  (let [r (admin/cluster-state)]
+    (is (:cluster_name r)))
+  (let [r (admin/cluster-state :filter_nodes true)]
+    (is (:cluster_name r))))
