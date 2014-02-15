@@ -32,6 +32,8 @@ Elastisch is a not a young project. Started in late 2011, it has been used
 in production since the early days.  Elastisch API is stabilized. 1.0 has
 been released in September 2012.
 
+Elastisch master is currently being updated for the [changes in ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
+
 
 
 ## Artifacts
@@ -76,6 +78,12 @@ Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/cloj
 
 Elastisch requires Clojure 1.4.
 The most recent stable release is highly recommended.
+
+## Supported ElasticSearch Versions
+
+Elasitsch 1.4 targets ElasticSearch `0.90.x`.
+
+Elastisch master is currently being updated for the [changes in ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
 
 
 ## REST and Native Clients
