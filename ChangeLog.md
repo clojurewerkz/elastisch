@@ -1,4 +1,4 @@
-## Changes between Elastisch 1.4.0 and 1.5.0
+## Changes between Elastisch 1.4.0 and 2.0.0
 
 ### Support for cluster nodes stats and info REST APIs
 
