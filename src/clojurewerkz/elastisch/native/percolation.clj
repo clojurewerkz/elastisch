@@ -18,7 +18,7 @@
            java.util.Map
            org.elasticsearch.client.Client))
 
-(def ^:const percolator-index "_percolator")
+(def ^:const percolator-index ".percolator")
 
 ;;
 ;; API
