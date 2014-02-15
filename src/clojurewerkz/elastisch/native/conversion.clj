@@ -20,6 +20,7 @@
            ;; Actions
            org.elasticsearch.action.ShardOperationFailedException
            [org.elasticsearch.action.index IndexRequest IndexResponse]
+           [org.elasticsearch.index.get GetResult]
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
            [org.elasticsearch.action.update UpdateRequest UpdateResponse]
@@ -271,6 +272,25 @@
      ;; TODO: convert GetFields to maps
      :fields   (into {} (.getFields r))}))
 
+(defn ^IPersistentMap get-result->map
+  [^GetResult r]
+  (let [s (convert-source-result (.getSourceAsMap r))]
+    {:exists? (.isExists r)
+     :exists  (.isExists r)
+     :index   (.getIndex r)
+     :_index  (.getIndex r)
+     :type    (.getType r)
+     :_type   (.getType r)
+     :id      (.getId r)
+     :_id     (.getId r)
+     :version  (.getVersion r)
+     :_version (.getVersion r)
+     :empty?   (.isSourceEmpty r)
+     :source   s
+     :_source  s
+     ;; TODO: convert GetFields to maps
+     :fields   (into {} (.getFields r))}))
+
 (defn ^IPersistentMap multi-get-item-response->map
   [^MultiGetItemResponse i]
   (let [r  (.getResponse i)
@@ -382,8 +402,7 @@
   ;; example: {:ok true, :_index people, :_type person, :_id 1, :_version 2}
   {:ok true :_index (.getIndex r) :type (.getType r) :_id (.getId r)
    :get-result (when-let [gr (.getGetResult r)]
-                 ;; TODO
-                 gr)})
+                 (get-result->map gr))})
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request
   ([index mapping-type ^Map source]
