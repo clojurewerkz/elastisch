@@ -270,13 +270,13 @@
   ([index mapping-type]
      (count index mapping-type (q/match-all)))
   ([index mapping-type query]
-     (let [ft (es/count (cnv/->count-request index mapping-type {:query query}))
+     (let [ft (es/count (cnv/->count-request index mapping-type {:source query}))
            ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res))))
   ([index mapping-type query & {:as options}]
      (let [ft (es/count (cnv/->count-request index mapping-type (merge options
-                                                                       {:query query})))
+                                                                       {:source query})))
            ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res)))))

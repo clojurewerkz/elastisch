@@ -326,11 +326,11 @@
 (defn ^CountRequest ->count-request
   ([index-name options]
      (->count-request index-name [] options))
-  ([index-name mapping-type {:keys [query source min-score routing]}]
+  ([index-name mapping-type {:keys [source min-score routing]}]
      (let [r (CountRequest. (->string-array index-name))]
        (.types r (->string-array mapping-type))
-       (when-let [m (or query source)]
-         (.source r ^Map (wlk/stringify-keys m)))
+       (when source
+         (.source r ^Map {"query" (wlk/stringify-keys source)}))
        (when min-score
          (.minScore r min-score))
        (when routing
