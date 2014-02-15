@@ -205,14 +205,14 @@
    (doc/count \"people\" \"person\")
    (doc/count \"people\" \"person\" (q/prefix :username \"appl\"))
 
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/count.html"
+   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html"
   ([index mapping-type]
      (rest/get (rest/count-url (join-names index) (join-names mapping-type))))
   ([index mapping-type query]
      (rest/post (rest/count-url (join-names index) (join-names mapping-type)) :body {:query query}))
   ([index mapping-type query & { :as options }]
      (rest/post (rest/count-url (join-names index) (join-names mapping-type))
-                :query-params (select-keys options [:df :analyzer :default_operator :ignore_indices])
+                :query-params (select-keys options [:df :analyzer :default_operator])
                 :body {:query query})))
 
 (def ^{:doc "Optional parameters that all query-based delete functions share"
