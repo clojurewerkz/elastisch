@@ -4,7 +4,7 @@
             [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx]
-            [clojurewerkz.elastisch.rest.response :refer [count-from ok?]]
+            [clojurewerkz.elastisch.rest.response :refer [count-from created?]]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes)
@@ -61,7 +61,7 @@
     (doc/create index-name index-type fx/person-jack)
     (doc/create index-name index-type fx/person-joe)
     (idx/refresh index-name)
-    (is (not (ok? (doc/count [index-name missing-index-name] index-type))))
+    (is (not (created? (doc/count [index-name missing-index-name] index-type))))
     (is (= 2
            (count-from
             (doc/count [index-name missing-index-name] index-type (q/match-all) :ignore_indices "missing"))))))

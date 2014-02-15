@@ -23,7 +23,7 @@
   (let [id "1"]
     (doc/put index-name mapping-type id fx/person-jack)
     (is (doc/present? index-name mapping-type id))
-    (is (ok? (doc/delete index-name mapping-type id)))
+    (is (created? (doc/delete index-name mapping-type id)))
     (is (not (doc/present? index-name mapping-type id)))))
 
 

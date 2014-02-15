@@ -4,7 +4,7 @@
             [clojurewerkz.elastisch.query         :as q]
 
             [clojurewerkz.elastisch.fixtures :as fx]
-            [clojurewerkz.elastisch.rest.response :refer [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
+            [clojurewerkz.elastisch.rest.response :refer [created? acknowledged? conflict? hits-from any-hits? no-hits?]]
             [clojure.test :refer :all]
             [clj-time.core :refer [months ago]]
             [clojure.string :refer [join]]))
@@ -25,7 +25,7 @@
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
         get-result (doc/get index-name index-type id)]
-    (is (ok? response))
+    (is (created? response))
     (is (idx/exists? index-name))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
@@ -40,7 +40,7 @@
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
         get-result (doc/get index-name index-type id)]
-    (is (ok? response))
+    (is (created? response))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
          index-name :_index
@@ -54,7 +54,7 @@
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
         get-result (doc/get index-name index-type id)]
-    (is (ok? response))
+    (is (created? response))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
          index-name :_index
@@ -75,7 +75,7 @@
         _        (doc/put index-name index-type id fx/person-mary)
         response (doc/put index-name index-type id fx/person-joe :version 1 :version_type "external")]
     (is (conflict? response))
-    (is (not (ok? response)))))
+    (is (not (created? response)))))
 
 (deftest ^{:indexing true} test-put-with-new-document-version
   (let [id       "1"
@@ -83,7 +83,7 @@
         _        (doc/put index-name index-type id fx/person-mary :version 2 :version_type "external")
         response (doc/put index-name index-type id fx/person-joe  :version 3 :version_type "external")]
     (is (not (conflict? response)))
-    (is (ok? response))))
+    (is (created? response))))
 
 (deftest ^{:indexing true} create-when-already-created-test
   (let [id       "1"
@@ -95,31 +95,31 @@
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :timestamp (-> 2 months ago))]
-    (is (ok? response))))
+    (is (created? response))))
 
 (deftest ^{:indexing true} test-put-with-a-1-day-ttl
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :ttl "1d")]
-    (is (ok? response))))
+    (is (created? response))))
 
 (deftest ^{:indexing true} test-put-with-a-10-seconds-ttl
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :ttl 10000)]
-    (is (ok? response))))
+    (is (created? response))))
 
 (deftest ^{:indexing true} test-put-with-a-timeout
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :timeout "1m")]
-    (is (ok? response))))
+    (is (created? response))))
 
 (deftest ^{:indexing true} test-put-with-refresh-set-to-true
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :refresh true)]
-    (is (ok? response))))
+    (is (created? response))))
 
 
 ;;
@@ -128,7 +128,7 @@
 
 (deftest ^{:indexing true} test-put-create-autogenerate-id-test
   (let [response (doc/create index-name index-type fx/person-jack)]
-    (is (ok? response))
+    (is (created? response))
     (is (:_id response))
     (are [expected actual] (= expected (actual response))
          index-name :_index
@@ -141,12 +141,12 @@
 ;;
 
 (deftest ^{:indexing true} test-a-custom-analyzer-and-stop-word-list
-  (is (ok? (idx/create "alt-tweets"
+  (is (created? (idx/create "alt-tweets"
                        :settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
                                                                              :filter    ["standard" "lowercase" "stop"]
                                                                              :stopwords ["lol" "rockstar" "ninja" "cloud" "event"]}}}}}
                        :mappings {:tweet {:properties {:text {:type "string" :analyzer "antiposers"}}}})))
-  (is (ok? (doc/create "alt-tweets" "tweet" {:text "I am a ninja rockstar brogrammer, yo. I like that event-driven thing."})))
+  (is (created? (doc/create "alt-tweets" "tweet" {:text "I am a ninja rockstar brogrammer, yo. I like that event-driven thing."})))
   (idx/refresh "alt-tweets")
   (let [r1 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:thing" :default_field :text))
         r2 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:(rockstar OR ninja)" :default_field :text))]
