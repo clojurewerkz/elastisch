@@ -91,13 +91,6 @@
   [& {:as options}]
   {:prefix options})
 
-(defn field
-  "Field query
-
-   For more information, please refer to http://www.elasticsearch.org/guide/reference/query-dsl/field-query.html"
-  [& {:as options}]
-  {:field options})
-
 (defn filtered
   "Filtered query
 
