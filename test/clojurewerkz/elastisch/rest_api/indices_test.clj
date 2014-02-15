@@ -13,23 +13,23 @@
 ;; create, delete, exists?
 ;;
 
-(deftest ^{:indexing true} test-create-an-index-without-mappings-or-settings
+(deftest ^{:rest true :indexing true} test-create-an-index-without-mappings-or-settings
   (let [response (idx/create "elastisch-index-without-mappings")]
     (is (created? response))
     (is (acknowledged? response))))
 
-(deftest ^{:indexing true} test-create-an-index-with-settings
+(deftest ^{:rest true :indexing true} test-create-an-index-with-settings
   (let [response (idx/create "elastisch-index-without-mappings" :settings {"index" {"number_of_shards" 1}})]
     (is (created? response))
     (is (acknowledged? response))))
 
-(deftest ^{:indexing true} test-successful-creation-of-index-with-mappings-and-without-settings
+(deftest ^{:rest true :indexing true} test-successful-creation-of-index-with-mappings-and-without-settings
   (let [index    "people"
         response (idx/create index :mappings fx/people-mapping)]
     (is (created? response))
     (is (idx/exists? index))))
 
-(deftest ^{:indexing true} test-successful-deletion-of-index
+(deftest ^{:rest true :indexing true} test-successful-deletion-of-index
   (let [index    "people"
         _        (idx/create index :mappings fx/people-mapping)
         response (idx/delete index)]
@@ -40,13 +40,13 @@
 ;; Settings
 ;;
 
-(deftest ^{:indexing true} test-getting-index-settings
+(deftest ^{:rest true :indexing true} test-getting-index-settings
   (let [index     "people"
         settings  {:index {:refresh_interval "1s"}}
         _         (idx/create index :settings settings :mappings fx/people-mapping)]
     (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
-(deftest ^{:indexing true} test-updating-global-index-settings
+(deftest ^{:rest true :indexing true} test-updating-global-index-settings
   (let [index     "people"
         settings  {:index {:refresh_interval "1s"}}
         _         (idx/create index :mappings fx/people-mapping)
@@ -54,7 +54,7 @@
     (is (created? response))
     (is (= "1s" (get-in (idx/get-settings "people") [:people :settings :index.refresh_interval])))))
 
-(deftest ^{:indexing true} testing-updating-specific-index-settings
+(deftest ^{:rest true :indexing true} testing-updating-specific-index-settings
   (let [index     "people"
         settings  { :index { :refresh_interval "1s" } }
         _         (idx/create index :mappings fx/people-mapping)
@@ -66,7 +66,7 @@
 ;; Optimize
 ;;
 
-(deftest ^{:indexing true} test-optimize-index
+(deftest ^{:rest true :indexing true} test-optimize-index
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/optimize index :only_expunge_deletes 1)))))
@@ -75,7 +75,7 @@
 ;; Flush
 ;;
 
-(deftest ^{:indexing true} test-flush-index-with-refresh
+(deftest ^{:rest true :indexing true} test-flush-index-with-refresh
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/flush index :refresh true)))))
@@ -84,7 +84,7 @@
 ;; Snapshot
 ;;
 
-(deftest ^{:indexing true} test-snapshot-index
+(deftest ^{:rest true :indexing true} test-snapshot-index
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/snapshot index)))))
@@ -93,7 +93,7 @@
 ;; Clear cache
 ;;
 
-(deftest ^{:indexing true} test-clear-index-cache-with-refresh
+(deftest ^{:rest true :indexing true} test-clear-index-cache-with-refresh
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/clear-cache index :filter true :field_data true)))))
@@ -103,12 +103,12 @@
 ;; Status
 ;;
 
-(deftest ^{:indexing true} test-index-status-1
+(deftest ^{:rest true :indexing true} test-index-status-1
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/status index :recovery true)))))
 
-(deftest ^{:indexing true} test-index-status-for-multiple-indexes-1
+(deftest ^{:rest true :indexing true} test-index-status-for-multiple-indexes-1
   (idx/create "group1")
   (idx/create "group2")
   (is (created? (idx/status ["group1" "group2"] :recovery true :snapshot true))))
@@ -118,12 +118,12 @@
 ;; Segments
 ;;
 
-(deftest ^{:indexing true} test-index-status-2
+(deftest ^{:rest true :indexing true} test-index-status-2
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/segments index)))))
 
-(deftest ^{:indexing true} test-index-status-for-multiple-indexes-2
+(deftest ^{:rest true :indexing true} test-index-status-for-multiple-indexes-2
   (idx/create "group1")
   (idx/create "group2")
   (is (created? (idx/segments ["group1" "group2"]))))
@@ -133,12 +133,12 @@
 ;; Stats
 ;;
 
-(deftest ^{:indexing true} test-index-stats
+(deftest ^{:rest true :indexing true} test-index-stats
   (let [index     "people"
         _         (idx/create index :mappings fx/people-mapping)]
     (is (created? (idx/stats index :docs true :store true :indexing true)))))
 
-(deftest ^{:indexing true} test-index-stats-for-multiple-indexes
+(deftest ^{:rest true :indexing true} test-index-stats-for-multiple-indexes
   (idx/create "group1")
   (idx/create "group2")
   (is (created? (idx/stats ["group1" "group2"] :docs true :store true :indexing true))))
@@ -148,14 +148,14 @@
 ;; Aliases
 ;;
 
-(deftest ^{:indexing true} test-create-an-index-with-two-aliases
+(deftest ^{:rest true :indexing true} test-create-an-index-with-two-aliases
   (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
   (is (created? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
                                 {:add {:index "aliased-index" :alias "alias2"}}])))
   (is (= "42s" (get-in (idx/get-settings "alias2") [:aliased-index :settings :index.refresh_interval]))))
 
 
-(deftest ^{:indexing true} test-getting-aliases
+(deftest ^{:rest true :indexing true} test-getting-aliases
   (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
   (is (created? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
                                 {:add {:index "aliased-index" :alias "alias2" :routing 1}}])))
@@ -166,7 +166,7 @@
 ;; Templates
 ;;
 
-(deftest ^{:indexing true} test-create-an-index-template-and-fetch-it
+(deftest ^{:rest true :indexing true} test-create-an-index-template-and-fetch-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
   (is (= {:accounts {:template "account*"
                      :order 0
@@ -174,6 +174,6 @@
                      :mappings {}}}
          (idx/get-template "accounts"))))
 
-(deftest ^{:indexing true} test-create-an-index-template-and-delete-it
+(deftest ^{:rest true :indexing true} test-create-an-index-template-and-delete-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
   (is (created? (idx/delete-template "accounts"))))

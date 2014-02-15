@@ -12,7 +12,7 @@
 ;; Tests
 ;;
 
-(deftest ^{:query true} test-basic-ids-query
+(deftest ^{:rest true :query true} test-basic-ids-query
   (let [response     (doc/search "tweets" "tweet" :query (q/ids "tweet" ["1" "2" "8ska88"]))]
     (is (any-hits? response))
     (is (= 2 (total-hits response)))

@@ -16,7 +16,7 @@
 ;; Versioning
 ;;
 
-(deftest test-search-with-multiple-versions-of-a-document-matching-a-query
+(deftest ^{:rest true} test-search-with-multiple-versions-of-a-document-matching-a-query
   (testing "that only one version is stored (versions are just for MVCC, that is, conflict resolution)"
     (let [index-name   "people"
           mapping-type "person"
@@ -38,7 +38,7 @@
 ;; Filtering
 ;;
 
-(deftest test-search-query-with-basic-filtering
+(deftest ^{:rest true} test-search-query-with-basic-filtering
   (let [index-name   "people"
         mapping-type "person"
         hits         (hits-from (doc/search index-name mapping-type
@@ -62,7 +62,7 @@
 ;; Sorting
 ;;
 
-(deftest test-basic-sorting-over-string-field-with-desc-order
+(deftest ^{:rest true} test-basic-sorting-over-string-field-with-desc-order
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/match-all)
@@ -72,7 +72,7 @@
     (is (= "Nueva York" (-> hits first :_source :title)))
     (is (= "Austin" (-> hits last :_source :title)))))
 
-(deftest test-basic-sorting-over-string-field-with-asc-order
+(deftest ^{:rest true} test-basic-sorting-over-string-field-with-asc-order
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/match-all)
@@ -87,7 +87,7 @@
 ;;
 
 
-(deftest test-search-with-ignore-indices
+(deftest ^{:rest true} test-search-with-ignore-indices
   (let [index-name   "articles"
         missing-index-name "foo"
         mapping-type "article"]

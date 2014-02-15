@@ -4,7 +4,7 @@
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojure.test :refer :all]))
 
-(deftest cluster-state
+(deftest ^{:rest true} cluster-state
   (is (= (into #{} (keys (admin/cluster-state)))
          #{:cluster_name
            :master_node

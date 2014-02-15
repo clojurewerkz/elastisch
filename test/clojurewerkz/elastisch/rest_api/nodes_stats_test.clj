@@ -6,7 +6,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
-(deftest nodes-stats
+(deftest ^{:rest true} nodes-stats
   (is (= #{:cluster_name :nodes}
          (into #{} (keys (admin/nodes-stats)))))
   (testing "node selection"

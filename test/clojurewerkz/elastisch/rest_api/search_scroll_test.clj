@@ -54,7 +54,7 @@
       (recur (:_scroll_id scroll-response) (concat results hits))
       (concat results hits))))
 
-(deftest test-scroll-query-more-than-one-page
+(deftest ^{:rest true} test-scroll-query-more-than-one-page
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type

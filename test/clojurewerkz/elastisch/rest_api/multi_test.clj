@@ -10,7 +10,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
-(deftest test-multi-search
+(deftest ^{:rest true} test-multi-search
   "Verify that multi/search returns same result as singularly executed queries."
   (let [res1 (doc/search "people" "person" :query (q/match-all) :size 1)
         res2 (doc/search "articles" "article" :query (q/match-all) :size 1)
@@ -21,7 +21,7 @@
     (is (= (-> res2 :hits :hits first :_source)
            (-> multires second :hits :hits first :_source)))))
 
-(deftest test-multi-with-index-and-type
+(deftest ^{:rest true} test-multi-with-index-and-type
   (let [res1 (doc/search "people" "person" :query (q/term :planet "earth"))
         res2 (doc/search "people" "person" :query (q/term :first-name "mary"))
         multires (multi/search-with-index-and-type "people" "person"

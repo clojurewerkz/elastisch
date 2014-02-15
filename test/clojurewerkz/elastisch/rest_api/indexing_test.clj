@@ -20,7 +20,7 @@
 ;; document/put
 ;;
 
-(deftest ^{:indexing true} test-put-with-autocreated-index
+(deftest ^{:rest true :indexing true} test-put-with-autocreated-index
   (let [id         "1"
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
@@ -34,7 +34,7 @@
          id         :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-put-with-precreated-index-without-mapping-types
+(deftest ^{:rest true :indexing true} test-put-with-precreated-index-without-mapping-types
   (let [id       "1"
         _        (idx/create index-name)
         document   fx/person-jack
@@ -48,7 +48,7 @@
          id         :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-put-with-precreated-index-with-mapping-types
+(deftest ^{:rest true :indexing true} test-put-with-precreated-index-with-mapping-types
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         document   fx/person-jack
@@ -62,14 +62,14 @@
          id         :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-put-with-missing-document-versioning-type
+(deftest ^{:rest true :indexing true} test-put-with-missing-document-versioning-type
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
         response (doc/put index-name index-type id fx/person-joe :version 1)]
     (is (conflict? response))))
 
-(deftest ^{:indexing true} test-put-with-conflicting-document-version
+(deftest ^{:rest true :indexing true} test-put-with-conflicting-document-version
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
@@ -77,7 +77,7 @@
     (is (conflict? response))
     (is (not (created? response)))))
 
-(deftest ^{:indexing true} test-put-with-new-document-version
+(deftest ^{:rest true :indexing true} test-put-with-new-document-version
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack :version 1 :version_type "external")
         _        (doc/put index-name index-type id fx/person-mary :version 2 :version_type "external")
@@ -85,37 +85,37 @@
     (is (not (conflict? response)))
     (is (created? response))))
 
-(deftest ^{:indexing true} create-when-already-created-test
+(deftest ^{:rest true :indexing true} create-when-already-created-test
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         response (doc/put index-name index-type id fx/person-joe :op_type "create")]
     (is (conflict? response))))
 
-(deftest ^{:indexing true} test-put-with-a-timestamp
+(deftest ^{:rest true :indexing true} test-put-with-a-timestamp
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :timestamp (-> 2 months ago))]
     (is (created? response))))
 
-(deftest ^{:indexing true} test-put-with-a-1-day-ttl
+(deftest ^{:rest true :indexing true} test-put-with-a-1-day-ttl
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :ttl "1d")]
     (is (created? response))))
 
-(deftest ^{:indexing true} test-put-with-a-10-seconds-ttl
+(deftest ^{:rest true :indexing true} test-put-with-a-10-seconds-ttl
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :ttl 10000)]
     (is (created? response))))
 
-(deftest ^{:indexing true} test-put-with-a-timeout
+(deftest ^{:rest true :indexing true} test-put-with-a-timeout
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :timeout "1m")]
     (is (created? response))))
 
-(deftest ^{:indexing true} test-put-with-refresh-set-to-true
+(deftest ^{:rest true :indexing true} test-put-with-refresh-set-to-true
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
         response (doc/put index-name index-type id fx/person-jack :refresh true)]
@@ -126,7 +126,7 @@
 ;; document/create
 ;;
 
-(deftest ^{:indexing true} test-put-create-autogenerate-id-test
+(deftest ^{:rest true :indexing true} test-put-create-autogenerate-id-test
   (let [response (doc/create index-name index-type fx/person-jack)]
     (is (created? response))
     (is (:_id response))
@@ -140,7 +140,7 @@
 ;; custom analyzers
 ;;
 
-(deftest ^{:indexing true} test-a-custom-analyzer-and-stop-word-list
+(deftest ^{:rest true :indexing true} test-a-custom-analyzer-and-stop-word-list
   (is (created? (idx/create "alt-tweets"
                        :settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
                                                                              :filter    ["standard" "lowercase" "stop"]

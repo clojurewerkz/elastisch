@@ -9,7 +9,7 @@
 ;; (fx/reset-indexes #())
 ;; (fx/prepopulate-tweets-index #())
 
-(deftest nodes-info
+(deftest ^{:rest true} nodes-info
   (is (= #{:ok :cluster_name :nodes}
          (into #{} (keys (admin/nodes-info)))))
   (testing "node selection"

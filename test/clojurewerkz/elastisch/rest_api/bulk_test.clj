@@ -17,7 +17,7 @@
 (def ^{:const true} index-name "people")
 (def ^{:const true} index-type "person")
 
-(deftest ^{:indexing true} test-bulk-insert
+(deftest ^{:rest true :indexing true} test-bulk-insert
   (let [document          fx/person-jack
         for-index         (assoc document :_index index-name :_type index-type)
         insert-operations (bulk/bulk-index (repeat 10 for-index))
@@ -35,7 +35,7 @@
          first-id   :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-bulk-with-index
+(deftest ^{:rest true :indexing true} test-bulk-with-index
   (let [document          fx/person-jack
         for-index         (assoc document :_type index-type)
         insert-operations (bulk/bulk-index (repeat 10 for-index))
@@ -53,7 +53,7 @@
          first-id   :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-bulk-with-index-and-type
+(deftest ^{:rest true :indexing true} test-bulk-with-index-and-type
   (let [document          fx/person-jack
         insert-operations (bulk/bulk-index (repeat 10 document))
         response          (bulk/bulk-with-index-and-type index-name index-type insert-operations :refresh true)
@@ -70,7 +70,7 @@
          first-id   :_id
          true       :exists)))
 
-(deftest ^{:indexing true} test-bulk-delete
+(deftest ^{:rest true :indexing true} test-bulk-delete
   (let [insert-ops      (bulk/bulk-index (repeat 10 fx/person-jack))
         response        (bulk/bulk-with-index-and-type index-name index-type insert-ops :refresh true)
         docs            (->> response :items (map :create) )

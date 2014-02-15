@@ -12,7 +12,7 @@
 ;; field query
 ;;
 
-(deftest ^{:query true} test-basic-match-all-query
+(deftest ^{:rest true :query true} test-basic-match-all-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/match-all))

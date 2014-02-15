@@ -6,7 +6,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
-(deftest cluster-health
+(deftest ^{:rest true} cluster-health
   (is (= {:number_of_nodes 1,
           :status "yellow",
           :relocating_shards 0,

@@ -10,7 +10,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
-(deftest ^{:facets true :rest true} test-term-facet-on-tags
+(deftest  ^{:facets true :rest true} test-term-facet-on-tags
   (let [index-name   "articles"
         mapping-type "article"
         ;; match-all here makes faceting act effectively as with :global true but that's fine for this test

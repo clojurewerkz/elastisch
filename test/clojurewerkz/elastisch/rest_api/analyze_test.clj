@@ -14,7 +14,7 @@
 ;; Analysis
 ;;
 
-(deftest test-analyze
+(deftest ^{:rest true} test-analyze
   (is (= {:tokens
           [{:token "foo",
             :start_offset 0,

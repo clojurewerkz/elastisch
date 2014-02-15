@@ -15,7 +15,7 @@
 ;; replace
 ;;
 
-(deftest test-replacing-documents
+(deftest ^{:rest true} test-replacing-documents
   (let [index-name   "people"
         mapping-type "person"
         id           "1"
@@ -35,7 +35,7 @@
     ;; TODO: investigate this. MK.
     #_ (is (no-hits? (doc/search index-name mapping-type :query (q/term :biography "nice"))))))
 
-(deftest test-versioning
+(deftest ^{:rest true} test-versioning
   (let [index-name "people"
         index-type "person"
         id         "1"]
@@ -64,7 +64,7 @@
 ;; scripts
 ;;
 
-(deftest test-assigning-with-a-script-1
+(deftest ^{:rest true} test-assigning-with-a-script-1
   (let [index-name "people"
         mapping-type "person"
         id         "1"]
@@ -76,7 +76,7 @@
     (is (= 1
            (get-in (doc/get index-name mapping-type "1") [:_source :counter])))))
 
-(deftest test-assigning-with-a-script-2
+(deftest ^{:rest true} test-assigning-with-a-script-2
   (let [index-name "people"
         mapping-type "person"
         id         "1"]

@@ -12,7 +12,7 @@
 ;; Tests
 ;;
 
-(deftest ^{:query true} test-trailing-wildcard-query-with-nested-fields
+(deftest ^{:rest true :query true} test-trailing-wildcard-query-with-nested-fields
   (let [response     (doc/search "articles" "article" :query (q/wildcard "latest-edit.author" "Thorw*"))
         hits         (hits-from response)]
     (is (any-hits? response))
@@ -20,7 +20,7 @@
     (is (= "2" (-> hits first :_id)))))
 
 
-(deftest ^{:query true} test-leading-wildcard-query-with-non-analyzd-field
+(deftest ^{:rest true :query true} test-leading-wildcard-query-with-non-analyzd-field
   (let [response     (doc/search "tweets" "tweet" :query (q/wildcard :username "*werkz"))
         hits         (hits-from response)]
     (is (any-hits? response))

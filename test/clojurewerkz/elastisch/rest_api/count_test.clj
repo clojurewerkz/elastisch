@@ -13,7 +13,7 @@
 ;; count
 ;;
 
-(deftest test-count-with-the-default-query
+(deftest ^{:rest true} test-count-with-the-default-query
   (let [index-name "people"
         index-type "person"]
     (idx/create index-name :mappings fx/people-mapping)
@@ -23,7 +23,7 @@
     (are [c r] (is (= c (count-from r)))
          2 (doc/count index-name index-type))))
 
-(deftest test-count-with-a-term-query
+(deftest ^{:rest true} test-count-with-a-term-query
   (let [index-name "people"
         index-type "person"]
     (idx/create index-name :mappings fx/people-mapping)
@@ -36,7 +36,7 @@
          0 (doc/count index-name index-type (q/term :username "esmary")))))
 
 
-(deftest test-count-with-mixed-mappings
+(deftest ^{:rest true} test-count-with-mixed-mappings
   (let [index-name "people"
         index-type "person"]
     (idx/create index-name :mappings fx/people-mapping)
@@ -53,7 +53,7 @@
 ;; Missing indices
 ;;
 
-(deftest test-count-with-ignore-indices
+(deftest ^{:rest true} test-count-with-ignore-indices
   (let [index-name         "people"
         index-type         "person"
         missing-index-name "foo"]

@@ -13,7 +13,7 @@
 ;; flt query
 ;;
 
-(deftest ^{:query true} test-basic-fuzzy-query-with-string-fields
+(deftest ^{:rest true :query true} test-basic-fuzzy-query-with-string-fields
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/fuzzy :title "Nueva"))
@@ -22,7 +22,7 @@
     (is (= 1 (total-hits response)))
     (is (= #{"3"} (ids-from response)))))
 
-(deftest ^{:query true} test-basic-fuzzy-query-with-numeric-fields
+(deftest ^{:rest true :query true} test-basic-fuzzy-query-with-numeric-fields
   (let [index-name   "articles"
         mapping-type "article"
         response (doc/search index-name mapping-type :query (q/fuzzy :number-of-edits {:value 13000 :min_similarity 3}))
@@ -32,7 +32,7 @@
     (is (= #{"4"} (ids-from response)))))
 
 ;; TODO: ES 0.19.2 spills 500s complaining about java.lang.IllegalArgumentException: minimumSimilarity >= 1
-#_ (deftest ^{:query true} test-basic-fuzzy-query-with-date-fields
+#_ (deftest ^{:rest true :query true} test-basic-fuzzy-query-with-date-fields
      (let [index-name   "articles"
            mapping-type "article"
            response     (doc/search index-name mapping-type :query (q/fuzzy "last-edit.date" {:value "2012-03-25T12:00:00" :min_similarity "1d"}))

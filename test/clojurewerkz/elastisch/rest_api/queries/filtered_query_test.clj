@@ -15,7 +15,7 @@
 ;; filtered query
 ;;
 
-(deftest ^{:query true} test-basic-filtered-query
+(deftest ^{:rest true :query true} test-basic-filtered-query
   (let [index-name   "people"
         mapping-type "person"
         response     (doc/search index-name mapping-type :query (q/filtered :query  (q/term :planet "earth")

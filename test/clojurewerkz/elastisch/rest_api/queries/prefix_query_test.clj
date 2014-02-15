@@ -12,7 +12,7 @@
 ;; prefix query
 ;;
 
-(deftest ^{:query true} test-basic-prefix-query
+(deftest ^{:rest true :query true} test-basic-prefix-query
   (let [index-name   "people"
         mapping-type "person"
         response     (doc/search index-name mapping-type :query (q/prefix :username "esj"))
@@ -21,7 +21,7 @@
     (is (= 2 (total-hits response)))
     (is (= #{"1" "3"} (set (map :_id hits))))))
 
-(deftest ^{:query true} test-full-word-prefix-query-over-a-text-field-analyzed-with-the-standard-analyzer
+(deftest ^{:rest true :query true} test-full-word-prefix-query-over-a-text-field-analyzed-with-the-standard-analyzer
   (let [index-name   "tweets"
         mapping-type "tweet"
         response (doc/search index-name mapping-type :query (q/prefix :text "why"))
@@ -29,7 +29,7 @@
     (is (= 1 (total-hits response)))
     (is (= "4" (-> hits first :_id)))))
 
-(deftest ^{:query true} test-partial-prefix-query-over-a-text-field
+(deftest ^{:rest true :query true} test-partial-prefix-query-over-a-text-field
   (let [index-name   "tweets"
         mapping-type "tweet"
         response (doc/search index-name mapping-type :query (q/prefix :text "congr"))

@@ -12,7 +12,7 @@
 ;; flt query
 ;;
 
-(deftest ^{:query true} test-basic-flt-field-query
+(deftest ^{:rest true :query true} test-basic-flt-field-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type :query (q/fuzzy-like-this-field :summary {:like_text "ciudad"}))

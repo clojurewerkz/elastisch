@@ -18,10 +18,10 @@
 ;; get
 ;;
 
-(deftest test-get-with-non-existing-document
+(deftest ^{:rest true} test-get-with-non-existing-document
   (is (nil? (doc/get "pages" "page" "as8d8as882jk2jk9#d77$%88s7"))))
 
-(deftest test-get-with-existing-id-that-needs-url-encoding
+(deftest ^{:rest true} test-get-with-existing-id-that-needs-url-encoding
   (let [id "http://www.faz.net/artikel/C31325/piratenabwehr-keine-kriegswaffen-fuer-private-dienste-30683040.html"]
     (doc/put "pages" "page" id {:url id})
     (is (doc/get "pages" "page" id))))
@@ -30,10 +30,10 @@
 ;; present?
 ;;
 
-(deftest test-present-with-non-existing-id
+(deftest ^{:rest true} test-present-with-non-existing-id
   (is (not (doc/present? index-name mapping-type "1"))))
 
-(deftest test-present-with-existing-id
+(deftest ^{:rest true} test-present-with-existing-id
   (doc/put index-name mapping-type "1" fx/person-jack)
   (is (doc/present? index-name mapping-type "1")))
 
@@ -42,7 +42,7 @@
 ;; mget
 ;;
 
-(deftest multi-get-test
+(deftest ^{:rest true} multi-get-test
   (doc/put index-name mapping-type "1" fx/person-jack)
   (doc/put index-name mapping-type "2" fx/person-mary)
   (doc/put index-name mapping-type "3" fx/person-joe)
