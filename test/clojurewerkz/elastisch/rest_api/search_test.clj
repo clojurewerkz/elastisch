@@ -54,7 +54,7 @@
 
 (deftest ^{:query true} test-query-validation
   (let [index-name   "articles"
-        response     (doc/validate-query index-name (q/field "latest-edit.author" "Thorwald") :explain true)]
+        response     (doc/validate-query index-name (q/term "latest-edit.author" "Thorwald") :explain true)]
     (is (valid? response))))
 
 

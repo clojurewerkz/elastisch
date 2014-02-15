@@ -266,7 +266,7 @@
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
    but does not take the mapping type parameter."
   [index query & {:as options}]
-  (rest/get (rest/query-validation-url index) :body (json/encode query) :query-params options))
+  (rest/get (rest/query-validation-url index) :body (json/encode {:query query}) :query-params options))
 
 
 (defn analyze 
