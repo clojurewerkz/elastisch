@@ -224,22 +224,22 @@
 
    Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
   ([index mapping-type query]
-     (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body query))
+     (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body {:query query}))
   ([index mapping-type query & { :as options }]
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
                   :query-params (select-keys options (conj optional-delete-query-parameters :ignore_indices))
-                  :body query)))
+                  :body {:query query})))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation across all mapping types.
 
    Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
   ([index query]
-     (rest/delete (rest/delete-by-query-url (join-names index)) :body query))
+     (rest/delete (rest/delete-by-query-url (join-names index)) :body {:query query}))
   ([index query & {:as options}]
      (rest/delete (rest/delete-by-query-url (join-names index))
                   :query-params (select-keys options (conj optional-delete-query-parameters :ignore_indices))
-                  :body query)))
+                  :body {:query query})))
 
 (defn delete-by-query-across-all-indexes-and-types
   "Performs a delete-by-query operation across all indexes and mapping types.
@@ -247,11 +247,11 @@
 
    Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
   ([query]
-     (rest/delete (rest/delete-by-query-url) :body query))
+     (rest/delete (rest/delete-by-query-url) :body {:query query}))
   ([query & {:as options}]
      (rest/delete (rest/delete-by-query-url)
                   :query-params (select-keys options optional-delete-query-parameters)
-                  :body query)))
+                  :body {:query query})))
 
 
 (defn more-like-this
@@ -269,7 +269,7 @@
   (rest/get (rest/query-validation-url index) :body (json/encode query) :query-params options))
 
 
-(defn analyze 
+(defn analyze
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html
 
    Examples:
@@ -282,7 +282,3 @@
    (doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
   ([text & {:as params}] (rest/get (rest/analyze-url (:index params))
                                    :query-params (assoc params :text text))))
-
-
-
-
