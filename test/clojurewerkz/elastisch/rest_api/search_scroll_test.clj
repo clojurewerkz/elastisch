@@ -78,10 +78,10 @@
                                    :search_type "query_then_fetch"
                                    :scroll "1m"
                                    :size 2))]
-    (is (= false (realized? res-seq)))
+    (is (not (realized? res-seq)))
     (is (= 4 (count res-seq)))
     (is (= 4 (count (distinct res-seq))))
-    (is (= true (realized? res-seq)))))
+    (is (realized? res-seq))))
 
 (deftest ^{:rest true} test-scroll-seq-with-no-results
   (let [index-name   "articles"
@@ -93,4 +93,4 @@
                                    :scroll "1m"
                                    :size 2))]
     (is (= 0 (count res-seq)))
-    (is (= true (coll? res-seq)))))
+    (is (coll? res-seq))))
