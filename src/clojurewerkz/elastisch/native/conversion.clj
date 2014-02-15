@@ -40,7 +40,7 @@
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            org.elasticsearch.search.facet.query.QueryFacet
            org.elasticsearch.action.mlt.MoreLikeThisRequest
-           [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
+           [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -67,7 +67,7 @@
 ;; Implementation
 ;;
 
-(defn- ^"[Ljava.lang.String;" ->string-array
+(defn ^"[Ljava.lang.String;" ->string-array
   "Coerces argument to an array of strings"
   [index-name]
   (if (coll? index-name)
@@ -362,8 +362,7 @@
    :_index   (.getIndex r)
    :_type    (.getType r)
    :_version (.getVersion r)
-   :_id      (.getId r)
-   :ok       true})
+   :_id      (.getId r)})
 
 (defn ^UpdateRequest ->update-request
   ([index-name mapping-type ^String id ^String script]
@@ -400,7 +399,8 @@
   [^UpdateResponse r]
   ;; matches REST API responses
   ;; example: {:ok true, :_index people, :_type person, :_id 1, :_version 2}
-  {:ok true :_index (.getIndex r) :type (.getType r) :_id (.getId r)
+  {:_index (.getIndex r) :type (.getType r) :_id (.getId r)
+   :created (.isFound r) :created? (.isFound r)
    :get-result (when-let [gr (.getGetResult r)]
                  (get-result->map gr))})
 
@@ -754,16 +754,9 @@
 
 
 
-(def ^:const percolator-index "_percolator")
-
-(defn ^PercolateRequest ->percolate-request
-  [^String index ^String mapping-type options]
-  (doto (PercolateRequest. index mapping-type)
-    (.source ^Map (wlk/stringify-keys options))))
-
 (defn ^IPersistentMap percolate-response->map
   [^PercolateResponse r]
-  {:ok true :matches (into [] (.getMatches r))})
+  {:count (.getCount r) :matches (into [] (.getMatches r))})
 
 ;;
 ;; Administrative Actions
