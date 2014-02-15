@@ -18,6 +18,10 @@
   [response]
   (true? (get response :created)))
 
+(defn ok?
+  [response]
+  (created? response))
+
 (defn conflict?
   [response]
   (let [s (:status response)]
