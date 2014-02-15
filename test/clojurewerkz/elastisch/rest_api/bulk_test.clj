@@ -9,7 +9,7 @@
             [cheshire.core :as json]
             [clj-http.client :as http]
             [clojure.test :refer :all]
-            [clojurewerkz.elastisch.rest.response :refer [ok? acknowledged? conflict? hits-from any-hits? no-hits?]]
+            [clojurewerkz.elastisch.rest.response :refer [created? acknowledged? conflict? hits-from any-hits? no-hits?]]
             [clojure.string :refer [join]]))
 
 (use-fixtures :each fx/reset-indexes)
@@ -24,7 +24,7 @@
         response          (bulk/bulk insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
-    (is (every? ok? (->> response :items (map :create))))
+    (is (every? created? (->> response :items (map :create))))
 
     (is (= 10 (:count (doc/count index-name index-type))))
     (is (idx/exists? index-name))
@@ -42,7 +42,7 @@
         response          (bulk/bulk-with-index index-name insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
-    (is (every? ok? (->> response :items (map :create))))
+    (is (every? created? (->> response :items (map :create))))
 
     (is (= 10 (:count (doc/count index-name index-type))))
     (is (idx/exists? index-name))
@@ -59,7 +59,7 @@
         response          (bulk/bulk-with-index-and-type index-name index-type insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
-    (is (every? ok? (->> response :items (map :create))))
+    (is (every? created? (->> response :items (map :create))))
 
     (is (= 10 (:count (doc/count index-name index-type))))
     (is (idx/exists? index-name))
@@ -76,8 +76,8 @@
         docs            (->> response :items (map :create) )
         initial-count   (:count (doc/count index-name index-type))
         delete-response (bulk/bulk-with-index-and-type index-name index-type (bulk/bulk-delete docs) :refresh true)]
-    (is (every? ok? (->> response :items (map :create))))
+    (is (every? created? (->> response :items (map :create))))
     (is (= 10 initial-count))
 
-    (is (every? ok? (->> delete-response :items (map :delete))))
+    (is (every? created? (->> delete-response :items (map :delete))))
     (is (= 0 (:count (doc/count index-name index-type))))))
