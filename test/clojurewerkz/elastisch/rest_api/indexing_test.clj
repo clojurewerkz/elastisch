@@ -31,8 +31,7 @@
          document   :_source
          index-name :_index
          index-type :_type
-         id         :_id
-         true       :exists)))
+         id         :_id)))
 
 (deftest ^{:rest true :indexing true} test-put-with-precreated-index-without-mapping-types
   (let [id       "1"
@@ -45,8 +44,7 @@
          document   :_source
          index-name :_index
          index-type :_type
-         id         :_id
-         true       :exists)))
+         id         :_id)))
 
 (deftest ^{:rest true :indexing true} test-put-with-precreated-index-with-mapping-types
   (let [id       "1"
@@ -59,8 +57,7 @@
          document   :_source
          index-name :_index
          index-type :_type
-         id         :_id
-         true       :exists)))
+         id         :_id)))
 
 (deftest ^{:rest true :indexing true} test-put-with-missing-document-versioning-type
   (let [id       "1"
@@ -83,7 +80,7 @@
         _        (doc/put index-name index-type id fx/person-mary :version 2 :version_type "external")
         response (doc/put index-name index-type id fx/person-joe  :version 3 :version_type "external")]
     (is (not (conflict? response)))
-    (is (created? response))))
+    (is (= 3 (:_version response)))))
 
 (deftest ^{:rest true :indexing true} create-when-already-created-test
   (let [id       "1"
@@ -141,14 +138,14 @@
 ;;
 
 (deftest ^{:rest true :indexing true} test-a-custom-analyzer-and-stop-word-list
-  (is (created? (idx/create "alt-tweets"
-                       :settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
-                                                                             :filter    ["standard" "lowercase" "stop"]
-                                                                             :stopwords ["lol" "rockstar" "ninja" "cloud" "event"]}}}}}
-                       :mappings {:tweet {:properties {:text {:type "string" :analyzer "antiposers"}}}})))
+  (is (acknowledged? (idx/create "alt-tweets"
+                                 :settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
+                                                                                       :filter    ["standard" "lowercase" "stop"]
+                                                                                       :stopwords ["lol" "rockstar" "ninja" "cloud" "event"]}}}}}
+                                 :mappings {:tweet {:properties {:text {:type "string" :analyzer "antiposers"}}}})))
   (is (created? (doc/create "alt-tweets" "tweet" {:text "I am a ninja rockstar brogrammer, yo. I like that event-driven thing."})))
   (idx/refresh "alt-tweets")
-  (let [r1 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:thing" :default_field :text))
+  (let [r1 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:event-driven" :default_field :text))
         r2 (doc/search "alt-tweets" "tweet" :query (q/query-string :query "text:(rockstar OR ninja)" :default_field :text))]
     (is (any-hits? r1))
     (is (no-hits? r2))))
