@@ -221,7 +221,7 @@
 
 (defn percolator-url
   [^String index-name ^String percolator]
-  (url-with-path "_percolator" index-name percolator))
+  (url-with-path  index-name ".percolator" percolator))
 
 (defn index-percolation-url
   [^String index-name ^String percolator]
