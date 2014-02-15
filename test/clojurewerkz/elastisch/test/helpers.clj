@@ -10,7 +10,7 @@
 (defn infer-cluster-name
   "Returns current cluster name set via the ES_CLUSTER_NAME env variable"
   []
-  (get (System/getenv) "ES_CLUSTER_NAME" "elasticsearch_antares"))
+  (get (System/getenv) "ES_CLUSTER_NAME" "elasticsearch"))
 
 (defn connect-native-client
   ([]
