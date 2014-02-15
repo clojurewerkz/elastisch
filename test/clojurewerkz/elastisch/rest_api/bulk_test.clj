@@ -17,6 +17,13 @@
 (def ^{:const true} index-name "people")
 (def ^{:const true} index-type "person")
 
+(defn are-all-successful
+  [xs]
+  (is (every? (fn [m] (and (:_index m)
+                           (:_type m)
+                           (:_id m)
+                           (:status m))) xs)))
+
 (deftest ^{:rest true :indexing true} test-bulk-insert
   (let [document          fx/person-jack
         for-index         (assoc document :_index index-name :_type index-type)
@@ -24,16 +31,14 @@
         response          (bulk/bulk insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
-    (is (every? created? (->> response :items (map :create))))
-
+    (are-all-successful (->> response :items (map :create)))
     (is (= 10 (:count (doc/count index-name index-type))))
     (is (idx/exists? index-name))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
          index-name :_index
          index-type :_type
-         first-id   :_id
-         true       :exists)))
+         first-id   :_id)))
 
 (deftest ^{:rest true :indexing true} test-bulk-with-index
   (let [document          fx/person-jack
@@ -42,16 +47,14 @@
         response          (bulk/bulk-with-index index-name insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
-    (is (every? created? (->> response :items (map :create))))
-
+    (are-all-successful (->> response :items (map :create)))
     (is (= 10 (:count (doc/count index-name index-type))))
     (is (idx/exists? index-name))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
          index-name :_index
          index-type :_type
-         first-id   :_id
-         true       :exists)))
+         first-id   :_id)))
 
 (deftest ^{:rest true :indexing true} test-bulk-with-index-and-type
   (let [document          fx/person-jack
@@ -59,16 +62,14 @@
         response          (bulk/bulk-with-index-and-type index-name index-type insert-operations :refresh true)
         first-id          (-> response :items first :create :_id)
         get-result        (doc/get index-name index-type first-id)]
-    (is (every? created? (->> response :items (map :create))))
-
+    (are-all-successful (->> response :items (map :create)))
     (is (= 10 (:count (doc/count index-name index-type))))
     (is (idx/exists? index-name))
     (are [expected actual] (= expected (actual get-result))
          document   :_source
          index-name :_index
          index-type :_type
-         first-id   :_id
-         true       :exists)))
+         first-id   :_id)))
 
 (deftest ^{:rest true :indexing true} test-bulk-delete
   (let [insert-ops      (bulk/bulk-index (repeat 10 fx/person-jack))
@@ -76,8 +77,6 @@
         docs            (->> response :items (map :create) )
         initial-count   (:count (doc/count index-name index-type))
         delete-response (bulk/bulk-with-index-and-type index-name index-type (bulk/bulk-delete docs) :refresh true)]
-    (is (every? created? (->> response :items (map :create))))
     (is (= 10 initial-count))
-
-    (is (every? created? (->> delete-response :items (map :delete))))
+    (are-all-successful (->> response :items (map :create)))
     (is (= 0 (:count (doc/count index-name index-type))))))
