@@ -14,9 +14,9 @@
 ;; API
 ;;
 
-(defn ok?
+(defn created?
   [response]
-  (true? (get response :ok)))
+  (true? (get response :created)))
 
 (defn conflict?
   [response]

@@ -2,7 +2,7 @@
   (:require [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.rest.document :as doc]
             [clojure.test :refer :all]
-            [clojurewerkz.elastisch.rest.response :refer [ok?]]))
+            [clojurewerkz.elastisch.rest.response :refer [created?]]))
 
 (defn reset-indexes*
   []
@@ -190,10 +190,10 @@
         mapping-type "person"]
     (idx/create index-name :mappings people-mapping)
 
-    (is (ok? (doc/put index-name mapping-type "1" person-jack)))
-    (is (ok? (doc/put index-name mapping-type "2" person-mary)))
-    (is (ok? (doc/put index-name mapping-type "3" person-joe)))
-    (is (ok? (doc/put index-name mapping-type "4" person-tony)))
+    (is (created? (doc/put index-name mapping-type "1" person-jack)))
+    (is (created? (doc/put index-name mapping-type "2" person-mary)))
+    (is (created? (doc/put index-name mapping-type "3" person-joe)))
+    (is (created? (doc/put index-name mapping-type "4" person-tony)))
 
     (idx/refresh index-name)
     (f)))
@@ -204,10 +204,10 @@
         mapping-type "article"]
     (idx/create index-name :mappings articles-mapping)
 
-    (is (ok? (doc/put index-name mapping-type "1" article-on-elasticsearch)))
-    (is (ok? (doc/put index-name mapping-type "2" article-on-lucene)))
-    (is (ok? (doc/put index-name mapping-type "3" article-on-nueva-york)))
-    (is (ok? (doc/put index-name mapping-type "4" article-on-austin)))
+    (is (created? (doc/put index-name mapping-type "1" article-on-elasticsearch)))
+    (is (created? (doc/put index-name mapping-type "2" article-on-lucene)))
+    (is (created? (doc/put index-name mapping-type "3" article-on-nueva-york)))
+    (is (created? (doc/put index-name mapping-type "4" article-on-austin)))
     (idx/refresh index-name)
     (f)))
 
@@ -218,11 +218,11 @@
         mapping-type "tweet"]
     (idx/create index-name :mappings tweets-mapping)
 
-    (is (ok? (doc/put index-name mapping-type "1" tweet1)))
-    (is (ok? (doc/put index-name mapping-type "2" tweet2)))
-    (is (ok? (doc/put index-name mapping-type "3" tweet3)))
-    (is (ok? (doc/put index-name mapping-type "4" tweet4)))
-    (is (ok? (doc/put index-name mapping-type "5" tweet5)))
+    (is (created? (doc/put index-name mapping-type "1" tweet1)))
+    (is (created? (doc/put index-name mapping-type "2" tweet2)))
+    (is (created? (doc/put index-name mapping-type "3" tweet3)))
+    (is (created? (doc/put index-name mapping-type "4" tweet4)))
+    (is (created? (doc/put index-name mapping-type "5" tweet5)))
 
     (idx/refresh index-name)
     (f)))
