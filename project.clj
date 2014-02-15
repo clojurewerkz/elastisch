@@ -13,7 +13,7 @@
                        :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
                        :plugins [[codox "0.6.1"]]}
                  :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
-                 :1.6 {:dependencies [[org.clojure/clojure "1.6.0-master-SNAPSHOT"]]}
+                 :1.6 {:dependencies [[org.clojure/clojure "1.6.0-beta1"]]}
                  :master {:dependencies [[org.clojure/clojure "1.6.0-master-SNAPSHOT"]]}
                  :es10   {:dependencies [[org.elasticsearch/elasticsearch "1.0.0.Beta2"]]}}
   :aliases      {"all" ["with-profile" "dev:dev,1.4:dev,1.6"]}
