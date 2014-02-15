@@ -81,7 +81,8 @@ The most recent stable release is highly recommended.
 
 ## Supported ElasticSearch Versions
 
-Elasitsch 1.4 targets ElasticSearch `0.90.x`.
+Elasitsch 1.4 targets ElasticSearch `0.90.x` and has **known incompatibilities**
+with ES 1.0 in both REST and native clients.
 
 Elastisch master is currently being updated for the [changes in ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
 
