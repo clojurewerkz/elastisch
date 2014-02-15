@@ -16,7 +16,8 @@
 
 (defn created?
   [response]
-  (true? (get response :created)))
+  (true? (or (get response :created)
+             (get response :ok))))
 
 (defn ok?
   [response]
