@@ -60,30 +60,6 @@
   (is (=  {:ids {:type "my_type" :values  ["1" "4" "100"]}}
           (query/ids "my_type" ["1" "4" "100"]))))
 
-(deftest custom-score-query-test
-  (let [query   {:terms {:foo [:bar :baz]}}
-        params  {:param1  2 :param2  3.1}
-        script  "_score * doc['my_numeric_field'].value / pow(param1 param2)"
-        result  (query/custom-score
-                 :query   (query/term :foo [:bar :baz])
-                 :params  {:param1  2 :param2  3.1}
-                 :script  "_score * doc['my_numeric_field'].value / pow(param1 param2)")
-        custom-score (:custom_score result)]
-    (are [actual expected] (= actual expected)
-         query    (:query custom-score)
-         params   (:params custom-score)
-         script   (:script custom-score))))
-
-(deftest custom-boosting-factor
-  (let [query {:term {:foo [:bar :baz]}}
-        factor 3.4
-        result (query/custom-boost-factor factor query)
-        custom-boost-factor (:custom_boost_factor result)]
-
-    (are [expected actual] (= expected actual)
-         query  (:query  custom-boost-factor)
-         factor (:boost_factor custom-boost-factor))))
-
 (deftest constant-score-query-test
   (let [query   {:terms {:foo [:bar :baz]}}
         boost   2.0
