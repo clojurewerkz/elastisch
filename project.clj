@@ -29,6 +29,7 @@
                    :facets      :facets
                    :percolation :percolation
                    :native      :native
+                   :rest        :rest
                    :all         (constantly true)
                    :default     (constantly true)
                    :ci          (fn [m] (not (:native m)))}
