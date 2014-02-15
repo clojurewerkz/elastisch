@@ -115,15 +115,15 @@
   ([query]
      (let [results (rest/post (rest/index-mget-url)
                               :body {:docs query})]
-       (filter :exists (:docs results))))
+       (filter :found (:docs results))))
   ([index query]
      (let [results (rest/post (rest/index-mget-url index)
                               :body {:docs query})]
-       (filter :exists (:docs results))))
+       (filter :found (:docs results))))
   ([index mapping-type query]
      (let [results (rest/post (rest/index-mget-url index mapping-type)
                               :body {:docs query})]
-       (filter :exists (:docs results)))))
+       (filter :found (:docs results)))))
 
 (defn search
   "Performs a search query across one or more indexes and one or more mapping types.
