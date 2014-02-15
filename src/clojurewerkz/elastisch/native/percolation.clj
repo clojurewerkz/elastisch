@@ -49,8 +49,10 @@
   "Percolates a document and see which queries match on it. The document is not indexed, just
    matched against the queries you register with clojurewerkz.elastisch.rest.percolation/register-query."
   [index mapping-type & {:as options}]
-  (let [ft (es/percolate (cnv/->percolate-request index
-                                                  mapping-type
-                                                  options))
+  (let [prb (doto (.preparePercolate ^Client es/*client*)
+              (.setIndices (cnv/->string-array index))
+              (.setDocumentType mapping-type)
+              (.setSource ^Map (wlk/stringify-keys options)))
+        ft  (.execute prb)
         ^PercolateResponse res (.actionGet ft)]
     (cnv/percolate-response->map res)))

@@ -21,7 +21,5 @@
         _            (idx/create index-name :settings {"index.number_of_shards" 1})
         result1      (pcl/register-query index-name query-name :query {:term {:title "search"}})
         result2      (pcl/percolate index-name "type1" :doc {:title "You know, for search"})]
-    (is (ok? result1))
-    (is (ok? result2))
     (is (= [query-name] (matches-from result2)))
-    (is (ok? (pcl/unregister-query index-name query-name)))))
+    (is (found? (pcl/unregister-query index-name query-name)))))
