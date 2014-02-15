@@ -79,9 +79,7 @@
       result)))
 
 (defn delete
-  "Deletes document from the index.
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete.html"
+  "Deletes document from the index."
   ([index mapping-type id]
      (rest/delete (rest/record-url index mapping-type id)))
   ([index mapping-type id & {:as params}]
@@ -139,7 +137,7 @@
 
    (doc/search \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [index mapping-type & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference :ignore_indices]
+  (let [qk   [:search_type :scroll :routing :preference]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index)
@@ -150,7 +148,7 @@
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
   [index & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference :ignore_indices]
+  (let [qk   [:search_type :scroll :routing :preference]
         qp   (select-keys options qk)
         body (apply dissoc (concat [options] qk))]
     (rest/post (rest/search-url (join-names index))
@@ -203,9 +201,7 @@
    (require '[clojurewerkz.elastisch.query :as q])
 
    (doc/count \"people\" \"person\")
-   (doc/count \"people\" \"person\" (q/prefix :username \"appl\"))
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html"
+   (doc/count \"people\" \"person\" (q/prefix :username \"appl\"))"
   ([index mapping-type]
      (rest/get (rest/count-url (join-names index) (join-names mapping-type))))
   ([index mapping-type query]
@@ -220,32 +216,26 @@
   optional-delete-query-parameters [:df :analyzer :default_operator :consistency])
 
 (defn delete-by-query
-  "Performs a delete-by-query operation.
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+  "Performs a delete-by-query operation."
   ([index mapping-type query]
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body {:query query}))
   ([index mapping-type query & { :as options }]
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
-                  :query-params (select-keys options (conj optional-delete-query-parameters :ignore_indices))
+                  :query-params (select-keys options optional-delete-query-parameters)
                   :body {:query query})))
 
 (defn delete-by-query-across-all-types
-  "Performs a delete-by-query operation across all mapping types.
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+  "Performs a delete-by-query operation across all mapping types."
   ([index query]
      (rest/delete (rest/delete-by-query-url (join-names index)) :body {:query query}))
   ([index query & {:as options}]
      (rest/delete (rest/delete-by-query-url (join-names index))
-                  :query-params (select-keys options (conj optional-delete-query-parameters :ignore_indices))
+                  :query-params (select-keys options optional-delete-query-parameters)
                   :body {:query query})))
 
 (defn delete-by-query-across-all-indexes-and-types
   "Performs a delete-by-query operation across all indexes and mapping types.
-   This may put very high load on your ElasticSearch cluster so use this function with care.
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/delete-by-query.html"
+   This may put very high load on your ElasticSearch cluster so use this function with care."
   ([query]
      (rest/delete (rest/delete-by-query-url) :body {:query query}))
   ([query & {:as options}]
@@ -255,9 +245,7 @@
 
 
 (defn more-like-this
-  "Performs a More Like This (MLT) query.
-
-   Related ElasticSearch documentation guide: http://www.elasticsearch.org/guide/reference/api/more-like-this.html"
+  "Performs a More Like This (MLT) query."
   [index mapping-type id &{:as params}]
   (rest/get (rest/more-like-this-url index mapping-type id)
             :query-params params))
@@ -270,9 +258,7 @@
 
 
 (defn analyze 
-  "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html
-
-   Examples:
+  "Examples:
 
    (require '[clojurewerkz.elastisch.rest.document :as doc])
 

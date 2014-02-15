@@ -81,22 +81,3 @@
     (is (= 4 (total-hits response)))
     (is (= "Nueva York" (-> hits last :_source :title)))
     (is (= "Apache Lucene" (-> hits first :_source :title)))))
-
-;;
-;; Missing indices
-;;
-
-
-(deftest ^{:rest true} test-search-with-ignore-indices
-  (let [index-name   "articles"
-        missing-index-name "foo"
-        mapping-type "article"]
-    (is (= 4 (total-hits (doc/search [index-name, missing-index-name] mapping-type 
-                                     :query (q/match-all)
-                                     :sort {"title" "asc"}
-                                     :ignore_indices "missing"))))
-    (is (thrown? Exception 
-                 (doc/search [index-name, missing-index-name] mapping-type 
-                             :query (q/match-all)
-                             :sort {"title" "asc"})))))
-
