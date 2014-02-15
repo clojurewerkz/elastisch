@@ -47,7 +47,7 @@
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
            org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
-           org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
+           org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
            org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
@@ -171,7 +171,6 @@
                                         refresh
                                         version
                                         version-type
-                                        percolate
                                         content-type]}]
      (let [ir (-> (IndexRequest. (name index) (name mapping-type))
                   (.source ^Map (wlk/stringify-keys doc)))]
@@ -195,8 +194,6 @@
          (.version ir version))
        (when version-type
          (.versionType ir (to-version-type version-type)))
-       (when percolate
-         (.percolate ir percolate))
        ir)))
 
 (defn ^IPersistentMap index-response->map
@@ -210,8 +207,7 @@
    :type     (.getType r)
    :_type    (.getType r)
    :version  (.getVersion r)
-   :_version (.getVersion r)
-   :matches  (.getMatches r)})
+   :_version (.getVersion r)})
 
 
 ;;
@@ -310,11 +306,11 @@
 (defn ^CountRequest ->count-request
   ([index-name options]
      (->count-request index-name [] options))
-  ([index-name mapping-type {:keys [query min-score routing]}]
+  ([index-name mapping-type {:keys [query source min-score routing]}]
      (let [r (CountRequest. (->string-array index-name))]
        (.types r (->string-array mapping-type))
-       (when query
-         (.query r ^Map (wlk/stringify-keys query)))
+       (when-let [m (or query source)]
+         (.source r ^Map (wlk/stringify-keys m)))
        (when min-score
          (.minScore r min-score))
        (when routing
@@ -341,8 +337,8 @@
 (defn ^IPersistentMap delete-response->map
   [^DeleteResponse r]
   ;; matches REST API responses
-  {:found    (not (.isNotFound r))
-   :found?   (not (.isNotFound r))
+  {:found    (.isFound r)
+   :found?   (.isFound r)
    :_index   (.getIndex r)
    :_type    (.getType r)
    :_version (.getVersion r)
@@ -358,7 +354,7 @@
        (.script r script)
        (.scriptParams r ^Map params)
        r))
-  ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh fields parent percolate]}]
+  ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh fields parent]}]
      (let [r (UpdateRequest. index-name mapping-type id)]
        (.script r script)
        (.scriptParams r ^Map params)
@@ -368,8 +364,6 @@
          (.routing r routing))
        (when parent
          (.parent r parent))
-       (when percolate
-         (.percolate r percolate))
        (when fields
          (.fields r (->string-array fields)))
        r)))
@@ -391,36 +385,36 @@
               (into [] xs))})
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request
-  ([index mapping-type ^Map query]
+  ([index mapping-type ^Map source]
      (doto (DeleteByQueryRequest. (->string-array index))
-       (.query ^Map (wlk/stringify-keys query))
+       (.source ^Map (wlk/stringify-keys source))
        (.types (->string-array mapping-type))))
-  ([index mapping-type query {:keys [routing]}]
+  ([index mapping-type source {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest. (->string-array index))
-               (.query ^Map (wlk/stringify-keys query))
+               (.source ^Map (wlk/stringify-keys source))
                (.types (->string-array mapping-type)))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-types
-  ([index ^Map query]
+  ([index ^Map source]
      (doto (DeleteByQueryRequest. (->string-array index))
-       (.query ^Map (wlk/stringify-keys query))))
-  ([index query {:keys [routing]}]
+       (.source ^Map (wlk/stringify-keys source))))
+  ([index source {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest. (->string-array index))
-               (.query ^Map (wlk/stringify-keys query)))]
+               (.source ^Map (wlk/stringify-keys source)))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-indices-and-types
-  ([^Map query]
+  ([^Map source]
      (doto (DeleteByQueryRequest.)
-       (.query ^Map (wlk/stringify-keys query))))
-  ([query {:keys [routing]}]
+       (.source ^Map (wlk/stringify-keys source))))
+  ([source {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest.)
-               (.query ^Map (wlk/stringify-keys query)))]
+               (.source ^Map (wlk/stringify-keys source)))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
@@ -481,7 +475,7 @@
     (when sort
       (set-sort sb sort))
     (when stats
-      (.stats sb ->string-array stats))
+      (.stats sb (->string-array stats)))
     (.source r sb)
 
     ;; non-source
@@ -791,9 +785,9 @@
     r))
 
 (defn ^DeleteMappingRequest ->delete-mapping-request
-  [index-name ^String mapping-type]
+  [index-name mapping-types]
   (doto (DeleteMappingRequest. (->string-array index-name))
-    (.type mapping-type)))
+    (.types (->string-array mapping-types))))
 
 (defn ^OpenIndexRequest ->open-index-request
   [index-name]
@@ -804,7 +798,7 @@
   (CloseIndexRequest. index-name))
 
 (defn ^OptimizeRequest ->optimize-index-request
-  [index-name {:keys [wait-for-merge max-num-segments only-expunge-deletes flush refresh]}]
+  [index-name {:keys [wait-for-merge max-num-segments only-expunge-deletes flush]}]
   (let [ary (->string-array index-name)
         r   (OptimizeRequest. ary)]
     (when wait-for-merge
@@ -815,8 +809,6 @@
       (.onlyExpungeDeletes r only-expunge-deletes))
     (when flush
       (.flush r flush))
-    (when refresh
-      (.refresh r refresh))
     r))
 
 (defn ^FlushRequest ->flush-index-request
@@ -925,15 +917,15 @@
 
 
 (defn- apply-add-alias
-  [^IndicesAliasesRequest req {:keys [index alias filter]}]
+  [^IndicesAliasesRequest req {:keys [indices alias filter]}]
   (if filter
-    (.addAlias req ^String index ^String alias ^Map filter)
-    (.addAlias req ^String index ^String alias))
+    (.addAlias req ^String alias ^Map filter (->string-array indices))
+    (.addAlias req ^String alias (->string-array indices)))
   req)
 
 (defn- apply-remove-alias
-  [^IndicesAliasesRequest req {:keys {index alias}}]
-  (.removeAlias req ^String index ^String alias)
+  [^IndicesAliasesRequest req {:keys {index aliases}}]
+  (.removeAlias req ^String index (->string-array aliases))
   req)
 
 (defn ^IndicesAliasesRequest ->indices-aliases-request

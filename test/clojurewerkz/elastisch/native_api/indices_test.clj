@@ -151,8 +151,8 @@
 
 (deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases
   (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
-  (is (acknowledged? (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                                          {:add {:index "aliased-index" :alias "alias2"}}]))))
+  (is (acknowledged? (idx/update-aliases [{:add {:alias "alias1" :indices ["aliased-index"]}}
+                                          {:add {:alias "alias2" :indices ["aliased-index"]}}]))))
 
 ;;
 ;; Templates

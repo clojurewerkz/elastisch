@@ -37,7 +37,7 @@
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
-           org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest
+           org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
