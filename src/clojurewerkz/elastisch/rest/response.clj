@@ -27,6 +27,10 @@
   (let [s (:status response)]
     (and s (statuses/conflict? s))))
 
+(defn found?
+  [response]
+  (true? (get response :found)))
+
 (defn not-found?
   [response]
   (let [s (:status response)]
