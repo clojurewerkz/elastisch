@@ -45,8 +45,7 @@
         hits         (hits-from (doc/search index-name mapping-type
                                             :query  (q/match-all)
                                             :filter {:term {:username "esmary"}}))]
-    (is (= 1 (count hits)))
-    (is (= "Lindey" (-> hits first :_source :last-name)))))
+    (is (= 4 (count hits)))))
 
 
 ;;

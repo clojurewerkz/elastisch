@@ -450,7 +450,7 @@
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference
-                                   query facets from size timeout filter
+                                   query facets from size timeout post-filter
                                    min_score version fields sort stats] :as options}]
   (let [r                       (SearchRequest.)
         ^SearchSourceBuilder sb (SearchSourceBuilder.)]
@@ -466,8 +466,8 @@
       (.size sb size))
     (when timeout
       (.timeout sb ^String timeout))
-    (when filter
-      (.filter sb ^Map (wlk/stringify-keys filter)))
+    (when post-filter
+      (.postFilter sb ^Map (wlk/stringify-keys post-filter)))
     (when fields
       (.fields sb ^java.util.List fields))
     (when version
