@@ -30,7 +30,7 @@
 (defn not-found?
   [response]
   (let [s (:status response)]
-    (or (false? (:exists response))
+    (or (false? (:found response))
         (and s (statuses/missing? s)))))
 
 (defn acknowledged?
