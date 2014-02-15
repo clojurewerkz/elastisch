@@ -13,15 +13,23 @@
 ;; API
 ;;
 
-(defn ok?
+(defn created?
   [response]
   ;; TODO: can this be detected more precisely
   ;;       from native client responses? MK.
-  true)
+  )
+
+(defn ok?
+  [response]
+  (created? response))
+
+(defn found?
+  [response]
+  (true? (get response :found)))
 
 (defn not-found?
   [m]
-  (false? (:exists m)))
+  (false? (:found m)))
 
 (defn acknowledged?
   [m]
