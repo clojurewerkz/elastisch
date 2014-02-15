@@ -7,7 +7,7 @@
             [clojurewerkz.elastisch.fixtures        :as fx]
             [clojurewerkz.elastisch.test.helpers    :as th]
             [clojure.stacktrace :as s]
-            [clojurewerkz.elastisch.native.response :refer [count-from ok?]]
+            [clojurewerkz.elastisch.native.response :refer [count-from found?]]
             [clojure.test :refer :all]))
 
 (th/maybe-connect-native-client)
@@ -23,7 +23,7 @@
         mapping-type "person"]
     (doc/put index-name mapping-type id fx/person-jack)
     (is (doc/present? index-name mapping-type id))
-    (is (ok? (doc/delete index-name mapping-type id)))
+    (is (found? (doc/delete index-name mapping-type id)))
     (is (not (doc/present? index-name mapping-type id)))))
 
 

@@ -400,18 +400,18 @@
   ;; matches REST API responses
   ;; example: {:ok true, :_index people, :_type person, :_id 1, :_version 2}
   {:_index (.getIndex r) :type (.getType r) :_id (.getId r)
-   :created (.isFound r) :created? (.isFound r)
+   :found (.isFound r) :found? (.isFound r)
    :get-result (when-let [gr (.getGetResult r)]
                  (get-result->map gr))})
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request
   ([index mapping-type ^Map source]
      (doto (DeleteByQueryRequest. (->string-array index))
-       (.source ^Map (wlk/stringify-keys source))
+       (.source ^Map {"query" (wlk/stringify-keys source)})
        (.types (->string-array mapping-type))))
   ([index mapping-type source {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest. (->string-array index))
-               (.source ^Map (wlk/stringify-keys source))
+               (.source ^Map {"query" (wlk/stringify-keys source)})
                (.types (->string-array mapping-type)))]
        (when routing
          (.routing r (->string-array routing)))
@@ -420,10 +420,10 @@
 (defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-types
   ([index ^Map source]
      (doto (DeleteByQueryRequest. (->string-array index))
-       (.source ^Map (wlk/stringify-keys source))))
+       (.source ^Map {"query" (wlk/stringify-keys source)})))
   ([index source {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest. (->string-array index))
-               (.source ^Map (wlk/stringify-keys source)))]
+               (.source ^Map {"query" (wlk/stringify-keys source)}))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
@@ -431,10 +431,10 @@
 (defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-indices-and-types
   ([^Map source]
      (doto (DeleteByQueryRequest.)
-       (.source ^Map (wlk/stringify-keys source))))
+       (.source ^Map {"query" (wlk/stringify-keys source)})))
   ([source {:keys [routing]}]
      (let [r (doto (DeleteByQueryRequest.)
-               (.source ^Map (wlk/stringify-keys source)))]
+               (.source ^Map {"query" (wlk/stringify-keys source)}))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
