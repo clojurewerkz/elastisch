@@ -16,7 +16,5 @@
         percolator   "article"
         result1      (pcl/register-query index-name percolator :query {:term {:title "search"}})
         result2      (pcl/percolate index-name percolator :doc {:title "You know, for search"})]
-    (is (created? result1))
-    (is (created? result2))
-    (is (= ["article"] (matches-from result2)))
-    (is (created? (pcl/unregister-query index-name percolator)))))
+    (is (= {:_index "articles", :_id "article"} (matches-from result2)))
+    (is (found? (pcl/unregister-query index-name percolator)))))
