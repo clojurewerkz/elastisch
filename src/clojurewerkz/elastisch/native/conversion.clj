@@ -400,7 +400,6 @@
   ;; matches REST API responses
   ;; example: {:ok true, :_index people, :_type person, :_id 1, :_version 2}
   {:_index (.getIndex r) :type (.getType r) :_id (.getId r)
-   :found (.isFound r) :found? (.isFound r)
    :get-result (when-let [gr (.getGetResult r)]
                  (get-result->map gr))})
 
