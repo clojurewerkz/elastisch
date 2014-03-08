@@ -14,16 +14,16 @@
 ;;
 
 (defn created?
-  [response]
+  [m]
   (:created m))
 
 (defn ok?
-  [response]
-  (created? response))
+  [m]
+  (created? m))
 
 (defn found?
-  [response]
-  (true? (get response :found)))
+  [m]
+  (true? (get m :found)))
 
 (defn not-found?
   [m]
@@ -34,9 +34,9 @@
   (:acknowledged m))
 
 (defn created-or-acknowledged?
-  [response]
-  (or (created? response)
-      (acknowledged? response)))
+  [m]
+  (or (created? m)
+      (acknowledged? m)))
 
 
 (defn valid?
