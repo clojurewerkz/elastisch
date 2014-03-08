@@ -28,8 +28,8 @@
   "Registers a percolator for the given index"
   [index query-name & {:as source}]
   (let [^IndexRequestBuilder irb (doto (.prepareIndex ^Client es/*client*
-                                                      percolator-index
                                                       index
+                                                      percolator-index
                                                       query-name)
                                    (.setSource ^Map (wlk/stringify-keys source)))
         ft                       (.execute irb)
@@ -43,7 +43,7 @@
                                             index
                                             percolator))
         ^DeleteResponse res (.actionGet ft)]
-    (merge (cnv/delete-response->map res) {:ok true})))
+    (merge (cnv/delete-response->map res) {:ok (.isFound res) :found (.isFound res)})))
 
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just

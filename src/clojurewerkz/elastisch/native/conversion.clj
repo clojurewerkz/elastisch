@@ -40,7 +40,7 @@
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            org.elasticsearch.search.facet.query.QueryFacet
            org.elasticsearch.action.mlt.MoreLikeThisRequest
-           [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse]
+           [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -780,7 +780,9 @@
 
 (defn ^IPersistentMap percolate-response->map
   [^PercolateResponse r]
-  {:count (.getCount r) :matches (into [] (.getMatches r))})
+  {:count (.getCount r) :matches (map (fn [^PercolateResponse$Match m]
+                                        (.. m getId string))
+                                      (into [] (.getMatches r)))})
 
 ;;
 ;; Administrative Actions
