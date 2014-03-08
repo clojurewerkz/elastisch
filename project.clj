@@ -32,6 +32,7 @@
                    :query       :query
                    :facets      :facets
                    :percolation :percolation
+                   :scroll      :scroll
                    :native      :native
                    :rest        :rest
                    :all         (constantly true)

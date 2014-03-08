@@ -17,7 +17,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest ^{:rest true} test-basic-scan-query
+(deftest ^{:rest true :scroll true} test-basic-scan-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
@@ -37,7 +37,7 @@
     (is (= 4 (total-hits scan-response)))
     (is (= 4 (count scan-hits)))))
 
-(deftest ^{:rest true} test-basic-scroll-query
+(deftest ^{:rest true :scroll true} test-basic-scroll-query
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
@@ -63,7 +63,7 @@
       (recur (:_scroll_id scroll-response) (concat results hits))
       (concat results hits))))
 
-(deftest ^{:rest true} test-scroll-query-more-than-one-page
+(deftest ^{:rest true :scroll true} test-scroll-query-more-than-one-page
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
@@ -78,7 +78,7 @@
     (is (= 4 (total-hits response)))
     (is (= 4 (count all-hits)))))
 
-(deftest ^{:rest true} test-scroll-seq
+(deftest ^{:rest true :scroll true} test-scroll-seq
   (let [index-name   "articles"
         mapping-type "article"
         res-seq      (doc/scroll-seq
@@ -92,7 +92,7 @@
     (is (= 4 (count (distinct res-seq))))
     (is (realized? res-seq))))
 
-(deftest ^{:rest true} test-scroll-seq-with-no-results
+(deftest ^{:rest true :scroll true} test-scroll-seq-with-no-results
   (let [index-name   "articles"
         mapping-type "article"
         res-seq      (doc/scroll-seq
