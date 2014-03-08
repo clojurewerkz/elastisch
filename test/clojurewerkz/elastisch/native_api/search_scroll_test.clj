@@ -23,7 +23,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
-                                 :query (q/query-string :query "*")
+                                 :query (q/match-all)
                                  :search_type "scan"
                                  :scroll "1m"
                                  :size 1)
@@ -31,10 +31,10 @@
         scroll-id     (:_scroll_id response)
         scan-response (doc/scroll scroll-id :scroll "1m")
         scan-hits     (hits-from scan-response)]
-    (is (any-hits? response))
-    (is (= 4 (total-hits response)))
     ;; scan queries don't return any hits from the initial
     ;; search request
+    (is (not (any-hits? response)))
+    (is (:_scroll_id response))
     (is (= 0 (count initial-hits)))
     (is (= 4 (total-hits scan-response)))
     (is (= 4 (count scan-hits)))))
