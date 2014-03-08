@@ -27,7 +27,7 @@
         mappings fx/people-mapping
         response (idx/create index :mappings mappings)]
     (is (created-or-acknowledged? response))
-    (is (-> (idx/get-mapping index) :people1 :person :properties :username :store))))
+    (is (get-in (idx/get-mapping index) [:people1 :mappings :person :properties :username :store]))))
 
 (deftest ^{:rest true} test-updating-index-mapping
   (let [index    "people2"
@@ -49,7 +49,7 @@
         _        (idx/create index :mappings {})
         response (idx/update-mapping index "person" :mapping mapping)]
     (is (created-or-acknowledged? response))
-    (is (-> (idx/get-mapping index) :people4 :person :properties :username :store))))
+    (is (get-in (idx/get-mapping index) [:people4 :mappings :person :properties :username :store]))))
 
 (deftest ^{:rest true} test-delete-index-mapping
   (let [index        "people5"
