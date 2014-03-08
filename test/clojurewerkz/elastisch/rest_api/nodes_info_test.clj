@@ -15,12 +15,9 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
-;; (fx/reset-indexes #())
-;; (fx/prepopulate-tweets-index #())
-
 (deftest ^{:rest true} nodes-info
-  (is (= #{:ok :cluster_name :nodes}
-         (into #{} (keys (admin/nodes-info)))))
+  (is (#{:cluster_name :nodes}
+       (into #{} (keys (admin/nodes-info)))))
   (testing "node selection"
     (let [info (admin/nodes-info)
           node-id (first (keys (:nodes info)))
