@@ -94,7 +94,12 @@ Contributed by Ben Reinhart (Groupon).
 
 ### ElasticSearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.10`.
+Elastisch now depends on ElasticSearch native client version `1.0.1`.
+
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.9.0`.
 
 
 
