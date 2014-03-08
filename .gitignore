@@ -9,5 +9,6 @@ debug/*
 doc/*
 deploy.docs.sh
 .lein-*
+.nrepl-*
 data/*
 target
