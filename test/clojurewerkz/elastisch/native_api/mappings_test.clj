@@ -27,7 +27,8 @@
         mapping  fx/people-mapping
         _        (idx/create index :mappings {:person {:properties {:first-name {:type "string"}}}})
         response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts true)]
-    (is (created-or-acknowledged? response))))
+    (is (created-or-acknowledged? response))
+    (is (get-in (idx/get-mapping index) [:people1 :mappings :person :properties :username :store]))))
 
 (deftest ^{:native true} test-updating-index-mapping-ignoring-conflicts
   (let [index    "people2"

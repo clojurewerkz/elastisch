@@ -16,6 +16,7 @@
            org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
            org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse
            org.elasticsearch.action.index.IndexResponse
+           org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
            org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
@@ -83,6 +84,18 @@
            ^DeleteIndexResponse res (.actionGet ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
+(defn get-mapping
+  "The get mapping API allows to retrieve mapping definition of index or index/type.
+
+   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
+  ([^String index-name]
+     (let [ft                       (es/admin-get-mappings (cnv/->get-mappings-request))
+           ^GetMappingsResponse res (.actionGet ft)]
+       (cnv/get-mappings-response->map res)))
+  ([^String index-name ^String type-name]
+     (let [ft                       (es/admin-get-mappings (cnv/->get-mappings-request index-name type-name))
+           ^GetMappingsResponse res (.actionGet ft)]
+       (cnv/get-mappings-response->map res))))
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type."

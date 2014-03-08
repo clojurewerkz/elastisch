@@ -45,6 +45,7 @@
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+           [org.elasticsearch.action.admin.indices.mapping.get GetMappingsRequest GetMappingsResponse]
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
            org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
@@ -61,7 +62,10 @@
            [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
-           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest))
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
+           org.elasticsearch.common.hppc.cursors.ObjectObjectCursor
+           org.elasticsearch.common.collect.ImmutableOpenMap
+           org.elasticsearch.cluster.metadata.MappingMetaData))
 
 ;;
 ;; Implementation
@@ -73,6 +77,27 @@
   (if (coll? index-name)
     (into-array String index-name)
     (into-array String [index-name])))
+
+(defprotocol DeepMapConversion
+  (deep-java-map->map [o]))
+
+(extend-protocol DeepMapConversion
+  java.util.Map
+  (deep-java-map->map [o]
+    (reduce (fn [m [^String k v]]
+              (assoc m (keyword k) (deep-java-map->map v)))
+            {}
+            (.entrySet o)))
+
+  java.util.List
+  (deep-java-map->map [o]
+    (vec (map deep-java-map->map o)))
+
+  java.lang.Object
+  (deep-java-map->map [o] o)
+
+  nil
+  (deep-java-map->map [_] nil))
 
 (def ^{:const true}
   default-content-type XContentType/JSON)
@@ -389,11 +414,11 @@
 
 (defn ^UpdateRequest ->upsert-request
   ([index-name mapping-type ^String id ^Map doc]
-   (let [doc (wlk/stringify-keys doc)
-         r   (UpdateRequest. index-name mapping-type id)]
-     (.doc r ^Map doc)
-     (.upsert r ^Map doc)
-     r)))
+     (let [doc (wlk/stringify-keys doc)
+           r   (UpdateRequest. index-name mapping-type id)]
+       (.doc r ^Map doc)
+       (.upsert r ^Map doc)
+       r)))
 
 (defn ^IPersistentMap update-response->map
   [^UpdateResponse r]
@@ -786,6 +811,32 @@
   [index-name settings]
   (doto (UpdateSettingsRequest. (->string-array index-name))
     (.settings ^Map (wlk/stringify-keys settings))))
+
+(defn ^GetMappingsRequest ->get-mappings-request
+  ([]
+     (GetMappingsRequest.))
+  ([index-name ^String mapping-type]
+     (doto (GetMappingsRequest.)
+       (.indices (->string-array index-name))
+       (.types (->string-array mapping-type)))))
+
+(defn ^IPersistentMap get-mappings-response->map
+  [^GetMappingsResponse res]
+  ;; TODO: a sane way of converting ImmutableOpenMaps to Clojure maps. MK.
+  (reduce (fn [acc ^ObjectObjectCursor el]
+            (let [^String           k (.key el)
+                  ^ImmutableOpenMap v (.value el)]
+              (assoc acc (keyword k)
+                     ;; to match HTTP API responses. MK.
+                     {:mappings (reduce (fn [acc2 ^ObjectObjectCursor el]
+                                          (let [^String          k (.key el)
+                                                ^MappingMetaData v (.value el)]
+                                            (assoc acc (keyword k) (deep-java-map->map (.sourceAsMap v)))))
+                                        {}
+                                        v)})))
+          {}
+          (.mappings res)))
+
 
 (defn ^PutMappingRequest ->put-mapping-request
   [index-name ^String mapping-type {:keys [mapping mappings ignore_conflicts ignore-conflicts]}]
