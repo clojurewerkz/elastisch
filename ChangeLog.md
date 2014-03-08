@@ -9,7 +9,9 @@ and moderate internal modifications.
 
 ### Support for cluster nodes stats and info REST APIs
 
-Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})` and `(clojureworkz.elastisch.rest.admin/nodes-stats & {:as params})`
+`clojureworkz.elastisch.rest.admin/nodes-info` and `clojureworkz.elastisch.rest.admin/nodes-stats`
+are new administrative functions that provide access to ElasticSearch
+[cluster stats and node info](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html).
 
 Examples:
 
@@ -17,15 +19,21 @@ Examples:
 (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
 (admin/nodes-stats)
-(admin/nodes-stats :nodes nodes-spec)
-(admin/nodes-stats :nodes nodes-spec :indices false :os true)
+(admin/nodes-stats :nodes "_all")
+(admin/nodes-stats :nodes ["node1" "node2"] ["indices" "os" "plugins"])
 
 (admin/nodes-info)
-(admin/nodes-info :nodes nodes-spec)
-(admin/nodes-info :nodes nodes-spec :network true :os false)
+(admin/nodes-info :nodes "_all")
+(admin/nodes-info :nodes ["node1" "node2"] ["indices" "os" "plugins"])
 ```
 
-See [ElasticSearch nodes stats documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html), [ElasticSearch nodes info documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html) and [ElasticSearch node specification documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster.html#cluster-nodes) for more info.
+See [ElasticSearch nodes stats
+documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html),
+[nodes info
+page](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html),
+and [node specification
+page](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster.html#cluster-nodes)
+for more info.
 
 Contributed by Joachim De Beule.
 
