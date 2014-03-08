@@ -12,10 +12,14 @@
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
                        :plugins [[codox "0.6.1"]]}
+                 ;; this version of clj-http depends on HTTPCore 4.2.x which
+                 ;; some projects (e.g. using Spring's RestTemplate) can rely on,
+                 ;; so we test for compatibility with it. MK.
+                 :cljhttp076 {:dependencies [[clj-http "0.7.6"]]}
                  :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
                  :1.6 {:dependencies [[org.clojure/clojure "1.6.0-beta2"]]}
                  :master {:dependencies [[org.clojure/clojure "1.6.0-master-SNAPSHOT"]]}}
-  :aliases      {"all" ["with-profile" "dev:dev,1.4:dev,1.6"]}
+  :aliases      {"all" ["with-profile" "dev:dev,1.4:dev,1.6:dev,cljhttp076:dev,1.6,cljhttp076"]}
   :repositories {"sonatype"         {:url "http://oss.sonatype.org/content/repositories/releases"
                                      :snapshots false
                                      :releases {:checksum :fail :update :always}}
