@@ -31,9 +31,7 @@
         scroll-id     (:_scroll_id response)
         scan-response (doc/scroll scroll-id :scroll "1m")
         scan-hits     (hits-from scan-response)]
-    ;; scan queries don't return any hits from the initial
-    ;; search request
-    (is (not (any-hits? response)))
+    (is (any-hits? response))
     (is (:_scroll_id response))
     (is (= 0 (count initial-hits)))
     (is (= 4 (total-hits scan-response)))
@@ -43,7 +41,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
-                                 :query (q/query-string :query "*")
+                                 :query (q/match-all)
                                  :search_type "query_then_fetch"
                                  :scroll "1m"
                                  :size 2)
@@ -51,9 +49,6 @@
         scroll-id       (:_scroll_id response)
         scroll-response (doc/scroll scroll-id :scroll "1m")
         scroll-hits     (hits-from scroll-response)]
-    (is (any-hits? response))
-    (is (= 4 (total-hits response)))
-    (is (= 2 (count initial-hits)))
     (is (= 4 (total-hits scroll-response)))
     (is (= 2 (count scroll-hits)))))
 
@@ -69,14 +64,13 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
-                                 :query (q/query-string :query "*")
+                                 :query (q/match-all)
                                  :search_type "query_then_fetch"
                                  :scroll "1m"
                                  :size 1)
         initial-hits (hits-from response)
         scroll-id    (:_scroll_id response)
         all-hits     (fetch-scroll-results scroll-id initial-hits)]
-    (is (any-hits? response))
     (is (= 4 (total-hits response)))
     (is (= 4 (count all-hits)))))
 
@@ -85,7 +79,7 @@
         mapping-type "article"
         res-seq      (doc/scroll-seq
                        (doc/search index-name mapping-type
-                                   :query (q/query-string :query "*")
+                                   :query (q/match-all)
                                    :search_type "query_then_fetch"
                                    :scroll "1m"
                                    :size 2))]
