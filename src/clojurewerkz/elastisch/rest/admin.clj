@@ -51,11 +51,11 @@
    (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
    (admin/nodes-stats)
-   (admin/nodes-stats :nodes [\"10.0.0.1\", \"10.0.0.2\"] :os true :process true)
+   (admin/nodes-stats :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
 "
   [& {:as params}] 
-  (rest/get (rest/cluster-nodes-stats-url (join-names (:nodes params)))
-            :query-params (dissoc params :nodes)))
+  (rest/get (rest/cluster-nodes-stats-url (join-names (get params :nodes "_all"))
+                                          (join-names (get params :attributes "_all")))))
 
 (defn nodes-info
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html
@@ -65,10 +65,10 @@
    (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
    (admin/nodes-info)
-   (admin/nodes-info :nodes [\"10.0.0.1\", \"10.0.0.2\"] :os true :process true)
+   (admin/nodes-info :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
 "
   [& {:as params}] 
-  (rest/get (rest/cluster-nodes-info-url (join-names (:nodes params)))
-            :query-params (dissoc params :nodes)))
+  (rest/get (rest/cluster-nodes-info-url (join-names (get params :nodes "_all"))
+                                         (join-names (get params :attributes "_all")))))
 
 

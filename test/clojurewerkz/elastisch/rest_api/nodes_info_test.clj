@@ -16,16 +16,18 @@
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
 (deftest ^{:rest true} nodes-info
-  (is (#{:cluster_name :nodes}
-       (into #{} (keys (admin/nodes-info)))))
+  (testing "basic info"
+    (let [info (admin/nodes-info)]
+      (is (:nodes info))
+      (is (:cluster_name info))))
   (testing "node selection"
     (let [info (admin/nodes-info)
           node-id (first (keys (:nodes info)))
           node-name (get-in info [:nodes node-id :name])]
-      (is (empty? (:nodes (admin/nodes-info :nodes "foo"))))
+      (is (empty? (:nodes (admin/nodes-info :nodes ["foo"]))))
       (is (= 1 (count (:nodes (admin/nodes-info :nodes (name node-id))))))
       (is (= 1 (count (:nodes (admin/nodes-info :nodes (vector (name node-id)))))))
       (is (= 1 (count (:nodes (admin/nodes-info :nodes node-name)))))))
   (testing "parameters"
-    (is (not (= (admin/nodes-info :os true) (admin/nodes-info :os false))))
-    (is (not (= (admin/nodes-info :network true) (admin/nodes-info :network false))))))
+    (is (not (= (admin/nodes-info :attributes ["plugins"])
+                (admin/nodes-info :attributes ["os"]))))))

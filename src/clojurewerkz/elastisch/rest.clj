@@ -242,10 +242,10 @@
   ([] (url-with-path "_cluster/state")))
 
 (defn cluster-nodes-stats-url 
-  ([^String node-specification] (url-with-path "_nodes" node-specification "stats")))
+  ([^String nodes ^String attrs] (url-with-path "_nodes" nodes "stats")))
 
 (defn cluster-nodes-info-url 
-  ([^String node-specification] (url-with-path "_nodes" node-specification)))
+  ([^String nodes ^String attrs] (url-with-path "_nodes" nodes attrs)))
 
 ;;
 ;; API
