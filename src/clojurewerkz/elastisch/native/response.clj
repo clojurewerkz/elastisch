@@ -15,9 +15,7 @@
 
 (defn created?
   [response]
-  ;; TODO: can this be detected more precisely
-  ;;       from native client responses? MK.
-  )
+  (:created m))
 
 (defn ok?
   [response]
@@ -34,6 +32,12 @@
 (defn acknowledged?
   [m]
   (:acknowledged m))
+
+(defn created-or-acknowledged?
+  [response]
+  (or (created? response)
+      (acknowledged? response)))
+
 
 (defn valid?
   "Returns true if a validation query response indicates valid query, false otherwise"
