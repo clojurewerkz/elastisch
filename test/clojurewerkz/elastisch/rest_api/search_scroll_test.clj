@@ -21,7 +21,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
-                                 :query (q/query-string :query "*")
+                                 :query (q/match-all)
                                  :search_type "scan"
                                  :scroll "1m"
                                  :size 1)
@@ -41,7 +41,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
-                                 :query (q/query-string :query "*")
+                                 :query (q/match-all)
                                  :search_type "query_then_fetch"
                                  :scroll "1m"
                                  :size 2)
@@ -67,7 +67,7 @@
   (let [index-name   "articles"
         mapping-type "article"
         response     (doc/search index-name mapping-type
-                                 :query (q/query-string :query "*")
+                                 :query (q/match-all)
                                  :search_type "query_then_fetch"
                                  :scroll "1m"
                                  :size 1)
@@ -83,7 +83,7 @@
         mapping-type "article"
         res-seq      (doc/scroll-seq
                        (doc/search index-name mapping-type
-                                   :query (q/query-string :query "*")
+                                   :query (q/match-all)
                                    :search_type "query_then_fetch"
                                    :scroll "1m"
                                    :size 2))]
