@@ -1,5 +1,12 @@
 ## Changes between Elastisch 1.4.0 and 2.0.0
 
+### ElasticSearch 1.0 Compatibility
+
+Main goal of Elastisch 2.0 is ElasticSearch 2.0 compatibility. This includes minor
+API changes (in line with [ElasticSearch 1.0 API and terminology changes](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/breaking-changes.html))
+and moderate internal modifications.
+
+
 ### Support for cluster nodes stats and info REST APIs
 
 Added `(clojureworkz.elastisch.rest.admin/nodes-info & {:as params})` and `(clojureworkz.elastisch.rest.admin/nodes-stats & {:as params})`
