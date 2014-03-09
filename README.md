@@ -32,8 +32,7 @@ Elastisch is a not a young project. Started in late 2011, it has been used
 in production since the early days.  Elastisch API is stabilized. 1.0 has
 been released in September 2012.
 
-Elastisch master is currently being updated for the [changes in ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
-
+Elastisch 2.0 **requires** [ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
 
 
 ## Artifacts
@@ -53,7 +52,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "1.5.0-beta3"]
+    [clojurewerkz/elastisch "2.0.0-beta1"]
 
 
 With Maven:
@@ -61,7 +60,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>1.5.0-beta3</version>
+      <version>2.0.0-beta1</version>
     </dependency>
 
 
@@ -81,10 +80,10 @@ The most recent stable release is highly recommended.
 
 ## Supported ElasticSearch Versions
 
-Elasitsch 1.4 targets ElasticSearch `0.90.x` and has **known incompatibilities**
-with ES 1.0 in both REST and native clients.
+Elastisch 2.0 **requires** [ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
 
-Elastisch master is currently being updated for the [changes in ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
+Elasitsch 1.4 supports ElasticSearch `0.90.x` and has **known incompatibilities**
+with ES 1.0 in both REST and native clients.
 
 
 ## REST and Native Clients
