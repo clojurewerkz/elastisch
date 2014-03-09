@@ -299,7 +299,7 @@
 
 (defn ^IPersistentMap get-result->map
   [^GetResult r]
-  (let [s (convert-source-result (.getSourceAsMap r))]
+  (let [s (convert-source-result (.sourceAsMap r))]
     {:exists? (.isExists r)
      :exists  (.isExists r)
      :index   (.getIndex r)
@@ -351,11 +351,12 @@
 (defn ^CountRequest ->count-request
   ([index-name options]
      (->count-request index-name [] options))
-  ([index-name mapping-type {:keys [source min-score routing]}]
-     (let [r (CountRequest. (->string-array index-name))]
+  ([index-name mapping-type {:keys [^Map source min-score routing]}]
+     (let [^CountRequest r (CountRequest. (->string-array index-name))]
        (.types r (->string-array mapping-type))
        (when source
-         (.source r ^Map {"query" (wlk/stringify-keys source)}))
+         (let [^Map m {"query" (wlk/stringify-keys source)}]
+           (.source r m)))
        (when min-score
          (.minScore r min-score))
        (when routing
@@ -430,35 +431,41 @@
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request
   ([index mapping-type ^Map source]
-     (doto (DeleteByQueryRequest. (->string-array index))
-       (.source ^Map {"query" (wlk/stringify-keys source)})
-       (.types (->string-array mapping-type))))
+     (let [^Map m {"query" (wlk/stringify-keys source)}]
+       (doto (DeleteByQueryRequest. (->string-array index))
+         (.source m)
+         (.types (->string-array mapping-type)))))
   ([index mapping-type source {:keys [routing]}]
-     (let [r (doto (DeleteByQueryRequest. (->string-array index))
-               (.source ^Map {"query" (wlk/stringify-keys source)})
-               (.types (->string-array mapping-type)))]
+     (let [^Map m {"query" (wlk/stringify-keys source)}
+           r      (doto (DeleteByQueryRequest. (->string-array index))
+                    (.source m)
+                    (.types (->string-array mapping-type)))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-types
   ([index ^Map source]
-     (doto (DeleteByQueryRequest. (->string-array index))
-       (.source ^Map {"query" (wlk/stringify-keys source)})))
+     (let [^Map m {"query" (wlk/stringify-keys source)}]
+       (doto (DeleteByQueryRequest. (->string-array index))
+         (.source m))))
   ([index source {:keys [routing]}]
-     (let [r (doto (DeleteByQueryRequest. (->string-array index))
-               (.source ^Map {"query" (wlk/stringify-keys source)}))]
+     (let [^Map m {"query" (wlk/stringify-keys source)}
+           r      (doto (DeleteByQueryRequest. (->string-array index))
+                    (.source m))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
 
 (defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-indices-and-types
   ([^Map source]
-     (doto (DeleteByQueryRequest.)
-       (.source ^Map {"query" (wlk/stringify-keys source)})))
+     (let [^Map m {"query" (wlk/stringify-keys source)}]
+       (doto (DeleteByQueryRequest.)
+         (.source m))))
   ([source {:keys [routing]}]
-     (let [r (doto (DeleteByQueryRequest.)
-               (.source ^Map {"query" (wlk/stringify-keys source)}))]
+     (let [^Map m {"query" (wlk/stringify-keys source)}
+           r      (doto (DeleteByQueryRequest.)
+                    (.source m))]
        (when routing
          (.routing r (->string-array routing)))
        r)))
