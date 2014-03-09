@@ -11,7 +11,7 @@
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
-                       :plugins [[codox "0.6.1"]]}
+                       :plugins [[codox "0.6.6"]]}
                  ;; this version of clj-http depends on HTTPCore 4.2.x which
                  ;; some projects (e.g. using Spring's RestTemplate) can rely on,
                  ;; so we test for compatibility with it. MK.
