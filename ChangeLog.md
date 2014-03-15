@@ -1,4 +1,11 @@
-## Changes between Elastisch 1.4.0 and 2.0.0
+## Changes between Elastisch 2.0.0-beta1 and 2.0.0-beta2
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.9.1`.
+
+
+## Changes between Elastisch 1.4.0 and 2.0.0-beta1
 
 ### ElasticSearch 1.0 Compatibility
 
