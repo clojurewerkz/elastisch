@@ -247,6 +247,19 @@
 (defn cluster-nodes-info-url 
   ([^String nodes ^String attrs] (url-with-path "_nodes" nodes attrs)))
 
+(defn snapshot-repository-registration-url
+  [^String name]
+  (url-with-path "_snapshot" name))
+
+(defn snapshot-url
+  [^String repo ^String name]
+  (url-with-path "_snapshot" repo name))
+
+(defn restore-snapshot-url
+  [^String repo ^String name]
+  (url-with-path "_snapshot" repo name "_restore"))
+
+
 ;;
 ;; API
 ;;

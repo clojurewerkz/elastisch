@@ -72,3 +72,21 @@
                                          (join-names (get params :attributes "_all")))))
 
 
+(defn register-snapshot-repository
+  [^String name & {:as params}]
+  (rest/put (rest/snapshot-repository-registration-url name) :body params))
+
+
+(defn take-snapshot
+  [^String repo ^String name & {:as params}]
+  (rest/put (rest/snapshot-url repo name) :body params :query-params (select-keys params [:wait-for-completion?])))
+
+(defn restore-snapshot
+  [^String repo ^String name & {:as params}]
+  (rest/post (rest/restore-snapshot-url repo name)
+             :body (or params {})
+             :query-params (select-keys params [:wait-for-completion?])))
+
+(defn delete-snapshot
+  [^String repo ^String name & {:as params}]
+  (rest/delete (rest/snapshot-url repo name) :query-params (select-keys params [:wait-for-completion?])))
