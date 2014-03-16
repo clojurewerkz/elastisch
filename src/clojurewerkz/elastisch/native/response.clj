@@ -38,6 +38,14 @@
   (or (created? m)
       (acknowledged? m)))
 
+(defn created-or-acknowledged?
+  [m]
+  (or (created? m)
+      (acknowledged? m)))
+
+(defn accepted?
+  [m]
+  (:accepted m))
 
 (defn valid?
   "Returns true if a validation query response indicates valid query, false otherwise"

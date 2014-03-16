@@ -47,6 +47,10 @@
   (or (created? response)
       (acknowledged? response)))
 
+(defn accepted?
+  [response]
+  (:accepted response))
+
 (defn valid?
   "Returns true if a validation query response indicates valid query, false otherwise"
   [response]
