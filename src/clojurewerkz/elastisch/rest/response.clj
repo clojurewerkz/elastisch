@@ -15,89 +15,89 @@
 ;;
 
 (defn created?
-  [response]
-  (true? (or (get response :created)
-             (get response :ok))))
+  [m]
+  (true? (or (get m :created)
+             (get m :ok))))
 
 (defn ok?
-  [response]
-  (created? response))
+  [m]
+  (created? m))
 
 (defn conflict?
-  [response]
-  (let [s (:status response)]
+  [m]
+  (let [s (:status m)]
     (and s (statuses/conflict? s))))
 
 (defn found?
-  [response]
-  (true? (get response :found)))
+  [m]
+  (true? (get m :found)))
 
 (defn not-found?
-  [response]
-  (let [s (:status response)]
-    (or (false? (:found response))
+  [m]
+  (let [s (:status m)]
+    (or (false? (:found m))
         (and s (statuses/missing? s)))))
 
 (defn acknowledged?
-  [response]
-  (:acknowledged response))
+  [m]
+  (:acknowledged m))
 
 (defn created-or-acknowledged?
-  [response]
-  (or (created? response)
-      (acknowledged? response)))
+  [m]
+  (or (created? m)
+      (acknowledged? m)))
 
 (defn accepted?
-  [response]
-  (:accepted response))
+  [m]
+  (:accepted m))
 
 (defn valid?
   "Returns true if a validation query response indicates valid query, false otherwise"
-  [response]
-  (:valid response))
+  [m]
+  (:valid m))
 
 (defn timed-out?
-  [response]
-  (:timed_out response))
+  [m]
+  (:timed_out m))
 
 
 (defn total-hits
   "Returns number of search hits from a response"
-  [response]
-  (get-in response [:hits :total]))
+  [m]
+  (get-in m [:hits :total]))
 
 (defn count-from
   "Returns total number of search hits from a response"
-  [response]
-  (get response :count))
+  [m]
+  (get m :count))
 
 (defn any-hits?
   "Returns true if a response has any search hits, false otherwise"
-  [response]
-  (> (total-hits response) 0))
+  [m]
+  (> (total-hits m) 0))
 
 (def no-hits? (complement any-hits?))
 
 (defn hits-from
   "Returns search hits from a response as a collection. To retrieve hits overview, get the :hits
    key from the response"
-  [response]
-  (get-in response [:hits :hits]))
+  [m]
+  (get-in m [:hits :hits]))
 
 (defn facets-from
   "Returns facets information (overview and actual facets) from a response as a map. Keys in the map depend on
    the facets query performed"
-  [response]
-  (get response :facets {}))
+  [m]
+  (get m :facets {}))
 
 (defn ids-from
   "Returns search hit ids from a response"
-  [response]
-  (if (any-hits? response)
-    (set (map :_id (hits-from response)))
+  [m]
+  (if (any-hits? m)
+    (set (map :_id (hits-from m)))
     #{}))
 
 (defn matches-from
   "Returns matches from a percolation response as a collection."
-  [response]
-  (get response :matches []))
+  [m]
+  (get m :matches []))
