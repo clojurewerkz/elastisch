@@ -21,3 +21,7 @@
 (defn sum
   [field]
   {"sum" {"field" field}})
+
+(defn avg
+  [field]
+  {"avg" {"field" field}})
