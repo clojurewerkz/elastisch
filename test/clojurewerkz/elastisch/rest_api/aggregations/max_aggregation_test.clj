@@ -7,7 +7,7 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.rest-api.aggregations.min-aggregation-test
+(ns clojurewerkz.elastisch.rest-api.aggregations.max-aggregation-test
   (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
             [clojurewerkz.elastisch.query         :as q]
@@ -18,11 +18,11 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
 
-(deftest ^{:rest true :aggregation true} test-min-aggregation
+(deftest ^{:rest true :aggregation true} test-max-aggregation
   (let [index-name   "people"
         mapping-type "person"
         response     (doc/search index-name mapping-type
                                  :query (q/match-all)
-                                 :aggregations {:min_age (a/min "age")})
-        agg          (aggregation-from response :min_age)]
-    (is (= {:value 22.0} agg))))
+                                 :aggregations {:max_age (a/max "age")})
+        agg          (aggregation-from response :max_age)]
+    (is (= {:value 37.0} agg))))
