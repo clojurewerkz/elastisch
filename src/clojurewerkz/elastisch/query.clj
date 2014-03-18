@@ -8,6 +8,9 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.query
+  "Convenience functions that build various query types.
+
+   All functions return maps and are completely optional (but recommended)."
   (:refer-clojure :exclude [range])
   (:require [clojurewerkz.elastisch.escape :as escape]))
 
