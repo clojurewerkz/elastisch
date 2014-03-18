@@ -1,5 +1,24 @@
 ## Changes between Elastisch 2.0.0-beta1 and 2.0.0-beta2
 
+### Aggregation Functions
+
+`clojurewerkz.elastisch.rest.response/aggregations-from` is a new function
+that returns aggregations from a search response:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.document :as doc])
+(require '[clojurewerkz.elastisch.query :as q])
+(require '[clojurewerkz.elastisch.rest.response :refer [aggregations-from]])
+
+(let [index-name   "people"
+        mapping-type "person"
+        response     (doc/search index-name mapping-type
+                                 :query (q/match-all)
+                                 :aggregations {:min_age {:min {:field "age"}}})
+        agg          (aggregation-from response :min_age)]
+    (is (= {:value 22.0} agg)))
+```
+
 ### clj-http Update
 
 [clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.9.1`.
