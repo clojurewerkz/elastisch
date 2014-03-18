@@ -25,4 +25,4 @@
                                  :query (q/match-all)
                                  :aggregations {:sum_age (a/sum "age")})
         agg          (aggregation-from response :sum_age)]
-    (is (>= 116 (:value agg)))))
+    (is (>= (:value agg) 116))))
