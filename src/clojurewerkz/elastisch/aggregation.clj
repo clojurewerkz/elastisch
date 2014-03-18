@@ -33,3 +33,7 @@
 (defn extended-stats
   [field]
   {"extended_stats" {"field" field}})
+
+(defn value-count
+  [field]
+  {"value_count" {"field" field}})
