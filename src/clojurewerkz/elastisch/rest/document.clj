@@ -8,6 +8,7 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest.document
+  "Key operations on documents: indexing, search, deletion, etc"
   (:refer-clojure :exclude [get replace count sort])
   (:require [clojurewerkz.elastisch.rest :as rest]
             [cheshire.core :as json]
