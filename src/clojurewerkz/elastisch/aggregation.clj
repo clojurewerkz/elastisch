@@ -25,3 +25,7 @@
 (defn avg
   [field]
   {"avg" {"field" field}})
+
+(defn stats
+  [field]
+  {"stats" {"field" field}})
