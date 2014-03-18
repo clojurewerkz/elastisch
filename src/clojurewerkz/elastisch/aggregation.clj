@@ -8,6 +8,9 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.aggregation
+  "Convenience functions that build various aggregation types.
+
+   All functions return maps and are completely optional (but recommended)."
   (:refer-clojure :exclude [min max]))
 
 (defn min
