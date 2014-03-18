@@ -29,3 +29,7 @@
 (defn stats
   [field]
   {"stats" {"field" field}})
+
+(defn extended-stats
+  [field]
+  {"extended_stats" {"field" field}})
