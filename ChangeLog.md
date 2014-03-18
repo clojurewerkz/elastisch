@@ -1,6 +1,14 @@
 ## Changes between Elastisch 2.0.0-beta1 and 2.0.0-beta2
 
-### Aggregation Functions
+### Aggregation Support
+
+Elastisch 2.0 features multiple convenience functions for working with
+[ElasticSearch aggregations](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations.html).
+
+`clojurewerkz.elastisch.aggregation` is a new namespace that contains
+helper functions that produce various types of aggregations. Just like
+`clojurewerkz.elastisch.query`, all of the functions return maps and
+are optional.
 
 `clojurewerkz.elastisch.rest.response/aggregations-from` is a new function
 that returns aggregations from a search response:
@@ -8,13 +16,14 @@ that returns aggregations from a search response:
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.document :as doc])
 (require '[clojurewerkz.elastisch.query :as q])
+(require '[clojurewerkz.elastisch.aggregation :as a])
 (require '[clojurewerkz.elastisch.rest.response :refer [aggregations-from]])
 
 (let [index-name   "people"
         mapping-type "person"
         response     (doc/search index-name mapping-type
                                  :query (q/match-all)
-                                 :aggregations {:min_age {:min {:field "age"}}})
+                                 :aggregations {:min_age (a/min "age")})
         agg          (aggregation-from response :min_age)]
     (is (= {:value 22.0} agg)))
 ```
