@@ -17,3 +17,7 @@
 (defn max
   [field]
   {"max" {"field" field}})
+
+(defn sum
+  [field]
+  {"sum" {"field" field}})
