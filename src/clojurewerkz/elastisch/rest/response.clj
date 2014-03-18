@@ -101,3 +101,13 @@
   "Returns matches from a percolation response as a collection."
   [m]
   (get m :matches []))
+
+(defn aggregations-from
+  "Returns aggregations from a search response"
+  [m]
+  (get m :aggregations []))
+
+(defn aggregation-from
+  "Return a single aggregation from a search response"
+  [m name]
+  (get-in m [:aggregations name] []))
