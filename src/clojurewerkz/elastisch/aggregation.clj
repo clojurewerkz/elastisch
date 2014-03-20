@@ -44,3 +44,7 @@
 (defn percentiles
   [field]
   {"percentiles" {"field" field}})
+
+(defn global
+  []
+  {})
