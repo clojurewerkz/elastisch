@@ -40,3 +40,7 @@
 (defn value-count
   [field]
   {"value_count" {"field" field}})
+
+(defn percentiles
+  [field]
+  {"percentiles" {"field" field}})
