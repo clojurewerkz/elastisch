@@ -48,3 +48,9 @@
 (defn global
   []
   {})
+
+(defn cardinality
+  ([field]
+     {"cardinality" {"field" field}})
+  ([field opts]
+     {"cardinality" (merge {"field" field} opts)}))
