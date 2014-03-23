@@ -91,3 +91,12 @@
   [field ranges]
   {"ip_range" {"field"  field
                "ranges" ranges}})
+
+(defn histogram
+  ([field ^long interval]
+     {"histogram" {"field"    field
+                   "interval" interval}})
+  ([field ^long interval opts]
+     {"histogram" (merge {"field"    field
+                          "interval" interval}
+                         opts)}))
