@@ -58,3 +58,7 @@
 (defn filter
   [opts]
   {"filter" opts})
+
+(defn missing
+  [field]
+  {"missing" {"field" field}})
