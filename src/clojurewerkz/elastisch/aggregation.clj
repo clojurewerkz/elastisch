@@ -11,7 +11,7 @@
   "Convenience functions that build various aggregation types.
 
    All functions return maps and are completely optional (but recommended)."
-  (:refer-clojure :exclude [min max]))
+  (:refer-clojure :exclude [min max sum filter]))
 
 (defn min
   [field]
@@ -54,3 +54,7 @@
      {"cardinality" {"field" field}})
   ([field opts]
      {"cardinality" (merge {"field" field} opts)}))
+
+(defn filter
+  [opts]
+  {"filter" opts})
