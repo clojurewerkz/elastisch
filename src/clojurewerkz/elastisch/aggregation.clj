@@ -66,3 +66,9 @@
 (defn nested
   [opts]
   {"nested" opts})
+
+(defn terms
+  ([field]
+     {"terms" {"field" field}})
+  ([field opts]
+     {"terms" (merge {"field" field} opts)}))
