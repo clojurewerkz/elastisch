@@ -80,3 +80,9 @@
   ([field ranges opts]
      {"range" (merge {"field"  field
                       "ranges" ranges} opts)}))
+
+(defn date-range
+  [field ^String format ranges]
+  {"date_range" {"field"  field
+                 "ranges" ranges
+                 "format" format}})
