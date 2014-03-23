@@ -63,7 +63,8 @@
    :title      "Yak Shaver"
    :biography  "yak/reduce all day long"
    :planet     "Earth"
-   :age 29})
+   :age 29
+   :country    "Uruguay"})
 
 (def people-mapping
   {:person {:properties {:username   {:type "string" :store "yes"}
@@ -72,6 +73,7 @@
                          :age        {:type "integer"}
                          :title      {:type "string" :analyzer "snowball"}
                          :planet     {:type "string"}
+                         :country    {:type "string"}
                          :biography  {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
 
 
