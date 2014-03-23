@@ -28,6 +28,8 @@ that returns aggregations from a search response:
     (is (= {:value 22.0} agg)))
 ```
 
+Aggregations support is primarily focused on REST client at the moment.
+
 ### clj-http Update
 
 [clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `0.9.1`.
