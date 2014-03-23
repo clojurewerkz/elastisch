@@ -86,3 +86,8 @@
   {"date_range" {"field"  field
                  "ranges" ranges
                  "format" format}})
+
+(defn ip-range
+  [field ranges]
+  {"ip_range" {"field"  field
+               "ranges" ranges}})
