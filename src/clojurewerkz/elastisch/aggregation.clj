@@ -100,3 +100,12 @@
      {"histogram" (merge {"field"    field
                           "interval" interval}
                          opts)}))
+
+(defn date-histogram
+  ([field ^String interval]
+     {"date_histogram" {"field"    field
+                        "interval" interval}})
+  ([field ^String interval opts]
+     {"date_histogram" (merge {"field"    field
+                               "interval" interval}
+                              opts)}))
