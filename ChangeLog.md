@@ -1,6 +1,6 @@
 ## Changes between Elastisch 2.0.0-beta1 and 2.0.0-beta2
 
-### Aggregation Support
+### (Improved) Aggregation Support
 
 Elastisch 2.0 features multiple convenience functions for working with
 [ElasticSearch aggregations](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations.html).
