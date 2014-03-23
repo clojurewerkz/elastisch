@@ -62,3 +62,7 @@
 (defn missing
   [field]
   {"missing" {"field" field}})
+
+(defn nested
+  [opts]
+  {"nested" opts})
