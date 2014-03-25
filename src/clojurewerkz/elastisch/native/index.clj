@@ -30,7 +30,8 @@
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheResponse
            org.elasticsearch.action.admin.indices.status.IndicesStatusResponse
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
-           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse))
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse (org.elasticsearch.action.admin.indices.exists.types
+                                                                                                TypesExistsResponse)))
 
 ;;
 ;; API
@@ -70,6 +71,14 @@
   [index-name]
   (let [ft                        (es/admin-index-exists (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.actionGet ft)]
+    (.isExists res)))
+
+
+(defn types-exists?
+  "Returns true if a type/types exists in an index/indices"
+  [index-name type-name]
+  (let [ft                        (es/admin-types-exists (cnv/->types-exists-request index-name type-name))
+        ^TypesExistsResponse res (.actionGet ft)]
     (.isExists res)))
 
 

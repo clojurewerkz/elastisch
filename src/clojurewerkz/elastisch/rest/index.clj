@@ -51,6 +51,12 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"  [^String index-name]
    (= 200 (:status (rest/head (rest/index-url index-name)))))
 
+(defn types-exists?
+  "Used to check if a type/types exists in an index/indices.
+
+   API Reference: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html"  [^String index-name ^String type-name]
+  (= 200 (:status (rest/head (rest/mapping-type-url index-name type-name)))))
+
 (defn delete
   "Deletes an existing index.
 
