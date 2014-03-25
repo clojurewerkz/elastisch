@@ -1,3 +1,7 @@
+## Changes between Elastisch 2.0.0-beta2 and 2.0.0-beta3
+
+[types-exists](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html) api is implemented for both rest and native client.
+
 ## Changes between Elastisch 2.0.0-beta1 and 2.0.0-beta2
 
 ### (Improved) Aggregation Support
