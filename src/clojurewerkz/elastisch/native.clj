@@ -45,7 +45,8 @@
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
-           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest))
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
+           org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest))
 
 
 
@@ -183,6 +184,11 @@
   "Executes an indices exist request"
   [^IndicesExistsRequest req]
   (-> ^Client *client* .admin .indices (.exists req)))
+
+(defn ^ActionFuture admin-types-exists
+  "Executes an types exist request"
+  [^TypesExistsRequest req]
+  (-> ^Client *client* .admin .indices (.typesExists req)))
 
 (defn ^ActionFuture admin-index-create
   "Executes a create index request"

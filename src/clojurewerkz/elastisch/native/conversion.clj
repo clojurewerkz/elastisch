@@ -65,7 +65,8 @@
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
            org.elasticsearch.common.hppc.cursors.ObjectObjectCursor
            org.elasticsearch.common.collect.ImmutableOpenMap
-           org.elasticsearch.cluster.metadata.MappingMetaData))
+           org.elasticsearch.cluster.metadata.MappingMetaData
+           org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest))
 
 ;;
 ;; Implementation
@@ -798,6 +799,10 @@
 (defn ^IndicesExistsRequest ->index-exists-request
   [index-name]
   (IndicesExistsRequest. (->string-array index-name)))
+
+(defn ^TypesExistsRequest ->types-exists-request
+  [index-name type-name]
+  (TypesExistsRequest. (->string-array index-name) (->string-array type-name)))
 
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
