@@ -34,7 +34,7 @@
 (deftest ^{:indexing true :native true} test-create-an-index-without-mappings-or-settings
   (let [response (idx/create "elastisch-index-without-mappings")]
     (is (acknowledged? response))
-    (is (not (idx/types-exists? "elastisch-index-without-mappings" "person")))))
+    (is (not (idx/type-exists? "elastisch-index-without-mappings" "person")))))
 
 (deftest ^{:indexing true :native true} test-create-an-index-with-settings
   (let [response (idx/create "elastisch-index-without-mappings" :settings {"index" {"number_of_shards" 1}})]
@@ -44,7 +44,7 @@
   (let [index    "people"
         response (idx/create index :mappings fx/people-mapping)]
     (is (idx/exists? index))
-    (is (idx/types-exists? index "person"))))
+    (is (idx/type-exists? index "person"))))
 
 (deftest ^{:indexing true :native true} test-successful-deletion-of-index
   (let [index    "people"

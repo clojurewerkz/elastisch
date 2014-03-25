@@ -74,7 +74,7 @@
     (.isExists res)))
 
 
-(defn types-exists?
+(defn type-exists?
   "Returns true if a type/types exists in an index/indices"
   [index-name type-name]
   (let [ft                        (es/admin-types-exists (cnv/->types-exists-request index-name type-name))
