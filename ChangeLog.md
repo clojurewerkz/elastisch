@@ -1,5 +1,11 @@
 ## Changes between Elastisch 2.0.0-beta2 and 2.0.0-beta3
 
+### Clojure 1.6
+
+Elastisch now depends on `org.clojure/clojure` version `1.6.0`. It is
+still compatible with Clojure 1.4 and if your `project.clj` depends on
+a different version, it will be used, but 1.6 is the default now.
+
 ### Type Exists Operation
 
 [types-exists](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html) support
