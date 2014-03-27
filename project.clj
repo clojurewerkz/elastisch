@@ -2,7 +2,7 @@
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}
-  :dependencies [[org.clojure/clojure   "1.5.1"]
+  :dependencies [[org.clojure/clojure   "1.6.0"]
                  [cheshire              "5.3.1"]
                  [clj-http              "0.9.1" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "0.20.0"]
