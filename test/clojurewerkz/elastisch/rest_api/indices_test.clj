@@ -185,7 +185,7 @@
 (deftest ^{:rest true :indexing true} test-create-an-index-template-and-fetch-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
   (let [res (idx/get-template "accounts")]
-    (is (= "accounts" (get-in res [:accounts :template])))
+    (is (= "account*" (get-in res [:accounts :template])))
     (is (get-in res [:accounts :settings]))))
 
 (deftest ^{:rest true :indexing true} test-create-an-index-template-and-delete-it
