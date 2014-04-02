@@ -172,11 +172,11 @@
 
 (deftest ^{:rest true :indexing true} test-getting-aliases
   (idx/create "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
-  (let [response (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
-                                      {:add {:index "aliased-index" :alias "alias2" :routing 1}}])]
-    (acknowledged? response))
-  (is (= {:aliased-index {:aliases {:alias2 {} :alias1 {}}}}
-         (idx/get-aliases "aliased-index"))))
+  (let [res1 (idx/update-aliases [{:add {:index "aliased-index" :alias "alias1"}}
+                                      {:add {:index "aliased-index" :alias "alias2" :routing 1}}])
+        res2 (idx/get-aliases "aliased-index")]
+    (acknowledged? res1)
+    (is (get-in res2 [:aliased-index :aliases]))))
 
 ;;
 ;; Templates
@@ -184,11 +184,9 @@
 
 (deftest ^{:rest true :indexing true} test-create-an-index-template-and-fetch-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
-  (is (= {:accounts {:template "account*"
-                     :order 0
-                     :settings {:index.refresh_interval "60s"}
-                     :mappings {}}}
-         (idx/get-template "accounts"))))
+  (let [res (idx/get-template "accounts")]
+    (is (= "accounts" (get-in res [:accounts :template])))
+    (is (get-in res [:accounts :settings]))))
 
 (deftest ^{:rest true :indexing true} test-create-an-index-template-and-delete-it
   (idx/create-template "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
