@@ -1,5 +1,9 @@
 ## Changes between Elastisch 2.0.0-beta2 and 2.0.0-beta3
 
+### ElasticSearch Client Update
+
+ElasticSearch client has been upgraded to `1.1.0`.
+
 ### Clojure 1.6
 
 Elastisch now depends on `org.clojure/clojure` version `1.6.0`. It is
