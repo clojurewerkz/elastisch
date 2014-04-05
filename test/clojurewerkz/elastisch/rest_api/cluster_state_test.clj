@@ -16,5 +16,5 @@
 (deftest ^{:rest true} cluster-state
   (let [r (admin/cluster-state)]
     (is (:cluster_name r)))
-  (let [r (admin/cluster-state :filter_nodes true)]
+  (let [r (admin/cluster-state {:filter_nodes true})]
     (is (:cluster_name r))))

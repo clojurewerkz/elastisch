@@ -22,5 +22,5 @@
     (is (contains? r :number_of_nodes)))
   (let [r (admin/cluster-health :index ["tweets" "people"])]
     (is (contains? r :number_of_nodes)))
-  (let [r (admin/cluster-health :index ["tweets"] :level "shards")]
+  (let [r (admin/cluster-health {:index ["tweets"] :level "shards"})]
     (is (contains? r :number_of_nodes))))
