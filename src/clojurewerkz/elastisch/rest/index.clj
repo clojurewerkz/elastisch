@@ -11,7 +11,8 @@
   (:refer-clojure :exclude [flush])
   (:require [clojurewerkz.elastisch.rest :as rest]
             [clj-http.client             :as http]
-            [clojurewerkz.elastisch.rest.utils :refer [join-names]]))
+            [clojurewerkz.elastisch.rest.utils :refer [join-names]]
+            [clojurewerkz.elastisch.arguments :as ar]))
 
 ;;
 ;; create, delete, exists?
@@ -40,10 +41,12 @@
 
    Related ElasticSearch API Reference section:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
-  [^String index-name & {:keys [settings mappings]}]
-  (rest/post (rest/index-url index-name) :body (if mappings
-                                                 {:settings settings :mappings mappings}
-                                                 {:settings settings})))
+  [^String index-name & args]
+  (let [opts                        (ar/->opts args)
+        {:keys [settings mappings]} opts]
+    (rest/post (rest/index-url index-name) :body (if mappings
+                                                   {:settings settings :mappings mappings}
+                                                   {:settings settings}))))
 
 (defn exists?
   "Used to check if the index (indices) exists or not.
@@ -55,7 +58,7 @@
   "Used to check if a type/types exists in an index/indices.
 
    API Reference: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html"
-   [^String index-name ^String type-name]
+  [^String index-name ^String type-name]
   (= 200 (:status (rest/head (rest/mapping-type-url index-name type-name)))))
 
 (defn delete
@@ -183,8 +186,8 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html"
   ([]
      (rest/post (rest/index-optimize-url)))
-  ([index-name & {:as options}]
-     (rest/post (rest/index-optimize-url (join-names index-name)) :body options)))
+  ([index-name & args]
+     (rest/post (rest/index-optimize-url (join-names index-name)) :body (ar/->opts args))))
 
 
 (defn flush
@@ -205,8 +208,8 @@
      (rest/post (rest/index-flush-url)))
   ([index-name]
      (rest/post (rest/index-flush-url (join-names index-name))))
-  ([index-name & {:as options}]
-     (rest/post (rest/index-flush-url (join-names index-name)) :body options)))
+  ([index-name & args]
+     (rest/post (rest/index-flush-url (join-names index-name)) :body (ar/->opts args))))
 
 
 (defn clear-cache
@@ -226,8 +229,8 @@
      (rest/post (rest/index-clear-cache-url)))
   ([index-name]
      (rest/post (rest/index-clear-cache-url (join-names index-name))))
-  ([index-name & {:as options}]
-     (rest/post (rest/index-clear-cache-url (join-names index-name)) :body options)))
+  ([index-name & args]
+     (rest/post (rest/index-clear-cache-url (join-names index-name)) :body (ar/->opts args))))
 
 ;;
 ;; Aliases
@@ -265,13 +268,15 @@
    :mappings : the same as for index/create
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html"
-  [^String template-name & {:keys [template settings mappings]}]
-  (rest/post (rest/index-template-url template-name) :body (if mappings
-                                                             {:template template
-                                                              :settings settings
-                                                              :mappings mappings}
-                                                             {:template template
-                                                              :settings settings})))
+  [^String template-name & args]
+  (let [opts                                 (ar/->opts args)
+        {:keys [template settings mappings]} opts]
+    (rest/post (rest/index-template-url template-name) :body (if mappings
+                                                               {:template template
+                                                                :settings settings
+                                                                :mappings mappings}
+                                                               {:template template
+                                                                :settings settings}))))
 
 (defn get-template
   [^String template-name]
@@ -291,8 +296,8 @@
    :snapshot : should snapshot status be returned?
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-status.html"
-  ([index-name & {:as options}]
-     (rest/get (rest/index-status-url (join-names index-name)) :query-params options)))
+  ([index-name & args]
+     (rest/get (rest/index-status-url (join-names index-name)) :query-params (ar/->opts args))))
 
 (defn segments
   "Returns segments information for an index or multiple indexes.
@@ -321,5 +326,5 @@
    :clear : clear all the flags first
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html"
-  ([index-name & {:as options}]
-     (rest/get (rest/index-stats-url (join-names index-name)) :query-params options)))
+  ([index-name & args]
+     (rest/get (rest/index-stats-url (join-names index-name)) :query-params (ar/->opts args))))

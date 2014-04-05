@@ -57,7 +57,7 @@
 
 (deftest ^{:rest true :indexing true} test-put-with-precreated-index-with-mapping-types
   (let [id       "1"
-        _        (idx/create index-name :mappings fx/people-mapping)
+        _        (idx/create index-name {:mappings fx/people-mapping})
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
         get-result (doc/get index-name index-type id)]
@@ -72,14 +72,14 @@
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
-        response (doc/put index-name index-type id fx/person-joe :version 1)]
+        response (doc/put index-name index-type id fx/person-joe {:version 1})]
     (is (conflict? response))))
 
 (deftest ^{:rest true :indexing true} test-put-with-conflicting-document-version
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
-        response (doc/put index-name index-type id fx/person-joe :version 1 :version_type "external")]
+        response (doc/put index-name index-type id fx/person-joe {:version 1 :version_type "external"})]
     (is (conflict? response))
     (is (not (created? response)))))
 
@@ -100,7 +100,7 @@
 (deftest ^{:rest true :indexing true} test-put-with-a-timestamp
   (let [id       "1"
         _        (idx/create index-name :mappings fx/people-mapping)
-        response (doc/put index-name index-type id fx/person-jack :timestamp (-> 2 months ago))]
+        response (doc/put index-name index-type id fx/person-jack {:timestamp (-> 2 months ago)})]
     (is (created? response))))
 
 (deftest ^{:rest true :indexing true} test-put-with-a-1-day-ttl
