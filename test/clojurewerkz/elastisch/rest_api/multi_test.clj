@@ -36,5 +36,5 @@
         multires (multi/search-with-index-and-type "people" "person"
                                                    [{} {:query (q/term :planet "earth")}
                                                     {} {:query (q/term :first-name "mary")}])]
-    (is (= (-> res1 :hits) (-> multires first :hits)))
-    (is (= (-> res2 :hits) (-> multires second :hits)))))
+    (is (= (res1 :hits) (-> multires first :hits)))
+    (is (= (res2 :hits) (-> multires second :hits)))))

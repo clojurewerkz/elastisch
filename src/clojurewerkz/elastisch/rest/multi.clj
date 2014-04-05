@@ -10,17 +10,19 @@
 (ns clojurewerkz.elastisch.rest.multi
   (:require [clojurewerkz.elastisch.rest :as rest]
             [cheshire.core :as json]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojurewerkz.elastisch.arguments :as ar]))
 
 (defn ^:private msearch-with-url
-  [url queries & {:as params}]
-  (let [msearch-json (map json/encode queries)
+  [url queries & args]
+  (let [opts         (ar/->opts args)
+        msearch-json (map json/encode queries)
         msearch-json (-> msearch-json
                          (interleave (repeat "\n"))
                          (string/join))]
     (rest/get url
               :body msearch-json
-              :query-params params)))
+              :query-params opts)))
 
 (defn search
   "Performs multi search"
