@@ -10,7 +10,8 @@
 (ns clojurewerkz.elastisch.native.index
   (:refer-clojure :exclude [flush])
   (:require [clojurewerkz.elastisch.native :as es]
-            [clojurewerkz.elastisch.native.conversion :as cnv])
+            [clojurewerkz.elastisch.native.conversion :as cnv]
+            [clojurewerkz.elastisch.arguments :as ar])
   (:import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse
            org.elasticsearch.action.admin.indices.create.CreateIndexResponse
            org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
@@ -60,8 +61,10 @@
 
    Related ElasticSearch API Reference section:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
-  [^String index-name & {:keys [settings mappings]}]
-  (let [ft                       (es/admin-index-create (cnv/->create-index-request index-name settings mappings))
+  [^String index-name & args]
+  (let [opts                        (ar/->opts args)
+        {:keys [settings mappings]} opts
+        ft                       (es/admin-index-create (cnv/->create-index-request index-name settings mappings))
         ^CreateIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
@@ -108,8 +111,9 @@
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type."
-  [^String index-name ^String mapping-type & {:as options}]
-  (let [ft                       (es/admin-put-mapping (cnv/->put-mapping-request index-name mapping-type options))
+  [^String index-name ^String mapping-type & args]
+  (let [opts                    (ar/->opts args)
+        ft                      (es/admin-put-mapping (cnv/->put-mapping-request index-name mapping-type opts))
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
@@ -145,15 +149,17 @@
 
 (defn optimize
   "Optimizes an index or multiple indices"
-  [index-name & {:as options}]
-  (let [ft                    (es/admin-optimize-index (cnv/->optimize-index-request index-name options))
+  [index-name & args]
+  (let [opts                  (ar/->opts args)
+        ft                    (es/admin-optimize-index (cnv/->optimize-index-request index-name opts))
         ^OptimizeResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn flush
   "Flushes an index or multiple indices"
-  [index-name & {:as options}]
-  (let [ft                 (es/admin-flush-index (cnv/->flush-index-request index-name options))
+  [index-name & args]
+  (let [opts               (ar/->opts args)
+        ft                 (es/admin-flush-index (cnv/->flush-index-request index-name opts))
         ^FlushResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
@@ -173,8 +179,9 @@
 
 (defn clear-cache
   "Clears caches index or multiple indices"
-  [index-name & {:as options}]
-  (let [ft                             (es/admin-clear-cache (cnv/->clear-indices-cache-request index-name options))
+  [index-name & args]
+  (let [opts                           (ar/->opts args)
+        ft                             (es/admin-clear-cache (cnv/->clear-indices-cache-request index-name opts))
         ^ClearIndicesCacheResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
@@ -199,8 +206,9 @@
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res))
-  ([& {:as options}]
-     (let [ft                        (es/admin-index-stats (cnv/->index-stats-request options))
+  ([& args]
+     (let [opts                      (ar/->opts args)
+           ft                        (es/admin-index-stats (cnv/->index-stats-request opts))
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res)))
@@ -212,8 +220,9 @@
 
    :recovery (boolean, default: false): should the status include recovery information?
    :snapshot (boolean, default: false): should the status include snapshot information?"
-  [index-name & {:as options}]
-  (let [ft                         (es/admin-status (cnv/->indices-status-request index-name options))
+  [index-name & args]
+  (let [opts                       (ar/->opts args)
+        ft                         (es/admin-status (cnv/->indices-status-request index-name opts))
         ^IndicesStatusResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
@@ -230,20 +239,23 @@
 
    { :add    { :index \"test1\" :alias \"alias1\" } }
    { :remove { :index \"test1\" :alias \"alias1\" } }"
-  [ops & {:as options}]
-  (let [ft                          (es/admin-update-aliases (cnv/->indices-aliases-request ops options))
+  [ops & args]
+  (let [opts                        (ar/->opts args)
+        ft                          (es/admin-update-aliases (cnv/->indices-aliases-request ops opts))
         ^IndicesAliasesResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn create-template
-  [^String template-name & {:as options}]
-  (let [ft                            (es/admin-put-index-template (cnv/->create-index-template-request template-name options))
+  [^String template-name & args]
+  (let [opts                          (ar/->opts args)
+        ft                            (es/admin-put-index-template (cnv/->create-index-template-request template-name opts))
         ^PutIndexTemplateResponse res (.actionGet ft)]
     {:ok true :acknowledged (.isAcknowledged res)}))
 
 (defn put-template
-  [^String template-name & {:as options}]
-  (let [ft                            (es/admin-put-index-template (cnv/->put-index-template-request template-name options))
+  [^String template-name & args]
+  (let [opts                          (ar/->opts args)
+        ft                            (es/admin-put-index-template (cnv/->put-index-template-request template-name opts))
         ^PutIndexTemplateResponse res (.actionGet ft)]
     {:ok true :acknowledged (.isAcknowledged res)}))
 

@@ -71,7 +71,7 @@
 
 (deftest ^{:indexing true :native true} test-sync-put-with-precreated-index-with-mapping-types
   (let [id         "1"
-        _          (idx/create index-name :mappings fx/people-mapping)
+        _          (idx/create index-name {:mappings fx/people-mapping})
         document   fx/person-jack
         response   (doc/put index-name index-type id document)
         get-result (doc/get index-name index-type id)]
@@ -94,15 +94,15 @@
   (let [id       "1"
         _        (doc/put index-name index-type id fx/person-jack)
         _        (doc/put index-name index-type id fx/person-mary)
-        response (doc/put index-name index-type id fx/person-joe :version 2 :version_type "external")]
+        response (doc/put index-name index-type id fx/person-joe {:version 2 :version_type "external"})]
     (is (:_index response))
     (is (:_type response))))
 
 (deftest ^{:indexing true :native true} test-sync-put-with-new-document-version
   (let [id       "1"
-        _        (doc/put index-name index-type id fx/person-jack :version_type "external")
-        _        (doc/put index-name index-type id fx/person-mary :version 1 :version_type "external")
-        response (doc/put index-name index-type id fx/person-joe  :version 2 :version_type "external")]
+        _        (doc/put index-name index-type id fx/person-jack {:version_type "external"})
+        _        (doc/put index-name index-type id fx/person-mary {:version 1 :version_type "external"})
+        response (doc/put index-name index-type id fx/person-joe  {:version 2 :version_type "external"})]
     (is (= 3 (:_version response)))
     (is (:_index response))
     (is (:_type response))))
