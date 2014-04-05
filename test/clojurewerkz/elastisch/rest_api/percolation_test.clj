@@ -23,7 +23,7 @@
 (deftest ^{:rest true :percolation true} test-percolation-case-1
   (let [index-name   "articles"
         percolator   "article"
-        result1      (pcl/register-query index-name percolator :query {:term {:title "search"}})
-        result2      (pcl/percolate index-name percolator :doc {:title "You know, for search"})]
+        result1      (pcl/register-query index-name percolator {:query {:term {:title "search"}}})
+        result2      (pcl/percolate index-name percolator {:doc {:title "You know, for search"}})]
     (is (= [{:_index "articles" :_id "article"}] (matches-from result2)))
     (pcl/unregister-query index-name percolator)))
