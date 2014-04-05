@@ -32,3 +32,8 @@
   [index percolator & args]
   ;; rest/get won't serialize the body for us. MK.
   (rest/get (rest/index-percolation-url index percolator) :body (json/encode (ar/->opts args))))
+
+(defn percolate-existing
+  "Percolates an existing document and sees which queries match on it."
+  [index percolator id]
+  (rest/get (rest/existing-doc-index-percolation-url index percolator id)))
