@@ -39,22 +39,22 @@
 (deftest ^{:rest true} test-updating-index-mapping-ignoring-conflicts
   (let [index    "people3"
         mapping  fx/people-mapping
-        _        (idx/create index :mappings {:person {:properties {:first-name {:type "string" :store "no"}}}})
-        response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts true)]
+        _        (idx/create index {:mappings {:person {:properties {:first-name {:type "string" :store "no"}}}}})
+        response (idx/update-mapping index "person" {:mapping mapping :ignore_conflicts true})]
     (is (created-or-acknowledged? response))))
 
 (deftest ^{:rest true} test-updating-blank-index-mapping
   (let [index    "people4"
         mapping  fx/people-mapping
-        _        (idx/create index :mappings {})
-        response (idx/update-mapping index "person" :mapping mapping)]
+        _        (idx/create index {:mappings {}})
+        response (idx/update-mapping index "person" {:mapping mapping})]
     (is (created-or-acknowledged? response))
     (is (get-in (idx/get-mapping index) [:people4 :mappings :person :properties :username :store]))))
 
 (deftest ^{:rest true} test-delete-index-mapping
   (let [index        "people5"
         mapping-type "person"
-        _            (idx/create index :mappings fx/people-mapping)
+        _            (idx/create index {:mappings fx/people-mapping})
         response     (idx/delete-mapping index mapping-type)]
     (is (created-or-acknowledged? response))
     (is (nil? ((idx/get-mapping index) mapping-type)))))

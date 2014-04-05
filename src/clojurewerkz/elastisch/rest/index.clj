@@ -88,9 +88,11 @@
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
-  [^String index-name-or-names ^String type-name & {:keys [mapping ignore_conflicts]}]
-  (rest/put (rest/index-mapping-url (join-names index-name-or-names) type-name)
-            :body mapping :query-params {:ignore_conflicts ignore_conflicts}))
+  [^String index-name-or-names ^String type-name & args]
+  (let [opts                               (ar/->opts args)
+        {:keys [mapping ignore_conflicts]} opts]
+    (rest/put (rest/index-mapping-url (join-names index-name-or-names) type-name)
+              :body mapping :query-params {:ignore_conflicts ignore_conflicts})))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data.
