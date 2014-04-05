@@ -12,44 +12,45 @@
 
    All functions return maps and are completely optional (but recommended)."
   (:refer-clojure :exclude [range])
-  (:require [clojurewerkz.elastisch.escape :as escape]))
+  (:require [clojurewerkz.elastisch.escape    :as escape]
+            [clojurewerkz.elastisch.arguments :as ar]))
 
 (defn term
   "Term Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html"
-  [key values & { :as options }]
+  [key values & args]
   (merge { (if (coll? values) :terms :term) (hash-map key values) }
-         options))
+         (ar/->opts args)))
 
 (defn range
   "Range Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-range-query.html"
-  [key & { :as options}]
-  {:range (hash-map key options) })
+  [key & args]
+  {:range (hash-map key (ar/->opts args)) })
 
 (defn match
   "Match Query, before 0.19.9 known as Text Query.
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-match-query.html"
-  [field query & { :as options}]
-  {:match {field (merge { :query query } options) }})
+  [field query & args]
+  {:match {field (merge {:query query} (ar/->opts args))}})
 
 (defn bool
   "Boolean Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html"
-  [& { :as options}]
-  {:bool options})
+  [& args]
+  {:bool (ar/->opts args)})
 
 
 (defn boosting
   "Boosting Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-boosting-query.html"
-  [& { :as options}]
-  {:boosting options})
+  [& args]
+  {:boosting (ar/->opts args)})
 
 (defn ids
   "IDs Query
@@ -62,36 +63,36 @@
   "Constant Score Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-constant-score-query.html"
-  [& {:as options}]
-  {:constant_score options})
+  [& args]
+  {:constant_score (ar/->opts args)})
 
 (defn dis-max
   "Dis Max Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-dis-max-query.html"
-  [& {:as options}]
-  {:dis_max options})
+  [& args]
+  {:dis_max (ar/->opts args)})
 
 (defn prefix
   "Prefix query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html"
-  [& {:as options}]
-  {:prefix options})
+  [& args]
+  {:prefix (ar/->opts args)})
 
 (defn filtered
   "Filtered query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html"
-  [& {:as options}]
-  {:filtered options})
+  [& args]
+  {:filtered (ar/->opts args)})
 
 (defn fuzzy-like-this
   "FLT (fuzzy like this) query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-query.html"
-  [& {:as options}]
-  {:fuzzy_like_this options})
+  [& args]
+  {:fuzzy_like_this (ar/->opts args)})
 
 (def flt fuzzy-like-this)
 
@@ -99,8 +100,8 @@
   "FLT (fuzzy like this) query for a single field
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-field-query.html"
-  [& {:as options}]
-  {:fuzzy_like_this_field options})
+  [& args]
+  {:fuzzy_like_this_field (ar/->opts args)})
 
 (def flt-field fuzzy-like-this-field)
 
@@ -108,8 +109,8 @@
   "Fuzzy or Levenshtein (edit distance) query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html"
-  [& {:as options}]
-  {:fuzzy options})
+  [& args]
+  {:fuzzy (ar/->opts args)})
 
 (defn match-all
   "Match All query
@@ -117,15 +118,15 @@
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html"
   ([]
      {:match_all {}})
-  ([& {:as options}]
-     {:match_all options}))
+  ([& args]
+     {:match_all (ar/->opts args)}))
 
 (defn more-like-this
   "MLT (More Like This) query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html"
-  [& {:as options}]
-  {:more_like_this options})
+  [& args]
+  {:more_like_this (ar/->opts args)})
 
 (def mlt more-like-this)
 
@@ -133,8 +134,8 @@
   "MLT (More Like This) query that works for a single field
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-mlt-field-query.html"
-  [& {:as options}]
-  {:more_like_this_field options})
+  [& args]
+  {:more_like_this_field (ar/->opts args)})
 
 (def mlt-field more-like-this-field)
 
@@ -142,86 +143,87 @@
   "Query String query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html"
-  [& {:as options}]
-  (let [escape-fn (or (:escape-with options) escape/escape-query-string-characters)
-        options (if-let [query (:query options)]
-                  (assoc options :query (escape-fn query))
-                  options)]
+  [& args]
+  (let [opts      (ar/->opts args)
+        escape-fn (or (:escape-with opts) escape/escape-query-string-characters)
+        options (if-let [query (:query opts)]
+                  (assoc opts :query (escape-fn query))
+                  opts)]
     {:query_string options}))
 
 (defn span-first
   "Span First query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-span-first-query.html"
-  [& {:as options}]
-  {:span_first options})
+  [& args]
+  {:span_first (ar/->opts args)})
 
 (defn span-near
   "Span Near query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-span-near-query.html"
-  [& {:as options}]
-  {:span_near options})
+  [& args]
+  {:span_near (ar/->opts args)})
 
 (defn span-not
   "Span Not query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-span-not-query.html"
-  [& {:as options}]
-  {:span_not options})
+  [& args]
+  {:span_not (ar/->opts args)})
 
 (defn span-or
   "Span Or query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-span-or-query.html"
-  [& {:as options}]
-  {:span_or options})
+  [& args]
+  {:span_or (ar/->opts args)})
 
 (defn span-term
   "Span Term query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-span-term-query.html"
-  [& {:as options}]
-  {:span_term options})
+  [& args]
+  {:span_term (ar/->opts args)})
 
 (defn wildcard
   "Wildcard query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html"
-  [& {:as options}]
-  {:wildcard options})
+  [& args]
+  {:wildcard (ar/->opts args)})
 
 (defn indices
   "Indices query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-indices-query.html"
-  [& {:as options}]
-  {:indices options})
+  [& args]
+  {:indices (ar/->opts args)})
 
 (defn has-child
   "Has Child query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html"
-  [& {:as options}]
-  {:has_child options})
+  [& args]
+  {:has_child (ar/->opts args)})
 
 (defn custom-filters-score
   "Custom Filters Score query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-custom-filters-score-query.html"
-  [& {:as options}]
-  {:custom_filters_score options})
+  [& args]
+  {:custom_filters_score (ar/->opts args)})
 
 (defn top-children
   "Top children query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-top-children-query.html"
-  [& {:as options}]
-  {:top_children options})
+  [& args]
+  {:top_children (ar/->opts args)})
 
 (defn nested
   "Nested document query
 
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html"
-  [& {:as options}]
-  {:nested options})
+  [& args]
+  {:nested (ar/->opts args)})

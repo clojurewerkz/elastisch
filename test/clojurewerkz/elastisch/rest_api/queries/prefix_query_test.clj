@@ -45,3 +45,12 @@
         hits     (hits-from response)]
     (is (= 1 (total-hits response)))
     (is (= "3" (-> hits first :_id)))))
+
+(deftest ^{:rest true :query true} test-partial-prefix-query-over-a-text-field-with-map-options
+  (let [index-name   "tweets"
+        mapping-type "tweet"
+        m        {:text "congr"}
+        response (doc/search index-name mapping-type :query (q/prefix m))
+        hits     (hits-from response)]
+    (is (= 1 (total-hits response)))
+    (is (= "3" (-> hits first :_id)))))

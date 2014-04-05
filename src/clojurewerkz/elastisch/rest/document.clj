@@ -15,6 +15,7 @@
             [clojure.string :as string]
             [clojure.set :refer :all]
             [clojurewerkz.elastisch.rest.utils :refer [join-names]]
+            [clojurewerkz.elastisch.arguments :as ar]
             [clojurewerkz.elastisch.rest.response :refer [not-found? hits-from]]))
 
 ;;
@@ -47,15 +48,15 @@
    (doc/create \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28})
 
    (doc/create \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
-  ([index mapping-type document & {:as params}]
-     (rest/post (rest/mapping-type-url index mapping-type) :body document :query-params params)))
+  ([index mapping-type document & args]
+     (rest/post (rest/mapping-type-url index mapping-type) :body document :query-params (ar/->opts args))))
 
 (defn put
   "Creates or updates a document in the search index, using the provided document id"
   ([index mapping-type id document]
      (rest/put (rest/record-url index mapping-type id) :body document))
-  ([index mapping-type id document & {:as params}]
-     (rest/put (rest/record-url index mapping-type id) :body document :query-params params)))
+  ([index mapping-type id document & args]
+     (rest/put (rest/record-url index mapping-type id) :body document :query-params (ar/->opts args))))
 
 (defn update-with-script
   "Updates a document using a script"
@@ -73,8 +74,8 @@
    (require '[clojurewerkz.elastisch.rest.document :as doc])
 
    (doc/get \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
-  [index mapping-type id & {:as params}]
-  (let [result (rest/get (rest/record-url index mapping-type id) :query-params params)]
+  [index mapping-type id & args]
+  (let [result (rest/get (rest/record-url index mapping-type id) :query-params (ar/->opts args))]
     (if (not-found? result)
       nil
       result)))
@@ -83,8 +84,8 @@
   "Deletes document from the index."
   ([index mapping-type id]
      (rest/delete (rest/record-url index mapping-type id)))
-  ([index mapping-type id & {:as params}]
-     (rest/delete (rest/record-url index mapping-type id) :query-params params)))
+  ([index mapping-type id & args]
+     (rest/delete (rest/record-url index mapping-type id) :query-params (ar/->opts args))))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
@@ -137,10 +138,11 @@
    (require '[clojurewerkz.elastisch.query :as q])
 
    (doc/search \"people\" \"person\" :query (q/prefix :username \"appl\"))"
-  [index mapping-type & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference]
-        qp   (select-keys options qk)
-        body (apply dissoc (concat [options] qk))]
+  [index mapping-type & args]
+  (let [opts (ar/->opts args)
+        qk   [:search_type :scroll :routing :preference]
+        qp   (select-keys opts qk)
+        body (apply dissoc (concat [opts] qk))]
     (rest/post (rest/search-url (join-names index)
                                 (join-names mapping-type))
                :body body
@@ -148,10 +150,11 @@
 
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
-  [index & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference]
-        qp   (select-keys options qk)
-        body (apply dissoc (concat [options] qk))]
+  [index & args]
+  (let [opts (ar/->opts args)
+        qk   [:search_type :scroll :routing :preference]
+        qp   (select-keys opts qk)
+        body (apply dissoc (concat [opts] qk))]
     (rest/post (rest/search-url (join-names index))
                :body body
                :query-params qp)))
@@ -159,10 +162,11 @@
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
    ElasticSearch cluster so use this function with care."
-  [& {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference]
-        qp   (select-keys options qk)
-        body (apply dissoc (concat [options] qk))]
+  [& args]
+  (let [opts (ar/->opts args)
+        qk   [:search_type :scroll :routing :preference]
+        qp   (select-keys opts qk)
+        body (apply dissoc (concat [opts] qk))]
     (rest/post (rest/search-url)
                :body body
                :query-params qp)))
@@ -170,10 +174,11 @@
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
    query given a scroll id"
-  [scroll-id & {:as options}]
-  (let [qk   [:search_type :scroll :routing :preference]
-        qp   (assoc (select-keys options qk) :scroll_id scroll-id)
-        body (apply dissoc (concat [options] qk))]
+  [scroll-id & args]
+  (let [opts (ar/->opts args)
+        qk   [:search_type :scroll :routing :preference]
+        qp   (assoc (select-keys opts qk) :scroll_id scroll-id)
+        body (apply dissoc (concat [opts] qk))]
     (rest/get (rest/scroll-url)
                :query-params qp)))
 
@@ -207,9 +212,9 @@
      (rest/get (rest/count-url (join-names index) (join-names mapping-type))))
   ([index mapping-type query]
      (rest/post (rest/count-url (join-names index) (join-names mapping-type)) :body {:query query}))
-  ([index mapping-type query & { :as options }]
+  ([index mapping-type query & args]
      (rest/post (rest/count-url (join-names index) (join-names mapping-type))
-                :query-params (select-keys options [:df :analyzer :default_operator])
+                :query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator])
                 :body {:query query})))
 
 (def ^{:doc "Optional parameters that all query-based delete functions share"
@@ -220,18 +225,18 @@
   "Performs a delete-by-query operation."
   ([index mapping-type query]
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body {:query query}))
-  ([index mapping-type query & { :as options }]
+  ([index mapping-type query & args]
      (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
-                  :query-params (select-keys options optional-delete-query-parameters)
+                  :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                   :body {:query query})))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation across all mapping types."
   ([index query]
      (rest/delete (rest/delete-by-query-url (join-names index)) :body {:query query}))
-  ([index query & {:as options}]
+  ([index query & args]
      (rest/delete (rest/delete-by-query-url (join-names index))
-                  :query-params (select-keys options optional-delete-query-parameters)
+                  :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                   :body {:query query})))
 
 (defn delete-by-query-across-all-indexes-and-types
@@ -239,23 +244,23 @@
    This may put very high load on your ElasticSearch cluster so use this function with care."
   ([query]
      (rest/delete (rest/delete-by-query-url) :body {:query query}))
-  ([query & {:as options}]
+  ([query & args]
      (rest/delete (rest/delete-by-query-url)
-                  :query-params (select-keys options optional-delete-query-parameters)
+                  :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                   :body {:query query})))
 
 
 (defn more-like-this
   "Performs a More Like This (MLT) query."
-  [index mapping-type id &{:as params}]
+  [index mapping-type id & args]
   (rest/get (rest/more-like-this-url index mapping-type id)
-            :query-params params))
+            :query-params (ar/->opts args)))
 
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
    but does not take the mapping type parameter."
-  [index query & {:as options}]
-  (rest/get (rest/query-validation-url index) :body (json/encode {:query query}) :query-params options))
+  [index query & args]
+  (rest/get (rest/query-validation-url index) :body (json/encode {:query query}) :query-params (ar/->opts args)))
 
 
 (defn analyze 
@@ -267,5 +272,7 @@
    (doc/analyze \"foo bar baz\" :index \"some-index-name\")
    (doc/analyze \"foo bar baz\" :analyzer \"whitespace\")
    (doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
-  ([text & {:as params}] (rest/get (rest/analyze-url (:index params))
-                                   :query-params (assoc params :text text))))
+  ([text & args]
+     (let [opts (ar/->opts args)]
+       (rest/get (rest/analyze-url (:index opts))
+               :query-params (assoc opts :text text)))))
