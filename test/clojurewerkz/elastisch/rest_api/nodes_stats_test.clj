@@ -27,5 +27,5 @@
       (is (= 1 (count (:nodes (admin/nodes-stats :nodes (vector (name node-id)))))))
       (is (= 1 (count (:nodes (admin/nodes-stats :nodes node-name)))))))
   (testing "parameters"
-    (is (not (= (admin/nodes-stats :indices true) (admin/nodes-stats :indices false))))
-    (is (not (= (admin/nodes-stats :network true) (admin/nodes-stats :network false))))))
+    (is (not (= (admin/nodes-stats {:indices true}) (admin/nodes-stats :indices false))))
+    (is (not (= (admin/nodes-stats {:network true}) (admin/nodes-stats :network false))))))
