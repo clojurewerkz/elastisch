@@ -9,7 +9,8 @@
 
 (ns clojurewerkz.elastisch.rest.admin
   (:require [clojurewerkz.elastisch.rest :as rest]
-            [clojurewerkz.elastisch.rest.utils :refer [join-names]]))
+            [clojurewerkz.elastisch.rest.utils :refer [join-names]]
+            [clojurewerkz.elastisch.arguments :as ar]))
 
 ;;
 ;; API
@@ -26,9 +27,10 @@
    (admin/cluster-health :index \"index1\")
    (admin/cluster-health :index [\"index1\",\"index2\"])
    (admin/cluster-health :index \"index1\" :pretty true :level \"indices\")"
-  [& {:as params}] 
-  (rest/get (rest/cluster-health-url (join-names (:index params)))
-            :query-params (dissoc params :index)))
+  [& args]
+  (let [opts (ar/->opts args)]
+    (rest/get (rest/cluster-health-url (join-names (:index opts)))
+              :query-params (dissoc opts :index))))
 
 (defn cluster-state
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html
@@ -39,8 +41,8 @@
 
    (admin/cluster-state)
 "
-  [& {:as params}] 
-  (rest/get (rest/cluster-state-url) :query-params params))
+  [& args]
+  (rest/get (rest/cluster-state-url) :query-params (ar/->opts args)))
 
 
 (defn nodes-stats
@@ -53,9 +55,10 @@
    (admin/nodes-stats)
    (admin/nodes-stats :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
 "
-  [& {:as params}] 
-  (rest/get (rest/cluster-nodes-stats-url (join-names (get params :nodes "_all"))
-                                          (join-names (get params :attributes "_all")))))
+  [& args]
+  (let [opts (ar/->opts args)]
+    (rest/get (rest/cluster-nodes-stats-url (join-names (get opts :nodes "_all"))
+                                            (join-names (get opts :attributes "_all"))))))
 
 (defn nodes-info
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html
@@ -67,26 +70,30 @@
    (admin/nodes-info)
    (admin/nodes-info :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
 "
-  [& {:as params}] 
-  (rest/get (rest/cluster-nodes-info-url (join-names (get params :nodes "_all"))
-                                         (join-names (get params :attributes "_all")))))
+  [& args]
+  (let [opts (ar/->opts args)]
+    (rest/get (rest/cluster-nodes-info-url (join-names (get opts :nodes "_all"))
+                                         (join-names (get opts :attributes "_all"))))))
 
 
 (defn register-snapshot-repository
-  [^String name & {:as params}]
-  (rest/put (rest/snapshot-repository-registration-url name) :body params))
+  [^String name & args]
+  (rest/put (rest/snapshot-repository-registration-url name) :body (ar/->opts args)))
 
 
 (defn take-snapshot
-  [^String repo ^String name & {:as params}]
-  (rest/put (rest/snapshot-url repo name) :body params :query-params (select-keys params [:wait-for-completion?])))
+  [^String repo ^String name & args]
+  (let [opts (ar/->opts args)]
+    (rest/put (rest/snapshot-url repo name) :body opts :query-params (select-keys opts [:wait-for-completion?]))))
 
 (defn restore-snapshot
-  [^String repo ^String name & {:as params}]
-  (rest/post (rest/restore-snapshot-url repo name)
-             :body (or params {})
-             :query-params (select-keys params [:wait-for-completion?])))
+  [^String repo ^String name & args]
+  (let [opts (ar/->opts args)]
+    (rest/post (rest/restore-snapshot-url repo name)
+             :body opts
+             :query-params (select-keys opts [:wait-for-completion?]))))
 
 (defn delete-snapshot
-  [^String repo ^String name & {:as params}]
-  (rest/delete (rest/snapshot-url repo name) :query-params (select-keys params [:wait-for-completion?])))
+  [^String repo ^String name & args]
+  (let [opts (ar/->opts args)]
+    (rest/delete (rest/snapshot-url repo name) :query-params (select-keys opts [:wait-for-completion?]))))
