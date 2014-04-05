@@ -12,7 +12,8 @@
   (:require [clojurewerkz.elastisch.native :as es]
             [clojurewerkz.elastisch.native.conversion :as cnv]
             [clojurewerkz.elastisch.query  :as q]
-            [clojurewerkz.elastisch.native.response :as r])
+            [clojurewerkz.elastisch.native.response :as r]
+            [clojurewerkz.elastisch.arguments :as ar])
   (:import clojure.lang.IPersistentMap
            [org.elasticsearch.action.get GetResponse MultiGetResponse]
            org.elasticsearch.action.count.CountResponse
@@ -54,11 +55,12 @@
                                               document
                                               {:op-type "create"}))]
        (cnv/index-response->map (.actionGet res))))
-  ([index mapping-type document & {:as params}]
-     (let [res (es/index (cnv/->index-request index
+  ([index mapping-type document & args]
+     (let [opts (ar/->opts args)
+           res (es/index (cnv/->index-request index
                                               mapping-type
                                               document
-                                              (merge params {:op-type "create"})))]
+                                              (merge opts {:op-type "create"})))]
        (cnv/index-response->map (.actionGet res)))))
 
 (defn async-create
@@ -78,11 +80,12 @@
                                               document
                                               {:id id :op-type "index"}))]
        (cnv/index-response->map (.actionGet res))))
-  ([index mapping-type id document & {:as params}]
-     (let [res (es/index (cnv/->index-request index
-                                              mapping-type
-                                              document
-                                              (merge params {:id id :op-type "index"})))]
+  ([index mapping-type id document & args]
+     (let [opts (ar/->opts args)
+           res  (es/index (cnv/->index-request index
+                                               mapping-type
+                                               document
+                                               (merge opts {:id id :op-type "index"})))]
        (cnv/index-response->map (.actionGet res)))))
 
 (defn async-put
@@ -90,17 +93,17 @@
    and returns a future without waiting for the response. Takes exactly the same arguments as put."
   ([index mapping-type id document]
      (future (put index mapping-type id document)))
-  ([index mapping-type id document & {:as params}]
-     (future (apply put (concat [index mapping-type id document] params)))))
+  ([index mapping-type id document & args]
+     (future (apply put (concat [index mapping-type id document] (ar/->opts args))))))
 
 (defn upsert
   "Updates or creates a document using provided data"
   ([index mapping-type ^String id ^Map doc]
-    (let [res (es/update (cnv/->upsert-request index
-                                               mapping-type
-                                               id
-                                               doc))]
-      (cnv/update-response->map (.actionGet res)))))
+     (let [res (es/update (cnv/->upsert-request index
+                                                mapping-type
+                                                id
+                                                doc))]
+       (cnv/update-response->map (.actionGet res)))))
 
 (defn update-with-script
   "Updates a document using a script"
@@ -135,11 +138,12 @@
            ^GetResponse res (.actionGet ft)]
        (when (.isExists res)
          (cnv/get-response->map res))))
-  ([index mapping-type id & {:as params}]
-     (let [ft               (es/get (cnv/->get-request index
+  ([index mapping-type id & args]
+     (let [opts             (ar/->opts args)
+           ft               (es/get (cnv/->get-request index
                                                        mapping-type
                                                        id
-                                                       params))
+                                                       opts))
            ^GetResponse res (.actionGet ft)]
        (when (.isExists res)
          (cnv/get-response->map (.actionGet ft))))))
@@ -149,8 +153,8 @@
    Returns a future without waiting."
   ([index mapping-type id]
      (future (get index mapping-type id)))
-  ([index mapping-type id & {:as params}]
-     (future (apply get (concat [index mapping-type id] params)))))
+  ([index mapping-type id & args]
+     (future (apply get (concat [index mapping-type id] (ar/->opts args))))))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
@@ -211,8 +215,8 @@
      (let [ft                  (es/delete (cnv/->delete-request index mapping-type id))
            ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res)))
-  ([index mapping-type id & {:as options}]
-     (let [ft                  (es/delete (cnv/->delete-request index mapping-type id options))
+  ([index mapping-type id & args]
+     (let [ft                  (es/delete (cnv/->delete-request index mapping-type id (ar/->opts args)))
            ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res))))
 
@@ -229,8 +233,8 @@
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query))
            ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res)))
-  ([index mapping-type query & {:as options}]
-     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query options))
+  ([index mapping-type query & args]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request index mapping-type query (ar/->opts args)))
            ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res))))
 
@@ -240,8 +244,8 @@
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query))
            ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res)))
-  ([index query & {:as options}]
-     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query options))
+  ([index query & args]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-types index query (ar/->opts args)))
            ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res))))
 
@@ -252,8 +256,8 @@
      (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query))
            ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res)))
-  ([query & {:as options}]
-     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query options))
+  ([query & args]
+     (let [ft                         (es/delete-by-query (cnv/->delete-by-query-request-across-all-indices-and-types query (ar/->opts args)))
            ^DeleteByQueryResponse res (.actionGet ft)]
        (cnv/delete-by-query-response->map res))))
 
@@ -274,8 +278,8 @@
            ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res))))
-  ([index mapping-type query & {:as options}]
-     (let [ft (es/count (cnv/->count-request index mapping-type (merge options
+  ([index mapping-type query & args]
+     (let [ft (es/count (cnv/->count-request index mapping-type (merge (ar/->opts args)
                                                                        {:source query})))
            ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
@@ -290,31 +294,31 @@
    (require '[clojurewerkz.elastisch.query :as q])
 
    (doc/search \"people\" \"person\" :query (q/prefix :username \"appl\"))"
-  [index mapping-type & {:as options}]
-  (let [ft                  (es/search (cnv/->search-request index mapping-type options))
+  [index mapping-type & args]
+  (let [ft                  (es/search (cnv/->search-request index mapping-type (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
-  [index & {:as options}]
-  (let [ft                  (es/search (cnv/->search-request index nil options))
+  [index & args]
+  (let [ft                  (es/search (cnv/->search-request index nil (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
    ElasticSearch cluster so use this function with care."
-  [& {:as options}]
-  (let [ft                  (es/search (cnv/->search-request [] nil options))
+  [& args]
+  (let [ft                  (es/search (cnv/->search-request [] nil (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
    query given a scroll id"
-  [scroll-id & {:as options}]
-  (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id options))
+  [scroll-id & args]
+  (let [ft                  (es/search-scroll (cnv/->search-scroll-request scroll-id (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
@@ -335,7 +339,7 @@
 
 (defn more-like-this
   "Performs a More Like This (MLT) query."
-  [index mapping-type id &{:as options}]
-  (let [ft                  (es/more-like-this (cnv/->more-like-this-request index mapping-type id options))
+  [index mapping-type id & args]
+  (let [ft                  (es/more-like-this (cnv/->more-like-this-request index mapping-type id (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
