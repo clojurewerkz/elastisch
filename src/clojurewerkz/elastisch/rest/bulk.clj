@@ -12,17 +12,19 @@
   (:require [clojurewerkz.elastisch.rest :as rest]
             [cheshire.core :as json]
             [clojure.string :as string]
-            [clojure.set :refer :all]))
+            [clojure.set :refer :all]
+            [clojurewerkz.elastisch.arguments :as ar]))
 
 (defn ^:private bulk-with-url
-  [url operations & {:as params}]
-  (let [bulk-json (map json/encode operations)
+  [url operations & args]
+  (let [opts      (ar/->opts args)
+        bulk-json (map json/encode operations)
         bulk-json (-> bulk-json
                       (interleave (repeat "\n"))
                       (string/join))]
     (rest/post-string url
                       :body bulk-json
-                      :query-params params)))
+                      :query-params opts)))
 (defn bulk
   "Performs a bulk operation"
   [operations & params]
