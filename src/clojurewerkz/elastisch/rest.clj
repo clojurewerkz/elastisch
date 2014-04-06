@@ -227,24 +227,28 @@
   [^String index-name ^String percolator]
   (url-with-path index-name percolator "_percolate"))
 
+(defn existing-doc-index-percolation-url
+  [^String index-name ^String percolator ^String document-id]
+  (url-with-path index-name percolator document-id "_percolate"))
+
 (defn query-validation-url
   [^String index-name]
   (url-with-path index-name "_validate" "query"))
 
-(defn analyze-url 
+(defn analyze-url
   ([] (url-with-path "_analyze"))
   ([^String index-name] (url-with-path index-name "_analyze")))
 
-(defn cluster-health-url 
+(defn cluster-health-url
   ([^String index-name] (url-with-path "_cluster/health" index-name)))
 
-(defn cluster-state-url 
+(defn cluster-state-url
   ([] (url-with-path "_cluster/state")))
 
-(defn cluster-nodes-stats-url 
+(defn cluster-nodes-stats-url
   ([^String nodes ^String attrs] (url-with-path "_nodes" nodes "stats")))
 
-(defn cluster-nodes-info-url 
+(defn cluster-nodes-info-url
   ([^String nodes ^String attrs] (url-with-path "_nodes" nodes attrs)))
 
 (defn snapshot-repository-registration-url
