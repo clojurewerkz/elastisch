@@ -10,7 +10,8 @@
 (ns clojurewerkz.elastisch.native.percolation
   (:require [clojurewerkz.elastisch.native            :as es]
             [clojurewerkz.elastisch.native.conversion :as cnv]
-            [clojure.walk :as wlk])
+            [clojure.walk :as wlk]
+            [clojurewerkz.elastisch.arguments :as ar])
   (:import org.elasticsearch.action.index.IndexResponse
            org.elasticsearch.action.delete.DeleteResponse
            org.elasticsearch.action.percolate.PercolateResponse
@@ -26,12 +27,13 @@
 
 (defn register-query
   "Registers a percolator for the given index"
-  [index query-name & {:as source}]
-  (let [^IndexRequestBuilder irb (doto (.prepareIndex ^Client es/*client*
+  [index query-name & args]
+  (let [opts                     (ar/->opts args)
+        ^IndexRequestBuilder irb (doto (.prepareIndex ^Client es/*client*
                                                       index
                                                       percolator-index
                                                       query-name)
-                                   (.setSource ^Map (wlk/stringify-keys source)))
+                                   (.setSource ^Map (wlk/stringify-keys opts)))
         ft                       (.execute irb)
         ^IndexResponse res       (.actionGet ft)]
     (merge (cnv/index-response->map res) {:ok true})))
@@ -48,11 +50,12 @@
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
    matched against the queries you register with clojurewerkz.elastisch.rest.percolation/register-query."
-  [index mapping-type & {:as options}]
-  (let [prb (doto (.preparePercolate ^Client es/*client*)
-              (.setIndices (cnv/->string-array index))
-              (.setDocumentType mapping-type)
-              (.setSource ^Map (wlk/stringify-keys options)))
+  [index mapping-type & args]
+  (let [opts (ar/->opts args)
+        prb  (doto (.preparePercolate ^Client es/*client*)
+               (.setIndices (cnv/->string-array index))
+               (.setDocumentType mapping-type)
+               (.setSource ^Map (wlk/stringify-keys opts)))
         ft  (.execute prb)
         ^PercolateResponse res (.actionGet ft)]
     (cnv/percolate-response->map res)))
