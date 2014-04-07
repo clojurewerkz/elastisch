@@ -1,3 +1,8 @@
+## Changes between Elastisch 2.0.0-beta4 and 2.0.0-beta5
+
+No changes yet
+
+
 ## Changes between Elastisch 2.0.0-beta3 and 2.0.0-beta4
 
 ### Options As Maps
