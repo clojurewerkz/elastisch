@@ -10,6 +10,17 @@ Elastisch now depends on `org.clojure/clojure` version `1.6.0`. It is
 still compatible with Clojure 1.4 and if your `project.clj` depends on
 a different version, it will be used, but 1.6 is the default now.
 
+### Percolation of Existing Documents (REST API)
+
+REST API client now supports percolation of existing documents:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.percolation :as pcl])
+
+(pcl/percolate-existing "articles" "article" "123")
+```
+
+
 ### Type Exists Operation
 
 [types-exists](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html) support
