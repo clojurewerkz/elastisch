@@ -17,7 +17,7 @@ functions:
 (doc/search index-name mapping-type {:query (q/term :biography "say")})
 ```
 
-All new API elements (e.g. aggregations) will accept a single map
+As a new design rule, all new API elements (e.g. aggregations) will accept a single map
 of options.
 
 GH issue: #59.
