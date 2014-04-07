@@ -1,5 +1,27 @@
 ## Changes between Elastisch 2.0.0-beta3 and 2.0.0-beta4
 
+### Options As Maps
+
+Elastisch has tranditionally accepted options as (pseudo) keywrod
+arguments, e.g.
+
+``` clojure
+(doc/search index-name mapping-type :query (q/term :biography "say"))
+```
+
+Starting with `2.0.0-beta4`, passing a single map of arguments
+is now also supported by nearly all document, index, admin and percolation
+functions:
+
+``` clojure
+(doc/search index-name mapping-type {:query (q/term :biography "say")})
+```
+
+All new API elements (e.g. aggregations) will accept a single map
+of options.
+
+GH issue: #59.
+
 ### Percolation of Existing Documents (REST API)
 
 REST API client now supports percolation of existing documents:
