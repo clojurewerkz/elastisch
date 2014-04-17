@@ -13,13 +13,13 @@
             [clojure.test :refer :all]))
 
 (deftest ^{:rest true} test-created?
-  (is (= true (resp/created?
-                {:_id "id"
-                 :_index "idx"
-                 :_type "type"
-                 :_version 1
-                 :status 201})))
-  (is (= false (resp/created?
+  (is (resp/created?
+        {:_id "id"
+         :_index "idx"
+         :_type "type"
+         :_version 1
+         :status 201}))
+  (is (false? (resp/created?
                 {:_id "id"
                  :_index "idx"
                  :_type "type"
