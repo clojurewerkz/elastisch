@@ -52,7 +52,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "2.0.0-beta3"]
+    [clojurewerkz/elastisch "2.0.0-beta5"]
 
 
 With Maven:
@@ -60,7 +60,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>2.0.0-beta3</version>
+      <version>2.0.0-beta5</version>
     </dependency>
 
 
