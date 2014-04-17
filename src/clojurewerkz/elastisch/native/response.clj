@@ -38,11 +38,6 @@
   (or (created? m)
       (acknowledged? m)))
 
-(defn created-or-acknowledged?
-  [m]
-  (or (created? m)
-      (acknowledged? m)))
-
 (defn accepted?
   [m]
   (:accepted m))

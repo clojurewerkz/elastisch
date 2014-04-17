@@ -12,6 +12,7 @@
   (:require [clojurewerkz.elastisch.native.index :as idx]
             [clojurewerkz.elastisch.fixtures     :as fx]
             [clojurewerkz.elastisch.test.helpers :as th]
+            [clojurewerkz.elastisch.native.response :as resp]
             [clojure.test :refer :all]))
 
 (th/maybe-connect-native-client)
@@ -21,16 +22,12 @@
 ;; Mappings
 ;;
 
-(defn is-successful
-  [m]
-  (is (:ok m)))
-
 (deftest ^{:native true} test-updating-index-mapping
   (let [index    "people1"
         mapping  fx/people-mapping
         _        (idx/create index :mappings {:person {:properties {:first-name {:type "string"}}}})
         response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts true)]
-    (is-successful response)
+    (is (resp/created-or-acknowledged? response))
     (is (get-in (idx/get-mapping index) [:people1 :mappings :person :properties :username :store]))))
 
 (deftest ^{:native true} test-updating-index-mapping-ignoring-conflicts
@@ -38,18 +35,18 @@
         mapping  fx/people-mapping
         _        (idx/create index :mappings {:person {:properties {:first-name {:type "string" :store "no"}}}})
         response (idx/update-mapping index "person" :mapping mapping :ignore_conflicts true)]
-    (is-successful response)))
+    (is (resp/created-or-acknowledged? response))))
 
 (deftest ^{:native true} test-updating-blank-index-mapping
   (let [index    "people3"
         mapping  fx/people-mapping
         _        (idx/create index :mappings {})
         response (idx/update-mapping index "person" :mapping mapping)]
-    (is-successful response)))
+    (is (resp/created-or-acknowledged? response))))
 
 (deftest ^{:native true} test-delete-index-mapping
   (let [index        "people4"
         mapping-type "person"
         _            (idx/create index :mappings fx/people-mapping)
         response     (idx/delete-mapping index mapping-type)]
-    (is-successful response)))
+    (is (resp/created-or-acknowledged? response))))

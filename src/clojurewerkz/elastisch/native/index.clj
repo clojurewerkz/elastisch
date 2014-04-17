@@ -117,13 +117,12 @@
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
-
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data."
   [^String index-name ^String mapping-type]
   (let [ft                       (es/admin-delete-mapping (cnv/->delete-mapping-request index-name mapping-type))
         ^PutMappingResponse res (.actionGet ft)]
-    {:ok true}))
+    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn update-settings
   "Updates index settings. No argument version updates index settings globally"
