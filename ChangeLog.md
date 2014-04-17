@@ -1,6 +1,11 @@
 ## Changes between Elastisch 2.0.0-beta4 and 2.0.0-beta5
 
-No changes yet
+### Response Helpers Compatible With ES 1.1
+
+`clojurewerkz.elastisch.rest.response/created?` and `clojurewerkz.elastisch.native.response/created?`
+were adapted for recent ES releases.
+
+Contributed by Oliver McCormack (The Climate Corporation).
 
 
 ## Changes between Elastisch 2.0.0-beta3 and 2.0.0-beta4
