@@ -17,7 +17,7 @@
 (defn created?
   [m]
   (true? (or (get m :created)
-             (get m :ok))))
+             (= 201 (get m :status)))))
 
 (defn ok?
   [m]

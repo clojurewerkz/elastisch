@@ -31,7 +31,8 @@
   (is (every? (fn [m] (and (:_index m)
                            (:_type m)
                            (:_id m)
-                           (:status m))) xs)))
+                           (:status m))) xs))
+  (is (every? created? xs)))
 
 (deftest ^{:rest true :indexing true} test-bulk-insert
   (let [document          fx/person-jack
