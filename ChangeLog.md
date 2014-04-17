@@ -7,6 +7,10 @@ were adapted for recent ES releases.
 
 Contributed by Oliver McCormack (The Climate Corporation).
 
+### ElasticSearch Client Update
+
+ElasticSearch client has been upgraded to `1.1.1`.
+
 
 ## Changes between Elastisch 2.0.0-beta3 and 2.0.0-beta4
 
