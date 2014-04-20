@@ -13,7 +13,8 @@
             [cheshire.core :as json]
             [clojure.string :as string]
             [clojure.set :refer :all]
-            [clojurewerkz.elastisch.arguments :as ar]))
+            [clojurewerkz.elastisch.arguments :as ar])
+  (:import clojurewerkz.elastisch.rest.Connection))
 
 (defn ^:private bulk-with-url
   [url operations & args]
@@ -29,17 +30,19 @@
   "Performs a bulk operation"
   [operations & params]
   (when (not-empty operations)
-    (apply bulk-with-url (rest/bulk-url) operations params)))
+    (apply bulk-with-url (rest/bulk-url ^Connection clojurewerkz.elastisch.rest/*endpoint*) operations params)))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
   [index operations & params]
-  (apply bulk-with-url (rest/bulk-url index) operations params))
+  (apply bulk-with-url (rest/bulk-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      index) operations params))
 
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
   [index mapping-type operations & params]
-  (apply bulk-with-url (rest/bulk-url index mapping-type) operations params))
+  (apply bulk-with-url (rest/bulk-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      index mapping-type) operations params))
 
 (def ^:private special-operation-keys
   [:_index :_type :_id :_routing :_percolate :_parent :_timestamp :_ttl])

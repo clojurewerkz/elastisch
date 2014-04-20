@@ -14,11 +14,12 @@
             [clojure.string :refer [join]])
   (:import java.net.URLEncoder))
 
-(defrecord ElasticSearchEndpoint
-    [uri version])
+(defrecord Connection
+    [uri username password])
 
-(def ^{:dynamic true} *endpoint* (ElasticSearchEndpoint. (or (System/getenv "ELASTICSEARCH_URL")
-                                                             "http://localhost:9200") ""))
+(def ^{:dynamic true} *endpoint* (Connection. (or (System/getenv "ELASTICSEARCH_URL")
+                                                  "http://localhost:9200")
+                                              nil nil))
 (def ^:const throw-exceptions false)
 
 (def ^{:const true} slash    "/")
@@ -55,16 +56,16 @@
 
 
 (defn url-with-path
-  [& segments]
-  (str (:uri *endpoint*) slash (join slash segments)))
+  [^Connection conn & segments]
+  (str (.uri conn) slash (join slash segments)))
 
 (defn index-url
-  [index-name]
-  (url-with-path index-name))
+  [conn index-name]
+  (url-with-path conn index-name))
 
 (defn mapping-type-url
-  [index-name mapping-type]
-  (url-with-path index-name mapping-type))
+  [conn index-name mapping-type]
+  (url-with-path conn index-name mapping-type))
 
 (defn search-url
   "Constructs search query URI for the given index (or multiple indexes) and mapping types.
@@ -76,192 +77,197 @@
    Passing index name as \"_all\" means searching across all indexes.
 
    To specify multiple indexes or mapping types, pass them as collections"
-  ([]
-     (url-with-path "_search"))
-  ([index-name]
-     (url-with-path index-name "_search"))
-  ([index-name mapping-type]
-     (url-with-path index-name mapping-type "_search")))
+  ([conn]
+     (url-with-path conn "_search"))
+  ([conn index-name]
+     (url-with-path conn index-name "_search"))
+  ([conn index-name mapping-type]
+     (url-with-path conn index-name mapping-type "_search")))
 
 (defn scroll-url
-  ([]
-     (url-with-path "_search" "scroll")))
+  ([conn]
+     (url-with-path conn "_search" "scroll")))
 
 (defn bulk-url
-  ([]
-     (url-with-path "_bulk"))
-  ([index-name]
-     (url-with-path index-name "_bulk"))
-  ([index-name mapping-type]
-     (url-with-path index-name mapping-type "_bulk")))
+  ([conn]
+     (url-with-path conn "_bulk"))
+  ([conn index-name]
+     (url-with-path conn index-name "_bulk"))
+  ([conn index-name mapping-type]
+     (url-with-path conn index-name mapping-type "_bulk")))
 
 (defn multi-search-url
-  ([]
-     (url-with-path "_msearch"))
-  ([index-name]
-     (url-with-path index-name "_msearch"))
-  ([index-name mapping-type]
-     (url-with-path index-name mapping-type "_msearch")))
+  ([conn]
+     (url-with-path conn "_msearch"))
+  ([conn index-name]
+     (url-with-path conn index-name "_msearch"))
+  ([conn index-name mapping-type]
+     (url-with-path conn index-name mapping-type "_msearch")))
 
 (defn count-url
-  ([]
-     (url-with-path "_count"))
-  ([index-name mapping-type]
-     (url-with-path index-name mapping-type "_count")))
+  ([conn]
+     (url-with-path conn "_count"))
+  ([conn index-name mapping-type]
+     (url-with-path conn index-name mapping-type "_count")))
 
 (defn record-url
-  [^String index-name ^String type id]
-  (url-with-path index-name type (URLEncoder/encode id encoding)))
+  [conn ^String index-name ^String type id]
+  (url-with-path conn index-name type (URLEncoder/encode id encoding)))
 
 (defn record-update-url
-  [^String index-name ^String type id]
-  (url-with-path index-name type (URLEncoder/encode id encoding) "_update"))
+  [conn ^String index-name ^String type id]
+  (url-with-path conn index-name type (URLEncoder/encode id encoding) "_update"))
 
 
 (defn index-mapping-url
-  ([^String index-name]
-     (url-with-path index-name "_mapping"))
-  ([^String index-name ^String mapping-type]
-     (url-with-path index-name mapping-type "_mapping")))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_mapping"))
+  ([conn ^String index-name ^String mapping-type]
+     (url-with-path conn index-name mapping-type "_mapping")))
 
 
 (defn index-settings-url
-  ([]
-     (url-with-path "_settings"))
-  ([^String index-name]
-     (url-with-path index-name "_settings")))
+  ([conn]
+     (url-with-path conn "_settings"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_settings")))
 
 (defn index-open-url
-  [^String index-name]
-  (url-with-path index-name "_open"))
+  [conn ^String index-name]
+  (url-with-path conn index-name "_open"))
 
 (defn index-close-url
-  [^String index-name]
-  (url-with-path index-name "_close"))
+  [conn ^String index-name]
+  (url-with-path conn index-name "_close"))
 
 (defn index-snapshot-url
-  [^String index-name]
-  (url-with-path index-name "_gateway/snapshot"))
+  [conn ^String index-name]
+  (url-with-path conn index-name "_gateway/snapshot"))
 
 (defn index-mget-url
-  ([]
-     (url-with-path "_mget"))
-  ([^String index-name]
-     (url-with-path index-name "_mget"))
-  ([^String index-name ^String mapping-type]
-     (url-with-path index-name mapping-type "_mget")))
+  ([conn]
+     (url-with-path conn "_mget"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_mget"))
+  ([conn ^String index-name ^String mapping-type]
+     (url-with-path conn index-name mapping-type "_mget")))
 
 (defn index-refresh-url
-  ([]
-     (url-with-path "_refresh"))
-  ([^String index-name]
-     (url-with-path index-name "_refresh"))
-  ([^String index-name ^String mapping-type]
-     (url-with-path index-name mapping-type "_refresh")))
+  ([conn]
+     (url-with-path conn "_refresh"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_refresh"))
+  ([conn ^String index-name ^String mapping-type]
+     (url-with-path conn index-name mapping-type "_refresh")))
 
 (defn index-optimize-url
-  ([]
-     (url-with-path "_optimize"))
-  ([^String index-name]
-     (url-with-path index-name "_optimize")))
+  ([conn]
+     (url-with-path conn "_optimize"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_optimize")))
 
 (defn index-flush-url
-  ([]
-     (url-with-path "_flush"))
-  ([^String index-name]
-     (url-with-path index-name "_flush")))
+  ([conn]
+     (url-with-path conn "_flush"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_flush")))
 
 (defn index-clear-cache-url
-  ([]
-     (url-with-path "_cache/clear"))
-  ([^String index-name]
-     (url-with-path index-name "_cache/clear")))
+  ([conn]
+     (url-with-path conn "_cache/clear"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_cache/clear")))
 
 (defn index-status-url
-  ([]
-     (url-with-path "_status"))
-  ([^String index-name]
-     (url-with-path index-name "_status")))
+  ([conn]
+     (url-with-path conn "_status"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_status")))
 
 (defn index-stats-url
-  ([]
-     (url-with-path "_stats"))
-  ([^String index-name]
-     (url-with-path index-name "_stats")))
+  ([conn]
+     (url-with-path conn "_stats"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_stats")))
 
 (defn index-segments-url
-  ([]
-     (url-with-path "_segments"))
-  ([^String index-name]
-     (url-with-path index-name "_segments")))
+  ([conn]
+     (url-with-path conn "_segments"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_segments")))
 
 (defn index-aliases-batch-url
-  []
-  (url-with-path "_aliases"))
+  [conn]
+  (url-with-path conn "_aliases"))
 
 (defn index-aliases-url
-  ([^String index-name]
-     (url-with-path index-name "_aliases")))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_aliases")))
 
 (defn index-template-url
-  [^String template-name]
-  (url-with-path "_template" template-name))
+  [conn ^String template-name]
+  (url-with-path conn "_template" template-name))
 
 (defn delete-by-query-url
-  ([]
-     (url-with-path "/_all/_query"))
-  ([^String index-name]
-     (url-with-path index-name "_query"))
-  ([^String index-name ^String mapping-type]
-     (url-with-path index-name mapping-type "_query")))
+  ([conn]
+     (url-with-path conn "/_all/_query"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_query"))
+  ([conn ^String index-name ^String mapping-type]
+     (url-with-path conn index-name mapping-type "_query")))
 
 (defn more-like-this-url
-  [^String index-name ^String mapping-type id]
-  (url-with-path index-name mapping-type (URLEncoder/encode id encoding) "_mlt"))
+  [conn ^String index-name ^String mapping-type id]
+  (url-with-path conn index-name mapping-type (URLEncoder/encode id encoding) "_mlt"))
 
 (defn percolator-url
-  [^String index-name ^String percolator]
-  (url-with-path  index-name ".percolator" percolator))
+  [conn ^String index-name ^String percolator]
+  (url-with-path conn  index-name ".percolator" percolator))
 
 (defn index-percolation-url
-  [^String index-name ^String percolator]
-  (url-with-path index-name percolator "_percolate"))
+  [conn ^String index-name ^String percolator]
+  (url-with-path conn index-name percolator "_percolate"))
 
 (defn existing-doc-index-percolation-url
-  [^String index-name ^String percolator ^String document-id]
-  (url-with-path index-name percolator document-id "_percolate"))
+  [conn ^String index-name ^String percolator ^String document-id]
+  (url-with-path conn index-name percolator document-id "_percolate"))
 
 (defn query-validation-url
-  [^String index-name]
-  (url-with-path index-name "_validate" "query"))
+  [conn ^String index-name]
+  (url-with-path conn index-name "_validate" "query"))
 
 (defn analyze-url
-  ([] (url-with-path "_analyze"))
-  ([^String index-name] (url-with-path index-name "_analyze")))
+  ([conn]
+     (url-with-path conn "_analyze"))
+  ([conn ^String index-name]
+     (url-with-path conn index-name "_analyze")))
 
 (defn cluster-health-url
-  ([^String index-name] (url-with-path "_cluster/health" index-name)))
+  ([conn ^String index-name]
+     (url-with-path conn "_cluster/health" index-name)))
 
 (defn cluster-state-url
-  ([] (url-with-path "_cluster/state")))
+  ([conn] (url-with-path conn "_cluster/state")))
 
 (defn cluster-nodes-stats-url
-  ([^String nodes ^String attrs] (url-with-path "_nodes" nodes "stats")))
+  ([conn ^String nodes ^String attrs]
+     (url-with-path conn "_nodes" nodes "stats")))
 
 (defn cluster-nodes-info-url
-  ([^String nodes ^String attrs] (url-with-path "_nodes" nodes attrs)))
+  ([conn ^String nodes ^String attrs]
+     (url-with-path conn "_nodes" nodes attrs)))
 
 (defn snapshot-repository-registration-url
-  [^String name]
-  (url-with-path "_snapshot" name))
+  [conn ^String name]
+  (url-with-path conn "_snapshot" name))
 
 (defn snapshot-url
-  [^String repo ^String name]
-  (url-with-path "_snapshot" repo name))
+  [conn ^String repo ^String name]
+  (url-with-path conn "_snapshot" repo name))
 
 (defn restore-snapshot-url
-  [^String repo ^String name]
-  (url-with-path "_snapshot" repo name "_restore"))
+  [conn ^String repo ^String name]
+  (url-with-path conn "_snapshot" repo name "_restore"))
 
 
 ;;
@@ -272,7 +278,7 @@
   "Connects to the given ElasticSearch endpoint and returns it"
   [uri]
   (let [response (get uri)]
-    (ElasticSearchEndpoint. uri (get-in response [:version :number]))))
+    (Connection. uri nil nil)))
 
 (defn connect!
   "Alters default ElasticSearch connection endpoint"

@@ -10,7 +10,8 @@
 (ns clojurewerkz.elastisch.rest.admin
   (:require [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.rest.utils :refer [join-names]]
-            [clojurewerkz.elastisch.arguments :as ar]))
+            [clojurewerkz.elastisch.arguments :as ar])
+  (:import clojurewerkz.elastisch.rest.Connection))
 
 ;;
 ;; API
@@ -29,7 +30,8 @@
    (admin/cluster-health :index \"index1\" :pretty true :level \"indices\")"
   [& args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-health-url (join-names (:index opts)))
+    (rest/get (rest/cluster-health-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                       (join-names (:index opts)))
               :query-params (dissoc opts :index))))
 
 (defn cluster-state
@@ -42,7 +44,7 @@
    (admin/cluster-state)
 "
   [& args]
-  (rest/get (rest/cluster-state-url) :query-params (ar/->opts args)))
+  (rest/get (rest/cluster-state-url ^Connection clojurewerkz.elastisch.rest/*endpoint*) :query-params (ar/->opts args)))
 
 
 (defn nodes-stats
@@ -57,7 +59,8 @@
 "
   [& args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-nodes-stats-url (join-names (get opts :nodes "_all"))
+    (rest/get (rest/cluster-nodes-stats-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                            (join-names (get opts :nodes "_all"))
                                             (join-names (get opts :attributes "_all"))))))
 
 (defn nodes-info
@@ -72,28 +75,34 @@
 "
   [& args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-nodes-info-url (join-names (get opts :nodes "_all"))
-                                         (join-names (get opts :attributes "_all"))))))
+    (rest/get (rest/cluster-nodes-info-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                           (join-names (get opts :nodes "_all"))
+                                           (join-names (get opts :attributes "_all"))))))
 
 
 (defn register-snapshot-repository
   [^String name & args]
-  (rest/put (rest/snapshot-repository-registration-url name) :body (ar/->opts args)))
+  (rest/put (rest/snapshot-repository-registration-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                                       name) :body (ar/->opts args)))
 
 
 (defn take-snapshot
   [^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/put (rest/snapshot-url repo name) :body opts :query-params (select-keys opts [:wait-for-completion?]))))
+    (rest/put (rest/snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                 repo name) :body opts :query-params (select-keys opts [:wait-for-completion?]))))
 
 (defn restore-snapshot
   [^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/post (rest/restore-snapshot-url repo name)
+    (rest/post (rest/restore-snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                          repo name)
              :body opts
              :query-params (select-keys opts [:wait-for-completion?]))))
 
 (defn delete-snapshot
   [^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/delete (rest/snapshot-url repo name) :query-params (select-keys opts [:wait-for-completion?]))))
+    (rest/delete (rest/snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                    repo name)
+                 :query-params (select-keys opts [:wait-for-completion?]))))

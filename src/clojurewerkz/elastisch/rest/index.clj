@@ -12,7 +12,8 @@
   (:require [clojurewerkz.elastisch.rest :as rest]
             [clj-http.client             :as http]
             [clojurewerkz.elastisch.rest.utils :refer [join-names]]
-            [clojurewerkz.elastisch.arguments :as ar]))
+            [clojurewerkz.elastisch.arguments :as ar])
+  (:import clojurewerkz.elastisch.rest.Connection))
 
 ;;
 ;; create, delete, exists?
@@ -44,31 +45,37 @@
   [^String index-name & args]
   (let [opts                        (ar/->opts args)
         {:keys [settings mappings]} opts]
-    (rest/post (rest/index-url index-name) :body (if mappings
-                                                   {:settings settings :mappings mappings}
-                                                   {:settings settings}))))
+    (rest/post (rest/index-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                               index-name)
+               :body (if mappings
+                       {:settings settings :mappings mappings}
+                       {:settings settings}))))
 
 (defn exists?
   "Used to check if the index (indices) exists or not.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"  [^String index-name]
-   (= 200 (:status (rest/head (rest/index-url index-name)))))
+   (= 200 (:status (rest/head (rest/index-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                              index-name)))))
 
 (defn type-exists?
   "Used to check if a type/types exists in an index/indices.
 
    API Reference: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html"
   [^String index-name ^String type-name]
-  (= 200 (:status (rest/head (rest/mapping-type-url index-name type-name)))))
+  (= 200 (:status (rest/head (rest/mapping-type-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                                    index-name type-name)))))
 
 (defn delete
   "Deletes an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
   ([]
-     (rest/delete (rest/index-url "_all")))
+     (rest/delete (rest/index-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                  "_all")))
   ([^String index-name]
-     (rest/delete (rest/index-url index-name))))
+     (rest/delete (rest/index-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                  index-name))))
 
 ;;
 ;; Mappings
@@ -79,10 +86,12 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
   ([^String index-name]
-     (rest/get (rest/index-mapping-url (join-names index-name))))
+     (rest/get (rest/index-mapping-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                       (join-names index-name))))
   ([^String index-name ^String type-name]
      (rest/get
-      (rest/index-mapping-url index-name type-name))))
+      (rest/index-mapping-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                              index-name type-name))))
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
@@ -91,7 +100,8 @@
   [^String index-name-or-names ^String type-name & args]
   (let [opts                               (ar/->opts args)
         {:keys [mapping ignore_conflicts]} opts]
-    (rest/put (rest/index-mapping-url (join-names index-name-or-names) type-name)
+    (rest/put (rest/index-mapping-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      (join-names index-name-or-names) type-name)
               :body mapping :query-params {:ignore_conflicts ignore_conflicts})))
 
 (defn delete-mapping
@@ -99,7 +109,8 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
   [^String index-name ^String type-name]
-  (rest/delete (rest/index-mapping-url index-name type-name)))
+  (rest/delete (rest/index-mapping-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                       index-name type-name)))
 
 ;;
 ;; Settings
@@ -110,9 +121,10 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([settings]
-     (rest/put (rest/index-settings-url) :body settings))
+     (rest/put (rest/index-settings-url ^Connection clojurewerkz.elastisch.rest/*endpoint*) :body settings))
   ([^String index-name settings]
-     (rest/put (rest/index-settings-url index-name) :body settings)))
+     (rest/put (rest/index-settings-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                        index-name) :body settings)))
 
 
 (defn get-settings
@@ -121,9 +133,9 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html
   "
   ([]
-     (rest/get (rest/index-settings-url)))
+     (rest/get (rest/index-settings-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)))
   ([^String index-name]
-     (rest/get (rest/index-settings-url index-name))))
+     (rest/get (rest/index-settings-url ^Connection clojurewerkz.elastisch.rest/*endpoint* index-name))))
 
 ;;
 ;; Open/close
@@ -134,21 +146,24 @@
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [index-name]
-  (rest/post (rest/index-open-url index-name)))
+  (rest/post (rest/index-open-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                  index-name)))
 
 (defn close
   "Closes an index.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [index-name]
-  (rest/post (rest/index-close-url index-name)))
+  (rest/post (rest/index-close-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                   index-name)))
 
 (defn snapshot
   "Takes a snapthot of an index or multiple indexes.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-gateway-snapshot.html"
   [index-name]
-  (rest/post (rest/index-snapshot-url index-name)))
+  (rest/post (rest/index-snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      index-name)))
 
 (defn refresh
   "Refreshes an index manually.
@@ -162,9 +177,10 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html"
   ([]
-     (rest/post (rest/index-refresh-url)))
+     (rest/post (rest/index-refresh-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)))
   ([index-name]
-     (rest/post (rest/index-refresh-url (join-names index-name)))))
+     (rest/post (rest/index-refresh-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                        (join-names index-name)))))
 
 
 (defn optimize
@@ -187,9 +203,10 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html"
   ([]
-     (rest/post (rest/index-optimize-url)))
+     (rest/post (rest/index-optimize-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)))
   ([index-name & args]
-     (rest/post (rest/index-optimize-url (join-names index-name)) :body (ar/->opts args))))
+     (rest/post (rest/index-optimize-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                         (join-names index-name)) :body (ar/->opts args))))
 
 
 (defn flush
@@ -207,11 +224,13 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html"
   ([]
-     (rest/post (rest/index-flush-url)))
+     (rest/post (rest/index-flush-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)))
   ([index-name]
-     (rest/post (rest/index-flush-url (join-names index-name))))
+     (rest/post (rest/index-flush-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      (join-names index-name))))
   ([index-name & args]
-     (rest/post (rest/index-flush-url (join-names index-name)) :body (ar/->opts args))))
+     (rest/post (rest/index-flush-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      (join-names index-name)) :body (ar/->opts args))))
 
 
 (defn clear-cache
@@ -228,11 +247,14 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html"
   ([]
-     (rest/post (rest/index-clear-cache-url)))
+     (rest/post (rest/index-clear-cache-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)))
   ([index-name]
-     (rest/post (rest/index-clear-cache-url (join-names index-name))))
+     (rest/post (rest/index-clear-cache-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                            (join-names index-name))))
   ([index-name & args]
-     (rest/post (rest/index-clear-cache-url (join-names index-name)) :body (ar/->opts args))))
+     (rest/post (rest/index-clear-cache-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                            (join-names index-name))
+                :body (ar/->opts args))))
 
 ;;
 ;; Aliases
@@ -247,14 +269,16 @@
    and so on, the same as described in the ElasticSearch documentation guide on aliases:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
   [& actions]
-  (rest/post (rest/index-aliases-batch-url) :body {:actions actions}))
+  (rest/post (rest/index-aliases-batch-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)
+             :body {:actions actions}))
 
 (defn get-aliases
   "Fetches and returns aliases for an index or multiple indexes.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
   [index-name]
-  (rest/get (rest/index-aliases-url (join-names index-name))))
+  (rest/get (rest/index-aliases-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                    (join-names index-name))))
 
 ;;
 ;; Templates
@@ -273,20 +297,24 @@
   [^String template-name & args]
   (let [opts                                 (ar/->opts args)
         {:keys [template settings mappings]} opts]
-    (rest/post (rest/index-template-url template-name) :body (if mappings
-                                                               {:template template
-                                                                :settings settings
-                                                                :mappings mappings}
-                                                               {:template template
-                                                                :settings settings}))))
+    (rest/post (rest/index-template-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                        template-name)
+               :body (if mappings
+                       {:template template
+                        :settings settings
+                        :mappings mappings}
+                       {:template template
+                        :settings settings}))))
 
 (defn get-template
   [^String template-name]
-  (rest/get (rest/index-template-url template-name)))
+  (rest/get (rest/index-template-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                     template-name)))
 
 (defn delete-template
   [^String template-name]
-  (rest/delete (rest/index-template-url template-name)))
+  (rest/delete (rest/index-template-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                        template-name)))
 
 
 (defn status
@@ -299,16 +327,18 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-status.html"
   ([index-name & args]
-     (rest/get (rest/index-status-url (join-names index-name)) :query-params (ar/->opts args))))
+     (rest/get (rest/index-status-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      (join-names index-name)) :query-params (ar/->opts args))))
 
 (defn segments
   "Returns segments information for an index or multiple indexes.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-segments.html"
   ([]
-     (rest/get (rest/index-segments-url)))
+     (rest/get (rest/index-segments-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)))
   ([index-name]
-     (rest/get (rest/index-status-url (join-names index-name)))))
+     (rest/get (rest/index-status-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                      (join-names index-name)))))
 
 
 (defn stats
@@ -329,4 +359,6 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html"
   ([index-name & args]
-     (rest/get (rest/index-stats-url (join-names index-name)) :query-params (ar/->opts args))))
+     (rest/get (rest/index-stats-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                     (join-names index-name))
+               :query-params (ar/->opts args))))

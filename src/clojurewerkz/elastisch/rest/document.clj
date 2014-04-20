@@ -16,7 +16,8 @@
             [clojure.set :refer :all]
             [clojurewerkz.elastisch.rest.utils :refer [join-names]]
             [clojurewerkz.elastisch.arguments :as ar]
-            [clojurewerkz.elastisch.rest.response :refer [not-found? hits-from]]))
+            [clojurewerkz.elastisch.rest.response :refer [not-found? hits-from]])
+  (:import clojurewerkz.elastisch.rest.Connection))
 
 ;;
 ;; API
@@ -49,21 +50,26 @@
 
    (doc/create \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   ([index mapping-type document & args]
-     (rest/post (rest/mapping-type-url index mapping-type) :body document :query-params (ar/->opts args))))
+     (rest/post (rest/mapping-type-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                       index mapping-type) :body document :query-params (ar/->opts args))))
 
 (defn put
   "Creates or updates a document in the search index, using the provided document id"
   ([index mapping-type id document]
-     (rest/put (rest/record-url index mapping-type id) :body document))
+     (rest/put (rest/record-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                index mapping-type id) :body document))
   ([index mapping-type id document & args]
-     (rest/put (rest/record-url index mapping-type id) :body document :query-params (ar/->opts args))))
+     (rest/put (rest/record-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                index mapping-type id) :body document :query-params (ar/->opts args))))
 
 (defn update-with-script
   "Updates a document using a script"
   ([index mapping-type id script]
-     (rest/post (rest/record-update-url index mapping-type id) :body {:script script}))
+     (rest/post (rest/record-update-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                        index mapping-type id) :body {:script script}))
   ([index mapping-type id script params]
-     (rest/post (rest/record-update-url index mapping-type id)
+     (rest/post (rest/record-update-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                        index mapping-type id)
                 :body {:script script :params params})))
 
 (defn get
@@ -75,7 +81,8 @@
 
    (doc/get \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   [index mapping-type id & args]
-  (let [result (rest/get (rest/record-url index mapping-type id) :query-params (ar/->opts args))]
+  (let [result (rest/get (rest/record-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                          index mapping-type id) :query-params (ar/->opts args))]
     (if (not-found? result)
       nil
       result)))
@@ -83,9 +90,11 @@
 (defn delete
   "Deletes document from the index."
   ([index mapping-type id]
-     (rest/delete (rest/record-url index mapping-type id)))
+     (rest/delete (rest/record-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                   index mapping-type id)))
   ([index mapping-type id & args]
-     (rest/delete (rest/record-url index mapping-type id) :query-params (ar/->opts args))))
+     (rest/delete (rest/record-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                   index mapping-type id) :query-params (ar/->opts args))))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
@@ -115,15 +124,17 @@
    (doc/multi-get index-name mapping-type [{:_id \"1\"}
                                            {:_id \"2\"}])"
   ([query]
-     (let [results (rest/post (rest/index-mget-url)
+     (let [results (rest/post (rest/index-mget-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)
                               :body {:docs query})]
        (filter :found (:docs results))))
   ([index query]
-     (let [results (rest/post (rest/index-mget-url index)
+     (let [results (rest/post (rest/index-mget-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                                   index)
                               :body {:docs query})]
        (filter :found (:docs results))))
   ([index mapping-type query]
-     (let [results (rest/post (rest/index-mget-url index mapping-type)
+     (let [results (rest/post (rest/index-mget-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                                   index mapping-type)
                               :body {:docs query})]
        (filter :found (:docs results)))))
 
@@ -143,7 +154,8 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
-    (rest/post (rest/search-url (join-names index)
+    (rest/post (rest/search-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                (join-names index)
                                 (join-names mapping-type))
                :body body
                :query-params qp)))
@@ -155,7 +167,8 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
-    (rest/post (rest/search-url (join-names index))
+    (rest/post (rest/search-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                (join-names index))
                :body body
                :query-params qp)))
 
@@ -167,7 +180,7 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
-    (rest/post (rest/search-url)
+    (rest/post (rest/search-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)
                :body body
                :query-params qp)))
 
@@ -179,8 +192,8 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (assoc (select-keys opts qk) :scroll_id scroll-id)
         body (apply dissoc (concat [opts] qk))]
-    (rest/get (rest/scroll-url)
-               :query-params qp)))
+    (rest/get (rest/scroll-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)
+              :query-params qp)))
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
@@ -209,11 +222,14 @@
    (doc/count \"people\" \"person\")
    (doc/count \"people\" \"person\" (q/prefix :username \"appl\"))"
   ([index mapping-type]
-     (rest/get (rest/count-url (join-names index) (join-names mapping-type))))
+     (rest/get (rest/count-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                               (join-names index) (join-names mapping-type))))
   ([index mapping-type query]
-     (rest/post (rest/count-url (join-names index) (join-names mapping-type)) :body {:query query}))
+     (rest/post (rest/count-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                (join-names index) (join-names mapping-type)) :body {:query query}))
   ([index mapping-type query & args]
-     (rest/post (rest/count-url (join-names index) (join-names mapping-type))
+     (rest/post (rest/count-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                (join-names index) (join-names mapping-type))
                 :query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator])
                 :body {:query query})))
 
@@ -224,18 +240,23 @@
 (defn delete-by-query
   "Performs a delete-by-query operation."
   ([index mapping-type query]
-     (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type)) :body {:query query}))
+     (rest/delete (rest/delete-by-query-url
+                   ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                   (join-names index) (join-names mapping-type)) :body {:query query}))
   ([index mapping-type query & args]
-     (rest/delete (rest/delete-by-query-url (join-names index) (join-names mapping-type))
+     (rest/delete (rest/delete-by-query-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                            (join-names index) (join-names mapping-type))
                   :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                   :body {:query query})))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation across all mapping types."
   ([index query]
-     (rest/delete (rest/delete-by-query-url (join-names index)) :body {:query query}))
+     (rest/delete (rest/delete-by-query-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                            (join-names index)) :body {:query query}))
   ([index query & args]
-     (rest/delete (rest/delete-by-query-url (join-names index))
+     (rest/delete (rest/delete-by-query-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                            (join-names index))
                   :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                   :body {:query query})))
 
@@ -243,9 +264,9 @@
   "Performs a delete-by-query operation across all indexes and mapping types.
    This may put very high load on your ElasticSearch cluster so use this function with care."
   ([query]
-     (rest/delete (rest/delete-by-query-url) :body {:query query}))
+     (rest/delete (rest/delete-by-query-url ^Connection clojurewerkz.elastisch.rest/*endpoint*) :body {:query query}))
   ([query & args]
-     (rest/delete (rest/delete-by-query-url)
+     (rest/delete (rest/delete-by-query-url ^Connection clojurewerkz.elastisch.rest/*endpoint*)
                   :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                   :body {:query query})))
 
@@ -253,14 +274,17 @@
 (defn more-like-this
   "Performs a More Like This (MLT) query."
   [index mapping-type id & args]
-  (rest/get (rest/more-like-this-url index mapping-type id)
+  (rest/get (rest/more-like-this-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                     index mapping-type id)
             :query-params (ar/->opts args)))
 
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
    but does not take the mapping type parameter."
   [index query & args]
-  (rest/get (rest/query-validation-url index) :body (json/encode {:query query}) :query-params (ar/->opts args)))
+  (rest/get (rest/query-validation-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                       index)
+            :body (json/encode {:query query}) :query-params (ar/->opts args)))
 
 
 (defn analyze 
@@ -274,5 +298,6 @@
    (doc/analyze \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
   ([text & args]
      (let [opts (ar/->opts args)]
-       (rest/get (rest/analyze-url (:index opts))
-               :query-params (assoc opts :text text)))))
+       (rest/get (rest/analyze-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+                                   (:index opts))
+                 :query-params (assoc opts :text text)))))

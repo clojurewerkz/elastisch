@@ -8,7 +8,8 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.fixtures
-  (:require [clojurewerkz.elastisch.rest.index    :as idx]
+  (:require [clojurewerkz.elastisch.rest          :as es]
+            [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.rest.document :as doc]
             [clojure.test :refer :all]
             [clojurewerkz.elastisch.rest.response :refer [created?]]))
