@@ -285,9 +285,3 @@
   (^clojurewerkz.elastisch.rest.Connection [uri]
      (let [response (get uri)]
        (Connection. uri nil nil))))
-
-(defn connect!
-  "Alters default ElasticSearch connection endpoint"
-  [uri]
-  (alter-var-root (var *endpoint*) (constantly (connect uri))))
-
