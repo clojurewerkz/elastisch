@@ -17,11 +17,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
 
-
-;;
-;; filtered query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-basic-bool-query
     (let [index-name   "people"
