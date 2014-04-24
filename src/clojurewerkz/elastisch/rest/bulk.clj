@@ -28,20 +28,20 @@
                       :query-params opts)))
 (defn bulk
   "Performs a bulk operation"
-  [operations & params]
+  [^Connection conn operations & params]
   (when (not-empty operations)
-    (apply bulk-with-url (rest/bulk-url ^Connection clojurewerkz.elastisch.rest/*endpoint*) operations params)))
+    (apply bulk-with-url (rest/bulk-url conn) operations params)))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
-  [index operations & params]
-  (apply bulk-with-url (rest/bulk-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+  [^Connection conn index operations & params]
+  (apply bulk-with-url (rest/bulk-url conn
                                       index) operations params))
 
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
-  [index mapping-type operations & params]
-  (apply bulk-with-url (rest/bulk-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+  [^Connection conn index mapping-type operations & params]
+  (apply bulk-with-url (rest/bulk-url conn
                                       index mapping-type) operations params))
 
 (def ^:private special-operation-keys

@@ -14,11 +14,13 @@
             [clojure.test :refer :all]
             [clojurewerkz.elastisch.rest.response :refer [created?]]))
 
+(def conn (es/connect))
+
 (defn reset-indexes*
   []
   ;; deletes all indices
-  (idx/delete)
-  (idx/delete-template "accounts"))
+  (idx/delete conn)
+  (idx/delete-template conn "accounts"))
 
 (defn reset-indexes
   [f]
@@ -200,27 +202,27 @@
   [f]
   (let [index-name   "people"
         mapping-type "person"]
-    (idx/create index-name :mappings people-mapping)
+    (idx/create conn index-name :mappings people-mapping)
 
-    (is (created? (doc/put index-name mapping-type "1" person-jack)))
-    (is (created? (doc/put index-name mapping-type "2" person-mary)))
-    (is (created? (doc/put index-name mapping-type "3" person-joe)))
-    (is (created? (doc/put index-name mapping-type "4" person-tony)))
+    (is (created? (doc/put conn index-name mapping-type "1" person-jack)))
+    (is (created? (doc/put conn index-name mapping-type "2" person-mary)))
+    (is (created? (doc/put conn index-name mapping-type "3" person-joe)))
+    (is (created? (doc/put conn index-name mapping-type "4" person-tony)))
 
-    (idx/refresh index-name)
+    (idx/refresh conn index-name)
     (f)))
 
 (defn prepopulate-articles-index
   [f]
   (let [index-name   "articles"
         mapping-type "article"]
-    (idx/create index-name :mappings articles-mapping)
+    (idx/create conn index-name :mappings articles-mapping)
 
-    (is (created? (doc/put index-name mapping-type "1" article-on-elasticsearch)))
-    (is (created? (doc/put index-name mapping-type "2" article-on-lucene)))
-    (is (created? (doc/put index-name mapping-type "3" article-on-nueva-york)))
-    (is (created? (doc/put index-name mapping-type "4" article-on-austin)))
-    (idx/refresh index-name)
+    (is (created? (doc/put conn index-name mapping-type "1" article-on-elasticsearch)))
+    (is (created? (doc/put conn index-name mapping-type "2" article-on-lucene)))
+    (is (created? (doc/put conn index-name mapping-type "3" article-on-nueva-york)))
+    (is (created? (doc/put conn index-name mapping-type "4" article-on-austin)))
+    (idx/refresh conn index-name)
     (f)))
 
 
@@ -228,13 +230,13 @@
   [f]
   (let [index-name   "tweets"
         mapping-type "tweet"]
-    (idx/create index-name :mappings tweets-mapping)
+    (idx/create conn index-name :mappings tweets-mapping)
 
-    (is (created? (doc/put index-name mapping-type "1" tweet1)))
-    (is (created? (doc/put index-name mapping-type "2" tweet2)))
-    (is (created? (doc/put index-name mapping-type "3" tweet3)))
-    (is (created? (doc/put index-name mapping-type "4" tweet4)))
-    (is (created? (doc/put index-name mapping-type "5" tweet5)))
+    (is (created? (doc/put conn index-name mapping-type "1" tweet1)))
+    (is (created? (doc/put conn index-name mapping-type "2" tweet2)))
+    (is (created? (doc/put conn index-name mapping-type "3" tweet3)))
+    (is (created? (doc/put conn index-name mapping-type "4" tweet4)))
+    (is (created? (doc/put conn index-name mapping-type "5" tweet5)))
 
-    (idx/refresh index-name)
+    (idx/refresh conn index-name)
     (f)))

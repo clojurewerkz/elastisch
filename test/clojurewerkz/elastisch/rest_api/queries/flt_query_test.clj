@@ -9,6 +9,7 @@
 
 (ns clojurewerkz.elastisch.rest-api.queries.flt-query-test
   (:require [clojurewerkz.elastisch.rest.document :as doc]
+            [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.rest.index    :as idx]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.fixtures :as fx]
@@ -22,11 +23,12 @@
 ;; flt query
 ;;
 
-(deftest ^{:rest true :query true} test-basic-flt-query
-  (let [index-name   "articles"
-        mapping-type "article"
-        response     (doc/search index-name mapping-type :query (q/fuzzy-like-this :fields ["summary"] :like_text "ciudad"))
-        hits         (hits-from response)]
-    (is (any-hits? response))
-    (is (= 2 (total-hits response)))
-    (is (= #{"4" "3"} (set (map :_id hits))))))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true :query true} test-basic-flt-query
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type :query (q/fuzzy-like-this :fields ["summary"] :like_text "ciudad"))
+          hits         (hits-from response)]
+      (is (any-hits? response))
+      (is (= 2 (total-hits response)))
+      (is (= #{"4" "3"} (set (map :_id hits)))))))

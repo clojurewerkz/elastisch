@@ -24,13 +24,13 @@
 
    (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/cluster-health)
-   (admin/cluster-health :index \"index1\")
-   (admin/cluster-health :index [\"index1\",\"index2\"])
-   (admin/cluster-health :index \"index1\" :pretty true :level \"indices\")"
-  [& args]
+   (admin/cluster-health conn)
+   (admin/cluster-health conn :index \"index1\")
+   (admin/cluster-health conn :index [\"index1\",\"index2\"])
+   (admin/cluster-health conn :index \"index1\" :pretty true :level \"indices\")"
+  [^Connection conn & args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-health-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+    (rest/get (rest/cluster-health-url conn
                                        (join-names (:index opts)))
               :query-params (dissoc opts :index))))
 
@@ -41,10 +41,10 @@
 
    (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/cluster-state)
+   (admin/cluster-state conn)
 "
-  [& args]
-  (rest/get (rest/cluster-state-url ^Connection clojurewerkz.elastisch.rest/*endpoint*) :query-params (ar/->opts args)))
+  [^Connection conn & args]
+  (rest/get (rest/cluster-state-url conn) :query-params (ar/->opts args)))
 
 
 (defn nodes-stats
@@ -54,12 +54,12 @@
 
    (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/nodes-stats)
-   (admin/nodes-stats :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
+   (admin/nodes-stats conn)
+   (admin/nodes-stats conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
 "
-  [& args]
+  [^Connection conn & args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-nodes-stats-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+    (rest/get (rest/cluster-nodes-stats-url conn
                                             (join-names (get opts :nodes "_all"))
                                             (join-names (get opts :attributes "_all"))))))
 
@@ -70,39 +70,39 @@
 
    (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/nodes-info)
-   (admin/nodes-info :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
+   (admin/nodes-info conn)
+   (admin/nodes-info conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
 "
-  [& args]
+  [^Connection conn & args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-nodes-info-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+    (rest/get (rest/cluster-nodes-info-url conn
                                            (join-names (get opts :nodes "_all"))
                                            (join-names (get opts :attributes "_all"))))))
 
 
 (defn register-snapshot-repository
-  [^String name & args]
-  (rest/put (rest/snapshot-repository-registration-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+  [^Connection conn ^String name & args]
+  (rest/put (rest/snapshot-repository-registration-url conn
                                                        name) :body (ar/->opts args)))
 
 
 (defn take-snapshot
-  [^String repo ^String name & args]
+  [^Connection conn ^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/put (rest/snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+    (rest/put (rest/snapshot-url conn
                                  repo name) :body opts :query-params (select-keys opts [:wait-for-completion?]))))
 
 (defn restore-snapshot
-  [^String repo ^String name & args]
+  [^Connection conn ^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/post (rest/restore-snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+    (rest/post (rest/restore-snapshot-url conn
                                           repo name)
              :body opts
              :query-params (select-keys opts [:wait-for-completion?]))))
 
 (defn delete-snapshot
-  [^String repo ^String name & args]
+  [^Connection conn ^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/delete (rest/snapshot-url ^Connection clojurewerkz.elastisch.rest/*endpoint*
+    (rest/delete (rest/snapshot-url conn
                                     repo name)
                  :query-params (select-keys opts [:wait-for-completion?]))))

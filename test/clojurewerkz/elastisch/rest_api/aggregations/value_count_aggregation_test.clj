@@ -8,8 +8,8 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.aggregations.value-count-aggregation-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
+            [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.aggregation   :as a]
             [clojurewerkz.elastisch.fixtures :as fx]
@@ -18,11 +18,12 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
 
-(deftest ^{:rest true :aggregation true} test-value-count-aggregation
-  (let [index-name   "people"
-        mapping-type "person"
-        response     (doc/search index-name mapping-type
-                                 :query (q/match-all)
-                                 :aggregations {:agg1 (a/value-count "age")})
-        agg          (aggregation-from response :agg1)]
-    (is (>= (:value agg) 4))))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true :aggregation true} test-value-count-aggregation
+    (let [index-name   "people"
+          mapping-type "person"
+          response     (doc/search conn index-name mapping-type
+                                   :query (q/match-all)
+                                   :aggregations {:agg1 (a/value-count "age")})
+          agg          (aggregation-from response :agg1)]
+      (is (>= (:value agg) 4)))))

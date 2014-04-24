@@ -17,8 +17,12 @@
 (defrecord Connection
     [uri username password])
 
-(def ^{:dynamic true} *endpoint* (Connection. (or (System/getenv "ELASTICSEARCH_URL")
-                                                  "http://localhost:9200")
+(defn ^:private default-url
+  []
+  (or (System/getenv "ELASTICSEARCH_URL")
+      "http://localhost:9200"))
+
+(def ^{:dynamic true} *endpoint* (Connection. (default-url)
                                               nil nil))
 (def ^:const throw-exceptions false)
 
@@ -276,9 +280,11 @@
 
 (defn connect
   "Connects to the given ElasticSearch endpoint and returns it"
-  [uri]
-  (let [response (get uri)]
-    (Connection. uri nil nil)))
+  (^clojurewerkz.elastisch.rest.Connection []
+     (connect (default-url)))
+  (^clojurewerkz.elastisch.rest.Connection [uri]
+     (let [response (get uri)]
+       (Connection. uri nil nil))))
 
 (defn connect!
   "Alters default ElasticSearch connection endpoint"
