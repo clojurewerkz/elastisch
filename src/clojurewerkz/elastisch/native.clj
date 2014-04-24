@@ -122,58 +122,58 @@
 
 (defn ^ActionFuture index
   "Executes an index action request"
-  [^IndexRequest req]
-  (.index ^Client *client* req))
+  [^Client conn ^IndexRequest req]
+  (.index ^Client conn req))
 
 (defn ^ActionFuture get
   "Executes a get action request"
-  [^GetRequest req]
-  (.get ^Client *client* req))
+  [^Client conn ^GetRequest req]
+  (.get ^Client conn req))
 
 (defn ^ActionFuture multi-get
   "Executes a multi-get action request"
-  [^MultiGetRequest req]
-  (.multiGet ^Client *client* req))
+  [^Client conn ^MultiGetRequest req]
+  (.multiGet ^Client conn req))
 
 (defn ^ActionFuture update
   "Executes a update action request"
-  [^UpdateRequest req]
-  (.update ^Client *client* req))
+  [^Client conn ^UpdateRequest req]
+  (.update ^Client conn req))
 
 (defn ^ActionFuture delete
   "Executes a delete action request"
-  [^DeleteRequest req]
-  (.delete ^Client *client* req))
+  [^Client conn ^DeleteRequest req]
+  (.delete ^Client conn req))
 
 (defn ^ActionFuture delete-by-query
   "Executes a delete by query action request"
-  [^DeleteByQueryRequest req]
-  (.deleteByQuery ^Client *client* req))
+  [^Client conn ^DeleteByQueryRequest req]
+  (.deleteByQuery ^Client conn req))
 
 (defn ^ActionFuture count
   "Executes a count action request"
-  [^CountRequest req]
-  (.count ^Client *client* req))
+  [^Client conn ^CountRequest req]
+  (.count ^Client conn req))
 
 (defn ^ActionFuture search
   "Executes a search action request"
-  [^SearchRequest req]
-  (.search ^Client *client* req))
+  [^Client conn ^SearchRequest req]
+  (.search ^Client conn req))
 
 (defn ^ActionFuture search-scroll
   "Executes a search action request"
-  [^SearchScrollRequest req]
-  (.searchScroll ^Client *client* req))
+  [^Client conn ^SearchScrollRequest req]
+  (.searchScroll ^Client conn req))
 
 (defn ^ActionFuture more-like-this
   "Executes a more-like-this action request"
-  [^MoreLikeThisRequest req]
-  (.moreLikeThis ^Client *client* req))
+  [^Client conn ^MoreLikeThisRequest req]
+  (.moreLikeThis ^Client conn req))
 
 (defn ^ActionFuture percolate
   "Executes a more-like-this action request"
-  [^PercolateRequest req]
-  (.percolate ^Client *client* req))
+  [^Client conn ^PercolateRequest req]
+  (.percolate ^Client conn req))
 
 
 ;;
@@ -182,105 +182,105 @@
 
 (defn ^ActionFuture admin-index-exists
   "Executes an indices exist request"
-  [^IndicesExistsRequest req]
-  (-> ^Client *client* .admin .indices (.exists req)))
+  [^Client conn ^IndicesExistsRequest req]
+  (-> ^Client conn .admin .indices (.exists req)))
 
 (defn ^ActionFuture admin-types-exists
   "Executes an types exist request"
-  [^TypesExistsRequest req]
-  (-> ^Client *client* .admin .indices (.typesExists req)))
+  [^Client conn ^TypesExistsRequest req]
+  (-> ^Client conn .admin .indices (.typesExists req)))
 
 (defn ^ActionFuture admin-index-create
   "Executes a create index request"
-  [^CreateIndexRequest req]
-  (-> ^Client *client* .admin .indices (.create req)))
+  [^Client conn ^CreateIndexRequest req]
+  (-> ^Client conn .admin .indices (.create req)))
 
 (defn ^ActionFuture admin-index-delete
   "Executes a delete index request"
-  [^DeleteIndexRequest req]
-  (-> ^Client *client* .admin .indices (.delete req)))
+  [^Client conn ^DeleteIndexRequest req]
+  (-> ^Client conn .admin .indices (.delete req)))
 
 (defn ^ActionFuture admin-update-index-settings
   "Executes an update index settings request"
-  [^UpdateSettingsRequest req]
-  (-> ^Client *client* .admin .indices (.updateSettings req)))
+  [^Client conn ^UpdateSettingsRequest req]
+  (-> ^Client conn .admin .indices (.updateSettings req)))
 
 (defn ^ActionFuture admin-get-mappings
   "Executes a get mapping request"
-  [^GetMappingsRequest req]
-  (-> ^Client *client* .admin .indices (.getMappings req)))
+  [^Client conn ^GetMappingsRequest req]
+  (-> ^Client conn .admin .indices (.getMappings req)))
 
 (defn ^ActionFuture admin-put-mapping
   "Executes a put mapping request"
-  [^PutMappingRequest req]
-  (-> ^Client *client* .admin .indices (.putMapping req)))
+  [^Client conn ^PutMappingRequest req]
+  (-> ^Client conn .admin .indices (.putMapping req)))
 
 (defn ^ActionFuture admin-delete-mapping
   "Executes a delete mapping request"
-  [^DeleteMappingRequest req]
-  (-> ^Client *client* .admin .indices (.deleteMapping req)))
+  [^Client conn ^DeleteMappingRequest req]
+  (-> ^Client conn .admin .indices (.deleteMapping req)))
 
 (defn ^ActionFuture admin-open-index
   "Executes an open index request"
-  [^OpenIndexRequest req]
-  (-> ^Client *client* .admin .indices (.open req)))
+  [^Client conn ^OpenIndexRequest req]
+  (-> ^Client conn .admin .indices (.open req)))
 
 (defn ^ActionFuture admin-close-index
   "Executes a close index request"
-  [^CloseIndexRequest req]
-  (-> ^Client *client* .admin .indices (.close req)))
+  [^Client conn ^CloseIndexRequest req]
+  (-> ^Client conn .admin .indices (.close req)))
 
 (defn ^ActionFuture admin-optimize-index
   "Executes a optimize index request"
-  [^OptimizeRequest req]
-  (-> ^Client *client* .admin .indices (.optimize req)))
+  [^Client conn ^OptimizeRequest req]
+  (-> ^Client conn .admin .indices (.optimize req)))
 
 (defn ^ActionFuture admin-flush-index
   "Executes a flush index request"
-  [^FlushRequest req]
-  (-> ^Client *client* .admin .indices (.flush req)))
+  [^Client conn ^FlushRequest req]
+  (-> ^Client conn .admin .indices (.flush req)))
 
 (defn ^ActionFuture admin-refresh-index
   "Executes a refresh index request"
-  [^RefreshRequest req]
-  (-> ^Client *client* .admin .indices (.refresh req)))
+  [^Client conn ^RefreshRequest req]
+  (-> ^Client conn .admin .indices (.refresh req)))
 
 (defn ^ActionFuture admin-gateway-snapshot
   "Executes a gateway snapshot request"
-  [^GatewaySnapshotRequest req]
-  (-> ^Client *client* .admin .indices (.gatewaySnapshot req)))
+  [^Client conn ^GatewaySnapshotRequest req]
+  (-> ^Client conn .admin .indices (.gatewaySnapshot req)))
 
 (defn ^ActionFuture admin-clear-cache
   "Executes a cache clear request"
-  [^ClearIndicesCacheRequest req]
-  (-> ^Client *client* .admin .indices (.clearCache req)))
+  [^Client conn ^ClearIndicesCacheRequest req]
+  (-> ^Client conn .admin .indices (.clearCache req)))
 
 (defn ^ActionFuture admin-status
   "Executes a status request"
-  [^IndicesStatusRequest req]
-  (-> ^Client *client* .admin .indices (.status req)))
+  [^Client conn ^IndicesStatusRequest req]
+  (-> ^Client conn .admin .indices (.status req)))
 
 (defn ^ActionFuture admin-index-stats
   "Executes an indices stats request"
-  [^IndicesStatsRequest req]
-  (-> ^Client *client* .admin .indices (.stats req)))
+  [^Client conn ^IndicesStatsRequest req]
+  (-> ^Client conn .admin .indices (.stats req)))
 
 (defn ^ActionFuture admin-index-segments
   "Executes an indices segments request"
-  [^IndicesSegmentsRequest req]
-  (-> ^Client *client* .admin .indices (.segments req)))
+  [^Client conn ^IndicesSegmentsRequest req]
+  (-> ^Client conn .admin .indices (.segments req)))
 
 (defn ^ActionFuture admin-update-aliases
   "Executes an update aliases request"
-  [^IndicesAliasesRequest req]
-  (-> ^Client *client* .admin .indices (.aliases req)))
+  [^Client conn ^IndicesAliasesRequest req]
+  (-> ^Client conn .admin .indices (.aliases req)))
 
 (defn ^ActionFuture admin-put-index-template
   "Executes a put index template request"
-  [^PutIndexTemplateRequest req]
-  (-> ^Client *client* .admin .indices (.putTemplate req)))
+  [^Client conn ^PutIndexTemplateRequest req]
+  (-> ^Client conn .admin .indices (.putTemplate req)))
 
 (defn ^ActionFuture admin-delete-index-template
   "Executes a delete index template request"
-  [^DeleteIndexTemplateRequest req]
-  (-> ^Client *client* .admin .indices (.deleteTemplate req)))
+  [^Client conn ^DeleteIndexTemplateRequest req]
+  (-> ^Client conn .admin .indices (.deleteTemplate req)))

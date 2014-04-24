@@ -41,7 +41,7 @@
 (defn unregister-query
   "Unregisters a percolator query for the given index"
   [index percolator]
-  (let [ft (es/delete (cnv/->delete-request percolator-index
+  (let [ft (es/delete es/*client* (cnv/->delete-request percolator-index
                                             index
                                             percolator))
         ^DeleteResponse res (.actionGet ft)]

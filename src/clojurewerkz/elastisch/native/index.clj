@@ -32,7 +32,7 @@
            org.elasticsearch.action.admin.indices.status.IndicesStatusResponse
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse (org.elasticsearch.action.admin.indices.exists.types
-                                                                                                TypesExistsResponse)))
+                                                                                               TypesExistsResponse)))
 
 ;;
 ;; API
@@ -64,7 +64,7 @@
   [^String index-name & args]
   (let [opts                        (ar/->opts args)
         {:keys [settings mappings]} opts
-        ft                       (es/admin-index-create (cnv/->create-index-request index-name settings mappings))
+        ft                       (es/admin-index-create es/*client* (cnv/->create-index-request index-name settings mappings))
         ^CreateIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
@@ -72,7 +72,7 @@
 (defn exists?
   "Returns true if given index (or indices) exists"
   [index-name]
-  (let [ft                        (es/admin-index-exists (cnv/->index-exists-request index-name))
+  (let [ft                        (es/admin-index-exists es/*client* (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.actionGet ft)]
     (.isExists res)))
 
@@ -80,7 +80,7 @@
 (defn type-exists?
   "Returns true if a type/types exists in an index/indices"
   [index-name type-name]
-  (let [ft                        (es/admin-types-exists (cnv/->types-exists-request index-name type-name))
+  (let [ft                        (es/admin-types-exists es/*client* (cnv/->types-exists-request index-name type-name))
         ^TypesExistsResponse res (.actionGet ft)]
     (.isExists res)))
 
@@ -88,11 +88,11 @@
 (defn delete
   "Deletes an existing index"
   ([]
-     (let [ft                       (es/admin-index-delete (cnv/->delete-index-request))
+     (let [ft                       (es/admin-index-delete es/*client* (cnv/->delete-index-request))
            ^DeleteIndexResponse res (.actionGet ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
   ([^String index-name]
-     (let [ft                       (es/admin-index-delete (cnv/->delete-index-request index-name))
+     (let [ft                       (es/admin-index-delete es/*client* (cnv/->delete-index-request index-name))
            ^DeleteIndexResponse res (.actionGet ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
@@ -101,11 +101,11 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
   ([^String index-name]
-     (let [ft                       (es/admin-get-mappings (cnv/->get-mappings-request))
+     (let [ft                       (es/admin-get-mappings es/*client* (cnv/->get-mappings-request))
            ^GetMappingsResponse res (.actionGet ft)]
        (cnv/get-mappings-response->map res)))
   ([^String index-name ^String type-name]
-     (let [ft                       (es/admin-get-mappings (cnv/->get-mappings-request index-name type-name))
+     (let [ft                       (es/admin-get-mappings es/*client* (cnv/->get-mappings-request index-name type-name))
            ^GetMappingsResponse res (.actionGet ft)]
        (cnv/get-mappings-response->map res))))
 
@@ -113,21 +113,21 @@
   "The put mapping API allows to register or modify specific mapping definition for a specific type."
   [^String index-name ^String mapping-type & args]
   (let [opts                    (ar/->opts args)
-        ft                      (es/admin-put-mapping (cnv/->put-mapping-request index-name mapping-type opts))
+        ft                      (es/admin-put-mapping es/*client* (cnv/->put-mapping-request index-name mapping-type opts))
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data."
   [^String index-name ^String mapping-type]
-  (let [ft                       (es/admin-delete-mapping (cnv/->delete-mapping-request index-name mapping-type))
+  (let [ft                       (es/admin-delete-mapping es/*client* (cnv/->delete-mapping-request index-name mapping-type))
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn update-settings
   "Updates index settings. No argument version updates index settings globally"
   ([index-name settings]
-     (let [ft (es/admin-update-index-settings (cnv/->update-settings-request index-name settings))]
+     (let [ft (es/admin-update-index-settings es/*client* (cnv/->update-settings-request index-name settings))]
        (.actionGet ft)
        true)))
 
@@ -135,14 +135,14 @@
 (defn open
   "Opens an index"
   [index-name]
-  (let [ft                     (es/admin-open-index (cnv/->open-index-request index-name))
+  (let [ft                     (es/admin-open-index es/*client* (cnv/->open-index-request index-name))
         ^OpenIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn close
   "Closes an index"
   [index-name]
-  (let [ft                     (es/admin-close-index (cnv/->close-index-request index-name))
+  (let [ft                     (es/admin-close-index es/*client* (cnv/->close-index-request index-name))
         ^CloseIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
@@ -150,7 +150,7 @@
   "Optimizes an index or multiple indices"
   [index-name & args]
   (let [opts                  (ar/->opts args)
-        ft                    (es/admin-optimize-index (cnv/->optimize-index-request index-name opts))
+        ft                    (es/admin-optimize-index es/*client* (cnv/->optimize-index-request index-name opts))
         ^OptimizeResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
@@ -158,21 +158,21 @@
   "Flushes an index or multiple indices"
   [index-name & args]
   (let [opts               (ar/->opts args)
-        ft                 (es/admin-flush-index (cnv/->flush-index-request index-name opts))
+        ft                 (es/admin-flush-index es/*client* (cnv/->flush-index-request index-name opts))
         ^FlushResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn refresh
   "Refreshes an index or multiple indices"
   [index-name]
-  (let [ft                 (es/admin-refresh-index (cnv/->refresh-index-request index-name))
+  (let [ft                 (es/admin-refresh-index es/*client* (cnv/->refresh-index-request index-name))
         ^RefreshResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn snapshot
   "Performs a snapshot through the gateway for one or multiple indices"
   [index-name]
-  (let [ft                           (es/admin-gateway-snapshot (cnv/->gateway-snapshot-request index-name))
+  (let [ft                           (es/admin-gateway-snapshot es/*client* (cnv/->gateway-snapshot-request index-name))
         ^GatewaySnapshotResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
@@ -180,7 +180,7 @@
   "Clears caches index or multiple indices"
   [index-name & args]
   (let [opts                           (ar/->opts args)
-        ft                             (es/admin-clear-cache (cnv/->clear-indices-cache-request index-name opts))
+        ft                             (es/admin-clear-cache es/*client* (cnv/->clear-indices-cache-request index-name opts))
         ^ClearIndicesCacheResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
@@ -201,13 +201,13 @@
    :flush : flush operation stats
    :refresh : refresh operation stats"
   ([]
-     (let [ft                        (es/admin-index-stats (cnv/->index-stats-request))
+     (let [ft                        (es/admin-index-stats es/*client* (cnv/->index-stats-request))
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res))
   ([& args]
      (let [opts                      (ar/->opts args)
-           ft                        (es/admin-index-stats (cnv/->index-stats-request opts))
+           ft                        (es/admin-index-stats es/*client* (cnv/->index-stats-request opts))
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res)))
@@ -221,14 +221,14 @@
    :snapshot (boolean, default: false): should the status include snapshot information?"
   [index-name & args]
   (let [opts                       (ar/->opts args)
-        ft                         (es/admin-status (cnv/->indices-status-request index-name opts))
+        ft                         (es/admin-status es/*client* (cnv/->indices-status-request index-name opts))
         ^IndicesStatusResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn segments
   "Returns segments information for one or more indices."
   [index-name]
-  (let [ft                           (es/admin-index-segments (cnv/->indices-segments-request index-name))
+  (let [ft                           (es/admin-index-segments es/*client* (cnv/->indices-segments-request index-name))
         ^IndicesSegmentResponse res (.actionGet ft)]
     (merge (cnv/broadcast-operation-response->map res)
            (cnv/indices-segments-response->map res))))
@@ -240,26 +240,26 @@
    { :remove { :index \"test1\" :alias \"alias1\" } }"
   [ops & args]
   (let [opts                        (ar/->opts args)
-        ft                          (es/admin-update-aliases (cnv/->indices-aliases-request ops opts))
+        ft                          (es/admin-update-aliases es/*client* (cnv/->indices-aliases-request ops opts))
         ^IndicesAliasesResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn create-template
   [^String template-name & args]
   (let [opts                          (ar/->opts args)
-        ft                            (es/admin-put-index-template (cnv/->create-index-template-request template-name opts))
+        ft                            (es/admin-put-index-template es/*client* (cnv/->create-index-template-request template-name opts))
         ^PutIndexTemplateResponse res (.actionGet ft)]
     {:ok true :acknowledged (.isAcknowledged res)}))
 
 (defn put-template
   [^String template-name & args]
   (let [opts                          (ar/->opts args)
-        ft                            (es/admin-put-index-template (cnv/->put-index-template-request template-name opts))
+        ft                            (es/admin-put-index-template es/*client* (cnv/->put-index-template-request template-name opts))
         ^PutIndexTemplateResponse res (.actionGet ft)]
     {:ok true :acknowledged (.isAcknowledged res)}))
 
 (defn delete-template
   [^String template-name]
-  (let [ft                               (es/admin-delete-index-template (cnv/->delete-index-template-request template-name))
+  (let [ft                               (es/admin-delete-index-template es/*client* (cnv/->delete-index-template-request template-name))
         ^DeleteIndexTemplateResponse res (.actionGet ft)]
     {:ok true :acknowledged (.isAcknowledged res)}))
