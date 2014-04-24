@@ -16,7 +16,6 @@
             [clojurewerkz.elastisch.rest.response :refer :all]
             [clojure.test :refer :all]))
 
-
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
 (let [conn (rest/connect)]

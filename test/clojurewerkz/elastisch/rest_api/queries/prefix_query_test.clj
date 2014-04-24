@@ -18,10 +18,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
-;;
-;; prefix query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-basic-prefix-query
     (let [index-name   "people"

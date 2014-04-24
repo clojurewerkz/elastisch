@@ -18,10 +18,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-;;
-;; field query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-basic-match-all-query
   (let [index-name   "articles"

@@ -19,11 +19,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-
-;;
-;; mlt query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:query true :rest true} test-more-like-this-query
     (let [index-name   "articles"

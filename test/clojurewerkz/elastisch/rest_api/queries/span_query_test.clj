@@ -19,10 +19,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-;;
-;; Tests
-;;
-
 ;; TODO: these return no results and ES test suite does not contain any meaningful tests for span queries.
 ;;       Lucene test suite does have SpanFirstQuery tests but they use custom matchers we need to figure out
 ;;       first. MK.

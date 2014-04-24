@@ -19,10 +19,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
-;;
-;; query string query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-query-string-query
     (let [index-name   "articles"

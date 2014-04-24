@@ -19,10 +19,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-;;
-;; flt query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-basic-fuzzy-query-with-string-fields
     (let [index-name   "articles"

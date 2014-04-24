@@ -18,10 +18,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
-;;
-;; Tests
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-basic-ids-query
   (let [response (doc/search conn "tweets" "tweet" :query (q/ids "tweet" ["1" "2" "8ska88"]))]

@@ -19,10 +19,6 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
-;;
-;; flt query
-;;
-
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-range-query-over-numerical-field
   (let [index-name   "people"
