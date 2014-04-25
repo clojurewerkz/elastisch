@@ -8,24 +8,25 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.nodes-stats-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.admin :as admin]
+            [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
-(deftest ^{:rest true} nodes-stats
+(let [conn (rest/connect)]
+  (deftest ^{:rest true} nodes-stats
   (is (= #{:cluster_name :nodes}
-         (into #{} (keys (admin/nodes-stats)))))
+         (into #{} (keys (admin/nodes-stats conn)))))
   (testing "node selection"
-    (let [stats (admin/nodes-stats)
+    (let [stats (admin/nodes-stats conn)
           node-id (first (keys (:nodes stats))) 
           node-name (get-in stats [:nodes node-id :name])]
-      (is (empty? (:nodes (admin/nodes-stats :nodes "foo"))))
-      (is (= 1 (count (:nodes (admin/nodes-stats :nodes (name node-id))))))
-      (is (= 1 (count (:nodes (admin/nodes-stats :nodes (vector (name node-id)))))))
-      (is (= 1 (count (:nodes (admin/nodes-stats :nodes node-name)))))))
+      (is (empty? (:nodes (admin/nodes-stats conn :nodes "foo"))))
+      (is (= 1 (count (:nodes (admin/nodes-stats conn :nodes (name node-id))))))
+      (is (= 1 (count (:nodes (admin/nodes-stats conn :nodes (vector (name node-id)))))))
+      (is (= 1 (count (:nodes (admin/nodes-stats conn :nodes node-name)))))))
   (testing "parameters"
-    (is (not (= (admin/nodes-stats {:indices true}) (admin/nodes-stats :indices false))))
-    (is (not (= (admin/nodes-stats {:network true}) (admin/nodes-stats :network false))))))
+    (is (not (= (admin/nodes-stats conn {:indices true}) (admin/nodes-stats conn :indices false))))
+    (is (not (= (admin/nodes-stats conn {:network true}) (admin/nodes-stats conn :network false)))))))

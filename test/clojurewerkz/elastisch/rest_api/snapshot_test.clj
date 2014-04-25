@@ -8,8 +8,8 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.snapshot-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.admin :as admin]
+            [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.rest.response :refer [acknowledged? accepted?]]
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojure.test :refer :all]))
@@ -20,17 +20,18 @@
   []
   (System/getProperty "java.io.tmpdir"))
 
-(deftest ^{:rest true} test-snapshotting
-  (let [repo "backup1"
-        p    (tmp-dir)
-        s    "snapshot1"
-        r1   (admin/register-snapshot-repository repo
-                                                 :type "fs"
-                                                 :settings {:location p
-                                                            :compress true})
-        _  (admin/delete-snapshot repo s)
-        r2 (admin/take-snapshot repo s :wait-for-completion? true)
-        r3 (admin/delete-snapshot repo s)]
-    (is (acknowledged? r1))
-    (is (accepted? r2))
-    (is (acknowledged? r3))))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true} test-snapshotting
+    (let [repo "backup1"
+          p    (tmp-dir)
+          s    "snapshot1"
+          r1   (admin/register-snapshot-repository conn repo
+                                                   :type "fs"
+                                                   :settings {:location p
+                                                              :compress true})
+          _  (admin/delete-snapshot conn repo s)
+          r2 (admin/take-snapshot conn repo s :wait-for-completion? true)
+          r3 (admin/delete-snapshot conn repo s)]
+      (is (acknowledged? r1))
+      (is (accepted? r2))
+      (is (acknowledged? r3)))))

@@ -8,33 +8,34 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.multi-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest          :as rest]
-            [clojurewerkz.elastisch.rest.multi    :as multi]
-            [clojurewerkz.elastisch.query         :as q]
-            [clojurewerkz.elastisch.fixtures      :as fx]
+            [clojurewerkz.elastisch.rest :as rest]
+            [clojurewerkz.elastisch.rest.multi :as multi]
+            [clojurewerkz.elastisch.query :as q]
+            [clojurewerkz.elastisch.fixtures :as fx]
             [clojurewerkz.elastisch.rest.response :refer :all]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
-(deftest ^{:rest true} test-multi-search
-  "Verify that multi/search returns same result as singularly executed queries."
-  (let [res1 (doc/search "people" "person" :query (q/match-all) :size 1)
-        res2 (doc/search "articles" "article" :query (q/match-all) :size 1)
-        multires (multi/search [{:index "people" :type "person"} {:query (q/match-all) :size 1}
-                                {:index "articles" :type "article"} {:query (q/match-all) :size 1}])]
-    (is (= (-> res1 :hits :hits first :_source)
-           (-> multires first :hits :hits first :_source)))
-    (is (= (-> res2 :hits :hits first :_source)
-           (-> multires second :hits :hits first :_source)))))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true} test-multi-search
+    "Verify that multi/search returns same result as singularly executed queries."
+    (let [res1 (doc/search conn "people" "person" :query (q/match-all) :size 1)
+          res2 (doc/search conn "articles" "article" :query (q/match-all) :size 1)
+          multires (multi/search conn [{:index "people" :type "person"} {:query (q/match-all) :size 1}
+                                       {:index "articles" :type "article"} {:query (q/match-all) :size 1}])]
+      (is (= (-> res1 :hits :hits first :_source)
+             (-> multires first :hits :hits first :_source)))
+      (is (= (-> res2 :hits :hits first :_source)
+             (-> multires second :hits :hits first :_source)))))
 
-(deftest ^{:rest true} test-multi-with-index-and-type
-  (let [res1 (doc/search "people" "person" :query (q/term :planet "earth"))
-        res2 (doc/search "people" "person" :query (q/term :first-name "mary"))
-        multires (multi/search-with-index-and-type "people" "person"
-                                                   [{} {:query (q/term :planet "earth")}
-                                                    {} {:query (q/term :first-name "mary")}])]
-    (is (= (res1 :hits) (-> multires first :hits)))
-    (is (= (res2 :hits) (-> multires second :hits)))))
+  (deftest ^{:rest true} test-multi-with-index-and-type
+    (let [res1 (doc/search conn "people" "person" :query (q/term :planet "earth"))
+          res2 (doc/search conn "people" "person" :query (q/term :first-name "mary"))
+          multires (multi/search-with-index-and-type conn
+                                                     "people" "person"
+                                                     [{} {:query (q/term :planet "earth")}
+                                                      {} {:query (q/term :first-name "mary")}])]
+      (is (= (res1 :hits) (-> multires first :hits)))
+      (is (= (res2 :hits) (-> multires second :hits))))))

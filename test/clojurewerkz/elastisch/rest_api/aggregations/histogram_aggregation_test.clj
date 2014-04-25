@@ -8,8 +8,8 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.aggregations.histogram-aggregation-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.document :as doc]
+            [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.aggregation   :as a]
             [clojurewerkz.elastisch.fixtures :as fx]
@@ -18,14 +18,15 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
 
-(deftest ^{:rest true :aggregation true} test-histogram-aggregation
-  (let [index-name   "people"
-        mapping-type "person"
-        response     (doc/search index-name mapping-type
-                                 :query (q/match-all)
-                                 :aggregations {:age_histograms (a/histogram "age" 5)})
-        agg          (aggregation-from response :age_histograms)]
-    (is (= {:buckets [{:key 20 :doc_count 1}
-                      {:key 25 :doc_count 2}
-                      {:key 35 :doc_count 1}]}
-           agg))))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true :aggregation true} test-histogram-aggregation
+    (let [index-name   "people"
+          mapping-type "person"
+          response     (doc/search conn index-name mapping-type
+                                   :query (q/match-all)
+                                   :aggregations {:age_histograms (a/histogram "age" 5)})
+          agg          (aggregation-from response :age_histograms)]
+      (is (= {:buckets [{:key 20 :doc_count 1}
+                        {:key 25 :doc_count 2}
+                        {:key 35 :doc_count 1}]}
+             agg)))))

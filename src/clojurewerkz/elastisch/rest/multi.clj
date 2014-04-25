@@ -11,7 +11,8 @@
   (:require [clojurewerkz.elastisch.rest :as rest]
             [cheshire.core :as json]
             [clojure.string :as string]
-            [clojurewerkz.elastisch.arguments :as ar]))
+            [clojurewerkz.elastisch.arguments :as ar])
+  (:import clojurewerkz.elastisch.rest.Connection))
 
 (defn ^:private msearch-with-url
   [url queries & args]
@@ -26,15 +27,18 @@
 
 (defn search
   "Performs multi search"
-  [queries & params]
-  (:responses (apply msearch-with-url (rest/multi-search-url) queries params)))
+  [conn queries & params]
+  (:responses (apply msearch-with-url (rest/multi-search-url conn) queries params)))
 
 (defn search-with-index
   "Performs multi search defaulting to the index specified"
-  [index queries & params]
-  (:responses (apply msearch-with-url (rest/multi-search-url index) queries params)))
+  [^Connection conn index queries & params]
+  (:responses (apply msearch-with-url (rest/multi-search-url conn
+                                                             index) queries params)))
 
 (defn search-with-index-and-type
   "Performs multi search defaulting to the index and type specified"
-  [index mapping-type queries & params]
-  (:responses (apply msearch-with-url (rest/multi-search-url index mapping-type) queries params)))
+  [^Connection conn index mapping-type queries & params]
+  (:responses (apply msearch-with-url (rest/multi-search-url conn
+                                                             index mapping-type)
+                     queries params)))

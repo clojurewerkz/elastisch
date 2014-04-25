@@ -16,20 +16,20 @@
             [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
-(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest ^{:native true :scroll true} test-basic-scan-query
+(let [conn (th/connect-native-client)]
+  (deftest ^{:native true :scroll true} test-basic-scan-query
   (let [index-name   "articles"
         mapping-type "article"
-        response     (doc/search index-name mapping-type
+        response     (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :search_type "scan"
                                  :scroll "1m"
                                  :size 1)
         initial-hits  (hits-from response)
         scroll-id     (:_scroll_id response)
-        scan-response (doc/scroll scroll-id :scroll "1m")
+        scan-response (doc/scroll conn scroll-id :scroll "1m")
         scan-hits     (hits-from scan-response)]
     (is (any-hits? response))
     (is (:_scroll_id response))
@@ -40,21 +40,21 @@
 (deftest ^{:native true :scroll true} test-basic-scroll-query
   (let [index-name   "articles"
         mapping-type "article"
-        response     (doc/search index-name mapping-type
+        response     (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :search_type "query_then_fetch"
                                  :scroll "1m"
                                  :size 2)
         initial-hits    (hits-from response)
         scroll-id       (:_scroll_id response)
-        scroll-response (doc/scroll scroll-id :scroll "1m")
+        scroll-response (doc/scroll conn scroll-id :scroll "1m")
         scroll-hits     (hits-from scroll-response)]
     (is (= 4 (total-hits scroll-response)))
     (is (= 2 (count scroll-hits)))))
 
 (defn fetch-scroll-results
   [scroll-id results]
-  (let [scroll-response (doc/scroll scroll-id :scroll "1m")
+  (let [scroll-response (doc/scroll conn scroll-id :scroll "1m")
         hits            (hits-from scroll-response)]
     (if (seq hits)
       (recur (:_scroll_id scroll-response) (concat results hits))
@@ -63,7 +63,7 @@
 (deftest ^{:native true :scroll true} test-scroll-query-more-than-one-page
   (let [index-name   "articles"
         mapping-type "article"
-        response     (doc/search index-name mapping-type
+        response     (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :search_type "query_then_fetch"
                                  :scroll "1m"
@@ -77,8 +77,8 @@
 (deftest ^{:native true :scroll true} test-scroll-seq
   (let [index-name   "articles"
         mapping-type "article"
-        res-seq      (doc/scroll-seq
-                       (doc/search index-name mapping-type
+        res-seq      (doc/scroll-seq conn
+                       (doc/search conn index-name mapping-type
                                    :query (q/match-all)
                                    :search_type "query_then_fetch"
                                    :scroll "1m"
@@ -91,11 +91,12 @@
 (deftest ^{:native true :scroll true} test-scroll-seq-with-no-results
   (let [index-name   "articles"
         mapping-type "article"
-        res-seq      (doc/scroll-seq
-                       (doc/search index-name mapping-type
+        res-seq      (doc/scroll-seq conn
+                       (doc/search conn index-name mapping-type
                                    :query (q/term :title "Emptiness")
                                    :search_type "query_then_fetch"
                                    :scroll "1m"
                                    :size 2))]
     (is (= 0 (count res-seq)))
-    (is (= true (coll? res-seq)))))
+    (is (= true (coll? res-seq))))))
+

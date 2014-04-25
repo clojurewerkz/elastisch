@@ -8,19 +8,20 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.cluster-health-test
-  (:refer-clojure :exclude [replace])
   (:require [clojurewerkz.elastisch.rest.admin :as admin]
+            [clojurewerkz.elastisch.rest :as rest]
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
-(deftest ^{:rest true} cluster-health
-  (let [r (admin/cluster-health)]
+(let [conn (rest/connect)]
+  (deftest ^{:rest true} cluster-health
+  (let [r (admin/cluster-health conn)]
     (is (contains? r :number_of_nodes)))
-  (let [r (admin/cluster-health :index "tweets")]
+  (let [r (admin/cluster-health conn :index "tweets")]
     (is (contains? r :number_of_nodes)))
-  (let [r (admin/cluster-health :index ["tweets" "people"])]
+  (let [r (admin/cluster-health conn :index ["tweets" "people"])]
     (is (contains? r :number_of_nodes)))
-  (let [r (admin/cluster-health {:index ["tweets"] :level "shards"})]
-    (is (contains? r :number_of_nodes))))
+  (let [r (admin/cluster-health conn {:index ["tweets"] :level "shards"})]
+    (is (contains? r :number_of_nodes)))))

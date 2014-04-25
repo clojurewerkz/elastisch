@@ -27,9 +27,9 @@
 
 (defn register-query
   "Registers a percolator for the given index"
-  [index query-name & args]
+  [^Client conn index query-name & args]
   (let [opts                     (ar/->opts args)
-        ^IndexRequestBuilder irb (doto (.prepareIndex ^Client es/*client*
+        ^IndexRequestBuilder irb (doto (.prepareIndex ^Client conn
                                                       index
                                                       percolator-index
                                                       query-name)
@@ -40,8 +40,8 @@
 
 (defn unregister-query
   "Unregisters a percolator query for the given index"
-  [index percolator]
-  (let [ft (es/delete (cnv/->delete-request percolator-index
+  [^Client conn index percolator]
+  (let [ft (es/delete conn (cnv/->delete-request percolator-index
                                             index
                                             percolator))
         ^DeleteResponse res (.actionGet ft)]
@@ -50,9 +50,9 @@
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
    matched against the queries you register with clojurewerkz.elastisch.rest.percolation/register-query."
-  [index mapping-type & args]
+  [^Client conn index mapping-type & args]
   (let [opts (ar/->opts args)
-        prb  (doto (.preparePercolate ^Client es/*client*)
+        prb  (doto (.preparePercolate ^Client conn)
                (.setIndices (cnv/->string-array index))
                (.setDocumentType mapping-type)
                (.setSource ^Map (wlk/stringify-keys opts)))

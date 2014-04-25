@@ -8,26 +8,27 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.rest-api.nodes-info-test
-  (:refer-clojure :exclude [replace])
-  (:require [clojurewerkz.elastisch.rest.admin :as admin]
+  (:require [clojurewerkz.elastisch.rest :as rest]
+            [clojurewerkz.elastisch.rest.admin :as admin]
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
-(deftest ^{:rest true} nodes-info
-  (testing "basic info"
-    (let [info (admin/nodes-info)]
-      (is (:nodes info))
-      (is (:cluster_name info))))
-  (testing "node selection"
-    (let [info (admin/nodes-info)
-          node-id (first (keys (:nodes info)))
-          node-name (get-in info [:nodes node-id :name])]
-      (is (empty? (:nodes (admin/nodes-info :nodes ["foo"]))))
-      (is (= 1 (count (:nodes (admin/nodes-info :nodes (name node-id))))))
-      (is (= 1 (count (:nodes (admin/nodes-info :nodes (vector (name node-id)))))))
-      (is (= 1 (count (:nodes (admin/nodes-info :nodes node-name)))))))
-  (testing "parameters"
-    (is (not (= (admin/nodes-info :attributes ["plugins"])
-                (admin/nodes-info :attributes ["os"]))))))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true} test-nodes-info
+    (testing "basic info"
+      (let [info (admin/nodes-info conn)]
+        (is (:nodes info))
+        (is (:cluster_name info))))
+    (testing "node selection"
+      (let [info (admin/nodes-info conn)
+            node-id (first (keys (:nodes info)))
+            node-name (get-in info [:nodes node-id :name])]
+        (is (empty? (:nodes (admin/nodes-info conn :nodes ["foo"]))))
+        (is (= 1 (count (:nodes (admin/nodes-info conn :nodes (name node-id))))))
+        (is (= 1 (count (:nodes (admin/nodes-info conn :nodes (vector (name node-id)))))))
+        (is (= 1 (count (:nodes (admin/nodes-info conn :nodes node-name)))))))
+    (testing "parameters"
+      (is (not (= (admin/nodes-info conn :attributes ["plugins"])
+                  (admin/nodes-info conn :attributes ["os"])))))))

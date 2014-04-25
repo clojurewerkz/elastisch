@@ -17,22 +17,22 @@
             [clojurewerkz.elastisch.rest.response :refer :all]
             [clojure.test :refer :all]))
 
-
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-(deftest ^{:rest true :percolation true} test-percolation-case-1
-  (let [index-name   "articles"
-        percolator   "article"
-        result1      (pcl/register-query index-name percolator {:query {:term {:title "search"}}})
-        result2      (pcl/percolate index-name percolator {:doc {:title "You know, for search"}})]
-    (is (= [{:_index "articles" :_id "article"}] (matches-from result2)))
-    (pcl/unregister-query index-name percolator)))
+(let [conn (rest/connect)]
+  (deftest ^{:rest true :percolation true} test-percolation-case-1
+    (let [index-name   "articles"
+          percolator   "article"
+          result1      (pcl/register-query conn index-name percolator {:query {:term {:title "search"}}})
+          result2      (pcl/percolate conn index-name percolator {:doc {:title "You know, for search"}})]
+      (is (= [{:_index "articles" :_id "article"}] (matches-from result2)))
+      (pcl/unregister-query conn index-name percolator)))
 
-(deftest ^{:rest true :percolation true} test-percolation-existing-doc
-  (let [index-name   "articles"
-        percolator   "article"
-        response     (doc/put index-name percolator "123" {:title "You know, for search"})
-        result1      (pcl/register-query index-name percolator {:query {:term {:title "search"}}})
-        result2      (pcl/percolate-existing index-name percolator "123")]
-    (is (= [{:_index "articles" :_id "article"}] (matches-from result2)))
-    (pcl/unregister-query index-name percolator)))
+  (deftest ^{:rest true :percolation true} test-percolation-existing-doc
+    (let [index-name   "articles"
+          percolator   "article"
+          response     (doc/put conn index-name percolator "123" {:title "You know, for search"})
+          result1      (pcl/register-query conn index-name percolator {:query {:term {:title "search"}}})
+          result2      (pcl/percolate-existing conn index-name percolator "123")]
+      (is (= [{:_index "articles" :_id "article"}] (matches-from result2)))
+      (pcl/unregister-query conn index-name percolator))))

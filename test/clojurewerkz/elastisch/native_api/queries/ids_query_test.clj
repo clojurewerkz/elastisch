@@ -16,15 +16,11 @@
             [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
-(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
-;;
-;; Tests
-;;
-
-(deftest ^{:query true :native true} test-basic-ids-query
-  (let [response     (doc/search "tweets" "tweet" :query (q/ids "tweet" ["1" "2" "8ska88"]))]
+(let [conn (th/connect-native-client)]
+  (deftest ^{:query true :native true} test-basic-ids-query
+  (let [response (doc/search conn "tweets" "tweet" :query (q/ids "tweet" ["1" "2" "8ska88"]))]
     (is (any-hits? response))
     (is (= 2 (total-hits response)))
-    (is (= #{"1" "2"} (set (map :_id (hits-from response)))))))
+    (is (= #{"1" "2"} (set (map :_id (hits-from response))))))))
