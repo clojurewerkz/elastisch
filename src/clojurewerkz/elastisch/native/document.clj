@@ -47,9 +47,9 @@
 
    (require '[clojurewerkz.elastisch.native.document :as doc])
 
-   (doc/create \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28})
+   (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28})
 
-   (doc/create \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
+   (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   ([^Client conn index mapping-type document]
      (let [res (es/index conn (cnv/->index-request index
                                                           mapping-type
@@ -131,7 +131,7 @@
 
    (require '[clojurewerkz.elastisch.native.document :as doc])
 
-   (doc/get \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
+   (doc/get conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   ([^Client conn index mapping-type id]
      (let [ft               (es/get conn (cnv/->get-request index
                                                        mapping-type
@@ -169,21 +169,21 @@
    Queries can passed as a collection of maps with three keys: :_index,
    :_type and :_id:
 
-   (doc/multi-get [{:_index index-name :_type mapping-type :_id \"1\"}
-                   {:_index index-name :_type mapping-type :_id \"2\"}])
+   (doc/multi-get conn [{:_index index-name :_type mapping-type :_id \"1\"}
+                        {:_index index-name :_type mapping-type :_id \"2\"}])
 
 
    2-argument version accepts an index name that eliminates the need to include
    :_index in every query map:
 
-   (doc/multi-get index-name [{:_type mapping-type :_id \"1\"}
-                              {:_type mapping-type :_id \"2\"}])
+   (doc/multi-get conn index-name [{:_type mapping-type :_id \"1\"}
+                                   {:_type mapping-type :_id \"2\"}])
 
    3-argument version also accepts a mapping type that eliminates the need to include
    :_type in every query map:
 
-   (doc/multi-get index-name mapping-type [{:_id \"1\"}
-                                           {:_id \"2\"}])"
+   (doc/multi-get conn index-name mapping-type [{:_id \"1\"}
+                                                {:_id \"2\"}])"
   ([^Client conn queries]
      ;; example response from the REST API:
      ;; ({:_index people, :_type person, :_id 1, :_version 1, :exists true, :_source {...}})
@@ -211,7 +211,7 @@
 
    (require '[clojurewerkz.elastisch.native.document :as doc])
 
-   (doc/delete \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
+   (doc/delete conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   ([^Client conn index mapping-type id]
      (let [ft                  (es/delete conn (cnv/->delete-request index mapping-type id))
            ^DeleteResponse res (.actionGet ft)]
@@ -229,7 +229,7 @@
    (require '[clojurewerkz.elastisch.native.document :as doc])
    (require '[clojurewerkz.elastisch.query :as q])
 
-   (doc/delete-by-query \"people\" \"person\" (q/term :username \"appleseed\"))"
+   (doc/delete-by-query conn \"people\" \"person\" (q/term :username \"appleseed\"))"
   ([^Client conn index mapping-type query]
      (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request index mapping-type query))
            ^DeleteByQueryResponse res (.actionGet ft)]
@@ -270,8 +270,8 @@
    (require '[clojurewerkz.elastisch.native.document :as doc])
    (require '[clojurewerkz.elastisch.query :as q])
 
-   (doc/count \"people\" \"person\")
-   (doc/count \"people\" \"person\" (q/prefix :username \"appl\"))"
+   (doc/count conn \"people\" \"person\")
+   (doc/count conn \"people\" \"person\" (q/prefix :username \"appl\"))"
   ([^Client conn index mapping-type]
      (count conn index mapping-type (q/match-all)))
   ([^Client conn index mapping-type query]
@@ -294,7 +294,7 @@
    (require '[clojurewerkz.elastisch.native.document :as doc])
    (require '[clojurewerkz.elastisch.query :as q])
 
-   (doc/search \"people\" \"person\" :query (q/prefix :username \"appl\"))"
+   (doc/search conn \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [^Client conn index mapping-type & args]
   (let [ft                  (es/search conn (cnv/->search-request index mapping-type (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
