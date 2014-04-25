@@ -25,10 +25,5 @@
   ([]
      (connect-native-client (infer-cluster-name)))
   ([cluster-name]
-     (es/connect! [["127.0.0.1" 9300]]
-                  {"cluster.name" cluster-name })))
-
-(defn maybe-connect-native-client
-  []
-  (when (not (es/connected?))
-    (connect-native-client)))
+     (es/connect [["127.0.0.1" 9300]]
+                 {"cluster.name" cluster-name})))

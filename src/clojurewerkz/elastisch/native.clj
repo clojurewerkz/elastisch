@@ -48,74 +48,6 @@
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest))
 
-
-
-;;
-;; Implementation
-;;
-
-(def ^{:dynamic true}
-  *client*)
-
-;;
-;; API
-;;
-
-(defn ^Client connect
-  "Connects to one or more ElasticSearch cluster nodes using
-   TCP/IP communication transport. Returns the client."
-  ([]
-     (TransportClient.))
-  ([pairs]
-     (let [tc (TransportClient.)]
-       (doseq [[host port] pairs]
-         (.addTransportAddress tc (cnv/->socket-transport-address host port)))
-       tc))
-  ([pairs settings]
-     (let [tc (TransportClient. (cnv/->settings settings))]
-       (doseq [[host port] pairs]
-         (.addTransportAddress tc (cnv/->socket-transport-address host port)))
-       tc)))
-
-(defn ^Client connect!
-  "Connects to one or more ElasticSearch cluster nodes using
-   TCP/IP communication transport. Alters the *client* var root."
-  [& args]
-  (alter-var-root (var *client*) (constantly (apply connect args))))
-
-(defn ^Node build-local-node
-  [settings]
-  (let [is (cnv/->settings settings)
-        nb (.. NodeBuilder nodeBuilder
-               (settings is)
-               (client true))]
-    (.build ^NodeBuilder nb)))
-
-(defn ^Thread start-local-node
-  [^Node node]
-  (.start node)
-  node)
-
-(defn ^Client connect-to-local-node
-  "Connects to a local ElasticSearch cluster nodes using
-   local transport. Returns the client. Supposed to be used for automated testing."
-  [^Node node]
-  (.client node))
-
-(defn ^Client connect-to-local-node!
-  "Connects to one or more local ElasticSearch cluster nodes using
-   local transport. Returns the client. Alters the *client* var root.
-   Supposed to be used for automated testing."
-  [^Node node]
-  (alter-var-root (var *client*) (constantly (connect-to-local-node node))))
-
-(defn connected?
-  "Returns true if current client is connected (*client* is bound)"
-  []
-  (bound? (var *client*)))
-
-
-
 ;;
 ;; Core
 ;;
@@ -284,3 +216,43 @@
   "Executes a delete index template request"
   [^Client conn ^DeleteIndexTemplateRequest req]
   (-> ^Client conn .admin .indices (.deleteTemplate req)))
+
+
+;;
+;; API
+;;
+
+(defn ^Client connect
+  "Connects to one or more ElasticSearch cluster nodes using
+   TCP/IP communication transport. Returns the client."
+  ([]
+     (TransportClient.))
+  ([pairs]
+     (let [tc (TransportClient.)]
+       (doseq [[host port] pairs]
+         (.addTransportAddress tc (cnv/->socket-transport-address host port)))
+       tc))
+  ([pairs settings]
+     (let [tc (TransportClient. (cnv/->settings settings))]
+       (doseq [[host port] pairs]
+         (.addTransportAddress tc (cnv/->socket-transport-address host port)))
+       tc)))
+
+(defn ^Node build-local-node
+  [settings]
+  (let [is (cnv/->settings settings)
+        nb (.. NodeBuilder nodeBuilder
+               (settings is)
+               (client true))]
+    (.build ^NodeBuilder nb)))
+
+(defn ^Thread start-local-node
+  [^Node node]
+  (.start node)
+  node)
+
+(defn ^Client connect-to-local-node
+  "Connects to a local ElasticSearch cluster nodes using
+   local transport. Returns the client. Supposed to be used for automated testing."
+  [^Node node]
+  (.client node))
