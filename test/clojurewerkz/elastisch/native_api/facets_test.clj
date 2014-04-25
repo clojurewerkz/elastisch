@@ -17,14 +17,14 @@
             [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
-(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
-(deftest ^{:facets true :native true} test-term-facet-on-tags
+(let [conn (th/connect-native-client)]
+  (deftest ^{:facets true :native true} test-term-facet-on-tags
   (let [index-name   "articles"
         mapping-type "article"
         ;; match-all here makes faceting act effectively as with :global true but that's fine for this test
-        result       (doc/search index-name mapping-type
+        result       (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :facets {:tags {:terms {:field "tags"}}})
         facets       (facets-from result)]
@@ -34,11 +34,10 @@
     (is (-> facets :tags :terms first :term))
     (is (-> facets :tags :terms first :count))))
 
-
 (deftest ^{:facets true :native true} test-term-facet-on-tags-with-global-scope
   (let [index-name   "articles"
         mapping-type "article"
-        result       (doc/search index-name mapping-type
+        result       (doc/search conn index-name mapping-type
                                  :query (q/query-string :query "T*")
                                  :facets {:tags {:terms {:field "tags"} :global true}})
         facets       (facets-from result)]
@@ -51,7 +50,7 @@
 (deftest ^{:facets true :native true} test-range-facet-over-age-1
   (let [index-name   "people"
         mapping-type "person"
-        result       (doc/search index-name mapping-type
+        result       (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :facets {:ages {:range {:field "age"
                                                          :ranges [{:from 18 :to 20}
@@ -66,7 +65,7 @@
 (deftest ^{:facets true :native true} test-range-facet-over-age-2
   (let [index-name   "people"
         mapping-type "person"
-        result       (doc/search index-name mapping-type
+        result       (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :facets {:ages {:histogram {:field    "age"
                                                              :interval 5}}})
@@ -78,10 +77,11 @@
 (deftest ^{:facets true :native true} test-date-histogram-facet-on-post-dates
   (let [index-name   "tweets"
         mapping-type "tweet"
-        result       (doc/search index-name mapping-type
+        result       (doc/search conn index-name mapping-type
                                  :query (q/match-all)
                                  :facets {:dates {:date_histogram {:field   "timestamp"
                                                                    :interval "day"}}})
         facets       (facets-from result)]
     (is (= [1343606400000 1343692800000 1343779200000 1343865600000]
-           (vec (map :time (get-in facets [:dates :entries])))))))
+           (vec (map :time (get-in facets [:dates :entries]))))))))
+

@@ -16,17 +16,13 @@
             [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
-(th/maybe-connect-native-client)
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-;;
-;; field query
-;;
-
-(deftest ^{:query true :native true} test-basic-match-all-query
-  (let [index-name   "articles"
-        mapping-type "article"
-        response     (doc/search index-name mapping-type :query (q/match-all))
-        hits         (hits-from response)]
-    (is (any-hits? response))
-    (is (= 4 (total-hits response)))))
+(let [conn (th/connect-native-client)]
+  (deftest ^{:query true :native true} test-basic-match-all-query
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type :query (q/match-all))
+          hits         (hits-from response)]
+      (is (any-hits? response))
+      (is (= 4 (total-hits response))))))
