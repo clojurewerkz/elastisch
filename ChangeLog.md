@@ -1,3 +1,63 @@
+## Changes between Elastisch 2.0.0-beta5 and 2.0.0-rc1
+
+### Connection/Client As Explicit Argument
+
+Starting with Elastisch `2.0.0-rc1`, connection (client) is no longer a shared
+dynamic var but rather is an explicit argument that relevant API functions
+accept.
+
+Before the change:
+
+``` clojure
+(ns clojurewerkz.elastisch.docs.examples
+  (:require [clojurewerkz.elastisch.rest  :as esr]
+            [clojurewerkz.elastisch.rest.index :as esi]
+            [clojurewerkz.elastisch.rest.document :as esd]))
+
+(defn -main
+  [& args]
+  (esr/connect! "http://127.0.0.1:9200")
+  (let [mapping-types {"person" {:properties {:username   {:type "string" :store "yes"}
+                                              :first-name {:type "string" :store "yes"}
+                                              :last-name  {:type "string"}
+                                              :age        {:type "integer"}
+                                              :title      {:type "string" :analyzer "snowball"}
+                                              :planet     {:type "string"}
+                                              :biography  {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}}
+        doc           {:username "happyjoe" :first-name "Joe" :last-name "Smith" :age 30 :title "Teh Boss" :planet "Earth" :biography "N/A"}]
+    (esi/create "myapp2_development" :mappings mapping-types)
+    (esd/create "myapp2_development" "person" doc)))
+```
+
+After the change:
+
+``` clojure
+(ns clojurewerkz.elastisch.docs.examples
+  (:require [clojurewerkz.elastisch.rest  :as esr]
+            [clojurewerkz.elastisch.rest.index :as esi]
+            [clojurewerkz.elastisch.rest.document :as esd]))
+
+(defn -main
+  [& args]
+  (let [conn          (esr/connect "http://127.0.0.1:9200")
+        mapping-types {"person" {:properties {:username   {:type "string" :store "yes"}
+                                              :first-name {:type "string" :store "yes"}
+                                              :last-name  {:type "string"}
+                                              :age        {:type "integer"}
+                                              :title      {:type "string" :analyzer "snowball"}
+                                              :planet     {:type "string"}
+                                              :biography  {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}}
+        doc           {:username "happyjoe" :first-name "Joe" :last-name "Smith" :age 30 :title "Teh Boss" :planet "Earth" :biography "N/A"}]
+    (esi/create conn "myapp2_development" :mappings mapping-types)
+    (esd/create conn "myapp2_development" "person" doc)))
+```
+
+Dynamic var reliance has been a [major
+complaint](http://stuartsierra.com/2013/03/29/perils-of-dynamic-scope)
+of Clojure users for quite some time and 2.0 is the right time to fix
+this.
+
+
 ## Changes between Elastisch 2.0.0-beta4 and 2.0.0-beta5
 
 ### Response Helpers Compatible With ES 1.1
