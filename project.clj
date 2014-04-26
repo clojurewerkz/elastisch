@@ -10,7 +10,7 @@
                  [org.elasticsearch/elasticsearch "1.1.1"]]
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
-                       :dependencies [[clj-time            "0.4.4" :exclusions [org.clojure/clojure]]]
+                       :dependencies [[clj-time            "0.7.0" :exclusions [org.clojure/clojure]]]
                        :plugins [[codox "0.6.6"]]
                        :codox {:sources ["src"]
                                :output-dir "doc/api"}}
