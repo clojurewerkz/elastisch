@@ -58,4 +58,4 @@
         (= "VersionConflictEngineException"
            (:error (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") :version original-version)))
         ;; Still should have the new data
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))))

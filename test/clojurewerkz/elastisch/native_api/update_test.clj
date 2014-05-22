@@ -53,29 +53,4 @@
         (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))
                                         ; Can't perform a write when we pass the wrong version
         (is (thrown? VersionConflictEngineException (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") :version original-version)))
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
-
-  (deftest test-assigning-with-a-script-1
-    (let [index-name "people"
-          mapping-type "person"
-          id         "1"]
-      (idx/create conn index-name :mappings fx/people-mapping)
-      (doc/put conn index-name mapping-type "1" fx/person-jack)
-      (idx/refresh conn index-name)
-      (doc/update-with-script conn index-name mapping-type "1"
-                              "ctx._source.counter = 1")
-      (is (= 1
-             (get-in (doc/get conn index-name mapping-type "1") [:_source :counter])))))
-
-  (deftest test-assigning-with-a-script-2
-    (let [index-name "people"
-          mapping-type "person"
-          id         "1"]
-      (idx/create conn index-name :mappings fx/people-mapping)
-      (doc/put conn index-name mapping-type "1" (assoc fx/person-jack :counter 1))
-      (idx/refresh conn index-name)
-      (doc/update-with-script conn index-name mapping-type "1"
-                              "ctx._source.counter += inc"
-                              {"inc" 4})
-      (is (= 5
-             (get-in (doc/get conn index-name mapping-type "1") [:_source :counter]))))))
+        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))))
