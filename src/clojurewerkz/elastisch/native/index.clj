@@ -26,14 +26,14 @@
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
            org.elasticsearch.action.admin.indices.flush.FlushResponse
            org.elasticsearch.action.admin.indices.refresh.RefreshResponse
-           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheResponse
            org.elasticsearch.action.admin.indices.status.IndicesStatusResponse
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
-           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse (org.elasticsearch.action.admin.indices.exists.types
-                                                                                               TypesExistsResponse)))
+           org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse
+           org.elasticsearch.action.admin.indices.exists.types.TypesExistsResponse
+           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotResponse))
 
 ;;
 ;; API
@@ -173,8 +173,8 @@
 (defn snapshot
   "Performs a snapshot through the gateway for one or multiple indices"
   [^Client conn index-name]
-  (let [ft                           (es/admin-gateway-snapshot conn (cnv/->gateway-snapshot-request index-name))
-        ^GatewaySnapshotResponse res (.actionGet ft)]
+  (let [ft                           (es/admin-create-snapshot conn (cnv/->create-snapshot-request index-name))
+        ^CreateSnapshotResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn clear-cache

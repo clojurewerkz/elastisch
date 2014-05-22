@@ -56,7 +56,6 @@
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
-           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
@@ -66,7 +65,8 @@
            org.elasticsearch.common.hppc.cursors.ObjectObjectCursor
            org.elasticsearch.common.collect.ImmutableOpenMap
            org.elasticsearch.cluster.metadata.MappingMetaData
-           org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest))
+           org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
+           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest))
 
 ;;
 ;; Implementation
@@ -917,9 +917,9 @@
              :failures   (map shard-operation-failed-exception->map (.getShardFailures res))}})
 
 
-(defn ^GatewaySnapshotRequest ->gateway-snapshot-request
-  [index-name]
-  (GatewaySnapshotRequest. (->string-array index-name)))
+(defn ^CreateSnapshotRequest ->create-snapshot-request
+  [^String repository ^String snapshot]
+  (CreateSnapshotRequest. repository snapshot))
 
 (defn ^ClearIndicesCacheRequest ->clear-indices-cache-request
   [index-name {:keys [filter-cache field-data-cache id-cache fields]}]

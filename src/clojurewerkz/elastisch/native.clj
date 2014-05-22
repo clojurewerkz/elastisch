@@ -39,14 +39,14 @@
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
-           org.elasticsearch.action.admin.indices.gateway.snapshot.GatewaySnapshotRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
-           org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest))
+           org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
+           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest))
 
 ;;
 ;; Core
@@ -177,10 +177,10 @@
   [^Client conn ^RefreshRequest req]
   (-> ^Client conn .admin .indices (.refresh req)))
 
-(defn ^ActionFuture admin-gateway-snapshot
-  "Executes a gateway snapshot request"
-  [^Client conn ^GatewaySnapshotRequest req]
-  (-> ^Client conn .admin .indices (.gatewaySnapshot req)))
+(defn ^ActionFuture admin-create-snapshot
+  "Executes a create snapshot request"
+  [^Client conn ^CreateSnapshotRequest req]
+  (-> ^Client conn .admin .indices (.createSnapshot req)))
 
 (defn ^ActionFuture admin-clear-cache
   "Executes a cache clear request"
