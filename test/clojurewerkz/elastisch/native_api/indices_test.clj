@@ -70,12 +70,6 @@
         response  (idx/refresh conn index)]
     (is (broadcast-operation-response? response))))
 
-(deftest ^{:indexing true :native true} test-snapshot-index
-  (let [index     "people"
-        _         (idx/create conn index :mappings fx/people-mapping)
-        response  (idx/snapshot conn index)]
-    (is (broadcast-operation-response? response))))
-
 (deftest ^{:indexing true :native true} test-clear-index-cache-with-refresh
   (let [index     "people"
         _         (idx/create conn index :mappings fx/people-mapping)

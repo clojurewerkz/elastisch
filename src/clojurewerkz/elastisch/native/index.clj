@@ -32,8 +32,7 @@
            org.elasticsearch.action.admin.indices.status.IndicesStatusResponse
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse
-           org.elasticsearch.action.admin.indices.exists.types.TypesExistsResponse
-           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotResponse))
+           org.elasticsearch.action.admin.indices.exists.types.TypesExistsResponse))
 
 ;;
 ;; API
@@ -168,13 +167,6 @@
   [^Client conn index-name]
   (let [ft                 (es/admin-refresh-index conn (cnv/->refresh-index-request index-name))
         ^RefreshResponse res (.actionGet ft)]
-    (cnv/broadcast-operation-response->map res)))
-
-(defn snapshot
-  "Performs a snapshot through the gateway for one or multiple indices"
-  [^Client conn index-name]
-  (let [ft                           (es/admin-create-snapshot conn (cnv/->create-snapshot-request index-name))
-        ^CreateSnapshotResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn clear-cache

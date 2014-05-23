@@ -50,7 +50,6 @@
            org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
-           org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
@@ -66,7 +65,11 @@
            org.elasticsearch.common.collect.ImmutableOpenMap
            org.elasticsearch.cluster.metadata.MappingMetaData
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
-           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest))
+           org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequest
+           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest
+           org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotRequest
+           org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
+           org.elasticsearch.action.support.master.AcknowledgedResponse))
 
 ;;
 ;; Implementation
@@ -908,6 +911,11 @@
    :shard-id (.shardId e)
    :reason   (.reason e)})
 
+(defn ^IPersistentMap acknowledged-response->map
+  [^AcknowledgedResponse res]
+  ;; matches REST API responses
+  {:acknowledged (.isAcknowledged res)})
+
 (defn ^IPersistentMap broadcast-operation-response->map
   [^BroadcastOperationResponse res]
   ;; matches REST API responses
@@ -917,9 +925,32 @@
              :failures   (map shard-operation-failed-exception->map (.getShardFailures res))}})
 
 
+(defn ^PutRepositoryRequest ->put-repository-request
+  [^String name {:keys [type settings]}]
+  (let [r (PutRepositoryRequest. name)]
+    (when type
+      (.type r type))
+    (when settings
+      (.settings r ^Map (wlk/stringify-keys settings)))
+    r))
+
 (defn ^CreateSnapshotRequest ->create-snapshot-request
+  [^String repository ^String snapshot {:keys [wait-for-completion? partial settings indices]}]
+  (let [r (CreateSnapshotRequest. repository snapshot)]
+    (when wait-for-completion?
+      (.waitForCompletion r wait-for-completion?))
+    (when partial
+      (.partial r partial))
+    (when settings
+      (.settings r ^Map (wlk/stringify-keys settings)))
+    (when indices
+      (.indices r indices))
+    r))
+
+(defn ^DeleteSnapshotRequest ->delete-snapshot-request
   [^String repository ^String snapshot]
-  (CreateSnapshotRequest. repository snapshot))
+  (DeleteSnapshotRequest. repository snapshot))
+
 
 (defn ^ClearIndicesCacheRequest ->clear-indices-cache-request
   [index-name {:keys [filter-cache field-data-cache id-cache fields]}]

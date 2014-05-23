@@ -35,6 +35,7 @@
                    :facets      :facets
                    :percolation :percolation
                    :scroll      :scroll
+                   :snapshots   :snapshots
                    :native      :native
                    :rest        :rest
                    :all         (constantly true)

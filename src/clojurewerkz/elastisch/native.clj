@@ -46,7 +46,9 @@
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
-           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest))
+           org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequest
+           org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest
+           org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotRequest))
 
 ;;
 ;; Core
@@ -177,10 +179,20 @@
   [^Client conn ^RefreshRequest req]
   (-> ^Client conn .admin .indices (.refresh req)))
 
+(defn ^ActionFuture admin-put-repository
+  "Executes a put repository request"
+  [^Client conn ^PutRepositoryRequest req]
+  (-> ^Client conn .admin .cluster (.putRepository req)))
+
 (defn ^ActionFuture admin-create-snapshot
   "Executes a create snapshot request"
   [^Client conn ^CreateSnapshotRequest req]
-  (-> ^Client conn .admin .indices (.createSnapshot req)))
+  (-> ^Client conn .admin .cluster (.createSnapshot req)))
+
+(defn ^ActionFuture admin-delete-snapshot
+  "Executes a delete snapshot request"
+  [^Client conn ^DeleteSnapshotRequest req]
+  (-> ^Client conn .admin .cluster (.deleteSnapshot req)))
 
 (defn ^ActionFuture admin-clear-cache
   "Executes a cache clear request"

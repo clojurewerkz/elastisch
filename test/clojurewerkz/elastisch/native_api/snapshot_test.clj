@@ -7,12 +7,14 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.rest-api.snapshot-test
-  (:require [clojurewerkz.elastisch.rest.admin :as admin]
-            [clojurewerkz.elastisch.rest :as rest]
-            [clojurewerkz.elastisch.rest.response :refer [acknowledged? accepted?]]
+(ns clojurewerkz.elastisch.native-api.snapshot-test
+  (:require [clojurewerkz.elastisch.native.admin :as admin]
+            [clojurewerkz.elastisch.native :as es]
+            [clojurewerkz.elastisch.native.response :refer [acknowledged? accepted?]]
             [clojurewerkz.elastisch.fixtures :as fx]
-            [clojure.test :refer :all]))
+            [clojure.test :refer :all]
+            [clojurewerkz.elastisch.test.helpers  :as th])
+  (:import java.io.File))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-tweets-index)
 
@@ -20,17 +22,22 @@
   []
   (System/getProperty "java.io.tmpdir"))
 
-(let [conn (rest/connect)]
-  (deftest ^{:snapshots true :rest true} test-snapshotting
-    (let [repo "rest-backup1"
+(let [conn (th/connect-native-client)]
+  (deftest ^{:snapshots true :native true} test-snapshotting
+    (let [repo "native-backup1"
           p    (tmp-dir)
-          s    "rest-snapshot1"
+          s    "native-snapshot1"
+          _    (.mkdir (File. p))
           r1   (admin/register-snapshot-repository conn repo
                                                    {:type "fs"
                                                     :settings {:location p
                                                                :compress true}})
-          _  (admin/delete-snapshot conn repo s)
-          r2 (admin/take-snapshot conn repo s {:wait-for-completion? true})
+          _   (try
+                (admin/delete-snapshot conn repo s)
+                (catch Exception _))
+          r2 (try
+               (admin/take-snapshot conn repo s {:wait-for-completion? true})
+               (catch org.elasticsearch.snapshots.InvalidSnapshotNameException _))
           r3 (admin/delete-snapshot conn repo s)]
       (is (acknowledged? r1))
       (is (accepted? r2))
