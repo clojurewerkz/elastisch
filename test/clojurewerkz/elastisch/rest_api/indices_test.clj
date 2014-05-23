@@ -69,12 +69,6 @@
           response  (idx/flush conn index :refresh true)]
       (is (:_shards response))))
 
-  (deftest ^{:rest true :indexing true} test-snapshot-index
-    (let [index     "people"
-          _         (idx/create conn index :mappings fx/people-mapping)
-          response  (idx/snapshot conn index)]
-      (is (:_shards response))))
-
   (deftest ^{:rest true :indexing true} test-clear-index-cache-with-refresh
     (let [index     "people"
           _         (idx/create conn index :mappings fx/people-mapping)
