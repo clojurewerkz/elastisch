@@ -1,3 +1,16 @@
+## Changes between Elastisch 2.0.0-rc1 and 2.0.0-rc2
+
+### ElasticSearch Client Update
+
+ElasticSearch client has been upgraded to `1.2.0`.
+
+### Snapshotting Support in Native Client
+
+Native client now supports snapshotting (updated for ElasticSearch 1.2)
+with the same Clojure API as the REST client (all the usual API conventions
+apply).
+
+
 ## Changes between Elastisch 2.0.0-beta5 and 2.0.0-rc1
 
 ### Connection/Client As Explicit Argument
