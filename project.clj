@@ -11,7 +11,7 @@
   :min-lein-version "2.0.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time            "0.7.0" :exclusions [org.clojure/clojure]]]
-                       :plugins [[codox "0.6.7"]]
+                       :plugins [[codox "0.8.5"]]
                        :codox {:sources ["src"]
                                :output-dir "doc/api"}}
                  ;; this version of clj-http depends on HTTPCore 4.2.x which
