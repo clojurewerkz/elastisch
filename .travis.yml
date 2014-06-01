@@ -8,6 +8,6 @@ before_install:
   - sudo service elasticsearch status
 script: lein2 all test :ci
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
+  - oraclejdk8
