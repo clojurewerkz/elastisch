@@ -2,7 +2,7 @@
 
 ### ElasticSearch Client Update
 
-ElasticSearch client has been upgraded to `1.2.0`.
+ElasticSearch client has been upgraded to `1.2.x`.
 
 ### Snapshotting Support in Native Client
 
