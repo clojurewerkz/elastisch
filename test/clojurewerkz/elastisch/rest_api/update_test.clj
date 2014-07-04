@@ -58,4 +58,24 @@
         (= "VersionConflictEngineException"
            (:error (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") :version original-version)))
         ;; Still should have the new data
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))))
+        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+
+  (deftest ^{:rest true} update-with-partial-doc
+      (let [index-name "people"
+            index-type "person"
+            id         "1"]
+        (idx/create conn index-name :mappings fx/people-mapping)
+
+        (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") :id id)
+        (idx/refresh conn index-name)
+
+        (let [original-document (doc/get conn index-name index-type id)]
+          ;; Udpate with partial document. doc key is needed by update partial api of elastic search
+          ;; http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/partial-updates.html
+          (doc/update-with-partial-doc conn index-name index-type id {:doc { :country "India" }})
+          (idx/refresh conn index-name)
+          ;; Now should have merged document data
+          (is (= "brilliant1"
+                 (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+          (is (= "India"
+                         (get-in (doc/get conn index-name index-type id) [:_source :country])))))))

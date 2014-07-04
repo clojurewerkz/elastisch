@@ -62,6 +62,16 @@
      (rest/put (rest/record-url conn
                                 index mapping-type id) :body document :query-params (ar/->opts args))))
 
+(defn update-with-partial-doc
+  "Updates an existing document in the search index with given partial document"
+  ([^Connection conn index mapping-type id partial-doc]
+     (rest/post (rest/record-update-url conn
+                                index mapping-type id) :body partial-doc))
+  ([^Connection conn index mapping-type id partial-doc & args]
+     (rest/post (rest/record-update-url conn
+                                index mapping-type id) :body partial-doc :query-params (ar/->opts args))))
+
+
 (defn update-with-script
   "Updates a document using a script"
   ([^Connection conn index mapping-type id script]
