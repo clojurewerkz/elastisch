@@ -1,4 +1,20 @@
-## Changes between Elastisch 2.0.0-rc1 and 2.0.0-rc2
+## Changes between Elastisch 2.0.0 and 2.1.0-beta1
+
+### Update with Partial Document
+
+`clojurewerkz.elastisch.rest.document/update-with-partial-doc` is a new function
+that performs [partial updates](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/partial-updates.html):
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.document :as doc])
+
+(doc/update-with-partial-doc conn "people" "person" "1" {:doc { :country "India" }})
+```
+
+Contributed by Sandeep Jagtap.
+
+
+## Changes between Elastisch 2.0.0-rc1 and 2.0.0
 
 ### ElasticSearch Client Update
 
