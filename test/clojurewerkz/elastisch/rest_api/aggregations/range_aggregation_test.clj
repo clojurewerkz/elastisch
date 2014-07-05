@@ -29,8 +29,4 @@
                                                                             {:from 26 :to 30}
                                                                             {:from 31}])})
         agg          (aggregation-from response :age_ranges)]
-    (is (= {:buckets [{:key "15.0-20.0", :from 15.0, :from_as_string "15.0", :to 20.0, :to_as_string "20.0", :doc_count 0}
-           {:key "21.0-25.0", :from 21.0, :from_as_string "21.0", :to 25.0, :to_as_string "25.0", :doc_count 1}
-           {:key "26.0-30.0", :from 26.0, :from_as_string "26.0", :to 30.0, :to_as_string "30.0", :doc_count 2}
-           {:key "31.0-*", :from 31.0, :from_as_string "31.0", :doc_count 1}]}
-           agg)))))
+    (is (:buckets agg))))))
