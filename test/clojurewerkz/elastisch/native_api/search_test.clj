@@ -69,4 +69,30 @@
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
       (is (= "Nueva York" (-> hits last :_source :title)))
-      (is (= "Apache Lucene" (-> hits first :_source :title))))))
+      (is (= "Apache Lucene" (-> hits first :_source :title)))))
+
+  (deftest test-searching-returning-fields
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type
+                                   :query (q/match-all)
+                                   :fields ["title"])
+          hits         (hits-from response)
+          title-fields (remove nil? (map #(get-in % [:_fields :title]) hits))
+          title-source (remove nil? (map #(get-in % [:_source :title]) hits))]
+      (is (= 4 (total-hits response)))
+      (is (= 4 (count title-fields)))
+      (is (= 0 (count title-source)))))
+
+  (deftest test-searching-returning-fields-and-source
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type
+                                   :query (q/match-all)
+                                   :fields ["title" "_source"])
+          hits         (hits-from response)
+          title-fields (remove nil? (map #(get-in % [:_fields :title]) hits))
+          title-source (remove nil? (map #(get-in % [:_source :title]) hits))]
+      (is (= 4 (total-hits response)))
+      (is (= 4 (count title-fields)))
+      (is (= 4 (count title-source))))))

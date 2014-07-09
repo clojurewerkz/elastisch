@@ -600,17 +600,21 @@
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
   (let [source (.getSource sh)
-        source-or-fields (if source
-                           {:_source (convert-source-result source)}
-                           (let [fs (convert-fields-result (.getFields sh))]
-                             {:_fields fs
-                              :fields  fs}))]
-    (clojure.core/merge source-or-fields
-                        {:_index    (.getIndex sh)
-                         :_type     (.getType sh)
-                         :_id       (.getId sh)
-                         :_score    (.getScore sh)
-                         :_version  (.getVersion sh)})))
+        fs (dissoc (convert-fields-result (.getFields sh)) :_source)
+        result {:_index    (.getIndex sh)
+                :_type     (.getType sh)
+                :_id       (.getId sh)
+                :_score    (.getScore sh)
+                :_version  (.getVersion sh)}
+        result-with-source (if source
+                             (assoc result :_source (convert-source-result source))
+                             result)]
+    (if-not (or (nil? fs)
+                (empty? fs))
+      (assoc result-with-source
+        :_fields fs
+        :fields fs)
+      result-with-source)))
 
 (defn- search-hits->seq
   [^SearchHits hits]
