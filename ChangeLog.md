@@ -22,6 +22,8 @@ would not return the document itself.  You can now have both by:
 Now the parent ID is in the ```:_parent``` field of each hit, and the matching document
 will be in ```:_source``` as per a normal search.
 
+Contributed by Ben Ashford.
+
 ### Update with Partial Document
 
 `clojurewerkz.elastisch.rest.document/update-with-partial-doc` is a new function
