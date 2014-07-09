@@ -46,12 +46,7 @@
                                               :filter {:term {:username "esmary"}}))]
       (is (= 4 (count hits)))))
 
-  #_ (deftest ^{:query true :native true} test-query-validation
-       (let [index-name   "articles"
-             response     (doc/validate-query conn index-name (q/field "latest-edit.author" "Thorwald") :explain true)]
-         (is (valid? response))))
-
-  (deftest test-basic-sorting-over-string-field-with-desc-order
+  (deftest ^{:native true} test-basic-sorting-over-string-field-with-desc-order
     (let [index-name   "articles"
           mapping-type "article"
           response     (doc/search conn index-name mapping-type :query (q/match-all)
@@ -61,7 +56,7 @@
       (is (= "Nueva York" (-> hits first :_source :title)))
       (is (= "Austin" (-> hits last :_source :title)))))
 
-  (deftest test-basic-sorting-over-string-field-with-asc-order
+  (deftest ^{:native true} test-basic-sorting-over-string-field-with-asc-order
     (let [index-name   "articles"
           mapping-type "article"
           response     (doc/search conn index-name mapping-type :query (q/match-all)
@@ -69,4 +64,26 @@
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
       (is (= "Nueva York" (-> hits last :_source :title)))
-      (is (= "Apache Lucene" (-> hits first :_source :title))))))
+      (is (= "Apache Lucene" (-> hits first :_source :title)))))
+
+  (deftest ^{:native true} test-search-query-with-source-filtering-via-include
+    (let [index-name   "people"
+          mapping-type "person"
+          hits         (hits-from (doc/search conn index-name mapping-type
+                                              :query   (q/match-all)
+                                              :sort    {"first-name" "asc"}
+                                              :_source ["first-name" "age"]))]
+      (is (= 4 (count hits)))
+      (is (= {:first-name "Tony" :age 29} (-> hits last :_source)))))
+
+  (deftest ^{:native true} test-search-query-with-source-filtering-via-exclude
+    (let [index-name   "people"
+          mapping-type "person"
+          hits         (hits-from (doc/search conn index-name mapping-type
+                                              :query   (q/match-all)
+                                              :sort    {"first-name" "asc"}
+                                              :_source {"exclude" ["title" "country"
+                                                                   "planet" "biography"
+                                                                   "last-name" "username"]}))]
+      (is (= 4 (count hits)))
+      (is (= {:first-name "Tony" :age 29} (-> hits last :_source))))))

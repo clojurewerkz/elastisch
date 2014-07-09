@@ -69,4 +69,26 @@
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
       (is (= "Nueva York" (-> hits last :_source :title)))
-      (is (= "Apache Lucene" (-> hits first :_source :title))))))
+      (is (= "Apache Lucene" (-> hits first :_source :title)))))
+
+  (deftest ^{:rest true} test-search-query-with-source-filtering-via-include
+    (let [index-name   "people"
+          mapping-type "person"
+          hits         (hits-from (doc/search conn index-name mapping-type
+                                              :query   (q/match-all)
+                                              :sort    {"first-name" "asc"}
+                                              :_source ["first-name" "age"]))]
+      (is (= 4 (count hits)))
+      (is (= {:first-name "Tony" :age 29} (-> hits last :_source)))))
+
+  (deftest ^{:rest true} test-search-query-with-source-filtering-via-exclude
+    (let [index-name   "people"
+          mapping-type "person"
+          hits         (hits-from (doc/search conn index-name mapping-type
+                                              :query   (q/match-all)
+                                              :sort    {"first-name" "asc"}
+                                              :_source {"exclude" ["title" "country"
+                                                                   "planet" "biography"
+                                                                   "last-name" "username"]}))]
+      (is (= 4 (count hits)))
+      (is (= {:first-name "Tony" :age 29} (-> hits last :_source))))))

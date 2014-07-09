@@ -502,11 +502,24 @@
             (.sort sb (name k) (->sort-order (name v)))))
   sb)
 
+(defn ^:private add-partial-fields
+  [^SearchSourceBuilder sb _source]
+  (cond
+   (nil? _source)        sb
+   (false? _source)      (.fetchSource sb false)
+   (map? _source)        (let [m  (wlk/stringify-keys _source)
+                               in (->string-array (m "include" []))
+                               ex (->string-array (m "exclude" []))]
+                           (.fetchSource sb in ex))
+   (sequential? _source) (.fetchSource sb (->string-array _source)
+                                          (->string-array []))
+   :else sb))
+
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference
                                    query facets from size timeout post-filter
-                                   min_score version fields sort stats] :as options}]
+                                   min_score version fields sort stats _source] :as options}]
   (let [r                       (SearchRequest.)
         ^SearchSourceBuilder sb (SearchSourceBuilder.)]
 
@@ -525,6 +538,8 @@
       (.postFilter sb ^Map (wlk/stringify-keys post-filter)))
     (when fields
       (.fields sb ^java.util.List fields))
+    (when _source
+      (add-partial-fields sb _source))
     (when version
       (.version sb version))
     (when sort
