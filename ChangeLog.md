@@ -1,5 +1,28 @@
 ## Changes between Elastisch 2.0.0 and 2.1.0-beta1
 
+### Source Filtering Support in Native Client
+
+Native client now supports [source filtering](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html)
+just like the REST API client:
+
+``` clojure
+(doc/search conn index-name mapping-type
+            :query   (q/match-all)
+            :sort    {"first-name" "asc"}
+            :_source ["first-name" "age"])
+```
+
+``` clojure
+(doc/search conn index-name mapping-type
+            :query   (q/match-all)
+            :sort    {"first-name" "asc"}
+            :_source {"exclude" ["title" "country"
+                                 "planet" "biography"
+                                 "last-name" "username"]})
+```
+
+GH issue: [#73](https://github.com/clojurewerkz/elastisch/issues/73).
+
 ### Search Can Return Fields and Source
 
 Previously a search would return either the source document, or specific fields and not
