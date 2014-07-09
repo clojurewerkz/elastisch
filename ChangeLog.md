@@ -1,5 +1,27 @@
 ## Changes between Elastisch 2.0.0 and 2.1.0-beta1
 
+### Search Can Return Fields and Source
+
+Previously a search would return either the source document, or specific fields and not
+both.  There are certain circumstances where having both are beneficial, for example when
+searching for a child document and you want to include the parent ID:
+
+```clojure
+(require '[clojurewerkz.elastisch.native.document :as esd])
+
+(esd/search conn "index" "child-type" :query (q/match-all) :fields ["_parent"])
+```
+
+The above would return the parent document ID in the ```:_parent``` field of each hit, but
+would not return the document itself.  You can now have both by:
+
+```clojure
+(esd/search conn "index" "child-type" :query (q/match-all) :fields ["_parent" "_source"])
+```
+
+Now the parent ID is in the ```:_parent``` field of each hit, and the matching document
+will be in ```:_source``` as per a normal search.
+
 ### Update with Partial Document
 
 `clojurewerkz.elastisch.rest.document/update-with-partial-doc` is a new function
