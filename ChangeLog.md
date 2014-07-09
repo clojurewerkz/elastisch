@@ -1,4 +1,4 @@
-## Changes between Elastisch 2.0.0 and 2.1.0-beta1
+## Changes between Elastisch 2.1.0-beta1 and 2.1.0-beta2
 
 ### Source Filtering Support in Native Client
 
@@ -46,6 +46,9 @@ Now the parent ID is in the ```:_parent``` field of each hit, and the matching d
 will be in ```:_source``` as per a normal search.
 
 Contributed by Ben Ashford.
+
+
+## Changes between Elastisch 2.0.0 and 2.1.0-beta1
 
 ### Update with Partial Document
 
