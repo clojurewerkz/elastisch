@@ -12,18 +12,18 @@
   (:require [clj-http.client :as http]
             [cheshire.core :as json]
             [clojure.string :refer [join]])
-  (:import java.net.URLEncoder))
+  (:import java.net.URLEncoder
+           clojure.lang.IPersistentMap))
 
 (defrecord Connection
-    [uri username password])
+    [^String uri ^IPersistentMap http-opts])
 
 (defn ^:private default-url
   []
   (or (System/getenv "ELASTICSEARCH_URL")
       "http://localhost:9200"))
 
-(def ^{:dynamic true} *endpoint* (Connection. (default-url)
-                                              nil nil))
+(def ^{:dynamic true} *endpoint* (Connection. (default-url) {}))
 (def ^:const throw-exceptions false)
 
 (def ^{:const true} slash    "/")
@@ -31,32 +31,47 @@
 
 
 (defn post-string
-  [^String uri &{:keys [body] :as options}]
-  (io! (json/decode (:body (http/post uri (merge options {:accept :json :body body}))) true)))
+  [^Connection conn ^String uri {:keys [body] :as options}]
+  (io! (json/decode (:body (http/post uri (merge (.http-opts conn) options
+                                                 {:accept :json :body body}))) true)))
 
 (defn post
-  [^String uri &{:keys [body] :as options}]
-  (io! (json/decode (:body (http/post uri (merge options {:accept :json :body (json/encode body)}))) true)))
+  ([^Connection conn ^String uri]
+     (post conn uri {}))
+  ([^Connection conn ^String uri {:keys [body] :as options}]
+     (io! (json/decode (:body (http/post uri (merge (.http-opts conn) options
+                                                    {:accept :json :body (json/encode body)}))) true))))
 
 (defn put
-  [^String uri &{:keys [body] :as options}]
-  (io! (json/decode (:body (http/put uri (merge options {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true)))
+  [^Connection conn ^String uri {:keys [body] :as options}]
+  (io! (json/decode (:body (http/put uri (merge (.http-opts conn) options
+                                                {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true)))
 
 (defn get
+  ([^Connection conn ^String uri]
+     (io! (json/decode (:body (http/get uri (merge (.http-opts conn) {:accept :json :throw-exceptions throw-exceptions}))) true)))
+  ([^Connection conn ^String uri options]
+     (io! (json/decode (:body (http/get uri (merge (.http-opts conn) options
+                                                   {:accept :json :throw-exceptions throw-exceptions}))) true))))
+
+(defn ^:private get*
+  "Like get but takes no connection"
   ([^String uri]
-     (io! (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions})) true)))
-  ([^String uri &{:as options}]
-     (io! (json/decode (:body (http/get uri (merge options {:accept :json :throw-exceptions throw-exceptions}))) true))))
+     (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions})) true))
+  ([^String uri options]
+     (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions})) true)))
 
 (defn head
-  [^String uri]
-  (io! (http/head uri {:accept :json :throw-exceptions throw-exceptions})))
+  [^Connection conn ^String uri]
+  (io! (http/head uri (merge (.http-opts conn) {:accept :json :throw-exceptions throw-exceptions}))))
 
 (defn delete
-  ([^String uri]
-     (io! (json/decode (:body (http/delete uri {:accept :json :throw-exceptions throw-exceptions})) true)))
-  ([^String uri &{:keys [body] :as options}]
-     (io! (json/decode (:body (http/delete uri (merge options {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true))))
+  ([^Connection conn ^String uri]
+     (io! (json/decode (:body (http/delete uri (merge (.http-opts conn)
+                                                      {:accept :json :throw-exceptions throw-exceptions}))) true)))
+  ([^Connection conn ^String uri {:keys [body] :as options}]
+     (io! (json/decode (:body (http/delete uri (merge (.http-opts conn) options
+                                                      {:accept :json :body (json/encode body) :throw-exceptions throw-exceptions}))) true))))
 
 
 (defn url-with-path
@@ -281,7 +296,8 @@
 (defn connect
   "Connects to the given ElasticSearch endpoint and returns it"
   (^clojurewerkz.elastisch.rest.Connection []
-     (connect (default-url)))
+                                           (connect (default-url)))
   (^clojurewerkz.elastisch.rest.Connection [uri]
-     (let [response (get uri)]
-       (Connection. uri nil nil))))
+                                           (Connection. uri {}))
+  (^clojurewerkz.elastisch.rest.Connection [uri opts]
+                                           (Connection. uri opts)))

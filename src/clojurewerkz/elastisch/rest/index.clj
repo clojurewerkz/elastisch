@@ -45,38 +45,38 @@
   [^Connection conn ^String index-name & args]
   (let [opts                        (ar/->opts args)
         {:keys [settings mappings]} opts]
-    (rest/post (rest/index-url conn
-                               index-name)
-               :body (if mappings
-                       {:settings settings :mappings mappings}
-                       {:settings settings}))))
+    (rest/post conn (rest/index-url conn
+                                    index-name)
+               {:body (if mappings
+                        {:settings settings :mappings mappings}
+                        {:settings settings})})))
 
 (defn exists?
   "Used to check if the index (indices) exists or not.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html"
   [^Connection conn ^String index-name]
-  (= 200 (:status (rest/head (rest/index-url conn
-                                             index-name)))))
+  (= 200 (:status (rest/head conn (rest/index-url conn
+                                                  index-name)))))
 
 (defn type-exists?
   "Used to check if a type/types exists in an index/indices.
 
    API Reference: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html"
   [^Connection conn ^String index-name ^String type-name]
-  (= 200 (:status (rest/head (rest/mapping-type-url conn
-                                                    index-name type-name)))))
+  (= 200 (:status (rest/head conn (rest/mapping-type-url conn
+                                                         index-name type-name)))))
 
 (defn delete
   "Deletes an existing index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html"
   ([^Connection conn]
-     (rest/delete (rest/index-url conn
-                                  "_all")))
+     (rest/delete conn (rest/index-url conn
+                                       "_all")))
   ([^Connection conn ^String index-name]
-     (rest/delete (rest/index-url conn
-                                  index-name))))
+     (rest/delete conn (rest/index-url conn
+                                       index-name))))
 
 ;;
 ;; Mappings
@@ -87,12 +87,12 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
   ([^Connection conn ^String index-name]
-     (rest/get (rest/index-mapping-url conn
-                                       (join-names index-name))))
+     (rest/get conn (rest/index-mapping-url conn
+                                            (join-names index-name))))
   ([^Connection conn ^String index-name ^String type-name]
-     (rest/get
-      (rest/index-mapping-url conn
-                              index-name type-name))))
+     (rest/get conn
+               (rest/index-mapping-url conn
+                                       index-name type-name))))
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
@@ -101,17 +101,17 @@
   [^Connection conn ^String index-name-or-names ^String type-name & args]
   (let [opts                               (ar/->opts args)
         {:keys [mapping ignore_conflicts]} opts]
-    (rest/put (rest/index-mapping-url conn
-                                      (join-names index-name-or-names) type-name)
-              :body mapping :query-params {:ignore_conflicts ignore_conflicts})))
+    (rest/put conn (rest/index-mapping-url conn
+                                           (join-names index-name-or-names) type-name)
+              {:body mapping :query-params {:ignore_conflicts ignore_conflicts}})))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
   [^Connection conn ^String index-name ^String type-name]
-  (rest/delete (rest/index-mapping-url conn
-                                       index-name type-name)))
+  (rest/delete conn (rest/index-mapping-url conn
+                                            index-name type-name)))
 
 ;;
 ;; Settings
@@ -122,10 +122,10 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html"
   ([^Connection conn settings]
-     (rest/put (rest/index-settings-url conn) :body settings))
+     (rest/put conn (rest/index-settings-url conn) {:body settings}))
   ([^Connection conn ^String index-name settings]
-     (rest/put (rest/index-settings-url conn
-                                        index-name) :body settings)))
+     (rest/put conn (rest/index-settings-url conn
+                                             index-name) {:body settings})))
 
 
 (defn get-settings
@@ -134,9 +134,9 @@
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html
   "
   ([^Connection conn]
-     (rest/get (rest/index-settings-url conn)))
+     (rest/get conn (rest/index-settings-url conn)))
   ([^Connection conn ^String index-name]
-     (rest/get (rest/index-settings-url conn index-name))))
+     (rest/get conn (rest/index-settings-url conn index-name))))
 
 ;;
 ;; Open/close
@@ -147,24 +147,24 @@
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [^Connection conn index-name]
-  (rest/post (rest/index-open-url conn
-                                  index-name)))
+  (rest/post conn (rest/index-open-url conn
+                                       index-name)))
 
 (defn close
   "Closes an index.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html"
   [^Connection conn index-name]
-  (rest/post (rest/index-close-url conn
-                                   index-name)))
+  (rest/post conn (rest/index-close-url conn
+                                        index-name)))
 
 (defn snapshot
   "Takes a snapthot of an index or multiple indexes.
 
   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-gateway-snapshot.html"
   [^Connection conn index-name]
-  (rest/post (rest/index-snapshot-url conn
-                                      index-name)))
+  (rest/post conn (rest/index-snapshot-url conn
+                                           index-name)))
 
 (defn refresh
   "Refreshes an index manually.
@@ -177,11 +177,11 @@
    1-arity refreshes a single index.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html"
-  ([^Connection conn ]
-     (rest/post (rest/index-refresh-url conn)))
+  ([^Connection conn]
+     (rest/post conn (rest/index-refresh-url conn)))
   ([^Connection conn index-name]
-     (rest/post (rest/index-refresh-url conn
-                                        (join-names index-name)))))
+     (rest/post conn (rest/index-refresh-url conn
+                                             (join-names index-name)))))
 
 
 (defn optimize
@@ -204,10 +204,11 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html"
   ([^Connection conn]
-     (rest/post (rest/index-optimize-url conn)))
+     (rest/post conn (rest/index-optimize-url conn)))
   ([^Connection conn index-name & args]
-     (rest/post (rest/index-optimize-url conn
-                                         (join-names index-name)) :body (ar/->opts args))))
+     (rest/post conn (rest/index-optimize-url conn
+                                              (join-names index-name))
+                {:body (ar/->opts args)})))
 
 
 (defn flush
@@ -225,13 +226,13 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html"
   ([^Connection conn]
-     (rest/post (rest/index-flush-url conn)))
+     (rest/post conn (rest/index-flush-url conn)))
   ([^Connection conn index-name]
-     (rest/post (rest/index-flush-url conn
-                                      (join-names index-name))))
+     (rest/post conn (rest/index-flush-url conn
+                                           (join-names index-name))))
   ([^Connection conn index-name & args]
-     (rest/post (rest/index-flush-url conn
-                                      (join-names index-name)) :body (ar/->opts args))))
+     (rest/post conn (rest/index-flush-url conn
+                                           (join-names index-name)) {:body (ar/->opts args)})))
 
 
 (defn clear-cache
@@ -248,14 +249,14 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html"
   ([^Connection conn]
-     (rest/post (rest/index-clear-cache-url conn)))
+     (rest/post conn (rest/index-clear-cache-url conn)))
   ([^Connection conn index-name]
-     (rest/post (rest/index-clear-cache-url conn
-                                            (join-names index-name))))
+     (rest/post conn (rest/index-clear-cache-url conn
+                                                 (join-names index-name))))
   ([^Connection conn index-name & args]
-     (rest/post (rest/index-clear-cache-url conn
-                                            (join-names index-name))
-                :body (ar/->opts args))))
+     (rest/post conn (rest/index-clear-cache-url conn
+                                                 (join-names index-name))
+                {:body (ar/->opts args)})))
 
 ;;
 ;; Aliases
@@ -270,16 +271,16 @@
    and so on, the same as described in the ElasticSearch documentation guide on aliases:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
   [^Connection conn & actions]
-  (rest/post (rest/index-aliases-batch-url conn)
-             :body {:actions actions}))
+  (rest/post conn (rest/index-aliases-batch-url conn)
+             {:body {:actions actions}}))
 
 (defn get-aliases
   "Fetches and returns aliases for an index or multiple indexes.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
   [^Connection conn index-name]
-  (rest/get (rest/index-aliases-url conn
-                                    (join-names index-name))))
+  (rest/get conn (rest/index-aliases-url conn
+                                         (join-names index-name))))
 
 ;;
 ;; Templates
@@ -298,24 +299,24 @@
   [^Connection conn ^String template-name & args]
   (let [opts                                 (ar/->opts args)
         {:keys [template settings mappings]} opts]
-    (rest/post (rest/index-template-url conn
-                                        template-name)
-               :body (if mappings
-                       {:template template
-                        :settings settings
-                        :mappings mappings}
-                       {:template template
-                        :settings settings}))))
+    (rest/post conn (rest/index-template-url conn
+                                             template-name)
+               {:body (if mappings
+                        {:template template
+                         :settings settings
+                         :mappings mappings}
+                        {:template template
+                         :settings settings})})))
 
 (defn get-template
   [^Connection conn ^String template-name]
-  (rest/get (rest/index-template-url conn
-                                     template-name)))
+  (rest/get conn (rest/index-template-url conn
+                                          template-name)))
 
 (defn delete-template
   [^Connection conn ^String template-name]
-  (rest/delete (rest/index-template-url conn
-                                        template-name)))
+  (rest/delete conn (rest/index-template-url conn
+                                             template-name)))
 
 
 (defn status
@@ -328,18 +329,19 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-status.html"
   ([^Connection conn index-name & args]
-     (rest/get (rest/index-status-url conn
-                                      (join-names index-name)) :query-params (ar/->opts args))))
+     (rest/get conn (rest/index-status-url conn
+                                           (join-names index-name))
+               {:query-params (ar/->opts args)})))
 
 (defn segments
   "Returns segments information for an index or multiple indexes.
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-segments.html"
   ([^Connection conn]
-     (rest/get (rest/index-segments-url conn)))
+     (rest/get conn (rest/index-segments-url conn)))
   ([^Connection conn index-name]
-     (rest/get (rest/index-status-url conn
-                                      (join-names index-name)))))
+     (rest/get conn (rest/index-status-url conn
+                                           (join-names index-name)))))
 
 
 (defn stats
@@ -360,6 +362,6 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html"
   ([^Connection conn index-name & args]
-     (rest/get (rest/index-stats-url conn
-                                     (join-names index-name))
-               :query-params (ar/->opts args))))
+     (rest/get conn (rest/index-stats-url conn
+                                          (join-names index-name))
+               {:query-params (ar/->opts args)})))
