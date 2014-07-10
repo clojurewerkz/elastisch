@@ -50,37 +50,42 @@
 
    (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   ([^Connection conn index mapping-type document & args]
-     (rest/post (rest/mapping-type-url conn
-                                       index mapping-type) :body document :query-params (ar/->opts args))))
+     (rest/post conn (rest/mapping-type-url conn
+                                            index mapping-type)
+                {:body document :query-params (ar/->opts args)})))
 
 (defn put
   "Creates or updates a document in the search index, using the provided document id"
   ([^Connection conn index mapping-type id document]
-     (rest/put (rest/record-url conn
-                                index mapping-type id) :body document))
+     (rest/put conn (rest/record-url conn
+                                     index mapping-type id)
+               {:body document}))
   ([^Connection conn index mapping-type id document & args]
-     (rest/put (rest/record-url conn
-                                index mapping-type id) :body document :query-params (ar/->opts args))))
+     (rest/put conn (rest/record-url conn
+                                     index mapping-type id)
+               {:body document :query-params (ar/->opts args)})))
 
 (defn update-with-partial-doc
   "Updates an existing document in the search index with given partial document"
   ([^Connection conn index mapping-type id partial-doc]
-     (rest/post (rest/record-update-url conn
-                                index mapping-type id) :body partial-doc))
+     (rest/post conn (rest/record-update-url conn
+                                             index mapping-type id) {:body partial-doc}))
   ([^Connection conn index mapping-type id partial-doc & args]
-     (rest/post (rest/record-update-url conn
-                                index mapping-type id) :body partial-doc :query-params (ar/->opts args))))
+     (rest/post conn (rest/record-update-url conn
+                                             index mapping-type id)
+                {:body partial-doc :query-params (ar/->opts args)})))
 
 
 (defn update-with-script
   "Updates a document using a script"
   ([^Connection conn index mapping-type id script]
-     (rest/post (rest/record-update-url conn
-                                        index mapping-type id) :body {:script script}))
+     (rest/post conn (rest/record-update-url conn
+                                             index mapping-type id)
+                {:body {:script script}}))
   ([^Connection conn index mapping-type id script params]
-     (rest/post (rest/record-update-url conn
-                                        index mapping-type id)
-                :body {:script script :params params})))
+     (rest/post conn (rest/record-update-url conn
+                                             index mapping-type id)
+                {:body {:script script :params params}})))
 
 (defn get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -91,8 +96,9 @@
 
    (doc/get conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")"
   [^Connection conn index mapping-type id & args]
-  (let [result (rest/get (rest/record-url conn
-                                          index mapping-type id) :query-params (ar/->opts args))]
+  (let [result (rest/get conn (rest/record-url conn
+                                               index mapping-type id)
+                         {:query-params (ar/->opts args)})]
     (if (not-found? result)
       nil
       result)))
@@ -100,11 +106,12 @@
 (defn delete
   "Deletes document from the index."
   ([^Connection conn index mapping-type id]
-     (rest/delete (rest/record-url conn
-                                   index mapping-type id)))
+     (rest/delete conn (rest/record-url conn
+                                        index mapping-type id)))
   ([^Connection conn index mapping-type id & args]
-     (rest/delete (rest/record-url conn
-                                   index mapping-type id) :query-params (ar/->opts args))))
+     (rest/delete conn(rest/record-url conn
+                                       index mapping-type id)
+                  {:query-params (ar/->opts args)})))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
@@ -134,18 +141,18 @@
    (doc/multi-get conn index-name mapping-type [{:_id \"1\"}
                                                 {:_id \"2\"}])"
   ([^Connection conn query]
-     (let [results (rest/post (rest/index-mget-url conn)
-                              :body {:docs query})]
+     (let [results (rest/post conn (rest/index-mget-url conn)
+                              {:body {:docs query}})]
        (filter :found (:docs results))))
   ([^Connection conn index query]
-     (let [results (rest/post (rest/index-mget-url conn
-                                                   index)
-                              :body {:docs query})]
+     (let [results (rest/post conn (rest/index-mget-url conn
+                                                        index)
+                              {:body {:docs query}})]
        (filter :found (:docs results))))
   ([^Connection conn index mapping-type query]
-     (let [results (rest/post (rest/index-mget-url conn
-                                                   index mapping-type)
-                              :body {:docs query})]
+     (let [results (rest/post conn (rest/index-mget-url conn
+                                                        index mapping-type)
+                              {:body {:docs query}})]
        (filter :found (:docs results)))))
 
 (defn search
@@ -164,11 +171,11 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
-    (rest/post (rest/search-url conn
-                                (join-names index)
-                                (join-names mapping-type))
-               :body body
-               :query-params qp)))
+    (rest/post conn (rest/search-url conn
+                                     (join-names index)
+                                     (join-names mapping-type))
+               {:body body
+                :query-params qp})))
 
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types."
@@ -177,10 +184,10 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
-    (rest/post (rest/search-url conn
-                                (join-names index))
-               :body body
-               :query-params qp)))
+    (rest/post conn (rest/search-url conn
+                                     (join-names index))
+               {:body body
+                :query-params qp})))
 
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types.
@@ -191,9 +198,9 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
-    (rest/post (rest/search-url conn)
-               :body body
-               :query-params qp)))
+    (rest/post conn (rest/search-url conn)
+               {:body body
+                :query-params qp})))
 
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
@@ -203,8 +210,8 @@
         qk   [:search_type :scroll :routing :preference]
         qp   (assoc (select-keys opts qk) :scroll_id scroll-id)
         body (apply dissoc (concat [opts] qk))]
-    (rest/get (rest/scroll-url conn)
-              :query-params qp)))
+    (rest/get conn (rest/scroll-url conn)
+              {:query-params qp})))
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
@@ -233,16 +240,17 @@
    (doc/count conn \"people\" \"person\")
    (doc/count conn \"people\" \"person\" (q/prefix :username \"appl\"))"
   ([^Connection conn index mapping-type]
-     (rest/get (rest/count-url conn
-                               (join-names index) (join-names mapping-type))))
+     (rest/get conn (rest/count-url conn
+                                    (join-names index) (join-names mapping-type))))
   ([^Connection conn index mapping-type query]
-     (rest/post (rest/count-url conn
-                                (join-names index) (join-names mapping-type)) :body {:query query}))
+     (rest/post conn (rest/count-url conn
+                                     (join-names index) (join-names mapping-type))
+                {:body {:query query}}))
   ([^Connection conn index mapping-type query & args]
-     (rest/post (rest/count-url conn
-                                (join-names index) (join-names mapping-type))
-                :query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator])
-                :body {:query query})))
+     (rest/post conn (rest/count-url conn
+                                     (join-names index) (join-names mapping-type))
+                {:query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator])
+                 :body {:query query}})))
 
 (def ^{:doc "Optional parameters that all query-based delete functions share"
        :const true}
@@ -251,51 +259,51 @@
 (defn delete-by-query
   "Performs a delete-by-query operation."
   ([^Connection conn index mapping-type query]
-     (rest/delete (rest/delete-by-query-url
-                   conn
-                   (join-names index) (join-names mapping-type)) :body {:query query}))
+     (rest/delete conn (rest/delete-by-query-url
+                        conn
+                        (join-names index) (join-names mapping-type)) {:body {:query query}}))
   ([^Connection conn index mapping-type query & args]
-     (rest/delete (rest/delete-by-query-url conn
-                                            (join-names index) (join-names mapping-type))
-                  :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
-                  :body {:query query})))
+     (rest/delete conn (rest/delete-by-query-url conn
+                                                 (join-names index) (join-names mapping-type))
+                  {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
+                   :body {:query query}})))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation across all mapping types."
   ([^Connection conn index query]
-     (rest/delete (rest/delete-by-query-url conn
-                                            (join-names index)) :body {:query query}))
+     (rest/delete conn (rest/delete-by-query-url conn
+                                                 (join-names index)) {:body {:query query}}))
   ([^Connection conn index query & args]
-     (rest/delete (rest/delete-by-query-url conn
-                                            (join-names index))
-                  :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
-                  :body {:query query})))
+     (rest/delete conn (rest/delete-by-query-url conn
+                                                 (join-names index))
+                  {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
+                   :body {:query query}})))
 
 (defn delete-by-query-across-all-indexes-and-types
   "Performs a delete-by-query operation across all indexes and mapping types.
    This may put very high load on your ElasticSearch cluster so use this function with care."
   ([^Connection conn query]
-     (rest/delete (rest/delete-by-query-url conn) :body {:query query}))
+     (rest/delete conn (rest/delete-by-query-url conn) {:body {:query query}}))
   ([^Connection conn query & args]
-     (rest/delete (rest/delete-by-query-url conn)
-                  :query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
-                  :body {:query query})))
+     (rest/delete conn (rest/delete-by-query-url conn)
+                  {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
+                   :body {:query query}})))
 
 
 (defn more-like-this
   "Performs a More Like This (MLT) query."
   [^Connection conn index mapping-type id & args]
-  (rest/get (rest/more-like-this-url conn
-                                     index mapping-type id)
-            :query-params (ar/->opts args)))
+  (rest/get conn (rest/more-like-this-url conn
+                                          index mapping-type id)
+            {:query-params (ar/->opts args)}))
 
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
    but does not take the mapping type parameter."
   [^Connection conn index query & args]
-  (rest/get (rest/query-validation-url conn
-                                       index)
-            :body (json/encode {:query query}) :query-params (ar/->opts args)))
+  (rest/get conn (rest/query-validation-url conn
+                                            index)
+            {:body (json/encode {:query query}) :query-params (ar/->opts args)}))
 
 
 (defn analyze 
@@ -309,6 +317,6 @@
    (doc/analyze conn \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")"
   ([^Connection conn text & args]
      (let [opts (ar/->opts args)]
-       (rest/get (rest/analyze-url conn
-                                   (:index opts))
-                 :query-params (assoc opts :text text)))))
+       (rest/get conn (rest/analyze-url conn
+                                        (:index opts))
+                 {:query-params (assoc opts :text text)}))))

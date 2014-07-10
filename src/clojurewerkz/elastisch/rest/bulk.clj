@@ -17,32 +17,32 @@
   (:import clojurewerkz.elastisch.rest.Connection))
 
 (defn ^:private bulk-with-url
-  [url operations & args]
+  [conn url operations & args]
   (let [opts      (ar/->opts args)
         bulk-json (map json/encode operations)
         bulk-json (-> bulk-json
                       (interleave (repeat "\n"))
                       (string/join))]
-    (rest/post-string url
-                      :body bulk-json
-                      :query-params opts)))
+    (rest/post-string conn url
+                      {:body bulk-json
+                       :query-params opts})))
 (defn bulk
   "Performs a bulk operation"
   [^Connection conn operations & params]
   (when (not-empty operations)
-    (apply bulk-with-url (rest/bulk-url conn) operations params)))
+    (apply bulk-with-url conn (rest/bulk-url conn) operations params)))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
   [^Connection conn index operations & params]
-  (apply bulk-with-url (rest/bulk-url conn
-                                      index) operations params))
+  (apply bulk-with-url conn (rest/bulk-url conn
+                                           index) operations params))
 
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
   [^Connection conn index mapping-type operations & params]
-  (apply bulk-with-url (rest/bulk-url conn
-                                      index mapping-type) operations params))
+  (apply bulk-with-url conn (rest/bulk-url conn
+                                           index mapping-type) operations params))
 
 (def ^:private special-operation-keys
   [:_index :_type :_id :_routing :_percolate :_parent :_timestamp :_ttl])

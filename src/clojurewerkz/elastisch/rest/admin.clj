@@ -30,9 +30,9 @@
    (admin/cluster-health conn :index \"index1\" :pretty true :level \"indices\")"
   [^Connection conn & args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-health-url conn
-                                       (join-names (:index opts)))
-              :query-params (dissoc opts :index))))
+    (rest/get conn (rest/cluster-health-url conn
+                                            (join-names (:index opts)))
+              {:query-params (dissoc opts :index)})))
 
 (defn cluster-state
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html
@@ -44,7 +44,7 @@
    (admin/cluster-state conn)
 "
   [^Connection conn & args]
-  (rest/get (rest/cluster-state-url conn) :query-params (ar/->opts args)))
+  (rest/get conn (rest/cluster-state-url conn) {:query-params (ar/->opts args)}))
 
 
 (defn nodes-stats
@@ -59,9 +59,9 @@
 "
   [^Connection conn & args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-nodes-stats-url conn
-                                            (join-names (get opts :nodes "_all"))
-                                            (join-names (get opts :attributes "_all"))))))
+    (rest/get conn (rest/cluster-nodes-stats-url conn
+                                                 (join-names (get opts :nodes "_all"))
+                                                 (join-names (get opts :attributes "_all"))))))
 
 (defn nodes-info
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html
@@ -75,34 +75,36 @@
 "
   [^Connection conn & args]
   (let [opts (ar/->opts args)]
-    (rest/get (rest/cluster-nodes-info-url conn
-                                           (join-names (get opts :nodes "_all"))
-                                           (join-names (get opts :attributes "_all"))))))
+    (rest/get conn (rest/cluster-nodes-info-url conn
+                                                (join-names (get opts :nodes "_all"))
+                                                (join-names (get opts :attributes "_all"))))))
 
 
 (defn register-snapshot-repository
   [^Connection conn ^String name & args]
-  (rest/put (rest/snapshot-repository-registration-url conn
-                                                       name) :body (ar/->opts args)))
+  (rest/put conn (rest/snapshot-repository-registration-url conn
+                                                            name)
+            {:body (ar/->opts args)}))
 
 
 (defn take-snapshot
   [^Connection conn ^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/put (rest/snapshot-url conn
-                                 repo name) :body opts :query-params (select-keys opts [:wait-for-completion?]))))
+    (rest/put conn (rest/snapshot-url conn
+                                      repo name)
+              {:body opts :query-params (select-keys opts [:wait-for-completion?])})))
 
 (defn restore-snapshot
   [^Connection conn ^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/post (rest/restore-snapshot-url conn
-                                          repo name)
-             :body opts
-             :query-params (select-keys opts [:wait-for-completion?]))))
+    (rest/post conn (rest/restore-snapshot-url conn
+                                               repo name)
+             {:body opts
+              :query-params (select-keys opts [:wait-for-completion?])})))
 
 (defn delete-snapshot
   [^Connection conn ^String repo ^String name & args]
   (let [opts (ar/->opts args)]
-    (rest/delete (rest/snapshot-url conn
-                                    repo name)
-                 :query-params (select-keys opts [:wait-for-completion?]))))
+    (rest/delete conn (rest/snapshot-url conn
+                                         repo name)
+                 {:query-params (select-keys opts [:wait-for-completion?])})))
