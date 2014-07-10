@@ -1,5 +1,15 @@
 ## Changes between Elastisch 2.1.0-beta1 and 2.1.0-beta2
 
+### Per Connection clj-http Options in REST Client
+
+It is now possible to specify clj-http options for REST API connections,
+e.g. to specify a timeout:
+
+``` clojure
+(esr/connect "http://127.0.0.1:9200/" {:conn-timeout 1000
+                                       :basic-auth ["username" "pa$$w0rd"]})
+```
+
 ### Source Filtering Support in Native Client
 
 Native client now supports [source filtering](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html)
