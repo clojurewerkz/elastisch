@@ -12,18 +12,18 @@
   (:require [clj-http.client :as http]
             [cheshire.core :as json]
             [clojure.string :refer [join]])
-  (:import java.net.URLEncoder))
+  (:import java.net.URLEncoder
+           clojure.lang.IPersistentMap))
 
 (defrecord Connection
-    [uri username password http-opts])
+    [^String uri ^IPersistentMap http-opts])
 
 (defn ^:private default-url
   []
   (or (System/getenv "ELASTICSEARCH_URL")
       "http://localhost:9200"))
 
-(def ^{:dynamic true} *endpoint* (Connection. (default-url)
-                                              nil nil {}))
+(def ^{:dynamic true} *endpoint* (Connection. (default-url) {}))
 (def ^:const throw-exceptions false)
 
 (def ^{:const true} slash    "/")
@@ -298,6 +298,6 @@
   (^clojurewerkz.elastisch.rest.Connection []
                                            (connect (default-url)))
   (^clojurewerkz.elastisch.rest.Connection [uri]
-                                           (Connection. uri nil nil {}))
+                                           (Connection. uri {}))
   (^clojurewerkz.elastisch.rest.Connection [uri opts]
-                                           (Connection. uri nil nil opts)))
+                                           (Connection. uri opts)))
