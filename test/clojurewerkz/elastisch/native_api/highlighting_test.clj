@@ -21,7 +21,7 @@
 (use-fixtures :each fx/reset-indexes)
 
 (let [conn (th/connect-native-client)]
-  (deftest ^{:native true} test-more-highlighting-with-all-defaults
+  (deftest ^{:native true} test-highlighting-with-all-defaults
     (let [index "articles"
           type  "article"]
       (idx/create conn index :mappings fx/articles-mapping)
