@@ -704,7 +704,6 @@
 (defn ^:private add-highlight-from
   [^SearchHit sh m]
   (let [hls (.highlightFields sh)
-        _   (println hls)
         hlm (reduce (fn [acc [^String k ^HighlightField hlf]]
                       (assoc acc (keyword k) (vec (map (fn [^Text t]
                                                          (.string t)) (.getFragments hlf)))))
