@@ -17,6 +17,9 @@
            clojure.lang.IPersistentMap
            org.elasticsearch.common.xcontent.XContentType
            org.elasticsearch.index.VersionType
+           [org.elasticsearch.search.highlight HighlightBuilder HighlightBuilder$Field
+            HighlightField]
+           org.elasticsearch.common.text.Text
            ;; Actions
            org.elasticsearch.action.ShardOperationFailedException
            [org.elasticsearch.action.index IndexRequest IndexResponse]
@@ -502,7 +505,7 @@
             (.sort sb (name k) (->sort-order (name v)))))
   sb)
 
-(defn ^:private add-partial-fields
+(defn ^:private add-partial-fields-to-builder
   [^SearchSourceBuilder sb _source]
   (cond
    (nil? _source)        sb
@@ -512,14 +515,93 @@
                                ex (->string-array (m "exclude" []))]
                            (.fetchSource sb in ex))
    (sequential? _source) (.fetchSource sb (->string-array _source)
-                                          (->string-array []))
+                                       (->string-array []))
    :else sb))
+
+(defn ^HighlightBuilder$Field make-field
+  [field-name {:keys [type pre_tags post_tags order
+                      highlight_filter fragment_size number_of_fragments
+                      encoder require_field_match boundary_max_scan
+                      boundary_chars fragmenter highlight_query no_match_size
+                      phrase_limit force_source] :as opts}]
+  (let [fd (HighlightBuilder$Field. (name field-name))]
+    (when type
+      (.highlighterType fd type))
+    (when pre_tags
+      (.preTags fd (->string-array pre_tags)))
+    (when post_tags
+      (.postTags fd (->string-array post_tags)))
+    (when order
+      (.order fd order))
+    (when highlight_filter
+      (.highlightFilter fd highlight_filter))
+    (when fragment_size
+      (.fragmentSize fd (Integer/valueOf ^long fragment_size)))
+    (when number_of_fragments
+      (.numOfFragments fd (Integer/valueOf ^long number_of_fragments)))
+    (when require_field_match
+      (.requireFieldMatch fd require_field_match))
+    (when boundary_max_scan
+      (.boundaryMaxScan fd boundary_max_scan))
+    ;; TODO: boundary_chars
+    (when fragmenter
+      (.fragmenter fd fragmenter))
+    (when force_source
+      (.forceSource fd force_source))
+    ;; TODO: highlight_query
+    ;; TODO: no_match_size
+    ;; TODO: phrase_limit
+    ;; TODO: custom highlighter options
+    fd))
+
+(defn ^:private add-highlight-to-builder
+  [^SearchSourceBuilder sb {:keys [fields type tags_schema pre_tags post_tags order
+                                   highlight_filter fragment_size number_of_fragments
+                                   encoder require_field_match boundary_max_scan
+                                   boundary_chars fragmenter highlight_query no_match_size
+                                   phrase_limit force_source] :as opts}]
+  (let [^HighlightBuilder hb (.highlighter sb)]
+    (when type
+      (.highlighterType hb type))
+    (when tags_schema
+      (.tagsSchema hb tags_schema))
+    (when pre_tags
+      (.preTags hb (->string-array pre_tags)))
+    (when post_tags
+      (.postTags hb (->string-array post_tags)))
+    (when order
+      (.order hb order))
+    (when highlight_filter
+      (.highlightFilter hb highlight_filter))
+    (when fragment_size
+      (.fragmentSize hb (Integer/valueOf ^long fragment_size)))
+    (when number_of_fragments
+      (.numOfFragments hb (Integer/valueOf ^long number_of_fragments)))
+    (when encoder
+      (.encoder hb encoder))
+    (when require_field_match
+      (.requireFieldMatch hb require_field_match))
+    (when boundary_max_scan
+      (.boundaryMaxScan hb boundary_max_scan))
+    ;; TODO: boundary_chars
+    (when fragmenter
+      (.fragmenter hb fragmenter))
+    (when force_source
+      (.forceSource hb force_source))
+    ;; TODO: highlight_query
+    ;; TODO: no_match_size
+    ;; TODO: phrase_limit
+    ;; TODO: custom highlighter options
+    (doseq [[k v] fields]
+      (.field hb (make-field k v)))
+    ))
 
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference
                                    query facets from size timeout post-filter
-                                   min_score version fields sort stats _source] :as options}]
+                                   min_score version fields sort stats _source
+                                   highlight] :as options}]
   (let [r                       (SearchRequest.)
         ^SearchSourceBuilder sb (SearchSourceBuilder.)]
 
@@ -539,13 +621,16 @@
     (when fields
       (.fields sb ^java.util.List fields))
     (when _source
-      (add-partial-fields sb _source))
+      (add-partial-fields-to-builder sb _source))
     (when version
       (.version sb version))
     (when sort
       (set-sort sb sort))
     (when stats
       (.stats sb (->string-array stats)))
+    (when highlight
+      (add-highlight-to-builder sb highlight))
+
     (.source r sb)
 
     ;; non-source
@@ -612,15 +697,30 @@
       (.searchFrom r (Integer/valueOf ^long from)))
     r))
 
+(defn ^:private highlight-field-to-map
+  [^HighlightField hlf]
+  {})
+
+(defn ^:private add-highlight-from
+  [^SearchHit sh m]
+  (let [hls (.highlightFields sh)
+        _   (println hls)
+        hlm (reduce (fn [acc [^String k ^HighlightField hlf]]
+                      (assoc acc (keyword k) (vec (map (fn [^Text t]
+                                                         (.string t)) (.getFragments hlf)))))
+                    {}
+                    hls)]
+    (assoc m :highlight hlm)))
+
 (defn- ^IPersistentMap search-hit->map
   [^SearchHit sh]
   (let [source (.getSource sh)
         fs (dissoc (convert-fields-result (.getFields sh)) :_source)
-        result {:_index    (.getIndex sh)
-                :_type     (.getType sh)
-                :_id       (.getId sh)
-                :_score    (.getScore sh)
-                :_version  (.getVersion sh)}
+        result (add-highlight-from sh {:_index    (.getIndex sh)
+                                       :_type     (.getType sh)
+                                       :_id       (.getId sh)
+                                       :_score    (.getScore sh)
+                                       :_version  (.getVersion sh)})
         result-with-source (if source
                              (assoc result :_source (convert-source-result source))
                              result)]

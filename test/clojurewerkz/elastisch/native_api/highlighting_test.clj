@@ -7,20 +7,21 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.rest-api.highlighting-test
-  (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest :as rest]
-            [clojurewerkz.elastisch.rest.index :as idx]
+(ns clojurewerkz.elastisch.native-api.highlighting-test
+  (:require [clojurewerkz.elastisch.native.document :as doc]
+            [clojurewerkz.elastisch.native :as es]
+            [clojurewerkz.elastisch.native.index :as idx]
             [clojurewerkz.elastisch.query :as q]
             [clojurewerkz.elastisch.fixtures :as fx]
-            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojurewerkz.elastisch.test.helpers    :as th]
+            [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
 
 (use-fixtures :each fx/reset-indexes)
 
-(let [conn (rest/connect)]
-  (deftest ^{:rest true} test-more-highlighting-with-all-defaults
+(let [conn (th/connect-native-client)]
+  (deftest ^{:native true} test-more-highlighting-with-all-defaults
     (let [index "articles"
           type  "article"]
       (idx/create conn index :mappings fx/articles-mapping)
