@@ -2,7 +2,7 @@
 
 ### Highlighting Support in Native Client
 
-Native client now supports (most of the) highlighting features
+Native client now supports (most of the) [highlighting features](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html)
 the REST client does:
 
 ``` clojure
