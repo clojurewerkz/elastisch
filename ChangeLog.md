@@ -1,3 +1,20 @@
+## Changes between Elastisch 2.1.0-beta2 and 2.1.0-beta3
+
+### Highlighting Support in Native Client
+
+Native client now supports (most of the) highlighting features
+the REST client does:
+
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
+(require '[clojurewerkz.elastisch.query :as q])
+
+(doc/search conn index type
+            {:query (q/query-string :query "software" :default_field "summary")
+             :highlight {:fields {:summary {}}}})
+```
+
+
 ## Changes between Elastisch 2.1.0-beta1 and 2.1.0-beta2
 
 ### Per Connection clj-http Options in REST Client
