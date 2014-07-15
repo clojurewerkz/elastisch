@@ -1,3 +1,8 @@
+## Changes between Elastisch 2.1.0-beta3 and 2.1.0-beta4
+
+No changes yet.
+
+
 ## Changes between Elastisch 2.1.0-beta2 and 2.1.0-beta3
 
 ### Highlighting Support in Native Client
