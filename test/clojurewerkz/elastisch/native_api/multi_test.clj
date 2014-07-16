@@ -7,19 +7,19 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.rest-api.multi-test
-  (:require [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.rest :as rest]
-            [clojurewerkz.elastisch.rest.multi :as multi]
+(ns clojurewerkz.elastisch.native-api.multi-test
+  (:require [clojurewerkz.elastisch.native.document :as doc]
+            [clojurewerkz.elastisch.native :as es]
+            [clojurewerkz.elastisch.native.multi :as multi]
             [clojurewerkz.elastisch.query :as q]
             [clojurewerkz.elastisch.fixtures :as fx]
             [clojurewerkz.elastisch.test.helpers :as th]
-            [clojurewerkz.elastisch.rest.response :refer :all]
+            [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
-(let [conn (rest/connect)]
+(let [conn (th/connect-native-client)]
   (deftest ^{:rest true} test-multi-search
     "Verify that multi/search returns same result as singularly executed queries."
     (let [res1 (doc/search conn "people" "person" :query (q/match-all) :size 1)

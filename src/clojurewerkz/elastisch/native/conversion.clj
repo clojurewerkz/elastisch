@@ -653,17 +653,17 @@
   ([^Client conn queries opts]
      (let [sb (MultiSearchRequestBuilder. conn)]
        ;; pairs of [{:index "index name" :type "mapping type"}, search-options]
-       (doseq [[{:keys [index type]} search-opts] (partition queries)]
+       (doseq [[{:keys [index type]} search-opts] (partition 2 queries)]
          (.add sb (->search-request index type search-opts)))
        (.request sb)))
   ([^Client conn ^String index queries opts]
      (let [sb (MultiSearchRequestBuilder. conn)]
-       (doseq [[{:keys [type]} search-opts] (partition queries)]
+       (doseq [[{:keys [type]} search-opts] (partition 2 queries)]
          (.add sb (->search-request index type search-opts)))
        (.request sb)))
   ([^Client conn ^String index ^String type queries opts]
      (let [sb (MultiSearchRequestBuilder. conn)]
-       (doseq [[_ search-opts] (partition queries)]
+       (doseq [[_ search-opts] (partition 2 queries)]
          (.add sb (->search-request index type search-opts)))
        (.request sb))))
 
@@ -939,9 +939,9 @@
   ;;          :hits [{:_index articles, :_type article, :_id 4, :_score 1.0,
   ;;                  :_source {:tags geografía, EEUU, historia, ciudades, Norteamérica, :title Austin, :summary "...",
   ;;                  :language Spanish, :url http://es.wikipedia.org/wiki/Austin, :number-of-edits 13002}}]}}]
-  (let [xs (map (fn [MultiSearchResponse$Item item]
+  (let [xs (map (fn [^MultiSearchResponse$Item item]
                   (.getResponse item))
-                (.iterator r))]
+                r)]
     (map search-response->seq xs)))
 
 
