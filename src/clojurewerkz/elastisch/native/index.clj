@@ -227,10 +227,11 @@
            (cnv/indices-segments-response->map res))))
 
 (defn update-aliases
-  "Performs a batch of alias operations. Takes a collection of actions in the form of
+  "Performs a batch of alias operations. Takes a collection of actions in the following form where
+   plural keys (indices, aliases) can be supplied as collections or single strings
 
-   { :add    { :index \"test1\" :alias \"alias1\" } }
-   { :remove { :index \"test1\" :alias \"alias1\" } }"
+  [{:add    { :indices \"test1\" :alias \"alias1\" }}
+   {:remove { :index \"test1\" :aliases \"alias1\" }}]"
   [^Client conn ops & args]
   (let [opts                        (ar/->opts args)
         ft                          (es/admin-update-aliases conn (cnv/->indices-aliases-request ops opts))
