@@ -1,6 +1,11 @@
 ## Changes between Elastisch 2.1.0-beta3 and 2.1.0-beta4
 
-No changes yet.
+### Multi-Search Support in the Native Client
+
+Native client now has support for [multi-search](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-multi-search.html).
+
+The API is [the same as in the REST client](http://clojureelasticsearch.info/articles/querying.html#performing-queries) except that the functions are in the
+`clojurewerkz.elastisch.native.multi`.
 
 
 ## Changes between Elastisch 2.1.0-beta2 and 2.1.0-beta3
