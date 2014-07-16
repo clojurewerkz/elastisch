@@ -15,6 +15,7 @@
             TransportAddress InetSocketTransportAddress LocalTransportAddress]
            java.util.Map
            clojure.lang.IPersistentMap
+           org.elasticsearch.client.Client
            org.elasticsearch.common.xcontent.XContentType
            org.elasticsearch.index.VersionType
            [org.elasticsearch.search.highlight HighlightBuilder HighlightBuilder$Field
@@ -29,7 +30,8 @@
            [org.elasticsearch.action.update UpdateRequest UpdateResponse]
            [org.elasticsearch.action.deletebyquery DeleteByQueryRequest DeleteByQueryResponse IndexDeleteByQueryResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
-           [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest]
+           [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest
+            MultiSearchRequestBuilder MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item]
            [org.elasticsearch.search.builder SearchSourceBuilder]
            [org.elasticsearch.search.sort SortBuilder SortOrder]
            [org.elasticsearch.search SearchHits SearchHit]
@@ -647,6 +649,24 @@
 
     r))
 
+(defn ^MultiSearchRequest ->multi-search-request
+  ([^Client conn queries opts]
+     (let [sb (MultiSearchRequestBuilder. conn)]
+       ;; pairs of [{:index "index name" :type "mapping type"}, search-options]
+       (doseq [[{:keys [index type]} search-opts] (partition queries)]
+         (.add sb (->search-request index type search-opts)))
+       (.request sb)))
+  ([^Client conn ^String index queries opts]
+     (let [sb (MultiSearchRequestBuilder. conn)]
+       (doseq [[{:keys [type]} search-opts] (partition queries)]
+         (.add sb (->search-request index type search-opts)))
+       (.request sb)))
+  ([^Client conn ^String index ^String type queries opts]
+     (let [sb (MultiSearchRequestBuilder. conn)]
+       (doseq [[_ search-opts] (partition queries)]
+         (.add sb (->search-request index type search-opts)))
+       (.request sb))))
+
 (defn ^SearchScrollRequest ->search-scroll-request
   [^String scroll-id {:keys [scroll]}]
   (let [r (SearchScrollRequest. scroll-id)]
@@ -905,6 +925,24 @@
                 :failed     (.getFailedShards r)}
    :hits       (search-hits->seq (.getHits r))})
 
+(defn multi-search-response->seq
+  [^MultiSearchResponse r]
+  ;; Example REST API response:
+  ;;
+  ;; [{:took 1, :timed_out false, :_shards {:total 5, :successful 5, :failed 0},
+  ;;   :hits {:total 4, :max_score 1.0,
+  ;;          :hits [{:_index people, :_type person, :_id 4, :_score 1.0,
+  ;;                  :_source {:last-name Hall, :age 29, :username estony, :first-name Tony,
+  ;;                  :title Yak Shaver, :planet Earth, :biography yak/reduce all day long, :country Uruguay}}]}}
+  ;;  {:took 1, :timed_out false, :_shards {:total 5, :successful 5, :failed 0},
+  ;;   :hits {:total 4, :max_score 1.0,
+  ;;          :hits [{:_index articles, :_type article, :_id 4, :_score 1.0,
+  ;;                  :_source {:tags geografía, EEUU, historia, ciudades, Norteamérica, :title Austin, :summary "...",
+  ;;                  :language Spanish, :url http://es.wikipedia.org/wiki/Austin, :number-of-edits 13002}}]}}]
+  (let [xs (map (fn [MultiSearchResponse$Item item]
+                  (.getResponse item))
+                (.iterator r))]
+    (map search-response->seq xs)))
 
 
 (defn ^IPersistentMap percolate-response->map

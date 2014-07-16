@@ -22,7 +22,8 @@
            org.elasticsearch.action.update.UpdateRequest
            org.elasticsearch.action.deletebyquery.DeleteByQueryRequest
            org.elasticsearch.action.count.CountRequest
-           [org.elasticsearch.action.search SearchRequest SearchScrollRequest]
+           [org.elasticsearch.action.search SearchRequest SearchScrollRequest
+            MultiSearchRequest]
            org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
            ;; Admin Client
@@ -93,6 +94,10 @@
   "Executes a search action request"
   [^Client conn ^SearchRequest req]
   (.search ^Client conn req))
+
+(defn ^ActionFuture multi-search
+  [^Client conn ^MultiSearchRequest req]
+  (.multiSearch conn req))
 
 (defn ^ActionFuture search-scroll
   "Executes a search action request"
