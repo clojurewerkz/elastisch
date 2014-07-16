@@ -7,6 +7,10 @@ Native client now has support for [multi-search](http://www.elasticsearch.org/gu
 The API is [the same as in the REST client](http://clojureelasticsearch.info/articles/querying.html#performing-queries) except that the functions are in the
 `clojurewerkz.elastisch.native.multi`.
 
+### Remove alias now works in native client
+Bug fixed in native client for removing aliases from indices and improved inline documentation. [See aliases in the guide](http://clojureelasticsearch.info/articles/indexing.html#index-aliases).
+
+GH issue: [#98](https://github.com/clojurewerkz/elastisch/issues/98).
 
 ## Changes between Elastisch 2.1.0-beta2 and 2.1.0-beta3
 
