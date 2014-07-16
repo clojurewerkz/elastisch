@@ -498,7 +498,7 @@
 
 (defn ^SearchSourceBuilder ^:private set-sort
   [^SearchSourceBuilder sb sort]
-  (cond 
+  (cond
    (instance? String sort)       (.sort sb ^String sort)
    ;; Allow 'sort' to be a SortBuilder, such as a GeoDistanceSortBuilder.
    (instance? SortBuilder sort)  (.sort sb ^SortBuilder sort)
@@ -1188,7 +1188,7 @@
   req)
 
 (defn- apply-remove-alias
-  [^IndicesAliasesRequest req {:keys {index aliases}}]
+  [^IndicesAliasesRequest req {:keys [index aliases]}]
   (.removeAlias req ^String index (->string-array aliases))
   req)
 
