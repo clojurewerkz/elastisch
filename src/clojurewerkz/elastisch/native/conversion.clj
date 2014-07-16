@@ -48,6 +48,7 @@
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Aggregations
            org.elasticsearch.search.aggregations.metrics.avg.Avg
+           org.elasticsearch.search.aggregations.metrics.max.Max
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
            org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation$Bucket
@@ -898,6 +899,10 @@
 (extend-protocol AggregatorPresenter
   Avg
   (aggregation-value [^Avg agg]
+    {:value (.getValue agg)})
+
+  Max
+  (aggregation-value [^Max agg]
     {:value (.getValue agg)})
 
   ExtendedStats
