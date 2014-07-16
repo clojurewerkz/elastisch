@@ -49,6 +49,8 @@
            ;; Aggregations
            org.elasticsearch.search.aggregations.metrics.avg.Avg
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
+           [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
+           org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation$Bucket
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -886,6 +888,10 @@
             {}
             (.facetsAsMap facets))))
 
+(defn bucket->map
+  [^Histogram$Bucket b]
+  {:key_as_string (.getKey b) :doc_count (.getDocCount b) :key (.. b getKeyAsNumber longValue)})
+
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
 
@@ -903,7 +909,11 @@
      :sum   (.getSum agg)
      :sum_of_squares (.getSumOfSquares agg)
      :variance       (.getVariance agg)
-     :std_deviation  (.getStdDeviation agg)}))
+     :std_deviation  (.getStdDeviation agg)})
+
+  Histogram
+  (aggregation-value [^Histogram agg]
+    {:buckets (map bucket->map (.getBuckets agg))}))
 
 (defn aggregations-to-map
   [acc [^String name agg]]
