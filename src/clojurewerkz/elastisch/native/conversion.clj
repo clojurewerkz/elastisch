@@ -46,6 +46,8 @@
            org.elasticsearch.search.facet.query.QueryFacet
            org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
+           ;; Aggregations
+           org.elasticsearch.search.aggregations.metrics.avg.Avg
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -600,9 +602,8 @@
 
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
-                                   preference
-                                   query facets from size timeout post-filter
-                                   min_score version fields sort stats _source
+                                   preference query facets aggregations from size timeout
+                                   post-filter min_score version fields sort stats _source
                                    highlight] :as options}]
   (let [r                       (SearchRequest.)
         ^SearchSourceBuilder sb (SearchSourceBuilder.)]
@@ -612,6 +613,8 @@
       (.query sb ^Map (wlk/stringify-keys query)))
     (when facets
       (.facets sb ^Map (wlk/stringify-keys facets)))
+    (when aggregations
+      (.aggregations sb ^Map (wlk/stringify-keys aggregations)))
     (when from
       (.from sb from))
     (when size
@@ -882,6 +885,19 @@
             {}
             (.facetsAsMap facets))))
 
+(defprotocol AggregatorPresenter
+  (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
+
+(extend-protocol AggregatorPresenter
+  Avg
+  (aggregation-value [^Avg agg]
+    {:value (.getValue agg)}))
+
+(defn aggregation-to-map
+  [acc [^String name agg]]
+  ;; <String, Aggregation>
+  (assoc acc (keyword name) (aggregation-value agg)))
+
 (defn search-response->seq
   [^SearchResponse r]
   ;; Example REST API response:
@@ -914,6 +930,7 @@
   ;;                 :url "http://en.wikipedia.org/wiki/Apache_Lucene",
   ;;                 :summary "..." }}]
   ;;  }
+  ;;  :aggregations {:avg_age {:value 29.0}}
   ;; }
   {:took       (.getTookInMillis r)
    :timed_out  (.isTimedOut r)
@@ -923,7 +940,8 @@
    :_shards    {:total      (.getTotalShards r)
                 :successful (.getSuccessfulShards r)
                 :failed     (.getFailedShards r)}
-   :hits       (search-hits->seq (.getHits r))})
+   :hits       (search-hits->seq (.getHits r))
+   :aggregations (reduce aggregation-to-map {} (.. r getAggregations asMap))})
 
 (defn multi-search-response->seq
   [^MultiSearchResponse r]
