@@ -48,6 +48,7 @@
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Aggregations
            org.elasticsearch.search.aggregations.metrics.avg.Avg
+           org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -891,9 +892,20 @@
 (extend-protocol AggregatorPresenter
   Avg
   (aggregation-value [^Avg agg]
-    {:value (.getValue agg)}))
+    {:value (.getValue agg)})
 
-(defn aggregation-to-map
+  ExtendedStats
+  (aggregation-value [^ExtendedStats agg]
+    {:count (.getCount agg)
+     :min   (.getMin agg)
+     :max   (.getMax agg)
+     :avg   (.getAvg agg)
+     :sum   (.getSum agg)
+     :sum_of_squares (.getSumOfSquares agg)
+     :variance       (.getVariance agg)
+     :std_deviation  (.getStdDeviation agg)}))
+
+(defn aggregations-to-map
   [acc [^String name agg]]
   ;; <String, Aggregation>
   (assoc acc (keyword name) (aggregation-value agg)))
@@ -941,7 +953,7 @@
                 :successful (.getSuccessfulShards r)
                 :failed     (.getFailedShards r)}
    :hits       (search-hits->seq (.getHits r))
-   :aggregations (reduce aggregation-to-map {} (.. r getAggregations asMap))})
+   :aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
 
 (defn multi-search-response->seq
   [^MultiSearchResponse r]
