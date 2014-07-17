@@ -995,16 +995,18 @@
   ;;  }
   ;;  :aggregations {:avg_age {:value 29.0}}
   ;; }
-  {:took       (.getTookInMillis r)
-   :timed_out  (.isTimedOut r)
-   :_scroll_id (.getScrollId r)
-   :facets     (search-facets->seq (.getFacets r))
-   ;; TODO: suggestions
-   :_shards    {:total      (.getTotalShards r)
-                :successful (.getSuccessfulShards r)
-                :failed     (.getFailedShards r)}
-   :hits       (search-hits->seq (.getHits r))
-   :aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
+  (let [m {:took       (.getTookInMillis r)
+           :timed_out  (.isTimedOut r)
+           :_scroll_id (.getScrollId r)
+           :facets     (search-facets->seq (.getFacets r))
+           ;; TODO: suggestions
+           :_shards    {:total      (.getTotalShards r)
+                        :successful (.getSuccessfulShards r)
+                        :failed     (.getFailedShards r)}
+           :hits       (search-hits->seq (.getHits r))}]
+    (if (seq (.getAggregations r))
+      (clojure.core/merge m {:aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
+      m)))
 
 (defn multi-search-response->seq
   [^MultiSearchResponse r]
