@@ -433,11 +433,19 @@
        r)))
 
 (defn ^UpdateRequest ->upsert-request
-  ([index-name mapping-type ^String id ^Map doc]
+  ([index-name mapping-type ^String id ^Map doc {:keys [script routing refresh fields parent]}]
      (let [doc (wlk/stringify-keys doc)
            r   (UpdateRequest. index-name mapping-type id)]
        (.doc r ^Map doc)
        (.upsert r ^Map doc)
+       (when refresh
+         (.refresh r))
+       (when routing
+         (.routing r routing))
+       (when parent
+         (.parent r parent))
+       (when fields
+         (.fields r (->string-array fields)))
        r)))
 
 (defn ^IPersistentMap update-response->map
@@ -995,16 +1003,18 @@
   ;;  }
   ;;  :aggregations {:avg_age {:value 29.0}}
   ;; }
-  {:took       (.getTookInMillis r)
-   :timed_out  (.isTimedOut r)
-   :_scroll_id (.getScrollId r)
-   :facets     (search-facets->seq (.getFacets r))
-   ;; TODO: suggestions
-   :_shards    {:total      (.getTotalShards r)
-                :successful (.getSuccessfulShards r)
-                :failed     (.getFailedShards r)}
-   :hits       (search-hits->seq (.getHits r))
-   :aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
+  (let [m {:took       (.getTookInMillis r)
+           :timed_out  (.isTimedOut r)
+           :_scroll_id (.getScrollId r)
+           :facets     (search-facets->seq (.getFacets r))
+           ;; TODO: suggestions
+           :_shards    {:total      (.getTotalShards r)
+                        :successful (.getSuccessfulShards r)
+                        :failed     (.getFailedShards r)}
+           :hits       (search-hits->seq (.getHits r))}]
+    (if (seq (.getAggregations r))
+      (clojure.core/merge m {:aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
+      m)))
 
 (defn multi-search-response->seq
   [^MultiSearchResponse r]

@@ -100,10 +100,13 @@
 (defn upsert
   "Updates or creates a document using provided data"
   ([^Client conn index mapping-type ^String id ^Map doc]
+     (upsert conn index mapping-type id doc {}))
+  ([^Client conn index mapping-type ^String id ^Map doc ^Map opts]
      (let [res (es/update conn (cnv/->upsert-request index
                                                 mapping-type
                                                 id
-                                                doc))]
+                                                doc
+                                                opts))]
        (cnv/update-response->map (.actionGet res)))))
 
 (defn update-with-script
