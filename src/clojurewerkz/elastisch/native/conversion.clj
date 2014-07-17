@@ -50,6 +50,7 @@
            org.elasticsearch.search.aggregations.metrics.avg.Avg
            org.elasticsearch.search.aggregations.metrics.max.Max
            org.elasticsearch.search.aggregations.metrics.min.Min
+           org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
@@ -916,6 +917,10 @@
 
   Min
   (aggregation-value [^Min agg]
+    {:value (.getValue agg)})
+
+  Cardinality
+  (aggregation-value [^Cardinality agg]
     {:value (.getValue agg)})
 
   ExtendedStats
