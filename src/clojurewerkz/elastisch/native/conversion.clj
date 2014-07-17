@@ -52,6 +52,7 @@
            org.elasticsearch.search.aggregations.metrics.min.Min
            org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
+           org.elasticsearch.search.aggregations.metrics.stats.Stats
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
@@ -927,6 +928,14 @@
   ValueCount
   (aggregation-value [^ValueCount agg]
     {:value (.getValue agg)})
+
+  Stats
+  (aggregation-value [^Stats agg]
+    {:count (.getCount agg)
+     :min   (.getMin agg)
+     :max   (.getMax agg)
+     :avg   (.getAvg agg)
+     :sum   (.getSum agg)})
 
   ExtendedStats
   (aggregation-value [^ExtendedStats agg]
