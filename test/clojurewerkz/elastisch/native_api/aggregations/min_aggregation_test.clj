@@ -9,7 +9,6 @@
 
 (ns clojurewerkz.elastisch.native-api.aggregations.min-aggregation-test
   (:require [clojurewerkz.elastisch.native.document :as doc]
-            [clojurewerkz.elastisch.native :as native]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.aggregation   :as a]
             [clojurewerkz.elastisch.fixtures      :as fx]
