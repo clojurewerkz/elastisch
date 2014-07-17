@@ -433,11 +433,19 @@
        r)))
 
 (defn ^UpdateRequest ->upsert-request
-  ([index-name mapping-type ^String id ^Map doc]
+  ([index-name mapping-type ^String id ^Map doc {:keys [script routing refresh fields parent]}]
      (let [doc (wlk/stringify-keys doc)
            r   (UpdateRequest. index-name mapping-type id)]
        (.doc r ^Map doc)
        (.upsert r ^Map doc)
+       (when refresh
+         (.refresh r))
+       (when routing
+         (.routing r routing))
+       (when parent
+         (.parent r parent))
+       (when fields
+         (.fields r (->string-array fields)))
        r)))
 
 (defn ^IPersistentMap update-response->map
