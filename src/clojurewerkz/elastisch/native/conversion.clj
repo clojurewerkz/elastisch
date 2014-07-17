@@ -48,6 +48,14 @@
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Aggregations
            org.elasticsearch.search.aggregations.metrics.avg.Avg
+           org.elasticsearch.search.aggregations.metrics.max.Max
+           org.elasticsearch.search.aggregations.metrics.min.Min
+           org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
+           org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
+           org.elasticsearch.search.aggregations.metrics.stats.Stats
+           org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
+           [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -885,15 +893,70 @@
             {}
             (.facetsAsMap facets))))
 
+(defn histogram-bucket->map
+  [^Histogram$Bucket b]
+  {:key_as_string (.getKey b) :doc_count (.getDocCount b) :key (.. b getKeyAsNumber longValue)})
+
+(defn range-bucket->map
+  [^Range$Bucket b]
+  {:doc_count (.getDocCount b)
+   :from_as_string (String/valueOf ^long (.. b getFrom longValue))
+   :from (.. b getFrom longValue)
+   :to_as_string (String/valueOf ^long (.. b getTo longValue))
+   :to (.. b getTo longValue)})
+
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
 
 (extend-protocol AggregatorPresenter
   Avg
   (aggregation-value [^Avg agg]
-    {:value (.getValue agg)}))
+    {:value (.getValue agg)})
 
-(defn aggregation-to-map
+  Max
+  (aggregation-value [^Max agg]
+    {:value (.getValue agg)})
+
+  Min
+  (aggregation-value [^Min agg]
+    {:value (.getValue agg)})
+
+  Cardinality
+  (aggregation-value [^Cardinality agg]
+    {:value (.getValue agg)})
+
+  ValueCount
+  (aggregation-value [^ValueCount agg]
+    {:value (.getValue agg)})
+
+  Stats
+  (aggregation-value [^Stats agg]
+    {:count (.getCount agg)
+     :min   (.getMin agg)
+     :max   (.getMax agg)
+     :avg   (.getAvg agg)
+     :sum   (.getSum agg)})
+
+  ExtendedStats
+  (aggregation-value [^ExtendedStats agg]
+    {:count (.getCount agg)
+     :min   (.getMin agg)
+     :max   (.getMax agg)
+     :avg   (.getAvg agg)
+     :sum   (.getSum agg)
+     :sum_of_squares (.getSumOfSquares agg)
+     :variance       (.getVariance agg)
+     :std_deviation  (.getStdDeviation agg)})
+
+  Histogram
+  (aggregation-value [^Histogram agg]
+    {:buckets (map histogram-bucket->map (.getBuckets agg))})
+
+  Range
+  (aggregation-value [^Range agg]
+    {:buckets (map range-bucket->map (.getBuckets agg))}))
+
+(defn aggregations-to-map
   [acc [^String name agg]]
   ;; <String, Aggregation>
   (assoc acc (keyword name) (aggregation-value agg)))
@@ -941,7 +1004,7 @@
                 :successful (.getSuccessfulShards r)
                 :failed     (.getFailedShards r)}
    :hits       (search-hits->seq (.getHits r))
-   :aggregations (reduce aggregation-to-map {} (.. r getAggregations asMap))})
+   :aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
 
 (defn multi-search-response->seq
   [^MultiSearchResponse r]
