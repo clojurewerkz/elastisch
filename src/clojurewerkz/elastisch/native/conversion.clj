@@ -52,7 +52,7 @@
            org.elasticsearch.search.aggregations.metrics.min.Min
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
-           org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation$Bucket
+           [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -890,9 +890,17 @@
             {}
             (.facetsAsMap facets))))
 
-(defn bucket->map
+(defn histogram-bucket->map
   [^Histogram$Bucket b]
   {:key_as_string (.getKey b) :doc_count (.getDocCount b) :key (.. b getKeyAsNumber longValue)})
+
+(defn range-bucket->map
+  [^Range$Bucket b]
+  {:doc_count (.getDocCount b)
+   :from_as_string (String/valueOf ^long (.. b getFrom longValue))
+   :from (.. b getFrom longValue)
+   :to_as_string (String/valueOf ^long (.. b getTo longValue))
+   :to (.. b getTo longValue)})
 
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
@@ -923,7 +931,11 @@
 
   Histogram
   (aggregation-value [^Histogram agg]
-    {:buckets (map bucket->map (.getBuckets agg))}))
+    {:buckets (map histogram-bucket->map (.getBuckets agg))})
+
+  Range
+  (aggregation-value [^Range agg]
+    {:buckets (map range-bucket->map (.getBuckets agg))}))
 
 (defn aggregations-to-map
   [acc [^String name agg]]
