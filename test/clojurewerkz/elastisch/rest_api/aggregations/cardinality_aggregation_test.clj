@@ -26,5 +26,4 @@
                                    :query (q/match-all)
                                    :aggregations {:username_count {:cardinality {:field "username"}}})
           agg          (aggregation-from response :username_count)]
-      (println response)
       (is (>= (:value agg) 4)))))
