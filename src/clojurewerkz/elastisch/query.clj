@@ -23,6 +23,13 @@
   (merge { (if (coll? values) :terms :term) (hash-map key values) }
          (ar/->opts args)))
 
+(defn terms
+  "Terms Query
+
+  For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html"
+  [key values & args]
+  (apply term key values args))
+
 (defn range
   "Range Query
 
