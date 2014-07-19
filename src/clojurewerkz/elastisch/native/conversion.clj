@@ -50,6 +50,7 @@
            org.elasticsearch.search.aggregations.metrics.avg.Avg
            org.elasticsearch.search.aggregations.metrics.max.Max
            org.elasticsearch.search.aggregations.metrics.min.Min
+           org.elasticsearch.search.aggregations.metrics.sum.Sum
            org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
            org.elasticsearch.search.aggregations.metrics.stats.Stats
@@ -927,6 +928,10 @@
 
   Min
   (aggregation-value [^Min agg]
+    {:value (.getValue agg)})
+
+  Sum
+  (aggregation-value [^Sum agg]
     {:value (.getValue agg)})
 
   Cardinality
