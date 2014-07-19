@@ -29,6 +29,13 @@ Native client now has support for [multi-search](http://www.elasticsearch.org/gu
 The API is [the same as in the REST client](http://clojureelasticsearch.info/articles/querying.html#performing-queries) except that the functions are in the
 `clojurewerkz.elastisch.native.multi`.
 
+### Terms Query Helper
+
+`clojurewerkz.elastisch.query/terms` is a newly added alias for `clojurewerkz.elastisch.query/term`
+when used with a collection.
+
+Contributed by Martin Klepsch.
+
 ### Remove Alias Now Works in Native Client
 
 Bug fixed in native client for removing aliases from indices and
