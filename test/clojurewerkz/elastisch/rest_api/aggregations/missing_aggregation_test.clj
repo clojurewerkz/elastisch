@@ -20,10 +20,10 @@
 
 (let [conn (rest/connect)]
   (deftest ^{:rest true :aggregation true} test-missing-aggregation
-    (let [index-name   "people"
-          mapping-type "person"
-          response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:missing_title (a/missing "country")})
-          agg          (aggregation-from response :missing_title)]
-      (is (= {:doc_count 3} agg)))))
+  (let [index-name   "people"
+        mapping-type "person"
+        response     (doc/search conn index-name mapping-type
+                                 :query (q/match-all)
+                                 :aggregations {:no_country (a/missing :country)})
+        agg          (aggregation-from response :no_country)]
+    (is (>= 3 (:doc_count agg))))))
