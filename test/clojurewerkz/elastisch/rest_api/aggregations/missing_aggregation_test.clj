@@ -26,4 +26,4 @@
                                  :query (q/match-all)
                                  :aggregations {:no_country (a/missing :country)})
         agg          (aggregation-from response :no_country)]
-    (is (>= 3 (:doc_count agg))))))
+    (is (>= (:doc_count agg) 3)))))
