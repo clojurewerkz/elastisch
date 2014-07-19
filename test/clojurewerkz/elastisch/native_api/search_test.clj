@@ -112,4 +112,4 @@
                                                                    "planet" "biography"
                                                                    "last-name" "username"]}))]
       (is (= 4 (count hits)))
-      (is (= {:first-name "Tony" :age 29} (-> hits last :_source))))))
+      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last :_source))))))))
