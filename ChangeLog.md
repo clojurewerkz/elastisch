@@ -19,6 +19,7 @@ used ones are supported but support for more types will be added eventually:
  * Percentiles
  * Histogram
  * Range
+ * Date Range
  * Terms
  * Missing
  * Global
