@@ -20,6 +20,8 @@ used ones are supported but support for more types will be added eventually:
  * Histogram
  * Range
  * Terms
+ * Missing
+ * Global
 
 
 ### Multi-Search Support in the Native Client
