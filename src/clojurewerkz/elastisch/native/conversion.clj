@@ -57,8 +57,9 @@
            org.elasticsearch.search.aggregations.metrics.stats.Stats
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
-           [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
-           [org.elasticsearch.search.aggregations.bucket.terms     Terms     Terms$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.range      Range     Range$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.range.date DateRange DateRange$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.terms      Terms     Terms$Bucket]
            org.elasticsearch.search.aggregations.bucket.SingleBucketAggregation
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
@@ -917,6 +918,16 @@
    :to_as_string (String/valueOf ^long (.. b getTo longValue))
    :to (.. b getTo longValue)})
 
+(defn date-range-bucket->map
+  [^DateRange$Bucket b]
+  {:doc_count (.getDocCount b)
+   ;; :from_as_string, :to_as_string requires knowing what format the values
+   ;; are in. We can format them using org.elasticsearch.common.joda.FormatDateTimeFormatter
+   ;; but since aggregations can be arbitrarily nested, this is much trickier
+   ;; than simply passing the formatter from native.document/search. MK.
+   :from (.getFromAsDate b)
+   :to (.getToAsDate b)})
+
 (defn terms-bucket->map
   [^Terms$Bucket b]
   {:doc_count (.getDocCount b)
@@ -988,6 +999,10 @@
   Range
   (aggregation-value [^Range agg]
     {:buckets (vec (map range-bucket->map (.getBuckets agg)))})
+
+  DateRange
+  (aggregation-value [^DateRange agg]
+    {:buckets (vec (map date-range-bucket->map (.getBuckets agg)))})
 
   Terms
   (aggregation-value [^Terms agg]
