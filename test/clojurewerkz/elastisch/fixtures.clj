@@ -39,7 +39,8 @@
    :title      "Sales Manager"
    :biography  "Tries to avoid eating fat, being good to other people and does sports every now and then"
    :planet     "Earth"
-   :age 22})
+   :age 22
+   :signed_up_at "2012-03-31T08:12:37"})
 
 (def person-joe
   {:username   "esjoe"
@@ -48,7 +49,8 @@
    :title      "Trader"
    :biography  "Quite a nice guy"
    :planet     "Earth"
-   :age 37})
+   :age 37
+   :signed_up_at "2012-02-28T23:02:03"})
 
 (def person-mary
   {:username   "esmary"
@@ -57,7 +59,8 @@
    :title      "Copywriter"
    :biography  "Writes copy and copies writes"
    :planet     "Earth"
-   :age 28})
+   :age 28
+   :signed_up_at "2012-02-27T12:34:53"})
 
 (def person-tony
   {:username   "estony"
@@ -67,17 +70,19 @@
    :biography  "yak/reduce all day long"
    :planet     "Earth"
    :age 29
-   :country    "Uruguay"})
+   :country    "Uruguay"
+   :signed_up_at "2012-03-11T02:00:00"})
 
 (def people-mapping
-  {:person {:properties {:username   {:type "string" :store "yes"}
-                         :first-name {:type "string" :store "yes"}
-                         :last-name  {:type "string"}
-                         :age        {:type "integer"}
-                         :title      {:type "string" :analyzer "snowball"}
-                         :planet     {:type "string"}
-                         :country    {:type "string"}
-                         :biography  {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
+  {:person {:properties {:username     {:type "string" :store "yes"}
+                         :first-name   {:type "string" :store "yes"}
+                         :last-name    {:type "string"}
+                         :age          {:type "integer"}
+                         :signed_up_at {:type "date" :format "date_hour_minute_second"}
+                         :title        {:type "string" :analyzer "snowball"}
+                         :planet       {:type "string"}
+                         :country      {:type "string"}
+                         :biography    {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
 
 
 
