@@ -58,6 +58,7 @@
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.terms     Terms     Terms$Bucket]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -915,6 +916,11 @@
    :to_as_string (String/valueOf ^long (.. b getTo longValue))
    :to (.. b getTo longValue)})
 
+(defn terms-bucket->map
+  [^Terms$Bucket b]
+  {:doc_count (.getDocCount b)
+   :key (.getKey b)})
+
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
 
@@ -971,11 +977,15 @@
 
   Histogram
   (aggregation-value [^Histogram agg]
-    {:buckets (map histogram-bucket->map (.getBuckets agg))})
+    {:buckets (vec (map histogram-bucket->map (.getBuckets agg)))})
 
   Range
   (aggregation-value [^Range agg]
-    {:buckets (map range-bucket->map (.getBuckets agg))}))
+    {:buckets (vec (map range-bucket->map (.getBuckets agg)))})
+
+  Terms
+  (aggregation-value [^Terms agg]
+    {:buckets (vec (map terms-bucket->map (.getBuckets agg)))}))
 
 (defn aggregations-to-map
   [acc [^String name agg]]
