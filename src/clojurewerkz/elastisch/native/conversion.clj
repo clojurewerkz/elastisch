@@ -59,6 +59,7 @@
            [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range     Range     Range$Bucket]
            [org.elasticsearch.search.aggregations.bucket.terms     Terms     Terms$Bucket]
+           org.elasticsearch.search.aggregations.bucket.SingleBucketAggregation
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -955,6 +956,11 @@
   ValueCount
   (aggregation-value [^ValueCount agg]
     {:value (.getValue agg)})
+
+  ;; Missing, Global, etc
+  SingleBucketAggregation
+  (aggregation-value [^SingleBucketAggregation agg]
+    {:doc_count (.getDocCount agg)})
 
   Stats
   (aggregation-value [^Stats agg]
