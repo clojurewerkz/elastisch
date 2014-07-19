@@ -12,11 +12,14 @@ used ones are supported but support for more types will be added eventually:
  * Avg
  * Max
  * Min
+ * Sum
  * Stats
  * Extended stats
  * Cardinality, value count
+ * Percentiles
  * Histogram
  * Range
+ * Terms
 
 
 ### Multi-Search Support in the Native Client
