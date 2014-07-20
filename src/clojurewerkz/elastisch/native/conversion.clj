@@ -56,7 +56,8 @@
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
            org.elasticsearch.search.aggregations.metrics.stats.Stats
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
-           [org.elasticsearch.search.aggregations.bucket.histogram Histogram Histogram$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.histogram  Histogram Histogram$Bucket
+            DateHistogram DateHistogram$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range      Range     Range$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range.date DateRange DateRange$Bucket]
            [org.elasticsearch.search.aggregations.bucket.terms      Terms     Terms$Bucket]
@@ -928,6 +929,10 @@
    :from (.getFromAsDate b)
    :to (.getToAsDate b)})
 
+(defn date-histogram-bucket->map
+  [^DateHistogram$Bucket b]
+  {:doc_count (.getDocCount b) :key (.getKeyAsDate b)})
+
 (defn terms-bucket->map
   [^Terms$Bucket b]
   {:doc_count (.getDocCount b)
@@ -995,6 +1000,10 @@
   Histogram
   (aggregation-value [^Histogram agg]
     {:buckets (vec (map histogram-bucket->map (.getBuckets agg)))})
+
+  DateHistogram
+  (aggregation-value [^DateHistogram agg]
+    {:buckets (vec (map date-histogram-bucket->map (.getBuckets agg)))})
 
   Range
   (aggregation-value [^Range agg]
