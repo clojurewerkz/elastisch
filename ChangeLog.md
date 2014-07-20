@@ -19,6 +19,7 @@ The supported types are:
  * Cardinality, value count
  * Percentiles
  * Histogram
+ * Date Histogram
  * Range
  * Date Range
  * Terms
