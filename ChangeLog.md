@@ -34,6 +34,15 @@ Native client now has support for [multi-search](http://www.elasticsearch.org/gu
 The API is [the same as in the REST client](http://clojureelasticsearch.info/articles/querying.html#performing-queries) except that the functions are in the
 `clojurewerkz.elastisch.native.multi`.
 
+### Extra Options on Upserts
+
+`clojurewerkz.elastisch.native.document/upsert` now accepts a map of extra options,
+e.g. parent document ID:
+
+``` clojure
+(doc/upsert conn index-name index-type id doc {:parent parent-id})
+```
+
 ### Terms Query Helper
 
 `clojurewerkz.elastisch.query/terms` is a newly added alias for `clojurewerkz.elastisch.query/term`
