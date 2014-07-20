@@ -7,7 +7,8 @@ Native client now has support for [aggregations](http://www.elasticsearch.org/gu
 The API is [the same as in the REST client](http://clojureelasticsearch.info/articles/aggregation.html).
 
 Note that ElasticSearch 1.2 has 26 aggregations. Currently only the most commonly
-used ones are supported but support for more types will be added eventually:
+used ones are supported but support for more types will be added eventually.
+The supported types are:
 
  * Avg
  * Max
