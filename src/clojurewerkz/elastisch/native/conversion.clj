@@ -51,7 +51,7 @@
            org.elasticsearch.search.aggregations.metrics.max.Max
            org.elasticsearch.search.aggregations.metrics.min.Min
            org.elasticsearch.search.aggregations.metrics.sum.Sum
-           [org.elasticsearch.search.aggregations.metrics.percentiles Percentiles Percentiles$Percentile]
+           [org.elasticsearch.search.aggregations.metrics.percentiles Percentiles Percentile]
            org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
            org.elasticsearch.search.aggregations.metrics.stats.Stats
@@ -960,7 +960,7 @@
 
   Percentiles
   (aggregation-value [^Percentiles agg]
-    {:values (reduce (fn [acc ^Percentiles$Percentile p]
+    {:values (reduce (fn [acc ^Percentile p]
                        (assoc acc (keyword (str (.getPercent p))) (.getValue p)))
                      {}
                      agg)})
