@@ -1,3 +1,10 @@
+## Changes between Elastisch 2.1.0-beta4 and 2.1.0-rc1
+
+### ElasticSearch Native Client Upgrade
+
+Elastisch now depends on ElasticSearch native client version `1.3.x`.
+
+
 ## Changes between Elastisch 2.1.0-beta3 and 2.1.0-beta4
 
 ### Aggregations Support in the Native Client
