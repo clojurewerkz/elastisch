@@ -82,7 +82,7 @@ The most recent stable release is highly recommended.
 
 Elastisch 2.0 **requires** [ElasticSearch 1.0](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
 
-Elasitsch 1.4 supports ElasticSearch `0.90.x` and has **known incompatibilities**
+Elastisch 1.4 supports ElasticSearch `0.90.x` and has **known incompatibilities**
 with ES 1.0 in both REST and native clients.
 
 
