@@ -18,9 +18,8 @@
   [conn url queries & args]
   (let [opts         (ar/->opts args)
         msearch-json (map json/encode queries)
-        msearch-json (-> msearch-json
-                         (interleave (repeat "\n"))
-                         (string/join))]
+        msearch-json (->> msearch-json
+                          (string/join "\n"))]
     (rest/get conn url
               {:body msearch-json
                :query-params opts})))
