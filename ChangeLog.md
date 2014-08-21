@@ -1,4 +1,4 @@
-## Changes between Elastisch 2.1.0-beta4 and 2.1.0-rc1
+## Changes between Elastisch 2.1.0-beta4 and 2.1.0-beta5
 
 ### ElasticSearch Native Client Upgrade
 
