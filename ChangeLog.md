@@ -4,6 +4,10 @@
 
 Elastisch now depends on ElasticSearch native client version `1.3.x`.
 
+### Single-Bucket Aggregation Fix in the Native Client
+
+Child aggregations in single-bucket aggregations (i.e. "global") are no longer silently dropped.
+
 
 ## Changes between Elastisch 2.1.0-beta3 and 2.1.0-beta4
 
