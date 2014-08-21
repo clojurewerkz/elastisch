@@ -23,7 +23,7 @@
            org.elasticsearch.common.text.Text
            ;; Actions
            org.elasticsearch.action.ShardOperationFailedException
-           [org.elasticsearch.action.index IndexRequest IndexResponse]
+           [org.elasticsearch.action.index IndexRequest IndexRequest$OpType IndexResponse]
            [org.elasticsearch.index.get GetResult]
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
@@ -239,7 +239,7 @@
        (when ttl
          (.ttl ir ttl))
        (when op-type
-         (.opType ir ^String (.toLowerCase (name op-type))))
+         (.opType ir (IndexRequest$OpType/fromString (.toLowerCase (name op-type)))))
        (when refresh
          (.refresh ir refresh))
        (when version
