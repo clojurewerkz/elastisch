@@ -1,3 +1,10 @@
+## Changes between Elastisch 2.1.0-beta5 and 2.1.0-beta6
+
+### clj-time 0.8.0
+
+[clj-time](https://github.com/clj-time/clj-time) dependency has been upgraded to version 0.8.0.
+
+
 ## Changes between Elastisch 2.1.0-beta4 and 2.1.0-beta5
 
 ### ElasticSearch Native Client Upgrade
