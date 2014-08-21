@@ -47,6 +47,7 @@
            org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Aggregations
+           org.elasticsearch.search.aggregations.Aggregations
            org.elasticsearch.search.aggregations.metrics.avg.Avg
            org.elasticsearch.search.aggregations.metrics.max.Max
            org.elasticsearch.search.aggregations.metrics.min.Min
@@ -941,6 +942,15 @@
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
 
+(defn assoc-aggregation-value
+  [acc [^String name agg]]
+  ;; <String, Aggregation>
+  (assoc acc (keyword name) (aggregation-value agg)))
+
+(defn aggregations-to-map
+  [^Aggregations aggs]
+  (reduce assoc-aggregation-value {} (.asMap aggs)))
+
 (extend-protocol AggregatorPresenter
   Avg
   (aggregation-value [^Avg agg]
@@ -1017,11 +1027,6 @@
   (aggregation-value [^Terms agg]
     {:buckets (vec (map terms-bucket->map (.getBuckets agg)))}))
 
-(defn aggregations-to-map
-  [acc [^String name agg]]
-  ;; <String, Aggregation>
-  (assoc acc (keyword name) (aggregation-value agg)))
-
 (defn search-response->seq
   [^SearchResponse r]
   ;; Example REST API response:
@@ -1066,7 +1071,7 @@
                         :failed     (.getFailedShards r)}
            :hits       (search-hits->seq (.getHits r))}]
     (if (seq (.getAggregations r))
-      (clojure.core/merge m {:aggregations (reduce aggregations-to-map {} (.. r getAggregations asMap))})
+      (clojure.core/merge m {:aggregations (aggregations-to-map (. r getAggregations))})
       m)))
 
 (defn multi-search-response->seq
