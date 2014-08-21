@@ -986,7 +986,9 @@
   ;; Missing, Global, etc
   SingleBucketAggregation
   (aggregation-value [^SingleBucketAggregation agg]
-    {:doc_count (.getDocCount agg)})
+    (->> (.getAggregations agg)
+         (aggregations-to-map)
+         (clojure.core/merge {:doc_count (.getDocCount agg)})))
 
   Stats
   (aggregation-value [^Stats agg]
