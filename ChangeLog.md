@@ -1,5 +1,13 @@
 ## Changes between Elastisch 2.1.0-beta5 and 2.1.0-beta6
 
+### New Line in Multi-Search REST API
+
+ElasticSearch Multi Search REST API endpoint is sensitive to the trailing new line.
+When it is missing, the response contains one result too few.
+
+Elastisch now makes sure to append a new line to Multi Search request
+bodies.
+
 ### clj-time 0.8.0
 
 [clj-time](https://github.com/clj-time/clj-time) dependency has been upgraded to version 0.8.0.
