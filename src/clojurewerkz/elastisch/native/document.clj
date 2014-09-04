@@ -93,9 +93,9 @@
   "Creates or updates a document in the search index using the provided document id
    and returns a future without waiting for the response. Takes exactly the same arguments as put."
   ([^Client conn index mapping-type id document]
-     (future (put index mapping-type id document)))
+     (future (put conn index mapping-type id document)))
   ([^Client conn index mapping-type id document & args]
-     (future (put index mapping-type id document (ar/->opts args)))))
+     (future (put conn index mapping-type id document (ar/->opts args)))))
 
 (defn upsert
   "Updates or creates a document using provided data"
