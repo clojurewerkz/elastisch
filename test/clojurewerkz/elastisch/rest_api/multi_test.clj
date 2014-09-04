@@ -21,10 +21,15 @@
 (let [conn (rest/connect)]
   (deftest ^{:rest true} test-multi-search
     "Verify that multi/search returns same result as singularly executed queries."
-    (let [res1 (doc/search conn "people" "person" :query (q/match-all) :size 1)
-          res2 (doc/search conn "articles" "article" :query (q/match-all) :size 1)
-          multires (multi/search conn [{:index "people" :type "person"} {:query (q/match-all) :size 1}
-                                       {:index "articles" :type "article"} {:query (q/match-all) :size 1}])]
+    (let [res1 (doc/search conn "people"   "person"  {:query (q/match-all) :size 1})
+          res2 (doc/search conn "articles" "article" {:query (q/match-all) :size 1})
+          multires (multi/search conn [{:index "people"
+                                        :type "person"}  {:query (q/match-all) :size 1}
+                                       {:index "articles"
+                                        :type "article"} {:query (q/match-all) :size 1}
+                                       {:index "tweets"
+                                        :type "tweet"}   {:query (q/match-all) :size 1}])]
+      (is (= 3 (count multires)))
       (is (= (-> res1 :hits :hits first :_source)
              (-> multires first :hits :hits first :_source)))
       (is (= (-> res2 :hits :hits first :_source)
@@ -36,6 +41,8 @@
           multires (multi/search-with-index-and-type conn
                                                      "people" "person"
                                                      [{} {:query (q/term :planet "earth")}
-                                                      {} {:query (q/term :first-name "mary")}])]
+                                                      {} {:query (q/term :first-name "mary")}
+                                                      {} {:query (q/match-all)}])]
+      (is (= 3 (count multires)))
       (is (= (res1 :hits) (-> multires first :hits)))
       (is (= (res2 :hits) (-> multires second :hits))))))

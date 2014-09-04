@@ -15,29 +15,28 @@
   (:import clojurewerkz.elastisch.rest.Connection))
 
 (defn ^:private msearch-with-url
-  [conn url queries & args]
-  (let [opts         (ar/->opts args)
-        msearch-json (map json/encode queries)
-        msearch-json (->> msearch-json
-                          (string/join "\n"))]
+  [conn url queries args]
+  (let [opts (ar/->opts args)
+        body (string/join "\n" (doall (map json/encode queries)))]
     (rest/get conn url
-              {:body msearch-json
+              ;; multi-search is sensitive to trailing new line. MK.
+              {:body (str body "\n")
                :query-params opts})))
 
 (defn search
   "Performs multi search"
   [conn queries & params]
-  (:responses (apply msearch-with-url conn (rest/multi-search-url conn) queries params)))
+  (:responses (msearch-with-url conn (rest/multi-search-url conn) queries params)))
 
 (defn search-with-index
   "Performs multi search defaulting to the index specified"
   [^Connection conn index queries & params]
-  (:responses (apply msearch-with-url conn (rest/multi-search-url conn
-                                                                  index) queries params)))
+  (:responses (msearch-with-url conn (rest/multi-search-url conn
+                                                            index) queries params)))
 
 (defn search-with-index-and-type
   "Performs multi search defaulting to the index and type specified"
   [^Connection conn index mapping-type queries & params]
-  (:responses (apply msearch-with-url conn (rest/multi-search-url conn
-                                                                  index mapping-type)
+  (:responses (msearch-with-url conn (rest/multi-search-url conn
+                                                            index mapping-type)
                      queries params)))
