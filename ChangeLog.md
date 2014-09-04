@@ -8,6 +8,12 @@ When it is missing, the response contains one result too few.
 Elastisch now makes sure to append a new line to Multi Search request
 bodies.
 
+### Correct async-put in Native Client
+
+Native client's `document/async-put` no longer fails with an exception.
+
+Contributed by Nikita Burtsev.
+
 ### clj-time 0.8.0
 
 [clj-time](https://github.com/clj-time/clj-time) dependency has been upgraded to version 0.8.0.
