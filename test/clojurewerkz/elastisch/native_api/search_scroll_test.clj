@@ -32,7 +32,7 @@
         scan-response (doc/scroll conn scroll-id :scroll "1m")
         scan-hits     (hits-from scan-response)]
     (is (any-hits? response))
-    (is (:_scroll_id response))
+    (is scroll-id)
     (is (= 0 (count initial-hits)))
     (is (= 4 (total-hits scan-response)))
     (is (= 4 (count scan-hits)))))
