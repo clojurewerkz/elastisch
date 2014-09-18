@@ -59,7 +59,7 @@
   "generates the content for a bulk insert operation"
   ([documents]
      (let [operations (map index-operation documents)
-           documents  (map #(dissoc % :_index :_type) documents)]
+           documents  (map #(apply dissoc % special-operation-keys) documents)]
        (interleave operations documents))))
 
 (defn bulk-delete
