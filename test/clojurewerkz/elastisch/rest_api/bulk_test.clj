@@ -37,7 +37,10 @@
 (let [conn (rest/connect)]
   (deftest ^{:rest true :indexing true} test-bulk-insert
     (let [document          fx/person-jack
-          for-index         (assoc document :_index index-name :_type index-type)
+          for-index         (assoc document
+                                   :_index index-name
+                                   :_type index-type
+                                   :_routing "routing-key")
           insert-operations (bulk/bulk-index (repeat 10 for-index))
           response          (bulk/bulk conn insert-operations :refresh true)
           first-id          (-> response :items first :create :_id)
