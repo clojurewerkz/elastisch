@@ -1,3 +1,17 @@
+## Changes between Elastisch 2.1.0-beta6 and 2.1.0-beta7
+
+### REST API Bulk Indexing Filters Out Operation Keys
+
+`clojurewerkz.elastisch.rest.bulk/bulk-index` now filters out
+all operation/option keys so that they don't get stored in the document
+body.
+
+GH issue: [#116](https://github.com/clojurewerkz/elastisch/issues/116).
+
+Contributed by Michael Nussbaum (Braintree).
+
+
+
 ## Changes between Elastisch 2.1.0-beta5 and 2.1.0-beta6
 
 ### New Line in Multi-Search REST API
