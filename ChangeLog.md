@@ -1,3 +1,10 @@
+## Changes between Elastisch 2.1.0-beta7 and 2.1.0-beta8
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.0.x`.
+
+
 ## Changes between Elastisch 2.1.0-beta6 and 2.1.0-beta7
 
 ### REST API Bulk Indexing Filters Out Operation Keys
