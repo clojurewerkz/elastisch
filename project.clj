@@ -7,7 +7,7 @@
                  [clj-http              "0.9.1" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0"]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "1.3.2"]]
+                 [org.elasticsearch/elasticsearch "1.3.4"]]
   :min-lein-version "2.5.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.8.0" :exclusions [org.clojure/clojure]]]
