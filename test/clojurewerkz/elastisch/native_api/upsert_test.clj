@@ -49,4 +49,21 @@
       (is (no-hits?  (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})))
       (doc/upsert conn index-name index-type id (assoc fx/person-joe :biography new-bio) {:parent "1"})
       (idx/refresh conn index-name)
+      (is (any-hits?  (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})))))
+
+  (deftest test-upserting-document-with-retry-on-conflict
+    (let [index-name "people"
+          index-type "person"
+          id         "3"
+          new-bio    "Such a brilliant person"]
+      (idx/create conn index-name :mappings fx/people-mapping)
+      (doc/put conn index-name index-type "1" fx/person-jack)
+      (is (no-hits?  (doc/search conn index-name index-type {:query (q/term :biography "nice")})))
+      (is (no-hits?  (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})))
+      (doall
+        (pmap
+          (fn [i]
+            (doc/upsert conn index-name index-type id (assoc fx/person-joe :biography new-bio) {:retry-on-conflict 10}))
+          (repeat 5 5)))
+      (idx/refresh conn index-name)
       (is (any-hits?  (doc/search conn index-name index-type {:query (q/term :biography "brilliant")}))))))

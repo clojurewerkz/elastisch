@@ -45,7 +45,7 @@
                                            index mapping-type) operations params))
 
 (def ^:private special-operation-keys
-  [:_index :_type :_id :_routing :_percolate :_parent :_timestamp :_ttl])
+  [:_index :_type :_id :_retry_on_conflict :_routing :_percolate :_parent :_timestamp :_ttl])
 
 (defn index-operation
   [doc]

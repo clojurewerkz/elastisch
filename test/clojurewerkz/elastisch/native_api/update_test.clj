@@ -53,4 +53,20 @@
         (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))
                                         ; Can't perform a write when we pass the wrong version
         (is (thrown? VersionConflictEngineException (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") :version original-version)))
+        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+
+  (deftest test-retry-on-conflict
+    (let [index-name "people"
+          index-type "person"
+          id         "1"]
+      (idx/create conn index-name :mappings fx/people-mapping)
+      (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") :id id)
+      (idx/refresh conn index-name)
+      (let [original-document (doc/get conn index-name index-type id)
+            original-version (:_version original-document)]
+        (doall
+          (pmap
+            (fn [i]
+              (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant2")))
+              (repeat 10 10)))
         (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))))
