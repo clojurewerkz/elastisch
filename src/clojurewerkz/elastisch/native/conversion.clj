@@ -425,12 +425,14 @@
        (.script r script)
        (.scriptParams r ^Map params)
        r))
-  ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh fields parent]}]
+  ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh retry-on-conflict fields parent]}]
      (let [r (UpdateRequest. index-name mapping-type id)]
        (.script r script)
        (.scriptParams r ^Map params)
        (when refresh
          (.refresh r))
+       (when retry-on-conflict
+         (.retryOnConflict r retry-on-conflict))
        (when routing
          (.routing r routing))
        (when parent
@@ -440,13 +442,15 @@
        r)))
 
 (defn ^UpdateRequest ->upsert-request
-  ([index-name mapping-type ^String id ^Map doc {:keys [script routing refresh fields parent]}]
+  ([index-name mapping-type ^String id ^Map doc {:keys [script routing refresh retry-on-conflict fields parent]}]
      (let [doc (wlk/stringify-keys doc)
            r   (UpdateRequest. index-name mapping-type id)]
        (.doc r ^Map doc)
        (.upsert r ^Map doc)
        (when refresh
          (.refresh r))
+       (when retry-on-conflict
+         (.retryOnConflict r retry-on-conflict))
        (when routing
          (.routing r routing))
        (when parent
