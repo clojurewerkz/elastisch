@@ -35,25 +35,6 @@
   (is (every? created? xs)))
 
 (let [conn (rest/connect)]
-  (deftest ^{:rest true :indexing true} test-bulk-insert
-    (let [document          fx/person-jack
-          for-index         (assoc document
-                                   :_index index-name
-                                   :_type index-type
-                                   :_routing "routing-key")
-          insert-operations (bulk/bulk-index (repeat 10 for-index))
-          response          (bulk/bulk conn insert-operations :refresh true)
-          first-id          (-> response :items first :create :_id)
-          get-result        (doc/get conn index-name index-type first-id)]
-      (are-all-successful (->> response :items (map :create)))
-      (is (= 10 (:count (doc/count conn index-name index-type))))
-      (is (idx/exists? conn index-name))
-      (are [expected actual] (= expected (actual get-result))
-           document   :_source
-           index-name :_index
-           index-type :_type
-           first-id   :_id)))
-
   (deftest ^{:rest true :indexing true} test-bulk-with-index
     (let [document          fx/person-jack
           for-index         (assoc document :_type index-type)
