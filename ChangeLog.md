@@ -4,6 +4,15 @@
 
 [clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.0.x`.
 
+### Allow Retry On Conflict Option
+
+Updates and upserts now allow the `retry-on-conflict` option to be set.
+This helps to work around Elasticsearch version conflicts.
+
+GH issue: [#119](https://github.com/clojurewerkz/elastisch/issues/119).
+
+Contributed by Michael Nussbaum (Braintree).
+
 
 ## Changes between Elastisch 2.1.0-beta6 and 2.1.0-beta7
 
