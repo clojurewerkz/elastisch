@@ -131,6 +131,12 @@
        (.actionGet ft)
        true)))
 
+(defn get-settings
+  "Gets index settings."
+  ([^Client conn index-name]
+     (let [ft (es/admin-get-index-settings conn (cnv/->get-settings-request index-name))
+           res (.actionGet ft)]
+       (cnv/->get-settings-response->map res))))
 
 (defn open
   "Opens an index"

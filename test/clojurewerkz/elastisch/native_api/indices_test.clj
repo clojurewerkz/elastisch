@@ -46,6 +46,14 @@
         response (idx/delete conn index)]
     (is (not (idx/exists? conn index)))))
 
+(deftest ^{:native true :indexing true} test-getting-index-settings
+    (let [index     "people"
+          settings  {"index" {"refresh_interval" "1s"}}
+          response  (idx/create conn index :settings settings :mappings fx/people-mapping)
+          settings' (idx/get-settings conn "people")]
+      (acknowledged? response)
+      (is (= "1s" (get-in settings' [:people :settings :index :refresh_interval])))))
+
 (deftest ^{:indexing true :native true} testing-updating-specific-index-settings
   (let [index     "people"
         settings  {:index {:refresh_interval "1s"}}
