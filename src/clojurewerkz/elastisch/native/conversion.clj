@@ -72,6 +72,8 @@
            org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
+           org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest
+           org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
@@ -1139,6 +1141,26 @@
   [index-name settings]
   (doto (UpdateSettingsRequest. (->string-array index-name))
     (.settings ^Map (wlk/stringify-keys settings))))
+
+(defn ^GetSettingsRequest ->get-settings-request
+  [index-name]
+  (doto (GetSettingsRequest.)
+    (.indices (->string-array index-name))))
+
+(defn ^IPersistentMap ->get-settings-response->map
+  [^GetSettingsResponse res]
+  (->> (for [^ObjectObjectCursor e (.getIndexToSettings res)]
+         (let [index-name (keyword (.key e))
+               settings (.getAsMap ^Settings (.value e))]
+           [index-name
+            {:settings
+             (reduce (fn [before [k v]]
+                       (let [path (->> (clojure.string/split k #"\.")
+                                       (map keyword))]
+                         (assoc-in before path v)))
+                     {}
+                     settings)}]))
+       (into {})))
 
 (defn ^GetMappingsRequest ->get-mappings-request
   ([]

@@ -40,6 +40,7 @@
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
+           org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest
@@ -143,6 +144,11 @@
   "Executes an update index settings request"
   [^Client conn ^UpdateSettingsRequest req]
   (-> ^Client conn .admin .indices (.updateSettings req)))
+
+(defn ^ActionFuture admin-get-index-settings
+  "Executes an update index settings request"
+  [^Client conn ^GetSettingsRequest req]
+  (-> ^Client conn .admin .indices (.getSettings req)))
 
 (defn ^ActionFuture admin-get-mappings
   "Executes a get mapping request"
