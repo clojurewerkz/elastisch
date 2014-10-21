@@ -1,6 +1,18 @@
 ## Changes between Elastisch 2.1.0-beta8 and 2.1.0-beta9
 
-No changes yet.
+### Ability to Specify Aliases In index.create-template
+
+`clojurewerkz.elastisch.rest.index.create-template` now supports
+the `:aliases` option:
+
+``` clojure
+(require '[clojurewerkz.elastisch.rest.index :as idx])
+
+(idx/create-template conn "accounts" {:template "account*" :settings {:index {:refresh_interval "60s"}} :aliases {:account-alias {}}})
+```
+
+Contributed by Jeffrey Erikson.
+
 
 
 
