@@ -77,7 +77,15 @@
 
 
 (defn update-with-script
-  "Updates a document using a script"
+  "Updates a document using a script.
+
+  Examples:
+
+  (require '[clojurewerkz.elastisch.rest.document :as doc])
+
+  (doc/update-with-script conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\"
+                                  \"ctx._source.age = ctx._source.age += 1\" {} :lang \"groovy\")
+  "
   ([^Connection conn index mapping-type id script]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
@@ -85,7 +93,12 @@
   ([^Connection conn index mapping-type id script params]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
-                {:body {:script script :params params}})))
+                {:body {:script script :params params}}))
+  ([^Connection conn index mapping-type id script params & args]
+     (rest/post conn (rest/record-update-url conn
+                                             index mapping-type id)
+                (let [optional-params (ar/->opts args)]
+                  {:body (merge {:script script :params params} optional-params)}))))
 
 (defn get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -306,7 +319,7 @@
             {:body (json/encode {:query query}) :query-params (ar/->opts args)}))
 
 
-(defn analyze 
+(defn analyze
   "Examples:
 
    (require '[clojurewerkz.elastisch.rest.document :as doc])

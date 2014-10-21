@@ -38,9 +38,10 @@
                    :snapshots   :snapshots
                    :native      :native
                    :rest        :rest
+                   :version-dependent :version-dependent
                    :all         (constantly true)
                    :default     (constantly true)
-                   :ci          (fn [m] (not (:native m)))}
+                   :ci          (fn [m] (and (not (:native m)) (not (:version-dependent m))))}
   :mailing-list {:name "clojure-elasticsearch"
                  :archive "https://groups.google.com/group/clojure-elasticsearch"
                  :post "clojure-elasticsearch@googlegroups.com"})
