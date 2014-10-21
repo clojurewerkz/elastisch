@@ -134,6 +134,13 @@
       (is (= "account*" (get-in res [:accounts :template])))
       (is (get-in res [:accounts :settings]))))
 
+  (deftest ^{:rest true :indexing true} test-create-an-index-template-with-alias-and-fetch-it
+    (idx/create-template conn "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}} :aliases { :account-alias {} })
+    (let [res (idx/get-template conn "accounts")]
+      (is (= "account*" (get-in res [:accounts :template])))
+      (is (get-in res [:accounts :settings]))
+      (is (get-in res [:accounts :aliases :account-alias]))))
+
   (deftest ^{:rest true :indexing true} test-create-an-index-template-and-delete-it
     (idx/create-template conn "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})
     (acknowledged? (idx/delete-template conn "accounts"))))

@@ -294,19 +294,19 @@
    :template : a pattern of index name that this template will be applied to
    :settings : the same as for index/create
    :mappings : the same as for index/create
+   :aliases  : template aliases configuration
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html"
   [^Connection conn ^String template-name & args]
   (let [opts                                 (ar/->opts args)
-        {:keys [template settings mappings]} opts]
+        {:keys [template settings mappings aliases]} opts]
     (rest/post conn (rest/index-template-url conn
                                              template-name)
-               {:body (if mappings
-                        {:template template
-                         :settings settings
-                         :mappings mappings}
-                        {:template template
-                         :settings settings})})))
+               {:body (conj {:template template
+                             :settings settings}
+                             (if mappings {:mappings mappings})
+                             (if aliases {:aliases aliases}))
+                            })))
 
 (defn get-template
   [^Connection conn ^String template-name]
