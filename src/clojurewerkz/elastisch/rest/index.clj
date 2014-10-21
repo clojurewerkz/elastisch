@@ -292,7 +292,7 @@
    Accepted options:
 
    :template : a pattern of index name that this template will be applied to
-   :settigns : the same as for index/create
+   :settings : the same as for index/create
    :mappings : the same as for index/create
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html"
