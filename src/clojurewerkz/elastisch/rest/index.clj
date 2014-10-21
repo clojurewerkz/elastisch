@@ -302,7 +302,7 @@
         {:keys [template settings mappings aliases]} opts]
     (rest/post conn (rest/index-template-url conn
                                              template-name)
-               {:body (conj {:template template
+               {:body (merge {:template template
                              :settings settings}
                              (if mappings {:mappings mappings})
                              (if aliases {:aliases aliases}))
