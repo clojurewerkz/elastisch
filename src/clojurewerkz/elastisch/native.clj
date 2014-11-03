@@ -8,7 +8,7 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns clojurewerkz.elastisch.native
-  (:refer-clojure :exclude [get count])
+  (:refer-clojure :exclude [get count update])
   (:require [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import org.elasticsearch.client.Client
            org.elasticsearch.client.transport.TransportClient
