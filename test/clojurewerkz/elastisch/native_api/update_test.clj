@@ -69,4 +69,18 @@
             (fn [i]
               (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant2")))
               (repeat 10 10)))
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))))
+        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+
+  (deftest update-with-partial-doc
+    (let [index-name "people"
+          index-type "person"
+          id         "1"]
+      (idx/create conn index-name :mappings fx/people-mapping)
+      (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") :id id)
+      (idx/refresh conn index-name)
+      (let [original-document (doc/get conn index-name index-type id)]
+        (doc/update-with-partial-doc conn index-name index-type id {:country "Sweden"})
+        (idx/refresh conn index-name)
+        (let [updated (doc/get conn index-name index-type id)]
+          (is (= "brilliant1" (get-in updated [:_source :biography])))
+          (is (= "Sweden" (get-in updated [:_source :country]))))))))

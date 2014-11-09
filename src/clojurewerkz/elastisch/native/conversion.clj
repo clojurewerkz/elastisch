@@ -432,7 +432,7 @@
        (.script r script)
        (.scriptParams r ^Map params)
        (when refresh
-         (.refresh r))
+         (.refresh r refresh))
        (when retry-on-conflict
          (.retryOnConflict r retry-on-conflict))
        (when routing
@@ -443,14 +443,31 @@
          (.fields r (->string-array fields)))
        r)))
 
+(defn ^UpdateRequest ->partial-update-request
+  [index-name mapping-type ^String id ^Map partial-doc {:keys [routing refresh retry-on-conflict fields parent]}]
+     (let [doc (wlk/stringify-keys partial-doc)
+           r   (UpdateRequest. index-name mapping-type id)]
+       (.doc r ^Map doc)
+       (when refresh
+         (.refresh r refresh))
+       (when retry-on-conflict
+         (.retryOnConflict r retry-on-conflict))
+       (when routing
+         (.routing r routing))
+       (when parent
+         (.parent r parent))
+       (when fields
+         (.fields r (->string-array fields)))
+       r))
+
 (defn ^UpdateRequest ->upsert-request
-  ([index-name mapping-type ^String id ^Map doc {:keys [script routing refresh retry-on-conflict fields parent]}]
+  ([index-name mapping-type ^String id ^Map doc {:keys [routing refresh retry-on-conflict fields parent]}]
      (let [doc (wlk/stringify-keys doc)
            r   (UpdateRequest. index-name mapping-type id)]
        (.doc r ^Map doc)
        (.upsert r ^Map doc)
        (when refresh
-         (.refresh r))
+         (.refresh r refresh))
        (when retry-on-conflict
          (.retryOnConflict r retry-on-conflict))
        (when routing
