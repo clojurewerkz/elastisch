@@ -109,6 +109,18 @@
                                                 opts))]
        (cnv/update-response->map (.actionGet res)))))
 
+(defn update-with-partial-doc
+  "Updates an existing document in the search index with given partial document"
+  ([^Client conn index mapping-type ^String id ^Map partial-doc]
+     (update-with-partial-doc conn index mapping-type id partial-doc {}))
+  ([^Client conn index mapping-type ^String id ^Map partial-doc ^Map opts]
+     (let [res (es/update conn (cnv/->partial-update-request index
+                                                             mapping-type
+                                                             id
+                                                             partial-doc
+                                                             opts))]
+       (cnv/update-response->map (.actionGet res)))))
+
 (defn update-with-script
   "Updates a document using a script"
   ([^Client conn index mapping-type ^String id ^String script]

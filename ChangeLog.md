@@ -1,3 +1,23 @@
+## Changes between Elastisch 2.1.0-beta9 and ?
+
+### Update with Partial Document via native API
+
+`clojurewerkz.elastisch.native.document/update-with-partial-doc` is a new function
+in the Native Client (existed before in the REST API) that performs
+[partial updates](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/partial-updates.html):
+
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
+
+(doc/update-with-partial-doc conn "people" "person" "1" {:country "Sweden"})
+```
+
+Note that the REST API should now be called without wrapping the document in a `:doc` key.
+I.e. change `{:doc {:field-to-update "Update"}}` to `{:field-to-update "Update"}`.
+
+Contributed by Henrik Lundahl.
+
+
 ## Changes between Elastisch 2.1.0-beta8 and 2.1.0-beta9
 
 ### Ability to Specify Aliases In index.create-template
@@ -12,8 +32,6 @@ the `:aliases` option:
 ```
 
 Contributed by Jeffrey Erikson.
-
-
 
 
 ## Changes between Elastisch 2.1.0-beta7 and 2.1.0-beta8
@@ -43,7 +61,6 @@ body.
 GH issue: [#116](https://github.com/clojurewerkz/elastisch/issues/116).
 
 Contributed by Michael Nussbaum (Braintree).
-
 
 
 ## Changes between Elastisch 2.1.0-beta5 and 2.1.0-beta6
@@ -107,7 +124,6 @@ The supported types are:
  * Terms
  * Missing
  * Global
-
 
 ### Multi-Search Support in the Native Client
 
@@ -227,7 +243,7 @@ that performs [partial updates](http://www.elasticsearch.org/guide/en/elasticsea
 ``` clojure
 (require '[clojurewerkz.elastisch.rest.document :as doc])
 
-(doc/update-with-partial-doc conn "people" "person" "1" {:doc { :country "India" }})
+(doc/update-with-partial-doc conn "people" "person" "1" {:country "India"})
 ```
 
 Contributed by Sandeep Jagtap.

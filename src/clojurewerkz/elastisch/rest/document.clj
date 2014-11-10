@@ -69,12 +69,11 @@
   "Updates an existing document in the search index with given partial document"
   ([^Connection conn index mapping-type id partial-doc]
      (rest/post conn (rest/record-update-url conn
-                                             index mapping-type id) {:body partial-doc}))
+                                             index mapping-type id) {:body {:doc partial-doc}}))
   ([^Connection conn index mapping-type id partial-doc & args]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
-                {:body partial-doc :query-params (ar/->opts args)})))
-
+                {:body {:doc partial-doc} :query-params (ar/->opts args)})))
 
 (defn update-with-script
   "Updates a document using a script.
@@ -99,6 +98,7 @@
                                              index mapping-type id)
                 (let [optional-params (ar/->opts args)]
                   {:body (merge {:script script :params params} optional-params)}))))
+
 
 (defn get
   "Fetches and returns a document by id or nil if it does not exist.
