@@ -393,9 +393,9 @@
 
 (defn ^DeleteRequest ->delete-request
   ([index-name mapping-type id]
-     (DeleteRequest. index-name mapping-type id))
+     (DeleteRequest. (name index-name) (name mapping-type) id))
   ([index-name mapping-type id {:keys [routing refresh version version-type parent]}]
-     (let [r (DeleteRequest. index-name mapping-type id)]
+     (let [r (DeleteRequest. (name index-name) (name mapping-type) id)]
        (when routing
          (.routing r routing))
        (when refresh
@@ -420,15 +420,15 @@
 
 (defn ^UpdateRequest ->update-request
   ([index-name mapping-type ^String id ^String script]
-     (doto (UpdateRequest. index-name mapping-type id)
+     (doto (UpdateRequest. (name index-name) (name mapping-type) id)
        (.script script)))
   ([index-name mapping-type ^String id ^String script ^Map params]
-     (let [r (UpdateRequest. index-name mapping-type id)]
+     (let [r (UpdateRequest. (name index-name) (name mapping-type) id)]
        (.script r script)
        (.scriptParams r ^Map params)
        r))
   ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh retry-on-conflict fields parent]}]
-     (let [r (UpdateRequest. index-name mapping-type id)]
+     (let [r (UpdateRequest. (name index-name) (name mapping-type) id)]
        (.script r script)
        (.scriptParams r ^Map params)
        (when refresh
@@ -446,7 +446,7 @@
 (defn ^UpdateRequest ->partial-update-request
   [index-name mapping-type ^String id ^Map partial-doc {:keys [routing refresh retry-on-conflict fields parent]}]
      (let [doc (wlk/stringify-keys partial-doc)
-           r   (UpdateRequest. index-name mapping-type id)]
+           r   (UpdateRequest. (name index-name) (name mapping-type) id)]
        (.doc r ^Map doc)
        (when refresh
          (.refresh r refresh))
@@ -463,7 +463,7 @@
 (defn ^UpdateRequest ->upsert-request
   ([index-name mapping-type ^String id ^Map doc {:keys [routing refresh retry-on-conflict fields parent]}]
      (let [doc (wlk/stringify-keys doc)
-           r   (UpdateRequest. index-name mapping-type id)]
+           r   (UpdateRequest. (name index-name) (name mapping-type) id)]
        (.doc r ^Map doc)
        (.upsert r ^Map doc)
        (when refresh
