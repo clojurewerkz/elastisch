@@ -21,14 +21,16 @@
   (:import java.util.Map
            org.elasticsearch.client.Client))
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
+(use-fixtures :each fx/reset-indexes )
 
 (let [conn (th/connect-native-client)]
   (deftest ^{:native true :percolation true} test-percolation-case-1
-  (let [index-name   "test"
+  (let [index-name   "articles"
         query-name   "kuku"
-        _            (idx/create conn index-name :settings {"index.number_of_shards" 1})
+        _            (idx/create conn index-name
+                                 {:mappings fx/articles-mapping
+                                  :settings {"index.number_of_shards" 1}})
         result1      (pcl/register-query conn index-name query-name :query {:term {:title "search"}})
-        result2      (pcl/percolate conn index-name "type1" :doc {:title "You know, for search"} :refresh true)]
+        result2      (pcl/percolate conn index-name "article" :doc {:title "You know, for search"} :refresh true)]
     (is (= [query-name] (matches-from result2)))
     (pcl/unregister-query conn index-name query-name))))
