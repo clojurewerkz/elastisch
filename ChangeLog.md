@@ -1,4 +1,11 @@
-## Changes between Elastisch 2.1.0-beta9 and ?
+## Changes between Elastisch 2.1.0-beta9 and 2.1.0-rc1
+
+### Clojure 1.4 Support Dropped
+
+Elastisch no longer officially supports Clojure 1.4. Most of the functionality
+still works well on that version but please don't file bugs specific to that
+version.
+
 
 ### Allow `:index` key in `update-aliases` (native)
 
