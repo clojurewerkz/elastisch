@@ -7,7 +7,7 @@
                  [clj-http              "1.0.0" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0"]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "1.3.4"]]
+                 [org.elasticsearch/elasticsearch "1.4.0"]]
   :min-lein-version "2.5.0"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.8.0" :exclusions [org.clojure/clojure]]]
@@ -40,7 +40,7 @@
                    :rest        :rest
                    :version-dependent :version-dependent
                    :all         (constantly true)
-                   :default     (constantly true)
+                   :default     (fn [m] (not (:version-dependent m)))
                    :ci          (fn [m] (and (not (:native m)) (not (:version-dependent m))))}
   :mailing-list {:name "clojure-elasticsearch"
                  :archive "https://groups.google.com/group/clojure-elasticsearch"
