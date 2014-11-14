@@ -9,11 +9,12 @@
 
 (ns clojurewerkz.elastisch.native-api.indices-test
   (:require [clojurewerkz.elastisch.native        :as es]
-            [clojurewerkz.elastisch.rest.document :as doc]
-            [clojurewerkz.elastisch.native.index  :as idx]
+            [clojurewerkz.elastisch.native
+             [document :as doc]
+             [index :as idx]
+             [response :refer [acknowledged?]]]
             [clojurewerkz.elastisch.fixtures      :as fx]
             [clojurewerkz.elastisch.test.helpers  :as th]
-            [clojurewerkz.elastisch.native.response :refer [acknowledged?]]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes)
@@ -109,6 +110,19 @@
   (idx/create conn "group1")
   (idx/create conn "group2")
   (is (idx/stats conn :docs true :store true :indexing true)))
+
+(deftest ^{:indexing true :native true} test-indices-with-aliases
+  (idx/create conn "aliased-index1" :settings {"index" {"refresh_interval" "42s"}})
+  (idx/create conn "aliased-index2" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged?
+        (idx/update-aliases conn [{:add {:alias "alias1" :index "aliased-index1"}}
+                                  {:add {:alias "alias2" :index "aliased-index2"}}])))
+  (is (doc/put conn "aliased-index1" "type" "id1" {}))
+  (is (doc/put conn "aliased-index2" "type" "id2" {}))
+  (is (doc/get conn "alias1" "type" "id1"))
+  (is (doc/get conn "alias2" "type" "id2"))
+  (is (not (doc/get conn "alias1" "type" "id2")))
+  (is (not (doc/get conn "alias2" "type" "id1"))))
 
 (deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases
   (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
