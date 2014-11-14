@@ -1375,10 +1375,11 @@
 
 
 (defn- apply-add-alias
-  [^IndicesAliasesRequest req {:keys [indices alias filter]}]
-  (if filter
-    (.addAlias req ^String alias ^Map filter (->string-array indices))
-    (.addAlias req ^String alias (->string-array indices)))
+  [^IndicesAliasesRequest req {:keys [index indices alias filter]}]
+  (let [indices-array (->string-array (or indices index))]
+    (if filter
+      (.addAlias req ^String alias ^Map filter indices-array)
+      (.addAlias req ^String alias indices-array)))
   req)
 
 (defn- apply-remove-alias
