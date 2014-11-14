@@ -17,9 +17,8 @@
            org.elasticsearch.action.percolate.PercolateResponse
            org.elasticsearch.action.index.IndexRequestBuilder
            java.util.Map
-           org.elasticsearch.client.Client))
-
-(def ^:const percolator-index ".percolator")
+           org.elasticsearch.client.Client
+           org.elasticsearch.percolator.PercolatorService))
 
 ;;
 ;; API
@@ -31,7 +30,7 @@
   (let [opts                     (ar/->opts args)
         ^IndexRequestBuilder irb (doto (.prepareIndex ^Client conn
                                                       index
-                                                      percolator-index
+                                                      PercolatorService/TYPE_NAME
                                                       query-name)
                                    (.setSource ^Map (wlk/stringify-keys opts)))
         ft                       (.execute irb)
@@ -41,9 +40,9 @@
 (defn unregister-query
   "Unregisters a percolator query for the given index"
   [^Client conn index percolator]
-  (let [ft (es/delete conn (cnv/->delete-request percolator-index
-                                            index
-                                            percolator))
+  (let [ft (es/delete conn (cnv/->delete-request PercolatorService/TYPE_NAME
+                                                 index
+                                                 percolator))
         ^DeleteResponse res (.actionGet ft)]
     (merge (cnv/delete-response->map res) {:ok (.isFound res) :found (.isFound res)})))
 
