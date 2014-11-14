@@ -1,5 +1,16 @@
 ## Changes between Elastisch 2.1.0-beta9 and ?
 
+### Allow `:index` key in `update-aliases` (native)
+
+`clojurewerkz.elastisch.native.index/update-aliases` expects indices to be added to be specified in the
+`:indices` key while the respective REST function uses `:index`. This can have unexpected results, namely
+the creation of the respective alias for _all_ indices. It is now possible to supply either `:index` or
+`:indices` to the function.
+
+GH issue: [#108](https://github.com/clojurewerkz/elastisch/issues/108).
+
+Contributed by Yannick Scherer (stylefruits)
+
 ### Update with Partial Document via native API
 
 `clojurewerkz.elastisch.native.document/update-with-partial-doc` is a new function
