@@ -52,7 +52,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "2.1.0-rc1"]
+    [clojurewerkz/elastisch "2.1.0"]
 
 
 With Maven:
@@ -60,7 +60,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>2.1.0-rc1</version>
+      <version>2.1.0</version>
     </dependency>
 
 
@@ -75,7 +75,7 @@ Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/cloj
 
 ## Supported Clojure Versions
 
-Elastisch requires Clojure 1.4.
+Elastisch requires Clojure 1.5.
 The most recent stable release is highly recommended.
 
 ## Supported ElasticSearch Versions
