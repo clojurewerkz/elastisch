@@ -29,7 +29,7 @@ on Twitter.
 ## Project Maturity
 
 Elastisch is a not a young project. Started in late 2011, it has been used
-in production since the early days.  Elastisch API is stabilized. 1.0 was
+in production since the early days. Elastisch API is stable. 1.0 was
 released in September 2012, 2.0 in June 2014, 2.1 in December 2014.
 
 
