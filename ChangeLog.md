@@ -1,4 +1,9 @@
-## Changes between Elastisch 2.1.0-beta9 and 2.1.0-rc1
+## Changes between Elastisch 2.1.x and 2.2.0
+
+No changes yet.
+
+
+## Changes between Elastisch 2.1.0-beta9 and 2.1.0
 
 ### Clojure 1.4 Support Dropped
 
