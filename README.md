@@ -107,7 +107,7 @@ and several others.
 ## Continuous Integration
 
 [![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
-
+[![Dependencies Status](http://jarkeeper.com/clojurewerkz/elastisch/status.svg)](http://jarkeeper.com/clojurewerkz/elastisch)
 
 ## Development
 
