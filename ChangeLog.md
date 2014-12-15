@@ -1,6 +1,16 @@
 ## Changes between Elastisch 2.1.x and 2.2.0
 
-No changes yet.
+### ElasticSearch Java Client Upgrade
+
+Elastisch now depends on ElasticSearch Java client version `1.4.1`.
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.0.1`.
+
+### Cheshire Update
+
+[Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.4.0`.
 
 
 ## Changes between Elastisch 2.1.0-beta9 and 2.1.0
