@@ -46,7 +46,7 @@
       (is (= 1 (total-hits response)))
       (is (= "5" (-> hits first :_id)))))
 
-  (deftest ^{:rest true :query true} test-query-string-query-over-a-text-field-analyzed-with-the-standard-analyzer-case1
+  (deftest ^{:rest true :query true} test-query-string-query-over-a-text-field-analyzed-with-the-standard-analyzer-case2
     (let [index-name   "tweets"
           mapping-type "tweet"
           response (doc/search conn index-name mapping-type :query (q/query-string :query "cloud AND (NOT adoption)"))

@@ -57,7 +57,7 @@
                                                                      {:to 45}]}}}})
           facets       (facets-from result)]
       (is (>= (-> facets :ages :ranges second :count) 1))
-      (is (>= (-> facets :ages :ranges last :count))) 4))
+      (is (>= (-> facets :ages :ranges last :count) 4))))
 
   (deftest ^{:facets true :rest true} test-range-facet-over-age-2
     (let [index-name   "people"
@@ -69,7 +69,7 @@
           facets       (facets-from result)]
       (is (>= (-> facets :ages :entries first :count) 1))
       (is (>= (-> facets :ages :entries second :count) 2))
-      (is (>= (-> facets :ages :entries last :count))) 1))
+      (is (>= (-> facets :ages :entries last :count) 1))))
 
   (deftest ^{:facets true :rest true} test-date-histogram-facet-on-post-dates
     (let [index-name   "tweets"
