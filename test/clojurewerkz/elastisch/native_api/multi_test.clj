@@ -21,7 +21,6 @@
 
 (let [conn (th/connect-native-client)]
   (deftest ^{:rest true} test-multi-search
-    "Verify that multi/search returns same result as singularly executed queries."
     (let [res1 (doc/search conn "people" "person" :query (q/match-all) :size 1)
           res2 (doc/search conn "articles" "article" :query (q/match-all) :size 1)
           multires (multi/search conn [{:index "people" :type "person"} {:query (q/match-all) :size 1}
