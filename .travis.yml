@@ -5,7 +5,7 @@ services:
 env:
   - ES_CLUSTER_NAME=elasticsearch
 before_install:
-  - "sudo ulimit -u 4096"
+  - "ulimit -u 4096"
   - "sudo service elasticsearch status"
 script: lein2 all test :ci
 jdk:
