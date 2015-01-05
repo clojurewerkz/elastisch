@@ -267,11 +267,11 @@
        tc)))
 
 (defn ^Node build-local-node
-  [settings]
+  [settings & {:keys [client] :or {client true}}]
   (let [is (cnv/->settings settings)
         nb (.. NodeBuilder nodeBuilder
                (settings is)
-               (client true))]
+               (client client))]
     (.build ^NodeBuilder nb)))
 
 (defn ^Thread start-local-node
