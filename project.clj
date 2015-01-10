@@ -8,7 +8,7 @@
                  [clojurewerkz/support  "1.1.0"]
                  ;; used by the native client
                  [org.elasticsearch/elasticsearch "1.4.2"]]
-  :min-lein-version "2.5.0"
+  :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.8.0" :exclusions [org.clojure/clojure]]]
                        :plugins [[codox           "0.8.10"]
