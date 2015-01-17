@@ -94,9 +94,9 @@ identical API as of `1.1.0`.
 
 Elastisch is part of the group of [Clojure libraries](http://clojurewerkz.org) known as ClojureWerkz, together with
 
- * [Monger](http://clojuremongodb.info)
- * [Welle](http://clojureriak.info)
  * [Langohr](http://clojurerabbitmq.info)
+ * [Cassaforte](http://clojurecassandra.info)
+ * [Monger](http://clojuremongodb.info)
  * [Neocons](http://clojureneo4j.info)
  * [Quartzite](http://clojurequartz.info)
  * [Titanium](http://titanium.clojurewerkz.org)
