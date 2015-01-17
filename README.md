@@ -73,7 +73,7 @@ Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/cloj
 
 ## Supported Clojure Versions
 
-Elastisch requires Clojure 1.5.
+Elastisch requires Clojure 1.6.
 The most recent stable release is highly recommended.
 
 ## Supported ElasticSearch Versions
