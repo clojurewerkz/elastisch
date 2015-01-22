@@ -274,9 +274,14 @@
                (client client))]
     (.build ^NodeBuilder nb)))
 
-(defn ^Thread start-local-node
+(defn ^Node start-local-node
   [^Node node]
   (.start node)
+  node)
+
+(defn ^Node stop-local-node
+  [^Node node]
+  (.stop node)
   node)
 
 (defn ^Client connect-to-local-node
