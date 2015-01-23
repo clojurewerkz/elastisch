@@ -71,7 +71,8 @@
                {:body document :query-params (ar/->opts args)})))
 
 (defn upsert
-  "Updates an existing document in the search index with given partial document"
+  "Updates an existing document in the search index with given partial document,
+  the provided document will be inserted if the document does not already exist"
   ([^Connection conn index mapping-type id partial-doc]
     (rest/post conn (rest/record-update-url conn
                                             index mapping-type id) {:body {:doc partial-doc
