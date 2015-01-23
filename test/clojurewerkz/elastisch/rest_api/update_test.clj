@@ -62,6 +62,43 @@
         ;; Still should have the new data
         (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
 
+  (deftest ^{:rest true} upsert-existing
+    (let [index-name "people"
+          index-type "person"
+          id         "1"
+          person (assoc fx/person-jack :biography "brilliant1")]
+      (idx/create conn index-name :mappings fx/people-mapping)
+
+      (doc/create conn index-name index-type person :id id)
+      (idx/refresh conn index-name)
+
+      (let [original-document (doc/get conn index-name index-type id)]
+        ;; http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html#upserts
+        (doc/upsert conn index-name index-type id {:country "India"})
+        (idx/refresh conn index-name)
+        ;; Now should have merged document data
+        (is (= "brilliant1"
+               (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+        (is (= "India"
+               (get-in (doc/get conn index-name index-type id) [:_source :country]))))))
+
+  (deftest ^{:rest true} upsert-new
+    (let [index-name "people"
+          index-type "person"
+          id         "1"
+          person (assoc fx/person-jack :biography "brilliant1" :country "India")]
+      (idx/create conn index-name :mappings fx/people-mapping)
+
+      (idx/refresh conn index-name)
+      ;; http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html#upserts
+      (doc/upsert conn index-name index-type id person)
+      (idx/refresh conn index-name)
+      ;; Now should have new document data
+      (is (= "brilliant1"
+             (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+      (is (= "India"
+             (get-in (doc/get conn index-name index-type id) [:_source :country])))))
+
   (deftest ^{:rest true} update-with-partial-doc
     (let [index-name "people"
           index-type "person"
