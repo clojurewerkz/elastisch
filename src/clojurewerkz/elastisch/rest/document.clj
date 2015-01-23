@@ -70,6 +70,19 @@
                                      index mapping-type id)
                {:body document :query-params (ar/->opts args)})))
 
+(defn upsert
+  "Updates an existing document in the search index with given partial document"
+  ([^Connection conn index mapping-type id partial-doc]
+    (rest/post conn (rest/record-update-url conn
+                                            index mapping-type id) {:body {:doc partial-doc
+                                                                           :doc_as_upsert true}}))
+  ([^Connection conn index mapping-type id partial-doc & args]
+    (rest/post conn (rest/record-update-url conn
+                                            index mapping-type id)
+               {:body {:doc partial-doc
+                       :doc_as_upsert true}
+                :query-params (ar/->opts args)})))
+
 (defn update-with-partial-doc
   "Updates an existing document in the search index with given partial document"
   ([^Connection conn index mapping-type id partial-doc]
