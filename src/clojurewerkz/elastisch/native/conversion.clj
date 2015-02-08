@@ -654,7 +654,7 @@
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference query facets aggregations from size timeout
-                                   post-filter min_score version fields sort stats _source
+                                   post-filter min-score version fields sort stats _source
                                    highlight] :as options}]
   (let [r                       (SearchRequest.)
         ^SearchSourceBuilder sb (SearchSourceBuilder.)]
@@ -678,6 +678,8 @@
       (.fields sb ^java.util.List fields))
     (when _source
       (add-partial-fields-to-builder sb _source))
+    (when min-score
+      (.minScore sb min-score))
     (when version
       (.version sb version))
     (when sort
