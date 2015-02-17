@@ -57,6 +57,7 @@
            org.elasticsearch.search.aggregations.metrics.max.Max
            org.elasticsearch.search.aggregations.metrics.min.Min
            org.elasticsearch.search.aggregations.metrics.sum.Sum
+           org.elasticsearch.search.aggregations.metrics.tophits.TopHits
            [org.elasticsearch.search.aggregations.metrics.percentiles Percentiles Percentile]
            org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
@@ -1038,6 +1039,10 @@
      :sum_of_squares (.getSumOfSquares agg)
      :variance       (.getVariance agg)
      :std_deviation  (.getStdDeviation agg)})
+
+  TopHits
+  (aggregation-value [^TopHits agg]
+    {:hits (search-hits->seq (.getHits agg))})
 
   Histogram
   (aggregation-value [^Histogram agg]
