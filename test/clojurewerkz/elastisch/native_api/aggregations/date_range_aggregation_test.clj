@@ -31,7 +31,7 @@
           agg          (aggregation-from response :age_ranges)]
       (is (:buckets agg))))
 
-  (deftest ^{:native true :aggregation true} test-date-range-aggregation
+  (deftest ^{:native true :aggregation true} test-nested-date-range-aggregation
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type

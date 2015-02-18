@@ -12,6 +12,19 @@ Elastisch now depends on ElasticSearch Java client version `1.4.1`.
 
 [Cheshire](https://github.com/dakrone/cheshire/) dependency has been upgraded to version `5.4.0`.
 
+## Changes between Elastisch 2.1.0 and 2.2.0-beta1
+
+## Add support for Nested Aggregations in the Native Client
+
+Native client now supports nesting in the following aggregations
+
+* histogram
+* date_histogram
+* range
+* date_range
+* terms
+
+Contributed by Mitchel Kuijpers.
 
 ## Changes between Elastisch 2.1.0-beta9 and 2.1.0
 

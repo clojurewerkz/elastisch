@@ -28,7 +28,7 @@
           agg          (aggregation-from response :age_ranges)]
       (is (:buckets agg))))
 
-  (deftest ^{:rest true :aggregation true} test-date-histogram-aggregation
+  (deftest ^{:rest true :aggregation true} test-nested-date-histogram-aggregation
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
