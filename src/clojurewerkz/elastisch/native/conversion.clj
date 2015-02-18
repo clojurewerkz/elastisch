@@ -69,6 +69,7 @@
            [org.elasticsearch.search.aggregations.bucket.range.date DateRange DateRange$Bucket]
            [org.elasticsearch.search.aggregations.bucket.terms      Terms     Terms$Bucket]
            org.elasticsearch.search.aggregations.bucket.SingleBucketAggregation
+           [org.elasticsearch.search.aggregations HasAggregations]
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -939,37 +940,6 @@
             {}
             (.facetsAsMap facets))))
 
-(defn histogram-bucket->map
-  [^Histogram$Bucket b]
-  {:key_as_string (.getKey b) :doc_count (.getDocCount b) :key (.. b getKeyAsNumber longValue)})
-
-(defn range-bucket->map
-  [^Range$Bucket b]
-  {:doc_count (.getDocCount b)
-   :from_as_string (String/valueOf ^long (.. b getFrom longValue))
-   :from (.. b getFrom longValue)
-   :to_as_string (String/valueOf ^long (.. b getTo longValue))
-   :to (.. b getTo longValue)})
-
-(defn date-range-bucket->map
-  [^DateRange$Bucket b]
-  {:doc_count (.getDocCount b)
-   ;; :from_as_string, :to_as_string requires knowing what format the values
-   ;; are in. We can format them using org.elasticsearch.common.joda.FormatDateTimeFormatter
-   ;; but since aggregations can be arbitrarily nested, this is much trickier
-   ;; than simply passing the formatter from native.document/search. MK.
-   :from (.getFromAsDate b)
-   :to (.getToAsDate b)})
-
-(defn date-histogram-bucket->map
-  [^DateHistogram$Bucket b]
-  {:doc_count (.getDocCount b) :key (.getKeyAsDate b)})
-
-(defn terms-bucket->map
-  [^Terms$Bucket b]
-  {:doc_count (.getDocCount b)
-   :key (.getKey b)})
-
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
 
@@ -981,6 +951,52 @@
 (defn aggregations-to-map
   [^Aggregations aggs]
   (reduce assoc-aggregation-value {} (.asMap aggs)))
+
+(defn merge-sub-aggregations [m ^HasAggregations b]
+  (clojure.core/merge
+   m
+   (aggregations-to-map (.getAggregations b))))
+
+(defn histogram-bucket->map
+  [^Histogram$Bucket b]
+  (merge-sub-aggregations
+   {:key_as_string (.getKey b) :doc_count (.getDocCount b) :key (.. b getKeyAsNumber longValue)}
+   b))
+
+(defn range-bucket->map
+  [^Range$Bucket b]
+  (merge-sub-aggregations
+   {:doc_count (.getDocCount b)
+    :from_as_string (String/valueOf ^long (.. b getFrom longValue))
+    :from (.. b getFrom longValue)
+    :to_as_string (String/valueOf ^long (.. b getTo longValue))
+    :to (.. b getTo longValue)}
+   b))
+
+(defn date-range-bucket->map
+  [^DateRange$Bucket b]
+  (merge-sub-aggregations
+   {:doc_count (.getDocCount b)
+    ;; :from_as_string, :to_as_string requires knowing what format the values
+    ;; are in. We can format them using org.elasticsearch.common.joda.FormatDateTimeFormatter
+    ;; but since aggregations can be arbitrarily nested, this is much trickier
+    ;; than simply passing the formatter from native.document/search. MK.
+    :from (.getFromAsDate b)
+    :to (.getToAsDate b)}
+   b))
+
+(defn date-histogram-bucket->map
+  [^DateHistogram$Bucket b]
+  (merge-sub-aggregations
+   {:doc_count (.getDocCount b) :key (.getKeyAsDate b)}
+   b))
+
+(defn terms-bucket->map
+  [^Terms$Bucket b]
+  (merge-sub-aggregations
+   {:doc_count (.getDocCount b)
+    :key (.getKey b)}
+   b))
 
 (extend-protocol AggregatorPresenter
   Avg

@@ -26,4 +26,15 @@
                                    :query (q/match-all)
                                    :aggregations {:age_histograms (a/histogram "age" 5)})
           agg          (aggregation-from response :age_histograms)]
-      (is (:buckets agg)))))
+      (is (:buckets agg))))
+
+    (deftest ^{:native true :aggregation true} test-nested-histogram-aggregation
+    (let [index-name   "people"
+          mapping-type "person"
+          response     (doc/search conn index-name mapping-type
+                                   :query (q/match-all)
+                                   :aggregations {:age_histograms (merge
+                                                                   {:aggs {:avg_age (a/avg "age")}}
+                                                                   (a/histogram "age" 5))})
+          agg          (aggregation-from response :age_histograms)]
+      (is (= (count (:buckets agg)) (count (filter #(contains? % :avg_age) (:buckets agg))))))))
