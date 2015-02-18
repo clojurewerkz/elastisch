@@ -31,16 +31,16 @@
           agg          (aggregation-from response :age_ranges)]
       (is (:buckets agg))))
 
-    (deftest ^{:native true :aggregation true} test-range-aggregation
-    (let [index-name   "people"
-          mapping-type "person"
-          response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:age_ranges (merge
-                                                               {:aggs {:avg_age (a/avg "age")}}
-                                                               (a/range "age" [{:from 15 :to 20}
-                                                                                     {:from 21 :to 25}
-                                                                                     {:from 26 :to 30}
-                                                                                     {:from 31}]))})
-          agg          (aggregation-from response :age_ranges)]
+    (deftest ^{:native true :aggregation true} test-nested-range-aggregation
+      (let [index-name   "people"
+            mapping-type "person"
+            response     (doc/search conn index-name mapping-type
+                                     :query (q/match-all)
+                                     :aggregations {:age_ranges (merge
+                                                                 {:aggs {:avg_age (a/avg "age")}}
+                                                                 (a/range "age" [{:from 15 :to 20}
+                                                                                 {:from 21 :to 25}
+                                                                                 {:from 26 :to 30}
+                                                                                 {:from 31}]))})
+            agg          (aggregation-from response :age_ranges)]
       (is (= (count (:buckets agg)) (count (filter #(contains? % :avg_age) (:buckets agg))))))))
