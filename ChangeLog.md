@@ -2,7 +2,7 @@
 
 ### ElasticSearch Java Client Upgrade
 
-Elastisch now depends on ElasticSearch Java client version `1.4.1`.
+Elastisch now depends on ElasticSearch Java client version `1.4.x`.
 
 ### clj-http Update
 
