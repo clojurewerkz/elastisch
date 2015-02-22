@@ -4,11 +4,11 @@
 
 Native client now supports nesting in the following aggregations
 
-* histogram
-* date_histogram
-* range
-* date_range
-* terms
+ * `histogram`
+ * `date_histogram`
+ * `range`
+ * `date_range`
+ * `terms`
 
 Contributed by Mitchel Kuijpers.
 
