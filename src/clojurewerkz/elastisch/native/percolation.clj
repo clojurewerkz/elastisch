@@ -45,8 +45,8 @@
 (defn unregister-query
   "Unregisters a percolator query for the given index"
   [^Client conn index percolator]
-  (let [ft (es/delete conn (cnv/->delete-request PercolatorService/TYPE_NAME
-                                                 index
+  (let [ft (es/delete conn (cnv/->delete-request index
+                                                 PercolatorService/TYPE_NAME
                                                  percolator))
         ^DeleteResponse res (.actionGet ft)]
     (merge (cnv/delete-response->map res) {:ok (.isFound res) :found (.isFound res)})))
