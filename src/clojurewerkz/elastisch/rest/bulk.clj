@@ -18,6 +18,7 @@
             [cheshire.core :as json]
             [clojure.string :as string]
             [clojure.set :refer :all]
+            [clojurewerkz.elastisch.common.bulk :as common-bulk]
             [clojurewerkz.elastisch.arguments :as ar])
   (:import clojurewerkz.elastisch.rest.Connection))
 
@@ -49,26 +50,10 @@
   (apply bulk-with-url conn (rest/bulk-url conn
                                            index mapping-type) operations params))
 
-(def ^:private special-operation-keys
-  [:_index :_type :_id :_retry_on_conflict :_routing :_percolate :_parent :_timestamp :_ttl])
+(def index-operation common-bulk/index-operation)
 
-(defn index-operation
-  [doc]
-  {"index" (select-keys doc special-operation-keys)})
+(def delete-operation common-bulk/delete-operation)
 
-(defn delete-operation
-  [doc]
-  {"delete" (select-keys doc special-operation-keys)})
+(def bulk-index common-bulk/bulk-index)
 
-(defn bulk-index
-  "generates the content for a bulk insert operation"
-  ([documents]
-     (let [operations (map index-operation documents)
-           documents  (map #(apply dissoc % special-operation-keys) documents)]
-       (interleave operations documents))))
-
-(defn bulk-delete
-  "generates the content for a bulk delete operation"
-  ([documents]
-     (let [operations (map delete-operation documents)]
-       operations)))
+(def bulk-delete common-bulk/bulk-delete)

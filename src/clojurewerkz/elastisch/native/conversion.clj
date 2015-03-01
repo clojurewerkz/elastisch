@@ -100,7 +100,9 @@
            org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest
            org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotRequest
            org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
-           org.elasticsearch.action.support.master.AcknowledgedResponse))
+           org.elasticsearch.action.support.master.AcknowledgedResponse
+           ;; Bulk responses
+           [org.elasticsearch.action.bulk BulkResponse BulkItemResponse]))
 
 ;;
 ;; Implementation
@@ -1448,3 +1450,70 @@
 (defn ^DeleteIndexTemplateRequest ->delete-index-template-request
   [template-name]
   (DeleteIndexTemplateRequest. template-name))
+
+;;
+;; Bulk Responses
+;;
+
+(defn bulk-item-response->map
+  [^BulkItemResponse item]
+  (let [res {:index (.getIndex item)
+             :_index (.getIndex item)
+             :type (.getType item)
+             :_type (.getType item)
+             :id (.getId item)
+             :_id (.getId item)
+             :version (.getVersion item)
+             :_version (.getVersion item)
+             :op-type (.getOpType item)
+             :failed? (.isFailed item)}]
+    (if (:failed? res)
+      (assoc res :failure-message (.getFailureMessage item))
+      res)))
+
+(defn bulk-response->map
+  [^BulkResponse response]
+  {:took (.getTookInMillis response)
+   :has-failures? (.hasFailures response)
+   :items (mapv bulk-item-response->map (.getItems response))})
+
+(defn remove-underscores [opts]
+  (reduce-kv (fn [m k v]
+               (assoc m (keyword (clojure.string/replace (name k) #"^_" "")) v))
+             {} opts))
+
+(defn get-bulk-item-action
+  [doc]
+  (cond (contains? doc "index") "index"
+        (contains? doc "delete") "delete"
+        :else nil))
+
+(defn ->action-requests
+  [a]
+  (loop [actions a
+         results []]
+    (let [curr (first actions)
+          request-type (get-bulk-item-action curr)
+          add (case request-type
+                "index" (let [source (second actions)
+                              opts (clojure.core/get curr "index")]
+                          (->index-request
+                           (:_index opts)
+                           (:_type opts)
+                           source
+                           (remove-underscores opts)))
+                "delete" (let [opts (clojure.core/get curr "delete")]
+                           (->delete-request
+                            (:_index opts)
+                            (:_type opts)
+                            (:_id opts)
+                            (remove-underscores opts)))
+                nil nil)
+          new-results (if (nil? add) results (conj results add))
+          next-rest (case request-type
+                      "index" (rest (rest actions))
+                      "delete" (rest actions)
+                      nil ())]
+      (if (empty? next-rest)
+        new-results
+        (recur next-rest new-results)))))
