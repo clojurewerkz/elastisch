@@ -28,15 +28,17 @@
            org.elasticsearch.action.index.IndexRequest
            org.elasticsearch.action.delete.DeleteRequest))
 
-(defmulti add-operation (fn [_ operation] (type operation)))
+(defprotocol AddOperation
+  (add-operation [operation bulk-builder]))
 
-(defmethod add-operation IndexRequest
-  [^BulkRequestBuilder bulk-builder ^IndexRequest operation]
-  (.add bulk-builder operation))
+(extend-protocol AddOperation
+  IndexRequest
+  (add-operation [^IndexRequest operation ^BulkRequestBuilder bulk-builder]
+    (.add bulk-builder operation))
 
-(defmethod add-operation DeleteRequest
-  [^BulkRequestBuilder bulk-builder ^DeleteRequest operation]
-  (.add bulk-builder operation))
+  DeleteRequest
+  (add-operation [^DeleteRequest operation ^BulkRequestBuilder bulk-builder]
+    (.add bulk-builder operation)))
 
 (defn add-default [doc default]
   (if-let [action (cnv/get-bulk-item-action doc)]
@@ -46,14 +48,14 @@
 (defn bulk
   "Performs a bulk operation"
   [^Client conn operations & params]
-  (let [^BulkRequestBuilder req (reduce add-operation (.prepareBulk conn)
+  (let [^BulkRequestBuilder req (reduce #(add-operation %2 %1) (.prepareBulk conn)
                                         (cnv/->action-requests operations))]
     (when (:refresh (first (flatten params)))
       (.setRefresh req true))
     (-> req
-        (.execute)
-        ^BulkResponse (.actionGet)
-        (cnv/bulk-response->map))))
+        .execute
+        ^BulkResponse .actionGet
+        cnv/bulk-response->map)))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"

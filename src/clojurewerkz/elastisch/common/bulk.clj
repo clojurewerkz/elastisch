@@ -31,5 +31,4 @@
 (defn bulk-delete
   "generates the content for a bulk delete operation"
   ([documents]
-     (let [operations (map delete-operation documents)]
-       operations)))
+   (map delete-operation documents)))

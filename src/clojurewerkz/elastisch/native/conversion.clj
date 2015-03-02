@@ -1477,7 +1477,8 @@
    :has-failures? (.hasFailures response)
    :items (mapv bulk-item-response->map (.getItems response))})
 
-(defn remove-underscores [opts]
+(defn remove-underscores
+  [opts]
   (reduce-kv (fn [m k v]
                (assoc m (keyword (clojure.string/replace (name k) #"^_" "")) v))
              {} opts))
