@@ -26,6 +26,7 @@
            org.elasticsearch.action.bulk.BulkRequestBuilder
            org.elasticsearch.action.bulk.BulkResponse
            org.elasticsearch.action.index.IndexRequest
+           org.elasticsearch.action.update.UpdateRequest
            org.elasticsearch.action.delete.DeleteRequest))
 
 (defprotocol AddOperation
@@ -34,6 +35,10 @@
 (extend-protocol AddOperation
   IndexRequest
   (add-operation [^IndexRequest operation ^BulkRequestBuilder bulk-builder]
+    (.add bulk-builder operation))
+
+  UpdateRequest
+  (add-operation [^UpdateRequest operation ^BulkRequestBuilder bulk-builder]
     (.add bulk-builder operation))
 
   DeleteRequest
@@ -72,5 +77,7 @@
 (def delete-operation common-bulk/delete-operation)
 
 (def bulk-index common-bulk/bulk-index)
+
+(def bulk-update common-bulk/bulk-update)
 
 (def bulk-delete common-bulk/bulk-delete)

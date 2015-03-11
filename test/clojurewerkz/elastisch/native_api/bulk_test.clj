@@ -65,4 +65,51 @@
           delete-response (bulk-with-index-and-type conn index-name index-type (bulk-delete docs) {:refresh true})]
       (is (= 10 initial-count))
       (is (= false (:has-failures? response)))
-      (is (= 0 (:count (doc/count conn index-name index-type)))))))
+      (is (= 0 (:count (doc/count conn index-name index-type))))))
+
+  (deftest ^{:native true :indexing true} test-bulk-updating
+    (let [id "1"
+          for-insert (assoc fx/person-jack :_id id :biography "original")
+          insert-ops (bulk-index [for-insert])
+          response (bulk-with-index-and-type conn index-name index-type insert-ops {:refresh true})
+          for-update (assoc for-insert :biography "updated")
+          update-ops (bulk-update [for-update])
+          update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
+      (is (= "updated" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))
+
+  (deftest ^{:native true :indexing true} test-bulk-updating-with-doc-as-upsert
+    (let [id "1"
+          for-update (assoc fx/person-jack :_id id :biography "original" :_doc_as_upsert true)
+          update-ops (bulk-update [for-update])
+          update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
+      (is (= "original" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))
+
+  (deftest ^{:native true :indexing true} test-bulk-update-with-scripting
+    (let [id "1"
+          for-insert (assoc fx/person-jack :_id id)
+          insert-ops (bulk-index [for-insert])
+          response (bulk-with-index-and-type conn index-name index-type insert-ops {:refresh true})
+          script "ctx._source[\"ran_script\"] = true"
+          for-update (assoc for-insert :_script script)
+          update-ops (bulk-update [for-update])
+          update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
+      (is (= true (get-in (doc/get conn index-name index-type id) [:_source :ran_script])))))
+
+  (deftest ^{:native true :indexing true} test-bulk-update-with-scripted-upsert
+    (let [id "2"
+          script "ctx._source[\"ran_script\"] = true"
+          for-update (assoc fx/person-jack :_id id :_scripted_upsert true :_script script)
+          update-ops (bulk-update [for-update])
+          update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
+      (is (= true (get-in (doc/get conn index-name index-type id) [:_source :ran_script])))))
+
+  (deftest ^{:native true :indexing true} test-bulk-update-with-script-params
+    (let [id "3"
+          for-insert (assoc fx/person-jack :_id id)
+          insert-ops (bulk-index [for-insert])
+          response (bulk-with-index-and-type conn index-name index-type insert-ops {:refresh true})
+          script "ctx._source[\"ran_script\"] = val"
+          for-update (assoc fx/person-jack :_id id :_script script :_script_params {:val "param1"})
+          update-ops (bulk-update [for-update])
+          update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
+      (is (= "param1" (get-in (doc/get conn index-name index-type id) [:_source :ran_script]))))))
