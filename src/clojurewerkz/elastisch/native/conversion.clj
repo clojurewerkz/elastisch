@@ -406,15 +406,15 @@
   ([index-name mapping-type id {:keys [routing refresh version version-type parent]}]
      (let [r (DeleteRequest. (name index-name) (name mapping-type) id)]
        (when routing
-         (.routing ^DeleteResponse r routing))
+         (.routing ^DeleteRequest r routing))
        (when refresh
-         (.refresh ^DeleteResponse r refresh))
+         (.refresh ^DeleteRequest r refresh))
        (when version
-         (.version ^DeleteResponse r version))
+         (.version ^DeleteRequest r version))
        (when version-type
-         (.versionType ^DeleteResponse r version-type))
+         (.versionType ^DeleteRequest r version-type))
        (when parent
-         (.parent ^DeleteResponse r parent))
+         (.parent ^DeleteRequest r parent))
        r)))
 
 (defn ^IPersistentMap delete-response->map
