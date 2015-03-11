@@ -238,25 +238,25 @@
      (let [ir (-> (IndexRequest. (name index) (name mapping-type))
                   (.source ^Map (wlk/stringify-keys doc)))]
        (when id
-         (.id ir ^String id))
+         (.id ^IndexRequest ir ^String id))
        (when content-type
-         (.contentType ir (to-content-type content-type)))
+         (.contentType ^IndexRequest ir (to-content-type content-type)))
        (when routing
-         (.routing ir ^String routing))
+         (.routing ^IndexRequest ir ^String routing))
        (when parent
-         (.parent ir ^String parent))
+         (.parent ^IndexRequest ir ^String parent))
        (when timestamp
-         (.timestamp ir timestamp))
+         (.timestamp ^IndexRequest ir timestamp))
        (when ttl
          (.ttl ir ttl))
        (when op-type
-         (.opType ir (IndexRequest$OpType/fromString (.toLowerCase (name op-type)))))
+         (.opType ^IndexRequest ir (IndexRequest$OpType/fromString (.toLowerCase (name op-type)))))
        (when refresh
-         (.refresh ir refresh))
+         (.refresh ^IndexRequest ir refresh))
        (when version
-         (.version ir version))
+         (.version ^IndexRequest ir version))
        (when version-type
-         (.versionType ir (to-version-type version-type)))
+         (.versionType ^IndexRequest ir (to-version-type version-type)))
        ir)))
 
 (defn ^IPersistentMap index-response->map
@@ -406,15 +406,15 @@
   ([index-name mapping-type id {:keys [routing refresh version version-type parent]}]
      (let [r (DeleteRequest. (name index-name) (name mapping-type) id)]
        (when routing
-         (.routing r routing))
+         (.routing ^DeleteResponse r routing))
        (when refresh
-         (.refresh r refresh))
+         (.refresh ^DeleteResponse r refresh))
        (when version
-         (.version r version))
+         (.version ^DeleteResponse r version))
        (when version-type
-         (.versionType r version-type))
+         (.versionType ^DeleteResponse r version-type))
        (when parent
-         (.parent r parent))
+         (.parent ^DeleteResponse r parent))
        r)))
 
 (defn ^IPersistentMap delete-response->map
@@ -440,26 +440,26 @@
      (let [r (UpdateRequest. (name index-name) (name mapping-type) id)
            stringified-doc (wlk/stringify-keys doc)]
        (when (and doc (not script))
-         (.doc r ^Map stringified-doc))
+         (.doc ^UpdateRequest r ^Map stringified-doc))
        (when doc_as_upsert
-         (.docAsUpsert r doc_as_upsert))
+         (.docAsUpsert ^UpdateRequest r ^Boolean doc_as_upsert))
        (when fields
-         (.fields r (->string-array fields)))
+         (.fields ^UpdateRequest r (->string-array fields)))
        (when parent
-         (.parent r parent))
+         (.parent ^UpdateRequest r parent))
        (when script
-         (.script r script))
+         (.script ^UpdateRequest r ^String script))
        (when scripted_upsert
-         (.upsert r ^Map stringified-doc)
-         (.scriptedUpsert r scripted_upsert))
+         (.upsert ^UpdateRequest r ^Map stringified-doc)
+         (.scriptedUpsert ^UpdateRequest r ^Boolean scripted_upsert))
        (when script_params
-         (.scriptParams r ^Map (wlk/stringify-keys script_params)))
+         (.scriptParams ^UpdateRequest r ^Map (wlk/stringify-keys script_params)))
        (when retry_on_conflict
-         (.retryOnConflict r retry_on_conflict))
+         (.retryOnConflict ^UpdateRequest r ^Boolean retry_on_conflict))
        (when refresh
-         (.refresh r refresh))
+         (.refresh ^UpdateRequest r ^Boolean refresh))
        (when routing
-         (.routing r routing))
+         (.routing ^UpdateRequest r ^String routing))
        r))
 
 (defn ^UpdateRequest ->partial-update-request
