@@ -428,29 +428,39 @@
    :_id      (.getId r)})
 
 (defn ^UpdateRequest ->update-request
-  ([index-name mapping-type ^String id ^String script]
-     (doto (UpdateRequest. (name index-name) (name mapping-type) id)
-       (.script script)))
-  ([index-name mapping-type ^String id ^String script ^Map params]
-     (let [r (UpdateRequest. (name index-name) (name mapping-type) id)]
-       (.script r script)
-       (.scriptParams r ^Map params)
-       r))
-  ([index-name mapping-type ^String id ^String script ^Map params {:keys [script routing refresh retry-on-conflict fields parent]}]
-     (let [r (UpdateRequest. (name index-name) (name mapping-type) id)]
-       (.script r script)
-       (.scriptParams r ^Map params)
-       (when refresh
-         (.refresh r refresh))
-       (when retry-on-conflict
-         (.retryOnConflict r retry-on-conflict))
-       (when routing
-         (.routing r routing))
-       (when parent
-         (.parent r parent))
+  [index-name mapping-type ^String id ^Map doc {:keys [doc_as_upsert
+                                                       fields
+                                                       parent
+                                                       refresh
+                                                       retry_on_conflict
+                                                       routing
+                                                       script
+                                                       script_params
+                                                       scripted_upsert]}]
+     (let [r (UpdateRequest. (name index-name) (name mapping-type) id)
+           stringified-doc (wlk/stringify-keys doc)]
+       (when (and doc (not script))
+         (.doc r ^Map stringified-doc))
+       (when doc_as_upsert
+         (.docAsUpsert r doc_as_upsert))
        (when fields
          (.fields r (->string-array fields)))
-       r)))
+       (when parent
+         (.parent r parent))
+       (when script
+         (.script r script))
+       (when scripted_upsert
+         (.upsert r ^Map stringified-doc)
+         (.scriptedUpsert r scripted_upsert))
+       (when script_params
+         (.scriptParams r ^Map (wlk/stringify-keys script_params)))
+       (when retry_on_conflict
+         (.retryOnConflict r retry_on_conflict))
+       (when refresh
+         (.refresh r refresh))
+       (when routing
+         (.routing r routing))
+       r))
 
 (defn ^UpdateRequest ->partial-update-request
   [index-name mapping-type ^String id ^Map partial-doc {:keys [routing refresh retry-on-conflict fields parent]}]
@@ -1486,6 +1496,7 @@
 (defn get-bulk-item-action
   [doc]
   (cond (contains? doc "index") "index"
+        (contains? doc "update") "update"
         (contains? doc "delete") "delete"
         :else nil))
 
@@ -1496,6 +1507,14 @@
     (let [curr (first actions)
           request-type (get-bulk-item-action curr)
           add (case request-type
+                "update" (let [source (second actions)
+                               opts (clojure.core/get curr "update")]
+                           (->update-request
+                             (:_index opts)
+                             (:_type opts)
+                             (:_id opts)
+                             source
+                             (remove-underscores opts)))
                 "index" (let [source (second actions)
                               opts (clojure.core/get curr "index")]
                           (->index-request
@@ -1513,6 +1532,7 @@
           new-results (if (nil? add) results (conj results add))
           next-rest (case request-type
                       "index" (rest (rest actions))
+                      "update" (rest (rest actions))
                       "delete" (rest actions)
                       nil ())]
       (if (empty? next-rest)

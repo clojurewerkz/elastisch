@@ -10,12 +10,27 @@
 (ns clojurewerkz.elastisch.common.bulk
   (:require [clojure.set :refer :all]))
 
-(def ^:private special-operation-keys
-  [:_index :_type :_id :_retry_on_conflict :_routing :_percolate :_parent :_timestamp :_ttl])
+(def ^:private special-operation-keys [:_doc_as_upsert
+                                       :_index
+                                       :_type
+                                       :_id
+                                       :_retry_on_conflict
+                                       :_routing
+                                       :_percolate
+                                       :_parent
+                                       :_script
+                                       :_script_params
+                                       :_scripted_upsert
+                                       :_timestamp
+                                       :_ttl])
 
 (defn index-operation
   [doc]
   {"index" (select-keys doc special-operation-keys)})
+
+(defn update-operation
+  [doc]
+  {"update" (select-keys doc special-operation-keys)})
 
 (defn delete-operation
   [doc]
@@ -25,6 +40,13 @@
   "generates the content for a bulk insert operation"
   ([documents]
      (let [operations (map index-operation documents)
+           documents  (map #(apply dissoc % special-operation-keys) documents)]
+       (interleave operations documents))))
+
+(defn bulk-update
+  "generates the content for a bulk update operation"
+  ([documents]
+     (let [operations (map update-operation documents)
            documents  (map #(apply dissoc % special-operation-keys) documents)]
        (interleave operations documents))))
 
