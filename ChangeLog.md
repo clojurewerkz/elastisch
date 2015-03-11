@@ -1,3 +1,28 @@
+## Changes between Elastisch 2.2.0-beta1 and 2.2.0-beta2
+
+### Bulk Operation Support in Native Client
+
+Native client now supports bulk operations with the same API as the REST one.
+
+Contributed by
+
+ * Mitchel Kuijpers
+ * Michael Nussbaum and Jack Lund (Braintree)
+
+
+### Fixed unregister-query in Native Client
+
+`clojurewerkz.elastisch.native.percolation/unregister-query` arguments
+were mistakenly swapped when delegating to the Java client.
+
+Contributed by Stephen Muss.
+
+### Guava Excluded From Dependencies
+
+Contributed by Jan Stępień (Stylefruits).
+
+
+
 ## Changes between Elastisch 2.1.x and 2.2.0-beta1
 
 ## Add support for Nested Aggregations in the Native Client
