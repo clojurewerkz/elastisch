@@ -6,7 +6,7 @@ Native client now supports bulk operations with the same API as the REST one.
 
 Contributed by
 
- * Mitchel Kuijpers
+ * Mitchel Kuijpers (Avisi)
  * Michael Nussbaum and Jack Lund (Braintree)
 
 
