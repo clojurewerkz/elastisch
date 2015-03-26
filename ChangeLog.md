@@ -35,7 +35,7 @@ Native client now supports nesting in the following aggregations
  * `date_range`
  * `terms`
 
-Contributed by Mitchel Kuijpers.
+Contributed by Mitchel Kuijpers (Avisi).
 
 ### ElasticSearch Java Client Upgrade
 
