@@ -1,3 +1,12 @@
+## Changes Between Elastisch 2.1.0 and 2.1.1
+
+### Coping With Large Scroll ID
+
+Elastisch now can cope with scroll IDs larger than 4K.
+
+Contributed by niko.
+
+
 ## Changes between Elastisch 2.1.0-beta9 and 2.1.0-rc1
 
 ### Clojure 1.4 Support Dropped
