@@ -240,10 +240,11 @@
   [^Connection conn scroll-id & args]
   (let [opts (ar/->opts args)
         qk   [:search_type :scroll :routing :preference]
-        qp   (assoc (select-keys opts qk) :scroll_id scroll-id)
-        body (apply dissoc (concat [opts] qk))]
-    (rest/get conn (rest/scroll-url conn)
-              {:query-params qp})))
+        qp   (select-keys opts qk)
+        body scroll-id]
+    (rest/post-string conn (rest/scroll-url conn)
+                      {:body body
+                       :query-params qp})))
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
