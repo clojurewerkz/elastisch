@@ -1,3 +1,13 @@
+## Changes between Elastisch 2.2.0-beta2 and 2.2.0-beta3
+
+### Support for Large Scroll IDs
+
+Elastisch now supports scroll IDs larger than 4 KB.
+
+
+Contributed by niko.
+
+
 ## Changes between Elastisch 2.2.0-beta1 and 2.2.0-beta2
 
 ### Bulk Operation Support in Native Client
