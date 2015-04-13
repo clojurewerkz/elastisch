@@ -1,3 +1,10 @@
+## Changes between Elastisch 2.2.0-beta3 and 2.2.0-beta4
+
+### clj-http Update
+
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.1.0`.
+
+
 ## Changes between Elastisch 2.2.0-beta2 and 2.2.0-beta3
 
 ### Support for Large Scroll IDs
