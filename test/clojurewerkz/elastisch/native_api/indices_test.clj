@@ -141,6 +141,11 @@
   (is (acknowledged? (idx/update-aliases conn [{:add {:alias "alias1" :indices "aliased-index"}}])))
   (is (acknowledged? (idx/update-aliases conn [{:remove {:aliases "alias1" :index "aliased-index"}}]))))
 
+(deftest ^{:indexing true :native true} test-remove-alias-allows-singular-alias
+  (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged? (idx/update-aliases conn [{:add {:index "aliased-index" :alias "alias1"}}])))
+  (is (acknowledged? (idx/update-aliases conn [{:remove {:index "aliased-index" :alias "alias1"}}]))))
+
 (deftest ^{:indexing true :native true} test-create-an-index-template-and-fetch-it
   (let [response (idx/create-template conn "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})]
     (is (acknowledged? response))))
