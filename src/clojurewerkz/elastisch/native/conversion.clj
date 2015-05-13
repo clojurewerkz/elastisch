@@ -1180,9 +1180,10 @@
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
   (let [r (CreateIndexRequest. index-name)
+        s (wlk/stringify-keys settings)
         m (wlk/stringify-keys mappings)]
     (when settings
-      (.settings r ^Map settings))
+      (.settings r ^Map s))
     (when mappings
       (doseq [[k v] m]
         (.mapping r ^String k ^Map v)))
