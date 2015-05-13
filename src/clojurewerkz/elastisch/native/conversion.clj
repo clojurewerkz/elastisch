@@ -1425,8 +1425,11 @@
   req)
 
 (defn- apply-remove-alias
-  [^IndicesAliasesRequest req {:keys [index alias aliases]}]
-  (.removeAlias req ^String index (->string-array (or aliases alias)))
+  [^IndicesAliasesRequest req {:keys [index indices alias aliases]}]
+  (let [indices-array (->string-array (or indices index))
+        aliases-array (->string-array (or aliases alias))]
+    (doseq [index indices-array]
+      (.removeAlias req ^String index aliases-array)))
   req)
 
 (defn ^IndicesAliasesRequest ->indices-aliases-request
