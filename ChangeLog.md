@@ -8,6 +8,13 @@ Elastisch now depends on ElasticSearch Java client version `1.5.x`.
 
 [clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.1.0`.
 
+### Better support for plural/single indices and aliases in native update-aliases
+
+* `:remove` action now works with singular `:index` key 
+* multiple aliases can be added with single `:add` action
+* alias can be removed from multiple indices with single `:remove` action
+
+Contributed by @mnylen
 
 ## Changes between Elastisch 2.2.0-beta2 and 2.2.0-beta3
 
