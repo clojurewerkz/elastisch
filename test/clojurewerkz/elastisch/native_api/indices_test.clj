@@ -129,6 +129,13 @@
   (is (acknowledged? (idx/update-aliases conn [{:add {:alias "alias1" :indices ["aliased-index"]}}
                                                {:add {:alias "alias2" :indices ["aliased-index"]}}]))))
 
+(deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases-using-plural-aliases-syntax 
+  (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged? (idx/update-aliases conn [{:add {:aliases ["alias1" "alias2"] :index "aliased-index"}}])))
+  (is (doc/put conn "aliased-index" "type" "id1" {}))
+  (is (doc/get conn "alias1" "type" "id1"))
+  (is (doc/get conn "alias2" "type" "id1")))
+
 (deftest ^{:indexing true :native true} test-create-an-index-with-an-alias-and-delete-it
   (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
   (is (acknowledged? (idx/update-aliases conn [{:add {:alias "alias1" :indices "aliased-index"}}])))
