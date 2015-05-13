@@ -129,10 +129,28 @@
   (is (acknowledged? (idx/update-aliases conn [{:add {:alias "alias1" :indices ["aliased-index"]}}
                                                {:add {:alias "alias2" :indices ["aliased-index"]}}]))))
 
+(deftest ^{:indexing true :native true} test-create-an-index-with-two-aliases-using-plural-aliases-syntax 
+  (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged? (idx/update-aliases conn [{:add {:aliases ["alias1" "alias2"] :index "aliased-index"}}])))
+  (is (doc/put conn "aliased-index" "type" "id1" {}))
+  (is (doc/get conn "alias1" "type" "id1"))
+  (is (doc/get conn "alias2" "type" "id1")))
+
 (deftest ^{:indexing true :native true} test-create-an-index-with-an-alias-and-delete-it
   (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
   (is (acknowledged? (idx/update-aliases conn [{:add {:alias "alias1" :indices "aliased-index"}}])))
   (is (acknowledged? (idx/update-aliases conn [{:remove {:aliases "alias1" :index "aliased-index"}}]))))
+
+(deftest ^{:indexing true :native true} test-remove-alias-allows-singular-alias
+  (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged? (idx/update-aliases conn [{:add {:index "aliased-index" :alias "alias1"}}])))
+  (is (acknowledged? (idx/update-aliases conn [{:remove {:index "aliased-index" :alias "alias1"}}]))))
+
+(deftest ^{:indexing true :native true} test-remove-alias-allows-multiple-indices
+  (idx/create conn "aliased-index1" :settings {"index" {"refresh_interval" "42s"}})
+  (idx/create conn "aliased-index2" :settings {"index" {"refresh_interval" "42s"}})
+  (is (acknowledged? (idx/update-aliases conn [{:add {:indices ["aliased-index1" "aliased-index2"] :alias "alias"}}])))
+  (is (acknowledged? (idx/update-aliases conn [{:remove {:alias "alias" :indices ["aliased-index1" "aliased-index2"]}}]))))
 
 (deftest ^{:indexing true :native true} test-create-an-index-template-and-fetch-it
   (let [response (idx/create-template conn "accounts" :template "account*" :settings {:index {:refresh_interval "60s"}})]

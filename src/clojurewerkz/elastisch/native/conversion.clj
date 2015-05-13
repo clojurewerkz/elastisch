@@ -1415,16 +1415,21 @@
 
 
 (defn- apply-add-alias
-  [^IndicesAliasesRequest req {:keys [index indices alias filter]}]
-  (let [indices-array (->string-array (or indices index))]
-    (if filter
-      (.addAlias req ^String alias ^Map filter indices-array)
-      (.addAlias req ^String alias indices-array)))
+  [^IndicesAliasesRequest req {:keys [index indices alias aliases filter]}]
+  (let [indices-array (->string-array (or indices index))
+        aliases-array (->string-array (or aliases alias))]
+    (doseq [alias aliases-array]
+      (if filter
+        (.addAlias req ^String alias ^Map filter indices-array)
+        (.addAlias req ^String alias indices-array))))
   req)
 
 (defn- apply-remove-alias
-  [^IndicesAliasesRequest req {:keys [index aliases]}]
-  (.removeAlias req ^String index (->string-array aliases))
+  [^IndicesAliasesRequest req {:keys [index indices alias aliases]}]
+  (let [indices-array (->string-array (or indices index))
+        aliases-array (->string-array (or aliases alias))]
+    (doseq [index indices-array]
+      (.removeAlias req ^String index aliases-array)))
   req)
 
 (defn ^IndicesAliasesRequest ->indices-aliases-request
