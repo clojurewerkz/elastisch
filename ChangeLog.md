@@ -6,7 +6,7 @@ Elastisch now depends on ElasticSearch Java client version `1.5.x`.
 
 ### clj-http Update
 
-[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.1.0`.
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.1.x`.
 
 ### Better support for plural/single indices and aliases in native update-aliases
 
