@@ -25,6 +25,7 @@
           response     (doc/search conn index-name mapping-type
                                    :query (q/match-all)
                                    :aggregations {:age_stats (a/extended-stats "age")})
-          agg          (aggregation-from response :age_stats)]
-      (is (= #{:count :min :max :avg :sum :std_deviation :sum_of_squares :variance}
-             (set (keys agg)))))))
+          agg          (aggregation-from response :age_stats)
+          keys         (set (keys agg))]
+      (doseq [k #{:count :min :max :avg :sum :std_deviation :sum_of_squares :variance}]
+        (is (.contains keys k))))))
