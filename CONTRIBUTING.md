@@ -3,7 +3,7 @@
 The project uses [Leiningen 2](https://leiningen.org) and requires ElasticSearch `1.4.x` or more recent to be running
 locally.
 
-`script.disable_dynamic` must be `false` for all tests to pass. To set this, add the following to your `elasticsearch.yml` file:
+`script.disable_dynamic` must be `false` for scripting tests to pass. To set this, add the following to your `elasticsearch.yml` file:
 
     script:
         disable_dynamic: false
