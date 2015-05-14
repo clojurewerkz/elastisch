@@ -40,7 +40,8 @@
                    :rest        :rest
                    :version-dependent :version-dependent
                    :all         (constantly true)
-                   :default     (fn [m] (not (:version-dependent m)))
+                   :default     (fn [m] (not (or (:version-dependent m)
+                                                 (:scripting m))))
                    :ci          (fn [m] (and (not (:native m)) (not (:version-dependent m))))}
   :mailing-list {:name "clojure-elasticsearch"
                  :archive "https://groups.google.com/group/clojure-elasticsearch"
