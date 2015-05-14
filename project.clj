@@ -7,7 +7,7 @@
                  [clj-http              "1.1.2" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "1.5.1"]]
+                 [org.elasticsearch/elasticsearch "1.5.2"]]
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.9.0" :exclusions [org.clojure/clojure]]]
