@@ -16,6 +16,12 @@ Elastisch now depends on ElasticSearch Java client version `1.5.x`.
 
 Contributed by @mnylen
 
+### Index settings now allow keywordized keys when creating index using native api
+
+Previously only mappings allowed keys to be keywords, now same works with index settings.
+
+Contributed by @mnylen
+
 ## Changes between Elastisch 2.2.0-beta2 and 2.2.0-beta3
 
 ### Support for Large Scroll IDs

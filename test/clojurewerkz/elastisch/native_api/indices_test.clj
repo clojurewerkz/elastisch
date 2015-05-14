@@ -35,6 +35,10 @@
   (let [response (idx/create conn "elastisch-index-without-mappings" :settings {"index" {"number_of_shards" 1}})]
     (is (acknowledged? response))))
 
+(deftest ^{:indexing true :native true} test-create-index-accepts-keywordized-keys-in-settings
+  (let [response (idx/create conn "elastisch-index-with-settings" :settings {:index {:refresh_interval "42s"}})]
+    (is (acknowledged? response))))
+
 (deftest ^{:indexing true :native true} test-successful-creation-of-index-with-mappings-and-without-settings
   (let [index    "people"
         response (idx/create conn index :mappings fx/people-mapping)]
