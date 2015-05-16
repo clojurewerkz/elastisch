@@ -22,7 +22,7 @@ Elastisch now depends on ElasticSearch Java client version `1.5.x`.
 
 Contributed by @mnylen
 
-### Index settings now allow keywordized keys when creating index using native api
+### Index Settings Now Allow Keywordized Keys When Creating Index Using Native API
 
 Previously only mappings allowed keys to be keywords, now same works with index settings.
 
