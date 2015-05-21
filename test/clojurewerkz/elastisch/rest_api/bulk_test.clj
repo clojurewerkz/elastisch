@@ -74,4 +74,11 @@
           delete-response (bulk/bulk-with-index-and-type conn index-name index-type (bulk/bulk-delete docs) :refresh true)]
       (is (= 10 initial-count))
       (are-all-successful (->> response :items (map :create)))
-      (is (= 0 (:count (doc/count conn index-name index-type)))))))
+      (is (= 0 (:count (doc/count conn index-name index-type))))))
+
+  (deftest ^{:rest true :indexing true} test-bulk-create
+    (let [document          fx/person-jack
+          for-index         (assoc document :_type index-type :_id "sampleid")
+          create-operations (bulk/bulk-create (repeat 10 for-index))
+          response          (bulk/bulk-with-index conn index-name create-operations {:refresh true})]
+      (is (= 1 (:count (doc/count conn index-name index-type)))))))

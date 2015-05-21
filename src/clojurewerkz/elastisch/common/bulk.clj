@@ -28,6 +28,10 @@
   [doc]
   {"index" (select-keys doc special-operation-keys)})
 
+(defn create-operation
+  [doc]
+  {"create" (select-keys doc special-operation-keys)})
+
 (defn update-operation
   [doc]
   {"update" (select-keys doc special-operation-keys)})
@@ -40,6 +44,13 @@
   "generates the content for a bulk insert operation"
   ([documents]
      (let [operations (map index-operation documents)
+           documents  (map #(apply dissoc % special-operation-keys) documents)]
+       (interleave operations documents))))
+
+(defn bulk-create
+  "generates the content for a bulk create operation"
+  ([documents]
+     (let [operations (map create-operation documents)
            documents  (map #(apply dissoc % special-operation-keys) documents)]
        (interleave operations documents))))
 
