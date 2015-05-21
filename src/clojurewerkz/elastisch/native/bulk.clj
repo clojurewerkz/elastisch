@@ -81,3 +81,5 @@
 (def bulk-update common-bulk/bulk-update)
 
 (def bulk-delete common-bulk/bulk-delete)
+
+(def bulk-create common-bulk/bulk-create)
