@@ -11,7 +11,7 @@
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.9.0" :exclusions [org.clojure/clojure]]]
-                       :plugins [[codox           "0.8.10"]
+                       :plugins [[codox           "0.8.12"]
                                  [jonase/eastwood "0.2.1"]]
                        :codox {:sources ["src"]
                                :output-dir "doc/api"}}
