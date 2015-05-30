@@ -209,10 +209,10 @@
      (url-with-path conn index-name "_status")))
 
 (defn index-stats-url
-  ([conn]
-     (url-with-path conn "_stats"))
   ([conn ^String index-name]
-     (url-with-path conn index-name "_stats")))
+     (url-with-path conn index-name "_stats"))
+  ([conn ^String index-name ^String stat-name]
+     (url-with-path conn index-name "_stats" stat-name)))
 
 (defn index-segments-url
   ([conn]
