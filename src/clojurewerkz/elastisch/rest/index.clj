@@ -352,21 +352,20 @@
 (defn stats
   "Returns statistics about an index or multiple indexes
 
-   Accepted options define what exactly will be contained in the response:
+  Accepted options define what exactly will be contained in the response:
 
-   :docs : the number of documents, deleted documents
-   :store : the size of the index
-   :indexing : indexing statistics
-   :types : document type level stats
-   :get : get operation statistics, including missing stats
-   :search : search statistics, including custom grouping using the groups parameter (search operations can be associated with one or more groups)
-   :merge : merge operation stats
-   :flush : flush operation stats
-   :refresh : refresh operation stats
-   :clear : clear all the flags first
+  :stats : the specific stat(s) to return (defaults to all)
 
-   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html"
+  :types : combined with index stats to provide document type level stats
+  :groups : search statistics can be associated with one or more groups
+  :fields : fields to be included in the statistics by default where applicable
+  :completion_fields : fields to be included in the completion suggest statistics
+  :fielddata_fields : fields to be included in the fielddata statistics
+
+  API Reference: https://www.elastic.co/guide/en/elasticsearch/reference/1.5/indices-stats.html"
   ([^Connection conn index-name & args]
+   (let [opts (ar/->opts args)]
      (rest/get conn (rest/index-stats-url conn
-                                          (join-names index-name))
-               {:query-params (ar/->opts args)})))
+                                          (join-names index-name)
+                                          (join-names (get opts :stats "_all")))
+               {:query-params (dissoc opts :stats)}))))

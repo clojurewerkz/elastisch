@@ -102,14 +102,18 @@
   (deftest ^{:rest true :indexing true} test-index-stats
     (let [index     "people"
           _         (idx/create conn index :mappings fx/people-mapping)
-          response  (idx/stats conn index :docs true :store true :indexing true)]
-      (is (:_shards response))))
+          response  (idx/stats conn index :stats ["docs" "store" "indexing"] :types "person")
+          stats     (-> response :_all :primaries)]
+      (is (every? #(contains? stats %) [:docs :store :indexing]))
+      (is (not-any? #(contains? stats %) [:get :search :completion :fielddata :flush :merge :query_cache :refresh :suggest :warmer :translog]))))
 
   (deftest ^{:rest true :indexing true} test-index-stats-for-multiple-indexes
     (idx/create conn "group1")
     (idx/create conn "group2")
-    (let [response (idx/stats conn ["group1" "group2"] :docs true :store true :indexing true)]
-      (is (:_shards response))))
+    (let [response (idx/stats conn ["group1" "group2"] :stats ["docs" "store" "indexing"])
+          stats (-> response :_all :primaries)]
+      (is (every? #(contains? stats %) [:docs :store :indexing]))
+      (is (not-any? #(contains? stats %) [:get :search :completion :fielddata :flush :merge :query_cache :refresh :suggest :warmer :translog]))))
 
   (deftest ^{:rest true :indexing true} test-create-an-index-with-two-aliases
     (idx/create conn "aliased-index" :settings {"index" {"refresh_interval" "42s"}})
