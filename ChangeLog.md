@@ -1,7 +1,17 @@
 ## Changes between Elastisch 2.2.0-beta4 and 2.2.0-beta5
 
-No changes yet.
+### Index Stats Update for ES 1.3.x
 
+`clojurewerkz.elastisch.rest.index/stats` has been updated for ElasticSearch `1.3.x`
+and later versions.
+
+Contributed by Roman Pearah.
+
+### `create` Bulk Operation Helper
+
+Bulk operation helper functions now include `create`.
+
+Contributed by @nikopol.
 
 
 ## Changes between Elastisch 2.2.0-beta3 and 2.2.0-beta4
