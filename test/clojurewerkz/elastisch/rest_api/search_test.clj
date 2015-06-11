@@ -91,4 +91,14 @@
                                                                    "planet" "biography"
                                                                    "last-name" "username"]}))]
       (is (= 4 (count hits)))
-      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last :_source))))))))
+      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last :_source)))))))
+
+  (deftest ^{:rest true} test-sorting-on-unmapped-field
+    (let [index-name   "people"
+          mapping-type "person"
+          hits         (hits-from (doc/search conn index-name mapping-type
+                                              :query   (q/match-all)
+                                              :sort    (q/sort "surname"
+                                                               {:order "asc"
+                                                                :ignore-unmapped true})))]
+      (is (= 4 (count hits))))))

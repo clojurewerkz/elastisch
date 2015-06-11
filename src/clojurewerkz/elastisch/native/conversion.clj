@@ -38,7 +38,7 @@
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest
             MultiSearchRequestBuilder MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item]
            [org.elasticsearch.search.builder SearchSourceBuilder]
-           [org.elasticsearch.search.sort SortBuilder SortOrder]
+           [org.elasticsearch.search.sort SortBuilder SortOrder FieldSortBuilder]
            [org.elasticsearch.search SearchHits SearchHit]
            [org.elasticsearch.search.facet Facets Facet]
            [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
@@ -561,7 +561,24 @@
 
 (defn ^SortOrder ^:private ->sort-order
   [s]
-  (SortOrder/valueOf (.toUpperCase (name s))))
+  (if (instance? SortOrder s)
+    s
+    (SortOrder/valueOf (.toUpperCase (name s)))))
+
+(defn ^SortBuilder ^:private ->field-sort-builder
+  [key value]
+  (let [fsb (FieldSortBuilder. (name key))]
+    (cond (map? value)
+          (do
+            (when-let [iu (:ignoreUnmapped value)]
+              (.ignoreUnmapped fsb iu))
+            (when-let [order (:order value)]
+              (.order fsb (->sort-order order))))
+
+          (or (instance? clojure.lang.Named value)
+              (instance? String value))
+          (.order fsb (->sort-order (name value))))
+    fsb))
 
 (defn ^SearchSourceBuilder ^:private set-sort
   [^SearchSourceBuilder sb sort]
@@ -571,7 +588,7 @@
    (instance? SortBuilder sort)  (.sort sb ^SortBuilder sort)
    ;; map
    :else  (doseq [[k v] sort]
-            (.sort sb (name k) (->sort-order (name v)))))
+            (.sort sb (->field-sort-builder k v))))
   sb)
 
 (defn ^:private add-partial-fields-to-builder
