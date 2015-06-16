@@ -16,8 +16,9 @@
   "Convenience functions that build various query types.
 
    All functions return maps and are completely optional (but recommended)."
-  (:refer-clojure :exclude [range])
-  (:require [clojurewerkz.elastisch.escape    :as escape]
+  (:refer-clojure :exclude [range sort])
+  (:require [clojure.set :as set]
+            [clojurewerkz.elastisch.escape    :as escape]
             [clojurewerkz.elastisch.arguments :as ar]))
 
 (defn term
@@ -239,3 +240,12 @@
    For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html"
   [& args]
   {:nested (ar/->opts args)})
+
+(defn sort
+  "Sort query results."
+  [attribute {:keys [ignore-unmapped order] :as v}]
+  {attribute
+   (cond (map? v)
+         (set/rename-keys v {:ignore-unmapped :ignoreUnmapped})
+         :default
+         v)})
