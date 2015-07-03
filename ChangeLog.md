@@ -32,6 +32,14 @@ For example:
 
 Contributed by @ryfow
 
+### `scan-and-scroll-seq` helper
+
+`scan-and-scroll-seq` provides an easier-to-use abstraction over ES's
+scan and scroll API, wrapping `scroll-seq` and handling the
+special-case first request.
+
+Contributed by @loganmhb
+
 ## Changes between Elastisch 2.2.0-beta3 and 2.2.0-beta4
 
 ### ElasticSearch Java Client Upgrade
