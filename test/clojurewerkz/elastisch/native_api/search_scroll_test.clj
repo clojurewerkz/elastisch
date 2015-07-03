@@ -98,5 +98,16 @@
                                    :scroll "1m"
                                    :size 2))]
     (is (= 0 (count res-seq)))
-    (is (= true (coll? res-seq))))))
+    (is (= true (coll? res-seq)))))
+
+(deftest ^{:native true :scroll true} test-scan-and-scroll-seq
+    (let [index-name   "articles"
+          mapping-type "article"
+          res-seq       (doc/scan-and-scroll-seq conn index-name mapping-type
+                                                 :query (q/match-all)
+                                                 :size 2)]
+      (is (not (realized? res-seq)))
+      (is (= 4 (count res-seq)))
+      (is (= 4 (count (distinct res-seq))))
+      (is (realized? res-seq)))))
 
