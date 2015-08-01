@@ -132,15 +132,29 @@
      (let [res (es/update conn (cnv/->update-request index
                                                 mapping-type
                                                 id
-                                                script))]
+                                                nil
+                                                {:script script}))]
        (cnv/update-response->map (.actionGet res))))
+
   ([^Client conn index mapping-type ^String id ^String script ^Map params]
      (let [res (es/update conn (cnv/->update-request index
                                                 mapping-type
                                                 id
-                                                script
-                                                params))]
-       (cnv/update-response->map (.actionGet res)))))
+                                                nil
+                                                {:script_params params
+                                                 :script script}))]
+       (cnv/update-response->map (.actionGet res))))
+  ([^Client conn index mapping-type ^String id ^String script ^Map params & args]
+   (let [optional-params (ar/->opts args)
+         res (es/update conn
+                        (cnv/->update-request index
+                                              mapping-type
+                                              id
+                                              nil
+                                              (assoc optional-params
+                                                     :script_params params
+                                                     :script script)))]
+     (cnv/update-response->map (.actionGet res)))))
 
 
 (defn get
