@@ -1,3 +1,5 @@
+## Changes between Elastisch 2.2.0-beta4 and 2.2.0-beta5
+
 ### Fixed `update-with-script` in Native Client
 
 `clojurewerkz.elastisch.native.conversion/->update-request` arguments
@@ -5,8 +7,6 @@ updated in `clojurewerkz.elastisch.native.document/update-with-script` to reflec
 recent changes.
 
 Contributed by Michael Nussbaum.
-
-## Changes between Elastisch 2.2.0-beta4 and 2.2.0-beta5
 
 ### Index Stats Update for ES 1.3.x
 
