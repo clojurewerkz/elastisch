@@ -83,4 +83,41 @@
         (idx/refresh conn index-name)
         (let [updated (doc/get conn index-name index-type id)]
           (is (= "brilliant1" (get-in updated [:_source :biography])))
-          (is (= "Sweden" (get-in updated [:_source :country]))))))))
+          (is (= "Sweden" (get-in updated [:_source :country])))))))
+
+  (deftest ^{:version-dependent true} update-with-script
+    (let [index-name "people"
+          index-type "person"
+          id "1"]
+      (idx/create conn index-name :mappings fx/people-mapping)
+
+      (doc/create conn index-name index-type fx/person-jack :id id)
+
+      (idx/refresh conn index-name)
+
+      ;; this works in ES<1.2, later dynamic scripting is disabled by default, so no mvel
+      (testing "update with mvel script no params"
+        (let [orig (doc/get conn index-name index-type id)]
+          (doc/update-with-script conn index-name index-type id
+                                  "ctx._source.age += 1")
+          (idx/refresh conn index-name)
+          (is (= (-> orig :_source :age inc)
+                 (-> (doc/get conn index-name index-type id) :_source  :age)))))
+
+      ;; this works in ES<1.2, later dynamic scripting is disabled by default, so no mvel
+      (testing "update with mvel script and params"
+        (let [orig (doc/get conn index-name index-type id)]
+          (doc/update-with-script conn index-name index-type id
+                                  "ctx._source.age = ctx._source.age + timespan" {:timespan 1})
+          (idx/refresh conn index-name)
+          (is (= (-> orig :_source :age inc)
+                 (-> (doc/get conn index-name index-type id) :_source  :age)))))
+
+      ;; this works in ES>=1.3 or with lang-groovy plugin, or with ES>=1.4 with dynamic scripting enabled
+      (testing "update with groovy script no params"
+        (let [orig (doc/get conn index-name index-type id)]
+          (doc/update-with-script conn index-name index-type id
+                                  "ctx._source.age = ctx._source.age += 1" {} :lang "groovy")
+          (idx/refresh conn index-name)
+          (is (= (-> orig :_source :age inc)
+                 (-> (doc/get conn index-name index-type id) :_source  :age))))))))
