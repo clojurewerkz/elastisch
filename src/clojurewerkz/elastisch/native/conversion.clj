@@ -49,6 +49,7 @@
            [org.elasticsearch.search.facet.termsstats TermsStatsFacet TermsStatsFacet$Entry]
            [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
            org.elasticsearch.search.facet.query.QueryFacet
+           org.elasticsearch.search.fetch.source.FetchSourceContext
            org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Aggregations
@@ -282,7 +283,7 @@
   ([index mapping-type ^String id]
      (GetRequest. (name index) (name mapping-type) id))
   ([index mapping-type ^String id {:keys [parent preference
-                                          routing fields]}]
+                                          routing fields _source]}]
      (let [gr (GetRequest. (name index) (name mapping-type) id)]
        (when routing
          (.routing gr routing))
@@ -292,6 +293,13 @@
          (.preference gr preference))
        (when fields
          (.fields gr (into-array String fields)))
+       (when _source
+         (let [exclude (when (:exclude _source)
+                         (into-array String (:exclude _source)))
+               include (when (or (not exclude)        ; either include = _source
+                                 (:include _source))  ; or it's given explicitly
+                         (into-array String (:include _source _source)))]
+           (.fetchSourceContext gr (FetchSourceContext. include exclude))))
        gr)))
 
 (defn- convert-source-result

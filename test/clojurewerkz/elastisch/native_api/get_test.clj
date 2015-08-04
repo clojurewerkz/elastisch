@@ -30,6 +30,48 @@
     (doc/put conn index-name mapping-type "1" fx/person-jack)
     (is (doc/present? conn index-name mapping-type "1")))
 
+  (deftest ^{:native true} test-source-property
+    (let [index-name "tweets"
+          mapping-type "tweet"
+          id "1"
+          tweet fx/tweet1]
+        (doc/put conn index-name mapping-type id tweet)
+        (is (doc/present? conn index-name mapping-type id))
+        (testing "get without specifying source property"
+          (is (= tweet (:_source (doc/get conn index-name id)))))
+
+        (testing "get with specifying unnested _source properties"
+          (is (= (select-keys tweet [:username])
+                 (doc/get conn index-name id :_source ["username"])))
+          (is (= (select-keys tweet [:username :timestamp])
+                 (doc/get conn index-name id :_source ["username" "timestamp"])))
+          (is (= (select-keys tweet [:username :timestamp])
+                 (doc/get conn index-name id :_source ["username" "timestamp"]))))
+
+        (testing "get with specifying nested _source properties"
+          (is (= {:username (:username tweet) :location (select-keys (:location tweet) [:country])}
+                 (doc/get conn index-name id :_source ["username" "location.country"])))
+          (is (= {:username (:username tweet) :location (select-keys (:location tweet) [:country :state])}
+                 (doc/get conn index-name id :_source ["username" "location.country" "location.state"]))))
+
+        (testing "get with specifying _source properties via :include"
+          (is (= {:username (:username tweet) :location (select-keys (:location tweet) [:country])}
+                 (doc/get conn index-name id :_source {:include ["username" "location.country"]})))
+          (is (= {:username (:username tweet) :location (select-keys (:location tweet) [:country :state])}
+                 (doc/get conn index-name id :_source {:include ["username" "location.country" "location.state"]})))
+          (is (= {:username (:username tweet) :location (select-keys (:location tweet) [:country])}
+                 (doc/get conn index-name id :_source {:include ["username" "location.country"]})))
+          (is (= {:username (:username tweet) :location (select-keys (:location tweet) [:country :state])}
+                 (doc/get conn index-name id :_source {:include ["username" "location.country" "location.state"]}))))
+
+        (testing "get with specifying exclude _source"
+          (is (= (dissoc tweet [:username :timestamp])
+                 (doc/get conn index-name id :_source {:exclude ["username" "timestamp"]})))
+          (is (= (-> tweet
+                     (dissoc [:username])
+                     (update-in [:location] #(dissoc % :country)))
+                 (doc/get conn index-name id :_source {:exclude ["username" "location.country"]})))) ))
+
   (deftest ^{:native true} multi-get-test
     (doc/put conn index-name mapping-type "1" fx/person-jack)
     (doc/put conn index-name mapping-type "2" fx/person-mary)
