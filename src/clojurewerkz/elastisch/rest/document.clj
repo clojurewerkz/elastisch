@@ -200,7 +200,7 @@
    (doc/search conn \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [^Connection conn index mapping-type & args]
   (let [opts (ar/->opts args)
-        qk   [:search_type :scroll :routing :preference]
+        qk   [:search_type :scroll :routing :preference :ignore_unavailable]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
     (rest/post conn (rest/search-url conn
@@ -213,7 +213,7 @@
   "Performs a search query across one or more indexes and all mapping types."
   [^Connection conn index & args]
   (let [opts (ar/->opts args)
-        qk   [:search_type :scroll :routing :preference]
+        qk   [:search_type :scroll :routing :preference :ignore_unavailable]
         qp   (select-keys opts qk)
         body (apply dissoc (concat [opts] qk))]
     (rest/post conn (rest/search-url conn
@@ -301,7 +301,7 @@
   ([^Connection conn index mapping-type query & args]
      (rest/post conn (rest/count-url conn
                                      (join-names index) (join-names mapping-type))
-                {:query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator])
+                {:query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator :ignore_unavailable])
                  :body {:query query}})))
 
 (def ^{:doc "Optional parameters that all query-based delete functions share"
@@ -317,7 +317,7 @@
   ([^Connection conn index mapping-type query & args]
      (rest/delete conn (rest/delete-by-query-url conn
                                                  (join-names index) (join-names mapping-type))
-                  {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
+                  {:query-params (select-keys (ar/->opts args) (conj optional-delete-query-parameters :ignore_unavailable))
                    :body {:query query}})))
 
 (defn delete-by-query-across-all-types
@@ -328,7 +328,7 @@
   ([^Connection conn index query & args]
      (rest/delete conn (rest/delete-by-query-url conn
                                                  (join-names index))
-                  {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
+                  {:query-params (select-keys (ar/->opts args) (conj optional-delete-query-parameters :ignore_unavailable))
                    :body {:query query}})))
 
 (defn delete-by-query-across-all-indexes-and-types

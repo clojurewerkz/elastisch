@@ -101,4 +101,16 @@
                                               :sort    (q/sort "surname"
                                                                {:order "asc"
                                                                 :ignore-unmapped true})))]
-      (is (= 4 (count hits))))))
+      (is (= 4 (count hits)))))
+
+  (deftest ^{:rest true} test-ignore-unavailable
+    (let [index-name   "people"
+          missing-index-name "foo"
+          mapping-type "person"]
+      (is (= 4 (count (hits-from (doc/search conn [index-name,missing-index-name] 
+                                             mapping-type
+                                             :query   (q/match-all))))))
+      (is (thrown? Exception 
+                   (doc/search conn [index-name,missing-index-name]
+                               mapping-type
+                               :query   (q/match-all)))))))
