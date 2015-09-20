@@ -206,7 +206,7 @@
 ;;
 
 (defn ^TransportAddress ->socket-transport-address
-  [^String host ^{:tag 'long} port]
+  [^String host ^{:tag "long"} port]
   (InetSocketTransportAddress. host port))
 
 (defn ^TransportAddress ->local-transport-address
@@ -416,9 +416,9 @@
        (when routing
          (.routing ^DeleteRequest r ^String routing))
        (when refresh
-         (.refresh ^DeleteRequest r ^{:tag 'boolean} refresh))
+         (.refresh ^DeleteRequest r ^{:tag "boolean"} refresh))
        (when version
-         (.version ^DeleteRequest r ^{:tag 'long} version))
+         (.version ^DeleteRequest r ^{:tag "long"} version))
        (when version-type
          (.versionType ^DeleteRequest r version-type))
        (when parent
@@ -630,9 +630,9 @@
     (when highlight_filter
       (.highlightFilter fd highlight_filter))
     (when fragment_size
-      (.fragmentSize fd ^{:tag 'integer} fragment_size))
+      (.fragmentSize fd ^{:tag "int"} fragment_size))
     (when number_of_fragments
-      (.numOfFragments fd ^{:tag 'integer} number_of_fragments))
+      (.numOfFragments fd ^{:tag "int"} number_of_fragments))
     (when require_field_match
       (.requireFieldMatch fd require_field_match))
     (when boundary_max_scan
@@ -668,9 +668,9 @@
     (when highlight_filter
       (.highlightFilter hb highlight_filter))
     (when fragment_size
-      (.fragmentSize hb ^{:tag 'integer} fragment_size))
+      (.fragmentSize hb ^{:tag "int"} fragment_size))
     (when number_of_fragments
-      (.numOfFragments hb ^{:tag 'integer} number_of_fragments))
+      (.numOfFragments hb ^{:tag "int"} number_of_fragments))
     (when encoder
       (.encoder hb encoder))
     (when require_field_match
@@ -789,27 +789,27 @@
     (when-let [xs (or mlt_fields fields)]
       (.fields r (->string-array xs)))
     (when-let [v (or percent-terms-to-match percent_terms_to_match)]
-      (.percentTermsToMatch r ^{:tag 'float} v))
+      (.percentTermsToMatch r ^{:tag "float"} v))
     (when-let [v (or max-query-terms max_query_terms)]
-      (.maxQueryTerms r ^{:tag 'integer} v))
+      (.maxQueryTerms r ^{:tag "int"} v))
     (when-let [v (or stop-words stop_words)]
       (.stopWords r (->string-array v)))
     (when-let [v (or min-doc-freq min_doc_freq)]
-      (.minDocFreq r ^{:tag 'integer} v))
+      (.minDocFreq r ^{:tag "int"} v))
     (when-let [v (or min-word-len min_word_len)]
-      (.minWordLen r ^{:tag 'integer} v))
+      (.minWordLen r ^{:tag "int"} v))
     (when-let [v (or max-word-len max_word_len)]
-      (.maxWordLen r ^{:tag 'integer} v))
+      (.maxWordLen r ^{:tag "int"} v))
     (when-let [v (or boost-terms boost_terms)]
-      (.boostTerms r ^{:tag 'float} v))
+      (.boostTerms r ^{:tag "float"} v))
     (when-let [q (or query source)]
       (.searchSource r ^Map (wlk/stringify-keys q)))
     (when-let [v (or search-type search_type)]
       (.searchType r ^String v))
     (when size
-      (.searchSize r ^{:tag 'integer} size))
+      (.searchSize r ^{:tag "int"} size))
     (when from
-      (.searchFrom r ^{:tag 'integer} from))
+      (.searchFrom r ^{:tag "int"} from))
     r))
 
 (defn ^:private highlight-field-to-map
@@ -1004,9 +1004,9 @@
   [^Range$Bucket b]
   (merge-sub-aggregations
    {:doc_count (.getDocCount b)
-    :from_as_string (String/valueOf ^{:tag 'long} (.. b getFrom longValue))
+    :from_as_string (String/valueOf ^{:tag "long"} (.. b getFrom longValue))
     :from (.. b getFrom longValue)
-    :to_as_string (String/valueOf ^{:tag 'long} (.. b getTo longValue))
+    :to_as_string (String/valueOf ^{:tag "long"} (.. b getTo longValue))
     :to (.. b getTo longValue)}
    b))
 
@@ -1298,9 +1298,9 @@
   (let [ary (->string-array index-name)
         r   (OptimizeRequest. ary)]
     (when max-num-segments
-      (.maxNumSegments r ^{:tag 'integer} max-num-segments))
+      (.maxNumSegments r ^{:tag "int"} max-num-segments))
     (when only-expunge-deletes
-      (.onlyExpungeDeletes r ^{:tag 'boolean} only-expunge-deletes))
+      (.onlyExpungeDeletes r ^{:tag "boolean"} only-expunge-deletes))
     (when flush
       (.flush r flush))
     r))
@@ -1310,9 +1310,9 @@
   (let [ary (->string-array index-name)
         r   (FlushRequest. ary)]
     (when force
-      (.force r ^{:tag 'boolean} force))
+      (.force r ^{:tag "boolean"} force))
     (when wait-if-ongoing
-      (.waitIfOngoing r ^{:tag 'boolean} wait-if-ongoing))
+      (.waitIfOngoing r ^{:tag "boolean"} wait-if-ongoing))
     r))
 
 (defn ^RefreshRequest ->refresh-index-request
