@@ -34,7 +34,7 @@ For example:
 
 (doc/search conn index type
             {:query (q/query-string :query "software" :default_field "summary")
-             :sort  (q/sort "unmapped-field-name" {:ignore-unmapped true
+             :sort  (q/sort "unmapped-field-name" {:ignore_unmapped true
                                                    :order "asc"})})
 ```
 
