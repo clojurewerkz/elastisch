@@ -40,6 +40,25 @@ For example:
 
 Contributed by @ryfow
 
+### allow setting `:ignore_unmapped` in query sort instructions
+
+In both native and rest apis, `:ignore-unmapped` may be set in the query by specifying
+a sort field-name and option-map instead of order name with the `query/sort` function.
+For example:
+
+
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
+(require '[clojurewerkz.elastisch.query :as q])
+
+(doc/search conn [index-name missing-index-name] 
+                                             mapping-type
+                                             :query   (q/match-all)
+                                             :ignore_unavailable true)
+```
+
+Contributed by Joachim De Beule.
+
 ### `scan-and-scroll-seq` helper
 
 `scan-and-scroll-seq` provides an easier-to-use abstraction over ES's
