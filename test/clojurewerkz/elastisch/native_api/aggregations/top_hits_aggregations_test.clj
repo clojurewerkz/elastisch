@@ -1,4 +1,4 @@
-(ns clojurewerkz.elastisch.native-api.aggregations.avg-aggregation-test
+(ns clojurewerkz.elastisch.native-api.aggregations.top-hits-aggregations-test
   (:require [clojurewerkz.elastisch.native.document :as doc]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.aggregation   :as a]
