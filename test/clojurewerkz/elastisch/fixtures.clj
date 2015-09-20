@@ -84,6 +84,10 @@
                          :country      {:type "string"}
                          :biography    {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
 
+(def passport-mapping
+  {:passport {:properties {:id {:type "string" :store "yes"}}
+              :_parent {:type "person"}}})
+
 
 
 ;;

@@ -41,15 +41,14 @@
   (deftest test-upserting-document-with-parent
     (let [index-name "people"
           index-type "person"
+          child-index-name "passports"
+          child-index-type "passport"
           id         "3"
           new-bio    "Such a brilliant person"]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name  :mappings fx/people-mapping)
+      (idx/create conn child-index-name :mappings fx/passport-mapping)
       (doc/put conn index-name index-type "1" fx/person-jack)
-      (is (no-hits?  (doc/search conn index-name index-type {:query (q/term :biography "nice")})))
-      (is (no-hits?  (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})))
-      (doc/upsert conn index-name index-type id (assoc fx/person-joe :biography new-bio) {:parent "1"})
-      (idx/refresh conn index-name)
-      (is (any-hits?  (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})))))
+      (doc/upsert conn child-index-name child-index-type "123000456000" {"id" "123000456000"} {:parent "1"})))
 
   (deftest test-upserting-document-with-retry-on-conflict
     (let [index-name "people"
