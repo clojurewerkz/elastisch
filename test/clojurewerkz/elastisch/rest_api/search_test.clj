@@ -107,10 +107,11 @@
     (let [index-name   "people"
           missing-index-name "foo"
           mapping-type "person"]
-      (is (= 4 (count (hits-from (doc/search conn [index-name,missing-index-name] 
+      (is (= 4 (count (hits-from (doc/search conn [index-name missing-index-name] 
                                              mapping-type
-                                             :query   (q/match-all))))))
+                                             :query   (q/match-all)
+                                             :ignore_unavailable true)))))
       (is (thrown? Exception 
-                   (doc/search conn [index-name,missing-index-name]
+                   (doc/search conn [index-name missing-index-name]
                                mapping-type
                                :query   (q/match-all)))))))
