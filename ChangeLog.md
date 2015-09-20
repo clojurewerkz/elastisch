@@ -1,4 +1,4 @@
-## Changes between Elastisch 2.2.0-beta4 and 2.2.0-beta5
+## Changes between Elastisch 2.1.x and 2.2.0
 
 ### Fixed `update-with-script` in Native Client
 
@@ -67,15 +67,13 @@ special-case first request.
 
 Contributed by @loganmhb
 
-## Changes between Elastisch 2.2.0-beta3 and 2.2.0-beta4
-
 ### ElasticSearch Java Client Upgrade
 
 Elastisch now depends on ElasticSearch Java client version `1.5.x`.
 
 ### clj-http Update
 
-[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `1.1.x`.
+[clj-http](https://github.com/dakrone/clj-http/) dependency has been upgraded to version `2.0.x`.
 
 ### Better support for plural/single indices and aliases in native update-aliases
 
@@ -91,8 +89,6 @@ Previously only mappings allowed keys to be keywords, now same works with index 
 
 Contributed by @mnylen
 
-## Changes between Elastisch 2.2.0-beta2 and 2.2.0-beta3
-
 ### Support for Large Scroll IDs
 
 Elastisch now supports scroll IDs larger than 4 KB.
@@ -100,8 +96,6 @@ Elastisch now supports scroll IDs larger than 4 KB.
 
 Contributed by niko.
 
-
-## Changes between Elastisch 2.2.0-beta1 and 2.2.0-beta2
 
 ### Bulk Operation Support in Native Client
 
@@ -123,10 +117,6 @@ Contributed by Stephen Muss.
 ### Guava Excluded From Dependencies
 
 Contributed by Jan Stępień (Stylefruits).
-
-
-
-## Changes between Elastisch 2.1.x and 2.2.0-beta1
 
 ## Add support for Nested Aggregations in the Native Client
 
