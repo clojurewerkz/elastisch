@@ -109,7 +109,7 @@
 ;; Implementation
 ;;
 
-(defn ^"[Ljava.lang.String;" ->string-array
+(defn ^{:tag "[Ljava.lang.String;"} ->string-array
   "Coerces argument to an array of strings"
   [index-name]
   (if (coll? index-name)
@@ -206,7 +206,7 @@
 ;;
 
 (defn ^TransportAddress ->socket-transport-address
-  [^String host ^long port]
+  [^String host ^{:tag 'long} port]
   (InetSocketTransportAddress. host port))
 
 (defn ^TransportAddress ->local-transport-address
@@ -294,9 +294,9 @@
        (when fields
          (.fields gr (into-array String fields)))
        (when _source
-         (let [exclude (when (:exclude _source)
-                         (into-array String (:exclude _source)))
-               include (when (or (not exclude)        ; either include = _source
+         (let [^{:tag "[Ljava.lang.String;"} exclude (when (:exclude _source)
+                             (into-array String (:exclude _source)))
+               ^{:tag "[Ljava.lang.String;"} include (when (or (not exclude)        ; either include = _source
                                  (:include _source))  ; or it's given explicitly
                          (into-array String (:include _source _source)))]
            (.fetchSourceContext gr (FetchSourceContext. include exclude))))
@@ -414,11 +414,11 @@
   ([index-name mapping-type id {:keys [routing refresh version version-type parent]}]
      (let [r (DeleteRequest. (name index-name) (name mapping-type) id)]
        (when routing
-         (.routing ^DeleteRequest r routing))
+         (.routing ^DeleteRequest r ^String routing))
        (when refresh
-         (.refresh ^DeleteRequest r refresh))
+         (.refresh ^DeleteRequest r ^{:tag 'boolean} refresh))
        (when version
-         (.version ^DeleteRequest r version))
+         (.version ^DeleteRequest r ^{:tag 'long} version))
        (when version-type
          (.versionType ^DeleteRequest r version-type))
        (when parent
@@ -480,7 +480,7 @@
        (when retry-on-conflict
          (.retryOnConflict r retry-on-conflict))
        (when routing
-         (.routing r routing))
+         (.routing r ^String routing))
        (when parent
          (.parent r parent))
        (when fields
@@ -498,7 +498,7 @@
        (when retry-on-conflict
          (.retryOnConflict r retry-on-conflict))
        (when routing
-         (.routing r routing))
+         (.routing r ^String routing))
        (when parent
          (.parent r parent))
        (when fields
@@ -630,9 +630,9 @@
     (when highlight_filter
       (.highlightFilter fd highlight_filter))
     (when fragment_size
-      (.fragmentSize fd (Integer/valueOf ^long fragment_size)))
+      (.fragmentSize fd ^{:tag 'integer} fragment_size))
     (when number_of_fragments
-      (.numOfFragments fd (Integer/valueOf ^long number_of_fragments)))
+      (.numOfFragments fd ^{:tag 'integer} number_of_fragments))
     (when require_field_match
       (.requireFieldMatch fd require_field_match))
     (when boundary_max_scan
@@ -668,9 +668,9 @@
     (when highlight_filter
       (.highlightFilter hb highlight_filter))
     (when fragment_size
-      (.fragmentSize hb (Integer/valueOf ^long fragment_size)))
+      (.fragmentSize hb ^{:tag 'integer} fragment_size))
     (when number_of_fragments
-      (.numOfFragments hb (Integer/valueOf ^long number_of_fragments)))
+      (.numOfFragments hb ^{:tag 'integer} number_of_fragments))
     (when encoder
       (.encoder hb encoder))
     (when require_field_match
@@ -789,27 +789,27 @@
     (when-let [xs (or mlt_fields fields)]
       (.fields r (->string-array xs)))
     (when-let [v (or percent-terms-to-match percent_terms_to_match)]
-      (.percentTermsToMatch r (Float/valueOf ^double v)))
+      (.percentTermsToMatch r ^{:tag 'float} v))
     (when-let [v (or max-query-terms max_query_terms)]
-      (.maxQueryTerms r (Integer/valueOf ^long v)))
+      (.maxQueryTerms r ^{:tag 'integer} v))
     (when-let [v (or stop-words stop_words)]
       (.stopWords r (->string-array v)))
     (when-let [v (or min-doc-freq min_doc_freq)]
-      (.minDocFreq r (Integer/valueOf ^long v)))
+      (.minDocFreq r ^{:tag 'integer} v))
     (when-let [v (or min-word-len min_word_len)]
-      (.minWordLen r (Integer/valueOf ^long v)))
+      (.minWordLen r ^{:tag 'integer} v))
     (when-let [v (or max-word-len max_word_len)]
-      (.maxWordLen r (Integer/valueOf ^long v)))
+      (.maxWordLen r ^{:tag 'integer} v))
     (when-let [v (or boost-terms boost_terms)]
-      (.boostTerms r (Float/valueOf ^double v)))
+      (.boostTerms r ^{:tag 'float} v))
     (when-let [q (or query source)]
       (.searchSource r ^Map (wlk/stringify-keys q)))
     (when-let [v (or search-type search_type)]
       (.searchType r ^String v))
     (when size
-      (.searchSize r (Integer/valueOf ^long size)))
+      (.searchSize r ^{:tag 'integer} size))
     (when from
-      (.searchFrom r (Integer/valueOf ^long from)))
+      (.searchFrom r ^{:tag 'integer} from))
     r))
 
 (defn ^:private highlight-field-to-map
@@ -1004,9 +1004,9 @@
   [^Range$Bucket b]
   (merge-sub-aggregations
    {:doc_count (.getDocCount b)
-    :from_as_string (String/valueOf ^long (.. b getFrom longValue))
+    :from_as_string (String/valueOf ^{:tag 'long} (.. b getFrom longValue))
     :from (.. b getFrom longValue)
-    :to_as_string (String/valueOf ^long (.. b getTo longValue))
+    :to_as_string (String/valueOf ^{:tag 'long} (.. b getTo longValue))
     :to (.. b getTo longValue)}
    b))
 
@@ -1204,7 +1204,7 @@
 
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
-  (let [r (CreateIndexRequest. index-name)
+  (let [r (CreateIndexRequest. ^String index-name)
         s (wlk/stringify-keys settings)
         m (wlk/stringify-keys mappings)]
     (when settings
@@ -1294,27 +1294,25 @@
   (CloseIndexRequest. index-name))
 
 (defn ^OptimizeRequest ->optimize-index-request
-  [index-name {:keys [wait-for-merge max-num-segments only-expunge-deletes flush]}]
+  [index-name {:keys [max-num-segments only-expunge-deletes flush]}]
   (let [ary (->string-array index-name)
         r   (OptimizeRequest. ary)]
-    (when wait-for-merge
-      (.waitForMerge r wait-for-merge))
     (when max-num-segments
-      (.maxNumSegments r max-num-segments))
+      (.maxNumSegments r ^{:tag 'integer} max-num-segments))
     (when only-expunge-deletes
-      (.onlyExpungeDeletes r only-expunge-deletes))
+      (.onlyExpungeDeletes r ^{:tag 'boolean} only-expunge-deletes))
     (when flush
       (.flush r flush))
     r))
 
 (defn ^FlushRequest ->flush-index-request
-  [index-name {:keys [force full]}]
+  [index-name {:keys [force wait-if-ongoing]}]
   (let [ary (->string-array index-name)
         r   (FlushRequest. ary)]
     (when force
-      (.force r force))
-    (when full
-      (.full r full))
+      (.force r ^{:tag 'boolean} force))
+    (when wait-if-ongoing
+      (.waitIfOngoing r ^{:tag 'boolean} wait-if-ongoing))
     r))
 
 (defn ^RefreshRequest ->refresh-index-request
@@ -1360,7 +1358,7 @@
     (when settings
       (.settings r ^Map (wlk/stringify-keys settings)))
     (when indices
-      (.indices r indices))
+      (.indices r ^{:tag "[Ljava.lang.String;"} indices))
     r))
 
 (defn ^DeleteSnapshotRequest ->delete-snapshot-request
