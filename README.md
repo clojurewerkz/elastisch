@@ -78,7 +78,7 @@ The most recent stable release is highly recommended.
 
 ## Supported ElasticSearch Versions
 
-Elastisch 2.1 targets ElasticSearch 1.1+.
+Elastisch 2.1 and 2.2 target ElasticSearch 1.x starting with 1.1.
 
 Elastisch 2.0 **requires** [ElasticSearch 1.x](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
 
