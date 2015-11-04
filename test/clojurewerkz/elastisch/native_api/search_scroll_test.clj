@@ -88,7 +88,7 @@
       (is (= 4 (count (distinct res-seq))))
       (is (= true (realized? res-seq)))))
 
-  (deftest ^{:native true :scroll true} test-scroll-seq
+  (deftest ^{:native true :scroll true} test-scroll-seq-scan
     (let [index-name "articles"
           mapping-type "article"
           res-seq (doc/scroll-seq conn
