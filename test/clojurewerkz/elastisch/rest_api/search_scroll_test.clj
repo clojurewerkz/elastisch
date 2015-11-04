@@ -103,7 +103,7 @@
                                                    :search_type "scan"
                                                    :scroll "1m"
                                                    :size 2)
-                                       :search_type "scan")]
+                                       {:search_type "scan"})]
       (is (not (realized? res-seq)))
       (is (= 4 (count res-seq)))
       (is (= 4 (count (distinct res-seq))))
