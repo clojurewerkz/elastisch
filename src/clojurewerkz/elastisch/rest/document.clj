@@ -248,31 +248,12 @@
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
-  [^Connection conn prev-resp]
+  [^Connection conn prev-resp & {:keys [search_type]}]
   (let [hits      (hits-from prev-resp)
         scroll-id (:_scroll_id prev-resp)]
-    (if (seq hits)
+    (if (or (seq hits) (= search_type "scan"))
       (concat hits (lazy-seq (scroll-seq conn (scroll conn scroll-id :scroll "1m"))))
       hits)))
-
-(defn scan-and-scroll-seq
-  "An abstraction over the scan-and-scroll API. Retrieves the scroll
-   id via an initial scan search, retrieves the first batch of responses
-   using that id, then calls scroll-seq to continue retrieving responses
-   lazily until there are no more hits."
-  [^Connection conn index doc-type & args]
-  (let [opts              (ar/->opts args)
-        query             (merge opts
-                                 {:scroll "1m"})
-        initial-scroll-id (->> (merge {:size 1000}
-                                      query
-                                      {:search_type "scan"})
-                               (search conn index doc-type)
-                               :_scroll_id)
-        first-resp        (scroll conn
-                                  initial-scroll-id
-                                  query)]
-    (scroll-seq conn first-resp)))
 
 (defn replace
   "Replaces document with given id with a new one"
