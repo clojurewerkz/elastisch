@@ -94,6 +94,21 @@
       (is (= 4 (count (distinct res-seq))))
       (is (realized? res-seq))))
 
+  (deftest ^{:rest true :scroll true} test-scroll-seq-scan
+    (let [index-name   "articles"
+          mapping-type "article"
+          res-seq      (doc/scroll-seq conn
+                                       (doc/search conn index-name mapping-type
+                                                   :query (q/match-all)
+                                                   :search_type "scan"
+                                                   :scroll "1m"
+                                                   :size 2)
+                                       {:search_type "scan"})]
+      (is (not (realized? res-seq)))
+      (is (= 4 (count res-seq)))
+      (is (= 4 (count (distinct res-seq))))
+      (is (realized? res-seq))))
+
   (deftest ^{:rest true :scroll true} test-scroll-seq-with-no-results
     (let [index-name   "articles"
           mapping-type "article"
@@ -104,15 +119,4 @@
                                                    :scroll "1m"
                                                    :size 2))]
       (is (= 0 (count res-seq)))
-      (is (coll? res-seq))))
-
-  (deftest ^{:rest true :scroll true} test-scan-and-scroll-seq
-    (let [index-name   "articles"
-          mapping-type "article"
-          res-seq       (doc/scan-and-scroll-seq conn index-name mapping-type
-                                                 :query (q/match-all)
-                                                 :size 2)]
-      (is (not (realized? res-seq)))
-      (is (= 4 (count res-seq)))
-      (is (= 4 (count (distinct res-seq))))
-      (is (realized? res-seq)))))
+      (is (coll? res-seq)))))
