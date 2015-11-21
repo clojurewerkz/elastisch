@@ -26,6 +26,7 @@
            org.elasticsearch.action.delete.DeleteResponse
            org.elasticsearch.action.deletebyquery.DeleteByQueryResponse
            org.elasticsearch.action.search.SearchResponse
+           [org.elasticsearch.action.suggest SuggestResponse]
            java.util.Map))
 
 (defn ^IPersistentMap create
@@ -377,6 +378,76 @@
 (defn more-like-this
   "Performs a More Like This (MLT) query."
   [^Client conn index mapping-type id & args]
-  (let [ft                  (es/more-like-this conn (cnv/->more-like-this-request index mapping-type id (ar/->opts args)))
+  (let [ft (es/more-like-this conn (cnv/->more-like-this-request index mapping-type id (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
+
+
+(defn suggest
+  "suggests similar looking terms based on a provided text by using a suggester.
+  Usage:
+  an curl example:
+  curl -X POST 'http://192.168.99.100:9200/locations/_suggest?pretty' \\
+    -d '{\"hits\": {\"text\": \"Stockh\", 
+                    \"completion\": {\"field\": \"suggest\",
+                                     \"size\" : 3}}}'
+  translates to:
+  (suggest es-conn \"locations\" :completion \"Stockh\" {:field \"suggest\" :size 5})"
+  [^Client conn, indices, ^clojure.lang.Keyword suggest-type, ^String term, ^IPersistentMap opts]
+  (let [;req (cnv/->suggest-request indices suggest-type term opts)
+        ;ft (es/suggest ^Client conn ^SuggestRequest req) ;for 2.0, 1.7 returns empty result
+        q (cnv/->suggest-query suggest-type term opts)
+        req (.prepareSuggest conn (cnv/->string-array indices))
+        _ (.addSuggestion req q)
+        res (.. req (execute) (actionGet))]
+    (cnv/suggest-response->seq res)))
+
+
+(comment
+  
+ (require '[clojurewerkz.elastisch.native :as es] :reload-all)
+
+ (def conn (es/connect [["192.168.99.100" 9300]]
+                       {"cluster.name" "skillable_search_dev"})) 
+ 
+  (require '[clojurewerkz.elastisch.native.document :as es-doc] :reload-all)
+  (require '[clojurewerkz.elastisch.native.conversion :as es-conv] :reload)
+
+  (def query  (es-conv/->suggest-query :completion "Stock" {}))
+  (.toMap query)
+
+  (.toString query)
+  (def req (es-conv/->suggest-request "locations" :completion "Stock" {:field "suggest"}))
+  (.toString req)
+  (.validate req)
+  (.param req "field") 
+  (def ft (.suggest conn req))
+  (def res (.actionGet ft))
+  (.toString res)
+
+  (def req-builder (.prepareSuggest conn (es-conv/->string-array "locations")))
+  (.addSuggestion req-builder query)
+  (def resp (.. req-builder (execute) (actionGet)))
+
+  (.close conn)
+  (def resp (es-doc/suggest conn "locations" :completion "stock" {:field "suggest"}))
+  (.getSuggest resp)
+  (.toString resp)
+
+  (.getTotalShards resp)
+
+  (def sugg (.getSuggest resp))
+
+  (first sugg)
+  (.size sugg)
+  
+  (import '[org.elasticsearch.search.suggest SuggestBuilder])
+  (def req-builder (SuggestBuilder.))
+  (.addSuggestion query)
+
+  (import '[org.elasticsearch.action.suggest SuggestRequest])
+  (def req (SuggestRequest. (es-conv/->string-array "locations")))
+  (.suggest req req-builder)
+
+  (es/suggest conn req)
+  )

@@ -14,7 +14,10 @@
             [clojure.test :refer :all]
             [clojurewerkz.elastisch.rest.response :refer [created?]]))
 
-(def conn (es/connect))
+(def es-url (or (System/getenv "ES_URL")
+                "http://127.0.0.1:9200"))
+
+(def conn (es/connect es-url))
 
 (defn reset-indexes*
   []
@@ -73,6 +76,30 @@
    :country    "Uruguay"
    :signed_up_at "2012-03-11T02:00:00"})
 
+(def suggest-jack
+  {:username (:username person-jack)
+   :suggest {:input (:username person-jack)
+             :output (:username person-jack)
+             :payload person-jack}})
+
+(def suggest-joe
+  {:username (:username person-joe)
+   :suggest {:input (:username person-joe)
+             :output (:username person-joe)
+             :payload person-joe}})
+
+(def suggest-mary
+  {:username (:username person-mary)
+   :suggest {:input (:username person-mary)
+             :output (:username person-mary)
+             :payload person-mary}})
+
+(def suggest-tony
+  {:username (:username person-tony)
+   :suggest {:input (:username person-tony)
+             :output (:username person-tony)
+             :payload person-tony}})
+
 (def people-mapping
   {:person {:properties {:username     {:type "string" :store "yes"}
                          :first-name   {:type "string" :store "yes"}
@@ -83,6 +110,13 @@
                          :planet       {:type "string"}
                          :country      {:type "string"}
                          :biography    {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
+
+(def people-suggestion-mapping
+  {:person {:properties {:username {:type "string"}
+                         :suggest {:type "completion"
+                                   :index_analyzer "simple"
+                                   :search_analyzer "simple"
+                                   :payloads true}}}})
 
 (def passport-mapping
   {:passport {:properties {:id {:type "string" :store "yes"}}
@@ -246,6 +280,21 @@
     (is (created? (doc/put conn index-name mapping-type "3" tweet3)))
     (is (created? (doc/put conn index-name mapping-type "4" tweet4)))
     (is (created? (doc/put conn index-name mapping-type "5" tweet5)))
+
+    (idx/refresh conn index-name)
+    (f)))
+
+(defn prepopulate-people-suggestion
+  [f]
+  (let [index-name "people"
+        mapping-type "person"]
+    (idx/create conn index-name :mappings people-suggestion-mapping)
+    ;; seeds suggestion data
+    (is (created? (doc/put conn index-name mapping-type "1" suggest-jack)))
+    (is (created? (doc/put conn index-name mapping-type "2" suggest-mary)))
+    (is (created? (doc/put conn index-name mapping-type "3" suggest-joe)))
+    (is (created? (doc/put conn index-name mapping-type "4" suggest-tony)))
+   
 
     (idx/refresh conn index-name)
     (f)))

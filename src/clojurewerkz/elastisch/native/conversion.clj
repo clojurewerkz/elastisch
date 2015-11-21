@@ -14,7 +14,8 @@
 
 (ns clojurewerkz.elastisch.native.conversion
   (:refer-clojure :exclude [get merge flush])
-  (:require [clojure.walk :as wlk])
+  (:require [clojure.walk :as wlk]
+            [cheshire.core :as json])
   (:import [org.elasticsearch.common.settings Settings ImmutableSettings ImmutableSettings$Builder]
            [org.elasticsearch.common.transport
             TransportAddress InetSocketTransportAddress LocalTransportAddress]
@@ -37,6 +38,12 @@
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest
             MultiSearchRequestBuilder MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item]
+           [org.elasticsearch.action.suggest SuggestRequest SuggestResponse]
+           [org.elasticsearch.search.suggest.completion CompletionSuggestionBuilder
+                                                        CompletionSuggestionFuzzyBuilder]
+           ;[org.elastisearch.search.suggest.phrase PhraseSuggestionBuilder]
+           [org.elasticsearch.search.suggest.term TermSuggestionBuilder]
+
            [org.elasticsearch.search.builder SearchSourceBuilder]
            [org.elasticsearch.search.sort SortBuilder SortOrder FieldSortBuilder]
            [org.elasticsearch.search SearchHits SearchHit]
@@ -812,6 +819,26 @@
       (.searchFrom r ^{:tag "int"} from))
     r))
 
+;; TODO: add more builders - fuzzy and term
+(defmulti ->suggest-query (fn [qtype _ _] qtype))
+(defmethod ^CompletionSuggestionBuilder ->suggest-query :completion
+  [qtype term {:keys [field size analyzer]
+               :or {field "suggest"}}]
+  "builds a suggestion query object for simple autocomplete"
+  (let [query (doto (CompletionSuggestionBuilder. "hits")
+                (.text ^String term)
+                (.field ^String field))]
+    (when size (.size query size))
+    (when analyzer (.analyzer query analyzer))
+    query))
+
+(defn ^SuggestRequest ->suggest-request
+  "builds suggestion requests"
+  [indices suggest-type term opts]
+  (let [query (->suggest-query suggest-type term opts)
+        req (SuggestRequest. (->string-array indices))]
+      (.suggest req query)))
+
 (defn ^:private highlight-field-to-map
   [^HighlightField hlf]
   {})
@@ -1163,6 +1190,28 @@
     (if (seq (.getAggregations r))
       (clojure.core/merge m {:aggregations (aggregations-to-map (. r getAggregations))})
       m)))
+
+(defn suggest-response->seq
+  [^SuggestResponse r]
+  ;; Example REST API response
+  ;;{"_shards" : {
+  ;; "total" : 5,
+  ;; "successful" : 5,
+  ;; "failed" : 0 },
+  ;; "hits" : [ {
+  ;;  "text" : "Stock",
+  ;;  "offset" : 0,
+  ;;  "length" : 5,
+  ;;  "options" : [ {
+  ;;    "text" : "Stockby,Stockholm",
+  ;;    "score" : 1.0,
+  ;;    "payload":{"id":2673749,"city":"Stockby","region":"Stockholm","country":"Sweden","latitude":59.33333,"longitude":17.68333}}]}...
+  (let [results (json/parse-string  (.toString r) true)]
+    {:_shards {:total      (.getTotalShards r)
+               :successful (.getSuccessfulShards r)
+               :failed     (.getFailedShards r)}
+     :hits (:hits results)}))
+
 
 (defn multi-search-response->seq
   [^MultiSearchResponse r]
