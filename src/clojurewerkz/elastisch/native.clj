@@ -31,6 +31,7 @@
             MultiSearchRequest]
            org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
+           [org.elasticsearch.action.suggest SuggestRequest]
            ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -119,6 +120,11 @@
   "Executes a more-like-this action request"
   [^Client conn ^PercolateRequest req]
   (.percolate ^Client conn req))
+
+(defn ^ActionFuture suggest
+  "Executes a suggestion action request"
+  [^Client conn, ^SuggestRequest req]
+  (.suggest ^Client conn req))
 
 
 ;;

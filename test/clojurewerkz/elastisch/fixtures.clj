@@ -14,7 +14,10 @@
             [clojure.test :refer :all]
             [clojurewerkz.elastisch.rest.response :refer [created?]]))
 
-(def conn (es/connect))
+(def es-url (or (System/getenv "ES_URL")
+                "http://127.0.0.1:9200"))
+
+(def conn (es/connect es-url))
 
 (defn reset-indexes*
   []
@@ -40,6 +43,7 @@
    :biography  "Tries to avoid eating fat, being good to other people and does sports every now and then"
    :planet     "Earth"
    :age 22
+   :gender      "male"
    :signed_up_at "2012-03-31T08:12:37"})
 
 (def person-joe
@@ -50,6 +54,7 @@
    :biography  "Quite a nice guy"
    :planet     "Earth"
    :age 37
+   :gender      "male"
    :signed_up_at "2012-02-28T23:02:03"})
 
 (def person-mary
@@ -60,18 +65,44 @@
    :biography  "Writes copy and copies writes"
    :planet     "Earth"
    :age 28
+   :gender      "female"
    :signed_up_at "2012-02-27T12:34:53"})
 
 (def person-tony
-  {:username   "estony"
-   :first-name "Tony"
-   :last-name  "Hall"
-   :title      "Yak Shaver"
-   :biography  "yak/reduce all day long"
-   :planet     "Earth"
+  {:username    "estony"
+   :first-name  "Tony"
+   :last-name   "Hall"
+   :title       "Yak Shaver"
+   :biography   "yak/reduce all day long"
+   :planet      "Earth"
    :age 29
-   :country    "Uruguay"
+   :country     "Uruguay"
+   :gender      "female"
    :signed_up_at "2012-03-11T02:00:00"})
+
+(def suggest-jack
+  {:username (:username person-jack)
+   :suggest {:input (:username person-jack)
+             :output (:username person-jack)
+             :payload person-jack}})
+
+(def suggest-joe
+  {:username (:username person-joe)
+   :suggest {:input (:username person-joe)
+             :output (:username person-joe)
+             :payload person-joe}})
+
+(def suggest-mary
+  {:username (:username person-mary)
+   :suggest {:input (:username person-mary)
+             :output (:username person-mary)
+             :payload person-mary}})
+
+(def suggest-tony
+  {:username (:username person-tony)
+   :suggest {:input (:username person-tony)
+             :output (:username person-tony)
+             :payload person-tony}})
 
 (def people-mapping
   {:person {:properties {:username     {:type "string" :store "yes"}
@@ -83,6 +114,33 @@
                          :planet       {:type "string"}
                          :country      {:type "string"}
                          :biography    {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
+
+(def people-suggestion-mapping
+  {:person {:properties {:username {:type "string"}
+                         :suggest {:type "completion"
+                                   :index_analyzer "simple"
+                                   :search_analyzer "simple"
+                                   :payloads true}}}})
+
+(def people-suggestion-gender-context-mapping
+  {:person {:properties {:username {:type "string"}
+                         :suggest {:type "completion"
+                                   :index_analyzer "simple"
+                                   :search_analyzer "simple"
+                                   :payloads true
+                                   :context {:gender {:type "category"
+                                                      :default ["male" "female"]}}}}}})
+(def people-suggestion-location-context-mapping
+  {:person {:properties {:username {:type "string"}
+                         :suggest {:type "completion"
+                                   :index_analyzer "simple"
+                                   :search_analyzer "simple"
+                                   :payloads true
+                                   :context {:location {:type "geo"
+                                                        :precision ["100km"]
+                                                        :neighbors true
+                                                        :default {:lat 0.0
+                                                                  :lon 0.0}}}}}}})
 
 (def passport-mapping
   {:passport {:properties {:id {:type "string" :store "yes"}}
@@ -249,3 +307,56 @@
 
     (idx/refresh conn index-name)
     (f)))
+
+(defn prepopulate-people-suggestion
+  [f]
+  (let [index-name "people"
+        mapping-type "person"]
+    (idx/create conn index-name :mappings people-suggestion-mapping)
+    ;; seeds suggestion data
+    (is (created? (doc/put conn index-name mapping-type "1" suggest-jack)))
+    (is (created? (doc/put conn index-name mapping-type "2" suggest-mary)))
+    (is (created? (doc/put conn index-name mapping-type "3" suggest-joe)))
+    (is (created? (doc/put conn index-name mapping-type "4" suggest-tony)))
+   
+    (idx/refresh conn index-name)
+    (f)))
+
+(defn prepopulate-people-category-suggestion
+  [f]
+  (let [index-name "people_with_category"
+        mapping-type "person"]
+    (idx/create conn index-name :mappings people-suggestion-gender-context-mapping)
+    ;; seeds suggestion data
+    (is (created? (doc/put conn index-name mapping-type "1" 
+                           (assoc-in suggest-jack [:suggest :context] {:gender "male"}))))
+    (is (created? (doc/put conn index-name mapping-type "2"
+                           (assoc-in suggest-mary [:suggest :context] {:gender "female"}))))
+    (is (created? (doc/put conn index-name mapping-type "3"
+                           (assoc-in suggest-joe [:suggest :context] {:gender "male"}) )))
+    (is (created? (doc/put conn index-name mapping-type "4"
+                           (assoc-in suggest-tony [:suggest :context] {:gender "female"}) )))
+   
+    (idx/refresh conn index-name)
+    (f)))
+
+(defn prepopulate-people-location-suggestion
+  [f]
+  (let [index-name "people_with_locations"
+        mapping-type "person"
+        local {:location {:lat 90 :lon 90}}
+        faraway {:location {:lat 0 :lon -90}}]
+    (idx/create conn index-name :mappings people-suggestion-location-context-mapping)
+    ;; seeds suggestion data
+    (is (created? (doc/put conn index-name mapping-type "1" 
+                           (assoc-in suggest-jack [:suggest :context] local))))
+    (is (created? (doc/put conn index-name mapping-type "2"
+                           (assoc-in suggest-mary [:suggest :context] faraway))))
+    (is (created? (doc/put conn index-name mapping-type "3"
+                           (assoc-in suggest-joe [:suggest :context] faraway))))
+    (is (created? (doc/put conn index-name mapping-type "4"
+                           (assoc-in suggest-tony [:suggest :context] faraway))))
+   
+    (idx/refresh conn index-name)
+    (f)))
+
