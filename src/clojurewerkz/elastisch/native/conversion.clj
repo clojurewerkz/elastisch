@@ -834,12 +834,27 @@
     query))
 
 (defmethod ^CompletionSuggestionFuzzyBuilder ->suggest-query :fuzzy
-  [qtype term {:keys [field size analyzer]
-               :or {field "suggest"}}]
+  [qtype term {:keys [field size analyzer fuzziness transpositions
+                      min-length prefix-length unicode-aware]
+               :or {field "suggest"
+                    transpositions true
+                    min-length 3
+                    prefix-length 1
+                    unicode-aware false}}]
   "builds query for fuzzy completion which allows little typos in search term"
-  (let [query (doto (CompletionSuggestionFuzzyBuilder. "hits")
+  (let [fuzz-level (case fuzziness
+                     0 Fuzziness/ZERO
+                     1 Fuzziness/ONE
+                     2 Fuzziness/TWO
+                     Fuzziness/AUTO)
+        query (doto (CompletionSuggestionFuzzyBuilder. "hits")
                 (.text ^String term)
-                (.field ^String field))]
+                (.field ^String field)
+                (.setFuzziness ^Fuzziness fuzz-level)
+                (.setFuzzyTranspositions ^Boolean transpositions)
+                (.setFuzzyMinLength ^Integer min-length)
+                (.setFuzzyPrefixLength ^Integer prefix-length)
+                (.setUnicodeAware ^Boolean unicode-aware))]
     (when size (.size query size))
     (when analyzer (.analyzer query analyzer))
     query))
