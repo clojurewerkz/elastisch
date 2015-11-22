@@ -68,6 +68,4 @@
             res (doc/suggest conn index-name :fuzzy "es" opts)]
         (is (= true (map? (:hits res))))
         (is (= 1 (-> res :hits :options count)))
-        (is (= "esjack" (-> res :hits :options first :text))))))
-
-  )
+        (is (= "esjack" (-> res :hits :options first :text)))))))
