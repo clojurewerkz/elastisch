@@ -41,6 +41,7 @@
            [org.elasticsearch.action.suggest SuggestRequest SuggestResponse]
            [org.elasticsearch.search.suggest.completion CompletionSuggestionBuilder
                                                         CompletionSuggestionFuzzyBuilder]
+           [org.elasticsearch.common.unit Fuzziness] ;;for CompletionSuggestionFuzzyBuilder
            ;[org.elastisearch.search.suggest.phrase PhraseSuggestionBuilder]
            [org.elasticsearch.search.suggest.term TermSuggestionBuilder]
 
@@ -832,12 +833,16 @@
     (when analyzer (.analyzer query analyzer))
     query))
 
-(defn ^SuggestRequest ->suggest-request
-  "builds suggestion requests"
-  [indices suggest-type term opts]
-  (let [query (->suggest-query suggest-type term opts)
-        req (SuggestRequest. (->string-array indices))]
-      (.suggest req query)))
+(defmethod ^CompletionSuggestionFuzzyBuilder ->suggest-query :fuzzy
+  [qtype term {:keys [field size analyzer]
+               :or {field "suggest"}}]
+  "builds query for fuzzy completion which allows little typos in search term"
+  (let [query (doto (CompletionSuggestionFuzzyBuilder. "hits")
+                (.text ^String term)
+                (.field ^String field))]
+    (when size (.size query size))
+    (when analyzer (.analyzer query analyzer))
+    query))
 
 (defn ^:private highlight-field-to-map
   [^HighlightField hlf]

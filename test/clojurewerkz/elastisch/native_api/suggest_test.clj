@@ -23,4 +23,16 @@
           (is (= "esma" (:text match1)))
           (is (= "esmary" (:username payload)))
           (is (= "Mary" (:first-name payload)))
+          (is (= "Lindey" (:last-name payload)))))))
+  
+  (deftest ^{:native true} test-fuzzy-suggest-complete-people-names
+    (testing "simple fuzzy autocomplete returns mary's username even i had typo"
+      (let [index-name "people"
+            res (doc/suggest conn index-name :fuzzy "esmor" {:fuzziness 1 :min-length 2})]
+        (is (= 1 (count (:hits res))))
+        (let [match1 (first (:hits res))
+              payload (-> match1 :options first :payload)]
+          (is (= "esmor" (:text match1)))
+          (is (= "esmary" (:username payload)))
+          (is (= "Mary" (:first-name payload)))
           (is (= "Lindey" (:last-name payload))))))))

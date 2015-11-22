@@ -401,7 +401,6 @@
         res (.. req (execute) (actionGet))]
     (cnv/suggest-response->seq res)))
 
-
 (comment
   
  (require '[clojurewerkz.elastisch.native :as es] :reload-all)
@@ -449,4 +448,8 @@
   (.suggest req req-builder)
 
   (es/suggest conn req)
+
+  (import '[org.elasticsearch.common.unit Fuzziness])
+
+  (Fuzziness/ONE)
   )
