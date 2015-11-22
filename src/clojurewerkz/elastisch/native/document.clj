@@ -394,11 +394,10 @@
   translates to:
   (suggest es-conn \"locations\" :completion \"Stockh\" {:field \"suggest\" :size 5})"
   [^Client conn, indices, ^clojure.lang.Keyword suggest-type, ^String term, ^IPersistentMap opts]
-  (let [;req (cnv/->suggest-request indices suggest-type term opts)
-        ;ft (es/suggest ^Client conn ^SuggestRequest req) ;for 2.0, 1.7 returns empty result
-        q (cnv/->suggest-query suggest-type term opts)
-        req (.prepareSuggest conn (cnv/->string-array indices))
-        _ (.addSuggestion req q)
+  (let [q (cnv/->suggest-query suggest-type term opts)
+        req (-> conn
+                (.prepareSuggest (cnv/->string-array indices))
+                (.addSuggestion q))
         res (.. req (execute) (actionGet))]
     (cnv/suggest-response->seq res)))
 
