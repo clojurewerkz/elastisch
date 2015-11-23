@@ -15,6 +15,7 @@
             [clojurewerkz.elastisch.rest.response :refer [created?]]))
 
 (def es-url (or (System/getenv "ES_URL")
+                (System/getenv "ELASTICSEARCH_URL")
                 "http://127.0.0.1:9200"))
 
 (def conn (es/connect es-url))
@@ -43,7 +44,6 @@
    :biography  "Tries to avoid eating fat, being good to other people and does sports every now and then"
    :planet     "Earth"
    :age 22
-   :gender      "male"
    :signed_up_at "2012-03-31T08:12:37"})
 
 (def person-joe
@@ -54,7 +54,6 @@
    :biography  "Quite a nice guy"
    :planet     "Earth"
    :age 37
-   :gender      "male"
    :signed_up_at "2012-02-28T23:02:03"})
 
 (def person-mary
@@ -65,7 +64,6 @@
    :biography  "Writes copy and copies writes"
    :planet     "Earth"
    :age 28
-   :gender      "female"
    :signed_up_at "2012-02-27T12:34:53"})
 
 (def person-tony
@@ -77,7 +75,6 @@
    :planet      "Earth"
    :age 29
    :country     "Uruguay"
-   :gender      "female"
    :signed_up_at "2012-03-11T02:00:00"})
 
 (def suggest-jack
