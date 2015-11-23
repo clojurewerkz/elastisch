@@ -820,12 +820,14 @@
       (.searchFrom r ^{:tag "int"} from))
     r))
 
-(defn ->string [text]
+(defn ->string
+  [text]
   (if (keyword? text)
     (name text)
     (str text)))
 
-(defn attach-suggestion-context [query context]
+(defn attach-suggestion-context
+  [query context]
   "attach context for suggestion query."
   (let [add-category! (fn [field-name context-value]
                         (.addCategory query
