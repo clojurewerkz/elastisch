@@ -26,6 +26,7 @@
 (defn ^:private default-url
   []
   (or (System/getenv "ELASTICSEARCH_URL")
+      (System/getenv "ES_URL")
       "http://localhost:9200"))
 
 (def ^{:dynamic true} *endpoint* (Connection. (default-url) {}))
