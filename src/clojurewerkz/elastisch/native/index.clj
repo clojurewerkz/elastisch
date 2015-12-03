@@ -146,14 +146,17 @@
 (defn open
   "Opens an index"
   [^Client conn index-name]
-  (let [ft                     (es/admin-open-index conn (cnv/->open-index-request index-name))
+  (let [ft (es/admin-open-index conn (cnv/->open-index-request index-name))
         ^OpenIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn close
-  "Closes an index"
+  "Closes an index or indices
+  Usage:
+    (idx/close conn \"my-index\")
+    (idx/close conn [\"my-index\" \"dein-index\"])"
   [^Client conn index-name]
-  (let [ft                     (es/admin-close-index conn (cnv/->close-index-request index-name))
+  (let [ft (es/admin-close-index conn (cnv/->close-index-request index-name))
         ^CloseIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
