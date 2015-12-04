@@ -6,6 +6,14 @@
 
 Contributed by Timo Sulg
 
+### Fixed `index/close` and `index/open` argument type error
+
+  `clojurewerkz.elastisch.native.conversion/->open-index-request` and  `->close-index-request`
+  passed plain string to [CloseIndexRequest](http://javadoc.kyubu.de/elasticsearch/HEAD/org/elasticsearch/action/admin/indices/close/CloseIndexRequest.html) constructor, but it expected values passed as array of string.
+  Fixed it with existing function `conversion/->string-array` and added missing tests for this usecase
+  into `clojurewerkz.elastisch.native-api.indices-settings-test`.
+
+  Contributed by Timo Sulg (@timgluz)
 
 ### Fixed `update-with-script` in Native Client
 

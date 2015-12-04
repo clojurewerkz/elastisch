@@ -1,4 +1,4 @@
-(defproject clojurewerkz/elastisch "2.2.0-rc1-SNAPSHOT"
+(defproject timgluz/elastisch "2.2.2"
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}

@@ -1389,12 +1389,14 @@
     (.types (->string-array mapping-types))))
 
 (defn ^OpenIndexRequest ->open-index-request
+  "opens closed index or indices for search"
   [index-name]
-  (OpenIndexRequest. index-name))
+  (OpenIndexRequest. (->string-array index-name)))
 
 (defn ^CloseIndexRequest ->close-index-request
+  "closes index or indices for updating"
   [index-name]
-  (CloseIndexRequest. index-name))
+  (CloseIndexRequest. (->string-array index-name)))
 
 (defn ^OptimizeRequest ->optimize-index-request
   [index-name {:keys [max-num-segments only-expunge-deletes flush]}]
