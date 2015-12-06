@@ -102,8 +102,10 @@
   (deftest ^{:rest true :indexing true} test-index-stats
     (let [index     "people"
           _         (idx/create conn index :mappings fx/people-mapping)
+          _ (Thread/sleep 1000) ; indexing and counting happens async, wait naively 1s
           response  (idx/stats conn index :stats ["docs" "store" "indexing"] :types "person")
           stats     (-> response :_all :primaries)]
+      (acknowledged? response)
       (is (every? #(contains? stats %) [:docs :store :indexing]))
       (is (not-any? #(contains? stats %) [:get :search :completion :fielddata :flush :merge :query_cache :refresh :suggest :warmer :translog]))))
 

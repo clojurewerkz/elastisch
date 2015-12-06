@@ -1,5 +1,12 @@
 ## Changes between Elastisch 2.1.x and 2.2.0
 
+### Add completion and fuzzy suggestors for Native Client
+
+`clojurewerkz.elastisch.native.document` has new function `suggest` for term autocompletion. It allows filter results by category and geolocation. 
+
+Contributed by Timo Sulg
+
+
 ### Fixed `update-with-script` in Native Client
 
 `clojurewerkz.elastisch.native.conversion/->update-request` arguments

@@ -26,6 +26,7 @@
            org.elasticsearch.action.delete.DeleteResponse
            org.elasticsearch.action.deletebyquery.DeleteByQueryResponse
            org.elasticsearch.action.search.SearchResponse
+           [org.elasticsearch.action.suggest SuggestResponse]
            java.util.Map))
 
 (defn ^IPersistentMap create
@@ -377,6 +378,21 @@
 (defn more-like-this
   "Performs a More Like This (MLT) query."
   [^Client conn index mapping-type id & args]
-  (let [ft                  (es/more-like-this conn (cnv/->more-like-this-request index mapping-type id (ar/->opts args)))
+  (let [ft (es/more-like-this conn (cnv/->more-like-this-request index mapping-type id (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
+
+
+(defn suggest
+  "Suggests similar looking terms based on a provided text by using a suggester.
+
+  Usage:
+
+  (suggest es-conn \"locations\" :completion \"Stockh\" {:field \"suggest\" :size 5})"
+  [^Client conn indices ^clojure.lang.Keyword suggest-type ^String term ^IPersistentMap opts]
+  (let [q (cnv/->suggest-query suggest-type term opts)
+        req (-> conn
+                (.prepareSuggest (cnv/->string-array indices))
+                (.addSuggestion q))
+        res (.. req (execute) (actionGet))]
+    (cnv/suggest-response->seq res)))
