@@ -5,10 +5,6 @@
             [clojurewerkz.elastisch.test.helpers :as th]
             [clojure.test :refer :all]))
 
-;;run: ES_URL="X" ES_CLUSTER_NAME="X" ES_CLUSTER_HOST ...
-;; ES_URL="http://192.168.99.100:9200" ES_CLUSTER_NAME="skillable_search_dev" ES_CLUSTER_HOST="192.168.99.100" lein with-profile dev test clojurewerkz.elastisch.native-api.suggest-test
-
-;;(use-fixtures :each fx/reset-indexes fx/prepopulate-people-suggestion)
 (let [conn (th/connect-native-client)]
   (use-fixtures :each fx/reset-indexes fx/prepopulate-people-suggestion
                       fx/prepopulate-people-category-suggestion

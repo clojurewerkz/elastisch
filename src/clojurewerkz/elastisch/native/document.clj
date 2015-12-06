@@ -384,20 +384,15 @@
 
 
 (defn suggest
-  "suggests similar looking terms based on a provided text by using a suggester.
+  "Suggests similar looking terms based on a provided text by using a suggester.
+
   Usage:
-  an curl example:
-  curl -X POST 'http://192.168.99.100:9200/locations/_suggest?pretty' \\
-    -d '{\"hits\": {\"text\": \"Stockh\", 
-                    \"completion\": {\"field\": \"suggest\",
-                                     \"size\" : 3}}}'
-  translates to:
+
   (suggest es-conn \"locations\" :completion \"Stockh\" {:field \"suggest\" :size 5})"
-  [^Client conn, indices, ^clojure.lang.Keyword suggest-type, ^String term, ^IPersistentMap opts]
+  [^Client conn indices ^clojure.lang.Keyword suggest-type ^String term ^IPersistentMap opts]
   (let [q (cnv/->suggest-query suggest-type term opts)
         req (-> conn
                 (.prepareSuggest (cnv/->string-array indices))
                 (.addSuggestion q))
         res (.. req (execute) (actionGet))]
     (cnv/suggest-response->seq res)))
-
