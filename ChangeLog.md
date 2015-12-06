@@ -2,10 +2,27 @@
 
 ### Add completion and fuzzy suggestors for Native Client
 
-`clojurewerkz.elastisch.native.document` has new function `suggest` for term autocompletion. It allows filter results by category and geolocation. 
+`clojurewerkz.elastisch.native.document` has new function `suggest`
+for term autocompletion. It allows filter results by category and
+geolocation:
 
-Contributed by Timo Sulg
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
 
+(doc/suggest conn index-name :completion "e" {:context {:gender "female"}})
+(doc/suggest conn index-name :fuzzy "esmor" {:fuzziness 1 :min-length 2})
+```
+
+Contributed by Timo Sulg (@timgluz).
+
+### Fixed `index/close` and `index/open` argument type error
+
+  `clojurewerkz.elastisch.native.conversion/->open-index-request` and  `->close-index-request`
+  passed plain string to [CloseIndexRequest](http://javadoc.kyubu.de/elasticsearch/HEAD/org/elasticsearch/action/admin/indices/close/CloseIndexRequest.html) constructor, but it expected values passed as array of string.
+  Fixed it with existing function `conversion/->string-array` and added missing tests for this usecase
+  into `clojurewerkz.elastisch.native-api.indices-settings-test`.
+
+  Contributed by Timo Sulg (@timgluz).
 
 ### Fixed `update-with-script` in Native Client
 
