@@ -32,7 +32,7 @@ recent changes.
 
 Contributed by Michael Nussbaum.
 
-### Index Stats Update for ES 1.3.x
+### Index Stats Update
 
 `clojurewerkz.elastisch.rest.index/stats` has been updated for ElasticSearch `1.3.x`
 and later versions.
