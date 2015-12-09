@@ -46,6 +46,16 @@
                                               :filter {:term {:username "esmary"}}))]
       (is (= 4 (count hits)))))
 
+  (deftest ^{:native true} test-basic-sorting-over-string-field-with-implicit-order
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type {:query (q/match-all)
+                                                                 :sort  "title"})
+          hits         (hits-from response)]
+      (is (= 4 (total-hits response)))
+      (is (= "Apache Lucene" (-> hits first :_source :title)))
+      (is (= "Nueva York" (-> hits last :_source :title)))))
+  
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-desc-order
     (let [index-name   "articles"
           mapping-type "article"
