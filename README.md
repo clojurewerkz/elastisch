@@ -50,7 +50,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "2.2.0-beta5"]
+[![Clojars Project](http://clojars.org/clojurewerkz/elastisch/latest-version.svg)](http://clojars.org/clojurewerkz/elastisch)
 
 
 With Maven:
