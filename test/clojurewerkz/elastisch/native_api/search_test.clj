@@ -44,7 +44,7 @@
           hits         (hits-from (doc/search conn index-name mapping-type
                                               :query  (q/match-all)
                                               :filter {:term {:username "esmary"}}))]
-      (is (= 4 (count hits)))))
+      (is (= 1 (count hits)))))
 
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-implicit-order
     (let [index-name   "articles"

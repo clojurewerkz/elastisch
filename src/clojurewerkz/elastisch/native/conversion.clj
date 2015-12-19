@@ -701,7 +701,7 @@
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference query facets aggregations from size timeout
-                                   post-filter min-score version fields sort stats _source
+                                   post-filter filter min-score version fields sort stats _source
                                    highlight] :as options}]
   (let [r                       (SearchRequest.)
         ^SearchSourceBuilder sb (SearchSourceBuilder.)]
@@ -719,6 +719,9 @@
       (.size sb size))
     (when timeout
       (.timeout sb ^String timeout))
+    (when filter
+      (.postFilter sb ^Map (wlk/stringify-keys filter)))
+    ;; compatibility
     (when post-filter
       (.postFilter sb ^Map (wlk/stringify-keys post-filter)))
     (when fields
