@@ -13,8 +13,7 @@
                        :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]]
                        :plugins [[lein-codox      "0.9.0"]
                                  [jonase/eastwood "0.2.3"]]
-                       :codox {:sources ["src"]
-                               :output-dir "doc/api"}}
+                       :codox {:source-paths ["src"]}}
                  ;; this version of clj-http depends on HTTPCore 4.2.x which
                  ;; some projects (e.g. using Spring's RestTemplate) can rely on,
                  ;; so we test for compatibility with it. MK.
