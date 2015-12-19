@@ -58,7 +58,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>2.2.0-beta5</version>
+      <version>2.2.0-rc1</version>
     </dependency>
 
 
