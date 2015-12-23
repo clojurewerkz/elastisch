@@ -1497,6 +1497,7 @@
   ([{:keys [docs store indexing types groups get
             search merge flush refresh]}]
      (let [r   (IndicesStatsRequest.)]
+       (.clear r)
        (when docs
          (.docs r docs))
        (when store
