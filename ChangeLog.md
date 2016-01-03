@@ -1,4 +1,10 @@
-## Changes between Elastisch 2.1.x and 2.2.0
+## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
+
+No changes yet.
+
+
+
+## Changes between Elastisch 2.1.x and 2.2.0 (Jan 3rd, 2016)
 
 ### Corrected Filter Option Name in Native Client
 
