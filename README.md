@@ -32,6 +32,9 @@ Elastisch is a not a young project. Started in late 2011, it has been used
 in production since the early days. Elastisch API is stable. 1.0 was
 released in September 2012, 2.0 in June 2014, 2.1 in December 2014.
 
+As of January 2016, after the 2.2 release, Elastisch development targets
+ElasticSearch 3.x.
+
 
 ## Artifacts
 
@@ -58,7 +61,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>2.2.0-rc1</version>
+      <version>2.2.0</version>
     </dependency>
 
 
