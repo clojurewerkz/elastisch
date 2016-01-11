@@ -327,7 +327,7 @@
   (cond
    (instance? java.util.Map fields) (into {} (map (fn [^java.util.Map$Entry e]
                                                     [(keyword (.getKey e))
-                                                     (.. e getValue getValue)]) fields))
+                                                     (.. e getValue getValues)]) fields))
    :else fields))
 
 (defn ^IPersistentMap get-response->map
