@@ -79,7 +79,8 @@
    (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
                 true))
   ([^String uri options]
-   (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
+   (json/decode (:body (http/get uri (merge options
+                                            {:accept :json :throw-exceptions throw-exceptions})))
                 true)))
 
 (defn head
