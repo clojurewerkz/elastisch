@@ -1,4 +1,4 @@
-## Changes between Elastisch 2.2.0 and 2.2.1
+## Changes between Elastisch 2.2.0 and 2.2.1 (Jan 11th, 2016)
 
 ### Correctly Pass Field List to the Native Client
 
