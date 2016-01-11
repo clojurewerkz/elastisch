@@ -1,5 +1,17 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
+### Allow overriding *any* clj-http option
+
+The default clj-http options that Elastisch sets can now be overridden in two ways:
+- on a per-connection basis by passing the options to `clojurewerkz.elastisch.rest/connect`;
+- and per-invocation by passing the options as arguments to individual function calls.
+
+This was achieved by changing the order in which the options-maps are merged.
+
+GitHub Pull Request: <https://github.com/clojurewerkz/elastisch/pull/200>
+
+Contributed by [@MerelyAPseudonym](https://github.com/MerelyAPseudonym).
+
 ### Added support for search templates
   `clojurewerks.elastisch.native.conversion/->search-request` now accepts
   :template and :params arguments for use with search templates
