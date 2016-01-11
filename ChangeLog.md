@@ -1,3 +1,12 @@
+## Changes between Elastisch 2.2.0 and 2.2.1
+
+### Correctly Pass Field List to the Native Client
+
+GitHub issue: [#193](https://github.com/clojurewerkz/elastisch/pull/193).
+
+Contributed by @dspiteself.
+
+
 ## Changes between Elastisch 2.1.x and 2.2.0
 
 ### Corrected Filter Option Name in Native Client
