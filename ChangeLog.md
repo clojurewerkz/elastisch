@@ -1,6 +1,10 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
-No changes yet.
+### Correctly Pass Field List to the Native Client
+
+GitHub issue: [#193](https://github.com/clojurewerkz/elastisch/pull/193).
+
+Contributed by @dspiteself.
 
 
 
