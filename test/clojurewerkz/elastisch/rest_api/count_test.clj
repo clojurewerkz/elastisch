@@ -30,31 +30,31 @@
     (doc/create conn index-name index-type fx/person-jack)
     (doc/create conn index-name index-type fx/person-joe)
     (idx/refresh conn index-name)
-    (are [c r] (is (= c (count-from r)))
+    (are [c r] (= c (count-from r))
          2 (doc/count conn index-name index-type))))
 
-(deftest ^{:rest true} test-count-with-a-term-query
-  (let [index-name "people"
-        index-type "person"]
-    (idx/create conn index-name :mappings fx/people-mapping)
-    (doc/create conn index-name index-type fx/person-jack)
-    (doc/create conn index-name index-type fx/person-joe)
-    (idx/refresh conn index-name)
-    (are [c r] (is (= c (count-from r)))
-         1 (doc/count conn index-name index-type (q/term :username "esjack"))
-         1 (doc/count conn index-name index-type (q/term :username "esjoe"))
-         0 (doc/count conn index-name index-type (q/term :username "esmary")))))
+  (deftest ^{:rest true} test-count-with-a-term-query
+    (let [index-name "people"
+          index-type "person"]
+      (idx/create conn index-name :mappings fx/people-mapping)
+      (doc/create conn index-name index-type fx/person-jack)
+      (doc/create conn index-name index-type fx/person-joe)
+      (idx/refresh conn index-name)
+      (are [c r] (= c (count-from r))
+           1 (doc/count conn index-name index-type (q/term :username "esjack"))
+           1 (doc/count conn index-name index-type (q/term :username "esjoe"))
+           0 (doc/count conn index-name index-type (q/term :username "esmary")))))
 
 
-(deftest ^{:rest true} test-count-with-mixed-mappings
-  (let [index-name "people"
-        index-type "person"]
-    (idx/create conn index-name {:mappings fx/people-mapping})
-    (doc/create conn index-name index-type fx/person-jack)
-    (doc/create conn index-name index-type fx/person-joe)
-    (doc/create conn index-name "altpeople" fx/person-jack)
-    (idx/refresh conn index-name)
-    (are [c r] (is (= c (count-from r)))
-         1 (doc/count conn index-name index-type  (q/term :username "esjack"))
-         1 (doc/count conn index-name "altpeople" (q/term :username "esjack"))
-         0 (doc/count conn index-name "altpeople" (q/term :username "esjoe"))))))
+  (deftest ^{:rest true} test-count-with-mixed-mappings
+    (let [index-name "people"
+          index-type "person"]
+      (idx/create conn index-name {:mappings fx/people-mapping})
+      (doc/create conn index-name index-type fx/person-jack)
+      (doc/create conn index-name index-type fx/person-joe)
+      (doc/create conn index-name "altpeople" fx/person-jack)
+      (idx/refresh conn index-name)
+      (are [c r] (= c (count-from r))
+           1 (doc/count conn index-name index-type  (q/term :username "esjack"))
+           1 (doc/count conn index-name "altpeople" (q/term :username "esjack"))
+           0 (doc/count conn index-name "altpeople" (q/term :username "esjoe"))))))
