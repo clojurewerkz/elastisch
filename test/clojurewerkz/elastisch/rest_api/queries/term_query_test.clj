@@ -44,19 +44,19 @@
       (is (= fx/tweet1 (-> result hits-from first :_source)))))
 
   (deftest ^{:rest true :query true} test-basic-term-query-over-non-analyzed-usernames
-    (are [username id] (is (= id (-> (doc/search conn "tweets" "tweet" :query (q/term :username username) :sort {:timestamp "asc"})
+    (are [username id] (= id (-> (doc/search conn "tweets" "tweet" :query (q/term :username username) :sort {:timestamp "asc"})
                                      hits-from
                                      first
-                                     :_id)))
+                                     :_id))
          "clojurewerkz"   "1"
          "ifesdjeen"      "2"
          "michaelklishin" "4"
          "DEVOPS_BORAT"   "5"))
 
   (deftest ^{:rest true :query true} test-basic-term-query-over-non-analyzed-embedded-fields
-    (are [state id] (is (= id (-> (doc/search conn "tweets" "tweet" :query (q/term "location.state" state) :sort {:timestamp "asc"})
+    (are [state id] (= id (-> (doc/search conn "tweets" "tweet" :query (q/term "location.state" state) :sort {:timestamp "asc"})
                                   hits-from
                                   first
-                                  :_id)))
+                                  :_id))
          "Moscow" "4"
          "CA"     "5")))
