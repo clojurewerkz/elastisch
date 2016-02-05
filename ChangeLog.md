@@ -12,6 +12,11 @@ GitHub issue: [#193](https://github.com/clojurewerkz/elastisch/pull/193).
 
 Contributed by @dspiteself.
 
+### Allow overriding clj-http's :throw-exceptions option
+
+Options passed to elastisch.rest/connect can now include `:throw-exceptions true`, causing HTTP errors to throw exceptions.
+
+Contributed by @loganmhb.
 
 ## Changes between Elastisch 2.1.x and 2.2.0
 
