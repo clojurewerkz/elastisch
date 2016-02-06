@@ -231,7 +231,7 @@
   ([index mapping-type ^Map doc]
      ;; default content type used by IndexRequest is JSON. MK.
      (-> (IndexRequest. (name index) (name mapping-type))
-         (.source ^Map (wlk/stringify-keys doc))))
+         (.source ^String (json/encode doc))))
   ;; non-variadic because it is more convenient and efficient to
   ;; invoke this internal implementation fn this way. MK.
   ([index mapping-type ^Map doc {:keys [id
@@ -245,7 +245,7 @@
                                         version-type
                                         content-type]}]
      (let [ir (-> (IndexRequest. (name index) (name mapping-type))
-                  (.source ^Map (wlk/stringify-keys doc)))]
+                  (.source ^String (json/encode doc)))]
        (when id
          (.id ^IndexRequest ir ^String id))
        (when content-type
@@ -1381,7 +1381,7 @@
   [index-name ^String mapping-type {:keys [mapping mappings ignore_conflicts ignore-conflicts]}]
   (let [r (doto (PutMappingRequest. (->string-array index-name))
             (.type mapping-type)
-            (.source ^Map (wlk/stringify-keys (or mapping mappings))))]
+            (.source ^String (json/encode (or mapping mappings))))]
     (when-let [v (or ignore_conflicts ignore-conflicts)]
       (.ignoreConflicts r v))
     r))
