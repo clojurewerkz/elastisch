@@ -224,6 +224,18 @@
                :state   "Moscow"
                :city    "Moscow"}})
 
+(def test-template1
+    {:template 
+      {:filter 
+        {:term 
+          {:username "{{username}}"}}}})
+
+
+(def test-template2
+    {:template 
+      {:filter 
+        {:term 
+          {:username "{{username}}"}} :_source ["username"]}})
 
 (def tweet2
   {:username  "ifesdjeen"

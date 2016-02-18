@@ -1600,3 +1600,18 @@ with the same id.
 ### Leiningen 2
 
 Elastisch now uses [Leiningen 2](https://github.com/technomancy/leiningen/wiki/Upgrading).
+
+### elastisch.conversion
+Added template and params values to ->search-request to allow searching by
+search template
+
+### elastisch.native.document
+Added helper functions for search templates that are alias of existing
+functions
+  create-search-template
+  delete-search-template
+  put-search-template
+  get-search-template
+Each of these is vardic and references index ".scripts" type "mustache" by
+default
+Contributed by @KeeganMyers

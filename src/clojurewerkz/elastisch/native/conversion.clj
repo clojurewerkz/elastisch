@@ -701,6 +701,7 @@
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
                                    preference query facets aggregations from size timeout
+                                   template params
                                    post-filter filter min-score version fields sort stats _source
                                    highlight] :as options}]
   (let [r                       (SearchRequest.)
@@ -752,7 +753,11 @@
       (.routing r ^String routing))
     (when scroll
       (.scroll r ^String scroll))
-
+    (when template
+      (.templateName r ^String (:id template))
+      (.templateType r ^org.elasticsearch.script.ScriptService$ScriptType org.elasticsearch.script.ScriptService$ScriptType/INDEXED))
+    (when params
+      (.templateParams r ^Map (wlk/stringify-keys params)))
     r))
 
 (defn ^MultiSearchRequest ->multi-search-request

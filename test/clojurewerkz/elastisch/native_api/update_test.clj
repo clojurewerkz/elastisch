@@ -85,6 +85,23 @@
           (is (= "brilliant1" (get-in updated [:_source :biography])))
           (is (= "Sweden" (get-in updated [:_source :country])))))))
 
+  (deftest ^{:native true} create-search-template
+    (let [{:keys [index id _type]}
+          (doc/create-search-template conn "test-template1" fx/test-template1)]
+          (is (= index ".scripts"))
+          (is (= id "test-template1"))
+          (is (= _type "mustache"))))
+
+  (deftest ^{:native true} update-search-template
+      (doc/create-search-template conn "test-template1" fx/test-template1)
+      (doc/put-search-template conn "test-template1" fx/test-template2)
+    (let [{:keys [index id _type source]}
+          (doc/get-search-template conn "test-template1")]
+          (is (= index ".scripts"))
+          (is (= id "test-template1"))
+          (is (= _type "mustache"))
+          (is (= source fx/test-template2))))
+
   (deftest ^{:version-dependent true} update-with-script
     (let [index-name "people"
           index-type "person"

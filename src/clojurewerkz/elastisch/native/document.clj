@@ -70,6 +70,17 @@
                                                           (merge opts {:op-type "create"})))]
        (cnv/index-response->map (.actionGet res)))))
 
+
+   (defn create-search-template
+    "Adds a search template to the .scripts index the template should be
+     a map of the form:
+     {:template {:filter {:term {:name \"{{name}}\"}}}}
+    templates can be referenced at search time using their given id"
+    ([^Client conn ^String id ^Map document]
+      (create-search-template conn "mustache" id document))
+    ([^Client conn ^String languege ^String id ^Map document]
+      (create conn ".scripts" languege document :id id)))
+
 (defn async-create
   "Adds document to the search index and returns a future without waiting
     for the response. Takes exactly the same arguments as create."
@@ -94,6 +105,15 @@
                                                document
                                                (merge opts {:id id :op-type "index"})))]
        (cnv/index-response->map (.actionGet res)))))
+
+(defn put-search-template
+  "Updates a search template in the .scripts index. Templates are expressed
+   as maps similar to:
+   {:template {:filter {:term {:name \"{{name}}\"}}}}"
+  ([^Client connid ^String id ^Map document]
+    (put-search-template connid "mustache" id document))
+  ([^Client connid ^String language  ^String id ^Map document]
+    (put connid ".scripts" language id document)))
 
 (defn async-put
   "Creates or updates a document in the search index using the provided document id
@@ -158,6 +178,17 @@
      (cnv/update-response->map (.actionGet res)))))
 
 
+
+(defn upsert-search-template
+  "Add or insert a search template. The expected doc should
+   be similar to:
+    {:template {:filter {:term {:name \"{{name}}\"}}}}
+  The search template will be placed into the .scripts directory."
+  ([^Client conn ^String id ^Map doc]
+  (upsert conn ".scripts" "mustache" id doc))
+  ([^Client conn ^String id ^String lang ^Map doc]
+  (upsert conn ".scripts" lang id doc)))
+
 (defn get
   "Fetches and returns a document by id or nil if it does not exist.
    Waits for response.
@@ -183,6 +214,12 @@
            ^GetResponse res (.actionGet ft)]
        (when (.isExists res)
          (cnv/get-response->map (.actionGet ft))))))
+
+(defn get-search-template
+([^Client conn ^String id]
+  (get-search-template conn "mustache" id))
+([^Client conn ^String languege ^String id]
+  (get conn ".scripts" languege id)))
 
 (defn async-get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -255,6 +292,13 @@
      (let [ft                  (es/delete conn (cnv/->delete-request index mapping-type id (ar/->opts args)))
            ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res))))
+
+(defn delete-search-template
+"Removes a search template from .scripts index"
+([^Client conn ^String id]
+  (delete-search-template conn "mustache" id))
+([^Client conn ^String languege ^String id]
+  (delete conn ".scripts" languege id)))
 
 (defn delete-by-query
   "Performs a delete-by-query operation.
