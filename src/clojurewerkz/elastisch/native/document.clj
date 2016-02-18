@@ -179,16 +179,6 @@
 
 
 
-(defn upsert-search-template
-  "Add or insert a search template. The expected doc should
-   be similar to:
-    {:template {:filter {:term {:name \"{{name}}\"}}}}
-  The search template will be placed into the .scripts directory."
-  ([^Client conn ^String id ^Map doc]
-  (upsert conn ".scripts" "mustache" id doc))
-  ([^Client conn ^String id ^String lang ^Map doc]
-  (upsert conn ".scripts" lang id doc)))
-
 (defn get
   "Fetches and returns a document by id or nil if it does not exist.
    Waits for response.
