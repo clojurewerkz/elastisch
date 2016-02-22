@@ -1,5 +1,19 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
+### Added support for search templates
+  `clojurewerks.elastisch.native.conversion/->search-request` now accepts
+  :template and :params arguments for use with search templates
+  `clojurewerks.elastish.native.document/create-search-template`,
+  `clojurewerks.elastish.native.document/delete-search-template`,
+  `clojurewerks.elastish.native.document/put-search-template`,
+  `clojurewerks.elastish.native.document/get-search-template`,
+   Added to simplify CRUD operations on search templates. Each is a vardic
+   function that will interface with the ".scripts" index and "mustache" type
+   by default. Users can override the type parameter if they would like to write
+   scripts in a language other than mustache.
+
+Contributed by @KeeganMyers
+
 ### Correctly Pass Field List to the Native Client
 
 GitHub issue: [#193](https://github.com/clojurewerkz/elastisch/pull/193).
@@ -1600,18 +1614,3 @@ with the same id.
 ### Leiningen 2
 
 Elastisch now uses [Leiningen 2](https://github.com/technomancy/leiningen/wiki/Upgrading).
-
-### elastisch.conversion
-Added template and params values to ->search-request to allow searching by
-search template
-
-### elastisch.native.document
-Added helper functions for search templates that are alias of existing
-functions
-  create-search-template
-  delete-search-template
-  put-search-template
-  get-search-template
-Each of these is vardic and references index ".scripts" type "mustache" by
-default
-Contributed by @KeeganMyers
