@@ -7,11 +7,11 @@
                  [clj-http              "2.0.0" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "1.7.5"]]
+                 [org.elasticsearch/elasticsearch "2.0.0"]]
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]
-                                      [org.elasticsearch/elasticsearch "1.7.5" :classifier "tests"]]
+                                      [org.elasticsearch/elasticsearch "2.0.0" :classifier "tests"]]
                        :plugins [[lein-codox      "0.9.0"]
                                  [jonase/eastwood "0.2.3"]]
                        :codox {:source-paths ["src"]}}
