@@ -29,29 +29,29 @@
               :start_offset 0,
               :end_offset 3,
               :type "<ALPHANUM>",
-              :position 1}
+              :position 0}
              {:token "bar",
               :start_offset 4,
               :end_offset 7,
               :type "<ALPHANUM>",
-              :position 2}
+              :position 1}
              {:token "baz",
               :start_offset 8,
               :end_offset 11,
               :type "<ALPHANUM>",
-              :position 3}]}
+              :position 2}]}
            (doc/analyze conn "foo bar-baz")))
     (is (= {:tokens
             [{:token "foo",
               :start_offset 0,
               :end_offset 3,
               :type "word",
-              :position 1}
+              :position 0}
              {:token "bar-baz",
               :start_offset 4,
               :end_offset 11,
               :type "word",
-              :position 2}]}
+              :position 1}]}
            (doc/analyze conn "foo bar-baz" :analyzer "whitespace"))))
 
   (deftest ^{:rest true} test-analyze-with-map-options
@@ -60,28 +60,28 @@
               :start_offset 0,
               :end_offset 3,
               :type "<ALPHANUM>",
-              :position 1}
+              :position 0}
              {:token "bar",
               :start_offset 4,
               :end_offset 7,
               :type "<ALPHANUM>",
-              :position 2}
+              :position 1}
              {:token "baz",
               :start_offset 8,
               :end_offset 11,
               :type "<ALPHANUM>",
-              :position 3}]}
+              :position 2}]}
            (doc/analyze conn "foo bar-baz")))
     (is (= {:tokens
             [{:token "foo",
               :start_offset 0,
               :end_offset 3,
               :type "word",
-              :position 1}
+              :position 0}
              {:token "bar-baz",
               :start_offset 4,
               :end_offset 11,
               :type "word",
-              :position 2}]}
+              :position 1}]}
            (doc/analyze conn "foo bar-baz" {:analyzer "whitespace"})))))
 
