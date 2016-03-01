@@ -112,7 +112,7 @@
 
 (defn mapping-type-url
   [conn index-name mapping-type]
-  (url-with-path conn index-name "_mapping" mapping-type))
+  (url-with-path conn index-name mapping-type))
 
 (defn search-url
   "Constructs search query URI for the given index (or multiple indexes) and mapping types.
