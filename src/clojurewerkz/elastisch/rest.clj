@@ -38,39 +38,39 @@
 
 (defn post-string
   [^Connection conn ^String uri {:keys [body] :as options}]
-  (json/decode (:body (http/post uri (merge (.http-opts conn)
+  (json/decode (:body (http/post uri (merge {:accept :json}
+                                            (.http-opts conn)
                                             options
-                                            {:accept :json :body body})))
+                                            {:body body})))
                true))
 
 (defn post
   ([^Connection conn ^String uri]
    (post conn uri {}))
   ([^Connection conn ^String uri {:keys [body] :as options}]
-   (json/decode (:body (http/post uri (merge (.http-opts conn)
+   (json/decode (:body (http/post uri (merge {:accept :json}
+                                             (.http-opts conn)
                                              options
-                                             {:accept :json :body (json/encode body)})))
+                                             {:body (json/encode body)})))
                 true)))
 
 (defn put
   [^Connection conn ^String uri {:keys [body] :as options}]
-  (json/decode (:body (http/put uri (merge {:throw-exceptions throw-exceptions}
+  (json/decode (:body (http/put uri (merge {:accept :json :throw-exceptions throw-exceptions}
                                            (.http-opts conn)
                                            options
-                                           {:accept :json :body (json/encode body)})))
+                                           {:body (json/encode body)})))
                true))
 
 (defn get
   ([^Connection conn ^String uri]
-   (json/decode (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
-                                            (.http-opts conn)
-                                            {:accept :json})))
+   (json/decode (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions}
+                                            (.http-opts conn))))
                 true))
   ([^Connection conn ^String uri options]
-   (json/decode (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
+   (json/decode (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions}
                                             (.http-opts conn)
-                                            options
-                                            {:accept :json})))
+                                            options)))
                 true)))
 
 (defn ^:private get*
@@ -79,26 +79,25 @@
    (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
                 true))
   ([^String uri options]
-   (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
+   (json/decode (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions}
+                                            options)))
                 true)))
 
 (defn head
   [^Connection conn ^String uri]
-  (http/head uri (merge {:throw-exceptions throw-exceptions}
-                        (.http-opts conn)
-                        {:accept :json})))
+  (http/head uri (merge {:accept :json :throw-exceptions throw-exceptions}
+                        (.http-opts conn))))
 
 (defn delete
   ([^Connection conn ^String uri]
-   (json/decode (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
-                                               (.http-opts conn)
-                                               {:accept :json})))
+   (json/decode (:body (http/delete uri (merge {:accept :json :throw-exceptions throw-exceptions}
+                                               (.http-opts conn))))
                 true))
   ([^Connection conn ^String uri {:keys [body] :as options}]
-   (json/decode (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
+   (json/decode (:body (http/delete uri (merge {:accept :json :throw-exceptions throw-exceptions}
                                                (.http-opts conn)
                                                options
-                                               {:accept :json :body (json/encode body)})))
+                                               {:body (json/encode body)})))
                 true)))
 
 
