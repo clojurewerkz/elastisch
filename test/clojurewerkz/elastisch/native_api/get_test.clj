@@ -62,6 +62,15 @@
                      (update-in [:location] #(dissoc % :country)))
                  (:_source (doc/get conn index-name mapping-type id {:_source {:exclude ["username" "location.country"]}})))))))
 
+  (deftest ^{:native true} test-get-search-template
+   (doc/put-search-template conn "test-template1" fx/test-template1)
+   (let [{:keys [exists _id empty? index _type source]} (doc/get-search-template conn "test-template1")]
+      (is exists)
+      (is (= _id "test-template1"))
+      (is (= empty? false))
+      (is (= _type "mustache" ))
+      (is (= source  fx/test-template1))))
+
   (deftest ^{:native true} multi-get-test
     (doc/put conn index-name mapping-type "1" fx/person-jack)
     (doc/put conn index-name mapping-type "2" fx/person-mary)

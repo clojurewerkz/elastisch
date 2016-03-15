@@ -29,6 +29,15 @@
     (is (found? (doc/delete conn index-name mapping-type id)))
     (is (not (doc/present? conn index-name mapping-type id)))))
 
+(deftest ^{:native true} test-delte-search-template
+  (doc/create-search-template conn "test-template1" fx/test-template1)
+  (let [{:keys  [found _index _type]} (doc/delete-search-template conn "test-template1")
+        result (doc/get-search-template conn "test-template1")]
+    (is (= found true))
+    (is (= _index ".scripts"))
+    (is (= _type "mustache"))
+    (is (nil? result))))
+
 (deftest ^{:native true} test-delete-by-query-with-a-term-query-and-mapping
   (let [index-name   "people"
         mapping-type "person"]
