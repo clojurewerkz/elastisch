@@ -37,11 +37,4 @@
           mapping  fx/people-mapping
           _        (idx/create conn index :mappings {})
           response (idx/update-mapping conn index "person" :mapping mapping)]
-      (is (resp/created-or-acknowledged? response))))
-
-  (deftest ^{:native true} test-delete-index-mapping
-    (let [index        "people4"
-          mapping-type "person"
-          _            (idx/create conn index :mappings fx/people-mapping)
-          response     (idx/delete-mapping conn index mapping-type)]
       (is (resp/created-or-acknowledged? response)))))

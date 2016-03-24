@@ -89,27 +89,6 @@
           response  (idx/clear-cache conn index :filter true :field_data true)]
       (is (broadcast-operation-response? response))))
 
-  (deftest ^{:indexing true :native true} test-index-status-1
-    (let [index     "people"
-          _         (idx/create conn index :mappings fx/people-mapping)
-          response  (idx/status conn index :recovery true)]
-      (is (broadcast-operation-response? response))))
-
-  (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes-1
-    (idx/create conn "group1")
-    (idx/create conn "group2")
-    (is (broadcast-operation-response? (idx/status conn ["group1" "group2"] :recovery true :snapshot true))))
-
-  (deftest ^{:indexing true :native true} test-index-status-2
-    (let [index     "people"
-          _         (idx/create conn index :mappings fx/people-mapping)]
-      (is (broadcast-operation-response? (idx/segments conn index)))))
-
-  (deftest ^{:indexing true :native true} test-index-status-for-multiple-indexes-2
-    (idx/create conn "group1")
-    (idx/create conn "group2")
-    (is (broadcast-operation-response? (idx/segments conn ["group1" "group2"]))))
-
   (deftest ^{:indexing true :native true} test-index-stats-for-all-indexes
     (idx/create conn "group1")
     (idx/create conn "group2")

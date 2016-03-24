@@ -75,30 +75,6 @@
           response  (idx/clear-cache conn index :filter true :field_data true)]
       (is (:_shards response))))
 
-  (deftest ^{:rest true :indexing true} test-index-status-1
-    (let [index     "people"
-          _         (idx/create conn index :mappings fx/people-mapping)
-          response  (idx/status conn index :recovery true)]
-      (is (:_shards response))))
-
-  (deftest ^{:rest true :indexing true} test-index-status-for-multiple-indexes-1
-    (idx/create conn "group1")
-    (idx/create conn "group2")
-    (let [response (idx/status conn ["group1" "group2"] :recovery true :snapshot true)]
-      (is (:_shards response))))
-
-  (deftest ^{:rest true :indexing true} test-index-status-2
-    (let [index     "people"
-          _         (idx/create conn index :mappings fx/people-mapping)
-          response  (idx/segments conn index)]
-      (is (:_shards response))))
-
-  (deftest ^{:rest true :indexing true} test-index-status-for-multiple-indexes-2
-    (idx/create conn "group1")
-    (idx/create conn "group2")
-    (let [response (idx/segments conn ["group1" "group2"])]
-      (is (:_shards response))))
-
   (deftest ^{:rest true :indexing true} test-index-stats
     (let [index     "people"
           _         (idx/create conn index :mappings fx/people-mapping)

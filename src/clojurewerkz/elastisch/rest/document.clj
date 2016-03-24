@@ -324,14 +324,6 @@
                   {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                    :body {:query query}})))
 
-
-(defn more-like-this
-  "Performs a More Like This (MLT) query."
-  [^Connection conn index mapping-type id & args]
-  (rest/get conn (rest/more-like-this-url conn
-                                          index mapping-type id)
-            {:query-params (ar/->opts args)}))
-
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
    but does not take the mapping type parameter."

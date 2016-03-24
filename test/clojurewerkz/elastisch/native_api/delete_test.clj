@@ -27,41 +27,4 @@
     (doc/put conn index-name mapping-type id fx/person-jack)
     (is (doc/present? conn index-name mapping-type id))
     (is (found? (doc/delete conn index-name mapping-type id)))
-    (is (not (doc/present? conn index-name mapping-type id)))))
-
-(deftest ^{:native true} test-delte-search-template
-  (doc/create-search-template conn "test-template1" fx/test-template1)
-  (let [{:keys  [found _index _type]} (doc/delete-search-template conn "test-template1")
-        result (doc/get-search-template conn "test-template1")]
-    (is (= found true))
-    (is (= _index ".scripts"))
-    (is (= _type "mustache"))
-    (is (nil? result))))
-
-(deftest ^{:native true} test-delete-by-query-with-a-term-query-and-mapping
-  (let [index-name   "people"
-        mapping-type "person"]
-    (idx/create conn index-name :mappings fx/people-mapping)
-    (doc/create conn index-name mapping-type fx/person-jack)
-    (doc/create conn index-name mapping-type fx/person-joe)
-    (idx/refresh conn index-name)
-    (doc/delete-by-query conn index-name mapping-type (q/term :username "esjoe"))
-    (idx/refresh conn index-name)
-    (are [c r] (= c (count-from r))
-         1 (doc/count conn index-name mapping-type (q/term :username "esjack"))
-         0 (doc/count conn index-name mapping-type (q/term :username "esjoe"))
-         0 (doc/count conn index-name mapping-type (q/term :username "esmary")))))
-
-(deftest ^{:native true} test-delete-by-query-with-a-term-query-across-all-mappings
-  (let [index-name   "people"
-        mapping-type "person"]
-    (idx/create conn index-name :mappings fx/people-mapping)
-    (doc/create conn index-name mapping-type fx/person-jack)
-    (doc/create conn index-name mapping-type fx/person-joe)
-    (doc/create conn index-name "lawyer" fx/person-joe)
-    (idx/refresh conn index-name)
-    (doc/delete-by-query-across-all-types conn index-name (q/match-all))
-    (idx/refresh conn index-name)
-    (are [c r] (= c (count-from r))
-         0 (doc/count conn index-name mapping-type (q/match-all)))
-    (is (= 0 (count-from (doc/count conn index-name "lawyer" (q/match-all))))))))
+    (is (not (doc/present? conn index-name mapping-type id))))))

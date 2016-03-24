@@ -44,12 +44,4 @@
           _        (idx/create conn index {:mappings {}})
           response (idx/update-mapping conn index "person" {:mapping mapping})]
       (is (created-or-acknowledged? response))
-      (is (get-in (idx/get-mapping conn index) [:people4 :mappings :person :properties :username :store]))))
-
-  (deftest ^{:rest true} test-delete-index-mapping
-    (let [index        "people5"
-          mapping-type "person"
-          _            (idx/create conn index {:mappings fx/people-mapping})
-          response     (idx/delete-mapping conn index mapping-type)]
-      (is (created-or-acknowledged? response))
-      (is (nil? ((idx/get-mapping conn index) mapping-type))))))
+      (is (get-in (idx/get-mapping conn index) [:people4 :mappings :person :properties :username :store])))))

@@ -16,11 +16,12 @@
   (:refer-clojure :exclude [get merge flush])
   (:require [clojure.walk :as wlk]
             [cheshire.core :as json])
-  (:import [org.elasticsearch.common.settings Settings ImmutableSettings ImmutableSettings$Builder]
+  (:import [org.elasticsearch.common.settings Settings Settings$Builder]
            [org.elasticsearch.common.transport
             TransportAddress InetSocketTransportAddress LocalTransportAddress]
            java.util.Map
            clojure.lang.IPersistentMap
+           java.net.InetAddress
            org.elasticsearch.client.Client
            org.elasticsearch.common.xcontent.XContentType
            org.elasticsearch.index.VersionType
@@ -34,10 +35,9 @@
            [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
            [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
            [org.elasticsearch.action.update UpdateRequest UpdateResponse]
-           [org.elasticsearch.action.deletebyquery DeleteByQueryRequest DeleteByQueryResponse IndexDeleteByQueryResponse]
            [org.elasticsearch.action.count CountRequest CountResponse]
            [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest
-            MultiSearchRequestBuilder MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item]
+            MultiSearchAction MultiSearchRequestBuilder MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item]
            [org.elasticsearch.action.suggest SuggestRequest SuggestResponse]
            [org.elasticsearch.search.suggest.completion CompletionSuggestionBuilder
                                                         CompletionSuggestionFuzzyBuilder]
@@ -48,17 +48,6 @@
            [org.elasticsearch.search.builder SearchSourceBuilder]
            [org.elasticsearch.search.sort SortBuilder SortOrder FieldSortBuilder]
            [org.elasticsearch.search SearchHits SearchHit]
-           [org.elasticsearch.search.facet Facets Facet]
-           [org.elasticsearch.search.facet.terms TermsFacet TermsFacet$Entry]
-           [org.elasticsearch.search.facet.range RangeFacet RangeFacet$Entry]
-           [org.elasticsearch.search.facet.histogram HistogramFacet HistogramFacet$Entry]
-           [org.elasticsearch.search.facet.datehistogram DateHistogramFacet DateHistogramFacet$Entry]
-           org.elasticsearch.search.facet.statistical.StatisticalFacet
-           [org.elasticsearch.search.facet.termsstats TermsStatsFacet TermsStatsFacet$Entry]
-           [org.elasticsearch.search.facet.geodistance GeoDistanceFacet GeoDistanceFacet$Entry]
-           org.elasticsearch.search.facet.query.QueryFacet
-           org.elasticsearch.search.fetch.source.FetchSourceContext
-           org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
            ;; Aggregations
            org.elasticsearch.search.aggregations.Aggregations
@@ -72,10 +61,8 @@
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
            org.elasticsearch.search.aggregations.metrics.stats.Stats
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
-           [org.elasticsearch.search.aggregations.bucket.histogram  Histogram Histogram$Bucket
-            DateHistogram DateHistogram$Bucket]
+           [org.elasticsearch.search.aggregations.bucket.histogram  Histogram Histogram$Bucket]
            [org.elasticsearch.search.aggregations.bucket.range      Range     Range$Bucket]
-           [org.elasticsearch.search.aggregations.bucket.range.date DateRange DateRange$Bucket]
            [org.elasticsearch.search.aggregations.bucket.terms      Terms     Terms$Bucket]
            org.elasticsearch.search.aggregations.bucket.SingleBucketAggregation
            [org.elasticsearch.search.aggregations HasAggregations]
@@ -85,7 +72,6 @@
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
            [org.elasticsearch.action.admin.indices.mapping.get GetMappingsRequest GetMappingsResponse]
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
-           org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest
@@ -96,20 +82,20 @@
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
-           org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
-           org.elasticsearch.common.hppc.cursors.ObjectObjectCursor
+           com.carrotsearch.hppc.cursors.ObjectObjectCursor
            org.elasticsearch.common.collect.ImmutableOpenMap
            org.elasticsearch.cluster.metadata.MappingMetaData
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
            org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequest
            org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest
            org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotRequest
-           org.elasticsearch.action.support.broadcast.BroadcastOperationResponse
+           org.elasticsearch.action.support.broadcast.BroadcastResponse
            org.elasticsearch.action.support.master.AcknowledgedResponse
+           org.elasticsearch.search.fetch.source.FetchSourceContext
            ;; Bulk responses
            [org.elasticsearch.action.bulk BulkResponse BulkItemResponse]))
 
@@ -203,11 +189,11 @@
   "Converts a Clojure map into immutable ElasticSearch settings"
   [m]
   (if m
-    (let [^ImmutableSettings$Builder sb (ImmutableSettings/settingsBuilder)]
+    (let [^Settings$Builder sb (Settings/builder)]
       (doseq [[k v] m]
         (.put sb ^String (name k) v))
       (.build sb))
-    ImmutableSettings$Builder/EMPTY_SETTINGS))
+    Settings$Builder/EMPTY_SETTINGS))
 
 ;;
 ;; Transports
@@ -215,7 +201,7 @@
 
 (defn ^TransportAddress ->socket-transport-address
   [^String host ^{:tag "long"} port]
-  (InetSocketTransportAddress. host port))
+  (InetSocketTransportAddress. (InetAddress/getByName host) port))
 
 (defn ^TransportAddress ->local-transport-address
   [^String id]
@@ -521,60 +507,6 @@
    :get-result (when-let [gr (.getGetResult r)]
                  (get-result->map gr))})
 
-(defn ^DeleteByQueryRequest ->delete-by-query-request
-  ([index mapping-type ^Map source]
-     (let [^Map m {"query" (wlk/stringify-keys source)}]
-       (doto (DeleteByQueryRequest. (->string-array index))
-         (.source m)
-         (.types (->string-array mapping-type)))))
-  ([index mapping-type source {:keys [routing]}]
-     (let [^Map m {"query" (wlk/stringify-keys source)}
-           r      (doto (DeleteByQueryRequest. (->string-array index))
-                    (.source m)
-                    (.types (->string-array mapping-type)))]
-       (when routing
-         (.routing r (->string-array routing)))
-       r)))
-
-(defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-types
-  ([index ^Map source]
-     (let [^Map m {"query" (wlk/stringify-keys source)}]
-       (doto (DeleteByQueryRequest. (->string-array index))
-         (.source m))))
-  ([index source {:keys [routing]}]
-     (let [^Map m {"query" (wlk/stringify-keys source)}
-           r      (doto (DeleteByQueryRequest. (->string-array index))
-                    (.source m))]
-       (when routing
-         (.routing r (->string-array routing)))
-       r)))
-
-(defn ^DeleteByQueryRequest ->delete-by-query-request-across-all-indices-and-types
-  ([^Map source]
-     (let [^Map m {"query" (wlk/stringify-keys source)}]
-       (doto (DeleteByQueryRequest.)
-         (.source m))))
-  ([source {:keys [routing]}]
-     (let [^Map m {"query" (wlk/stringify-keys source)}
-           r      (doto (DeleteByQueryRequest.)
-                    (.source m))]
-       (when routing
-         (.routing r (->string-array routing)))
-       r)))
-
-(defn- ^IPersistentMap index-delete-by-query-response->map
-  [m [^String k ^IndexDeleteByQueryResponse v]]
-  (assoc m (keyword k) {:_shards {:total      (.getTotalShards v)
-                                  :successful (.getSuccessfulShards v)
-                                  :failed     (.getFailedShards v)}}))
-
-(defn ^IPersistentMap delete-by-query-response->map
-  [^DeleteByQueryResponse r]
-  ;; Example REST API response:
-  ;; {:ok true, :_indices {:people {:_shards {:total 5, :successful 5, :failed 0}}}}
-  {:ok       true
-   :_indices (reduce index-delete-by-query-response->map {} (.getIndices r))})
-
 (defn ^SortOrder ^:private ->sort-order
   [s]
   (if (instance? SortOrder s)
@@ -700,7 +632,7 @@
 
 (defn ^SearchRequest ->search-request
   [index-name mapping-type {:keys [search-type search_type scroll routing
-                                   preference query facets aggregations from size timeout
+                                   preference query aggregations from size timeout
                                    template params
                                    post-filter filter min-score version fields sort stats _source
                                    highlight] :as options}]
@@ -710,8 +642,6 @@
     ;; source
     (when query
       (.query sb ^Map (wlk/stringify-keys query)))
-    (when facets
-      (.facets sb ^Map (wlk/stringify-keys facets)))
     (when aggregations
       (.aggregations sb ^Map (wlk/stringify-keys aggregations)))
     (when from
@@ -762,18 +692,18 @@
 
 (defn ^MultiSearchRequest ->multi-search-request
   ([^Client conn queries opts]
-     (let [sb (MultiSearchRequestBuilder. conn)]
+     (let [sb (.newRequestBuilder MultiSearchAction/INSTANCE conn)]
        ;; pairs of [{:index "index name" :type "mapping type"}, search-options]
        (doseq [[{:keys [index type]} search-opts] (partition 2 queries)]
          (.add sb (->search-request index type search-opts)))
        (.request sb)))
   ([^Client conn ^String index queries opts]
-     (let [sb (MultiSearchRequestBuilder. conn)]
+     (let [sb (.newRequestBuilder MultiSearchAction/INSTANCE conn)]
        (doseq [[{:keys [type]} search-opts] (partition 2 queries)]
          (.add sb (->search-request index type search-opts)))
        (.request sb)))
   ([^Client conn ^String index ^String type queries opts]
-     (let [sb (MultiSearchRequestBuilder. conn)]
+     (let [sb (.newRequestBuilder MultiSearchAction/INSTANCE conn)]
        (doseq [[_ search-opts] (partition 2 queries)]
          (.add sb (->search-request index type search-opts)))
        (.request sb))))
@@ -783,49 +713,6 @@
   (let [r (SearchScrollRequest. scroll-id)]
     (when scroll
       (.scroll r ^String scroll))
-    r))
-
-(defn ^MoreLikeThisRequest ->more-like-this-request
-  [^String index ^String mapping-type ^String id {:keys [routing fields mlt_fields
-                                                         percent-terms-to-match percent_terms_to_match
-                                                         max-query-terms max_query_terms
-                                                         stop-words stop_words
-                                                         min-doc-freq min_doc_freq
-                                                         min-word-len min_word_len
-                                                         max-word-len max_word_len
-                                                         boost-terms boost_terms
-                                                         query source
-                                                         search-type search_type
-                                                         size from]}]
-  (let [r (doto (MoreLikeThisRequest. index)
-            (.type mapping-type)
-            (.id id))]
-    (when routing
-      (.routing r routing))
-    (when-let [xs (or mlt_fields fields)]
-      (.fields r (->string-array xs)))
-    (when-let [v (or percent-terms-to-match percent_terms_to_match)]
-      (.percentTermsToMatch r ^{:tag "float"} v))
-    (when-let [v (or max-query-terms max_query_terms)]
-      (.maxQueryTerms r ^{:tag "int"} v))
-    (when-let [v (or stop-words stop_words)]
-      (.stopWords r (->string-array v)))
-    (when-let [v (or min-doc-freq min_doc_freq)]
-      (.minDocFreq r ^{:tag "int"} v))
-    (when-let [v (or min-word-len min_word_len)]
-      (.minWordLen r ^{:tag "int"} v))
-    (when-let [v (or max-word-len max_word_len)]
-      (.maxWordLen r ^{:tag "int"} v))
-    (when-let [v (or boost-terms boost_terms)]
-      (.boostTerms r ^{:tag "float"} v))
-    (when-let [q (or query source)]
-      (.searchSource r ^Map (wlk/stringify-keys q)))
-    (when-let [v (or search-type search_type)]
-      (.searchType r ^String v))
-    (when size
-      (.searchSize r ^{:tag "int"} size))
-    (when from
-      (.searchFrom r ^{:tag "int"} from))
     r))
 
 (defn ->string
@@ -940,132 +827,6 @@
    :max_score (.getMaxScore hits)
    :hits      (map search-hit->map (.getHits hits))})
 
-(defprotocol FacetConversion
-  (^IPersistentMap facet-to-map [facet] "Converts a facet into a Clojure map"))
-(extend-protocol FacetConversion
-  ;; {:tags {:_type terms,
-  ;;         :missing 0,
-  ;;         :total 26,
-  ;;         :other 6,
-  ;;         :terms [{:term text, :count 2}
-  ;;                 {:term technology, :count 2}
-  ;;                 {:term software, :count 2}
-  ;;                 {:term search, :count 2}
-  ;;                 {:term opensource, :count 2}
-  ;;                 {:term norteamérica, :count 2}
-  ;;                 {:term lucene, :count 2}
-  ;;                 {:term historia, :count 2}
-  ;;                 {:term geografía, :count 2}
-  ;;                 {:term full, :count 2}]}}
-  TermsFacet
-  (facet-to-map [^TermsFacet ft]
-    {:_type TermsFacet/TYPE
-     :missing (.getMissingCount ft)
-     :total   (.getTotalCount ft)
-     :other   (.getOtherCount ft)
-     :terms (map (fn [^TermsFacet$Entry et]
-                   ;; TODO: terms may have bytes and not string representation. MK.
-                   {:term (-> et .getTerm .string) :count (.getCount et)})
-                 (.getEntries ft))})
-
-  ;; {:ages {:_type range,
-  ;;         :ranges [{:from 18.0, :to 20.0, :count 0, :total_count 0, :total 0.0, :mean 0.0}
-  ;;                  {:from 21.0, :to 25.0, :count 1, :min 22.0, :max 22.0, :total_count 1, :total 22.0, :mean 22.0}
-  ;;                  {:from 26.0, :to 30.0, :count 2, :min 28.0, :max 29.0, :total_count 2, :total 57.0, :mean 28.5}
-  ;;                  {:from 30.0, :to 35.0, :count 0, :total_count 0, :total 0.0, :mean 0.0}
-  ;;                  {:to 45.0, :count 4, :min 22.0, :max 37.0, :total_count 4, :total 116.0, :mean 29.0}]}}
-  RangeFacet
-  (facet-to-map [^RangeFacet ft]
-    {:_type  RangeFacet/TYPE
-     :ranges (map (fn [^RangeFacet$Entry et]
-                    {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
-                     :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
-                  (.getEntries ft))})
-
-  ;; {:ages {:_type histogram,
-  ;;         :entries [{:key 20, :count 1}
-  ;;                   {:key 25, :count 2}
-  ;;                   {:key 35, :count 1}]}}
-  HistogramFacet
-  (facet-to-map [^HistogramFacet ft]
-    {:_type   HistogramFacet/TYPE
-     :entries (map (fn [^HistogramFacet$Entry et]
-                     {:key (.getKey et) :count (.getCount et) :total_count (.getTotalCount et)
-                      :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
-                   (.getEntries ft))})
-
-  ;; {:dates {:_type date_histogram,
-  ;;          :entries [{:time 1343685600000, :count 1}
-  ;;                    {:time 1343761200000, :count 1}
-  ;;                    {:time 1343804400000, :count 1}
-  ;;                    {:time 1343836800000, :count 1}
-  ;;                    {:time 1343898000000, :count 1}]}}
-  DateHistogramFacet
-  (facet-to-map [^DateHistogramFacet ft]
-    {:_type   DateHistogramFacet/TYPE
-     :entries (map (fn [^DateHistogramFacet$Entry et]
-                     {:time (.getTime et) :count (.getCount et) :total_count (.getTotalCount et)
-                      :mean (.getMean et) :min (.getMin et) :max (.getMax et) :total (.getTotal et)})
-                   (.getEntries ft))})
-
-  ;; {:comments {:total 68.0,
-  ;;             :mean 22.666666666666668,
-  ;;             :count 3,
-  ;;             :max 44.0,
-  ;;             :std_deviation 16.438437341250605,
-  ;;             :sum_of_squares 2352.0,
-  ;;             :min 4.0,
-  ;;             :variance 270.22222222222223,
-  ;;             :_type "statistical"}}
-  StatisticalFacet
-  (facet-to-map [^StatisticalFacet ft]
-    {:_type   StatisticalFacet/TYPE
-     :count (.getCount ft) :total (.getTotal ft) :sum_of_squares (.getSumOfSquares ft)
-     :mean (.getMean ft) :min (.getMin ft) :max (.getMax ft) :variance (.getVariance ft)
-     :std_deviation (.getStdDeviation ft)})
-
-  ;; {:comments {:_type "terms_stats",
-  ;;             :missing 0,
-  ;;             :terms ({:term "boom", :count 2, :total_count 2, :min 100.0, :max 388.0, :total 488.0, :mean 244.0}
-  ;;                     {:term "aha", :count 2, :total_count 2, :min 20.0, :max 120.0, :total 140.0, :mean 70.0}
-  ;;                     {:term "wheeeeeha", :count 1, :total_count 1, :min 4.0, :max 4.0, :total 4.0, :mean 4.0}
-  ;;                     {:term "booya", :count 1, :total_count 1, :min 44.0, :max 44.0, :total 44.0, :mean 44.0})}}
-  TermsStatsFacet
-  (facet-to-map [^TermsStatsFacet ft]
-    {:_type TermsStatsFacet/TYPE
-     :missing (.getMissingCount ft)
-     :terms (map (fn [^TermsStatsFacet$Entry et]
-                   ;; TODO: terms may have bytes and not string representation. MK.
-                   {:term (-> et .getTerm .string) :count (.getCount et) :total_count (.getTotalCount et)
-                    :min (.getMin et) :max (.getMax et) :total (.getTotal et) :mean (.getMean et)})
-                 (.getEntries ft))})
-
-  GeoDistanceFacet
-  (facet-to-map [^GeoDistanceFacet ft]
-    {:_type GeoDistanceFacet/TYPE
-     :terms (map (fn [^GeoDistanceFacet$Entry et]
-                   {:from (.getFrom et) :to (.getTo et) :count (.getCount et) :total_count (.getTotalCount et) :total (.getTotal et)
-                    :mean (.getMean et) :min (.getMin et) :max (.getMax et)})
-                 (.getEntries ft))})
-
-  ;; TODO: filter facets
-
-  QueryFacet
-  (facet-to-map [^QueryFacet ft]
-    {:_type   QueryFacet/TYPE
-     :count   (.getCount ft)}))
-
-
-
-
-(defn- search-facets->seq
-  [^Facets facets]
-  (when facets
-    (reduce (fn [acc [^String name ^Facet facet]]
-              (assoc acc (keyword name) (facet-to-map facet)))
-            {}
-            (.facetsAsMap facets))))
-
 (defprotocol AggregatorPresenter
   (aggregation-value [agg] "Presents an aggregation as immutable Clojure map"))
 
@@ -1086,7 +847,8 @@
 (defn histogram-bucket->map
   [^Histogram$Bucket b]
   (merge-sub-aggregations
-   {:key_as_string (.getKey b) :doc_count (.getDocCount b) :key (.. b getKeyAsNumber longValue)}
+   {:key (.getKey b)
+    :doc_count (.getDocCount b)}
    b))
 
 (defn range-bucket->map
@@ -1094,27 +856,9 @@
   (merge-sub-aggregations
    {:doc_count (.getDocCount b)
     :from_as_string (String/valueOf ^{:tag "long"} (.. b getFrom longValue))
-    :from (.. b getFrom longValue)
+    :from (.. b getFrom)
     :to_as_string (String/valueOf ^{:tag "long"} (.. b getTo longValue))
-    :to (.. b getTo longValue)}
-   b))
-
-(defn date-range-bucket->map
-  [^DateRange$Bucket b]
-  (merge-sub-aggregations
-   {:doc_count (.getDocCount b)
-    ;; :from_as_string, :to_as_string requires knowing what format the values
-    ;; are in. We can format them using org.elasticsearch.common.joda.FormatDateTimeFormatter
-    ;; but since aggregations can be arbitrarily nested, this is much trickier
-    ;; than simply passing the formatter from native.document/search. MK.
-    :from (.getFromAsDate b)
-    :to (.getToAsDate b)}
-   b))
-
-(defn date-histogram-bucket->map
-  [^DateHistogram$Bucket b]
-  (merge-sub-aggregations
-   {:doc_count (.getDocCount b) :key (.getKeyAsDate b)}
+    :to (.. b getTo)}
    b))
 
 (defn terms-bucket->map
@@ -1190,17 +934,9 @@
   (aggregation-value [^Histogram agg]
     {:buckets (vec (map histogram-bucket->map (.getBuckets agg)))})
 
-  DateHistogram
-  (aggregation-value [^DateHistogram agg]
-    {:buckets (vec (map date-histogram-bucket->map (.getBuckets agg)))})
-
   Range
   (aggregation-value [^Range agg]
     {:buckets (vec (map range-bucket->map (.getBuckets agg)))})
-
-  DateRange
-  (aggregation-value [^DateRange agg]
-    {:buckets (vec (map date-range-bucket->map (.getBuckets agg)))})
 
   Terms
   (aggregation-value [^Terms agg]
@@ -1243,7 +979,6 @@
   (let [m {:took       (.getTookInMillis r)
            :timed_out  (.isTimedOut r)
            :_scroll_id (.getScrollId r)
-           :facets     (search-facets->seq (.getFacets r))
            ;; TODO: suggestions
            :_shards    {:total      (.getTotalShards r)
                         :successful (.getSuccessfulShards r)
@@ -1391,11 +1126,6 @@
       (.ignoreConflicts r v))
     r))
 
-(defn ^DeleteMappingRequest ->delete-mapping-request
-  [index-name mapping-types]
-  (doto (DeleteMappingRequest. (->string-array index-name))
-    (.types (->string-array mapping-types))))
-
 (defn ^OpenIndexRequest ->open-index-request
   "opens closed index or indices for search"
   [index-name]
@@ -1444,7 +1174,7 @@
   {:acknowledged (.isAcknowledged res)})
 
 (defn ^IPersistentMap broadcast-operation-response->map
-  [^BroadcastOperationResponse res]
+  [^BroadcastResponse res]
   ;; matches REST API responses
   {:_shards {:total      (.getTotalShards res)
              :successful (.getSuccessfulShards res)
@@ -1524,16 +1254,6 @@
        (when refresh
          (.refresh r refresh))
        r)))
-
-(defn ^IndicesStatusRequest ->indices-status-request
-  [index-name {:keys [recovery snapshot]}]
-  (let [ary (->string-array index-name)
-        r   (IndicesStatusRequest. ary)]
-    (when recovery
-      (.recovery r recovery))
-    (when snapshot
-      (.snapshot r snapshot))
-    r))
 
 (defn ^IndicesSegmentsRequest ->indices-segments-request
   [index-name]
