@@ -263,10 +263,6 @@
   ([conn ^String index-name ^String mapping-type]
      (url-with-path conn index-name mapping-type "_query")))
 
-(defn more-like-this-url
-  [conn ^String index-name ^String mapping-type id]
-  (url-with-path conn index-name mapping-type (URLEncoder/encode id encoding) "_mlt"))
-
 (defn percolator-url
   [conn ^String index-name ^String percolator]
   (url-with-path conn  index-name ".percolator" percolator))

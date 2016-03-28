@@ -25,11 +25,9 @@
            [org.elasticsearch.action.get GetRequest MultiGetRequest]
            org.elasticsearch.action.delete.DeleteRequest
            org.elasticsearch.action.update.UpdateRequest
-           org.elasticsearch.action.deletebyquery.DeleteByQueryRequest
            org.elasticsearch.action.count.CountRequest
            [org.elasticsearch.action.search SearchRequest SearchScrollRequest
             MultiSearchRequest]
-           org.elasticsearch.action.mlt.MoreLikeThisRequest
            [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
            [org.elasticsearch.action.suggest SuggestRequest]
            ;; Admin Client
@@ -38,7 +36,6 @@
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
            org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
-           org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
@@ -48,7 +45,6 @@
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
-           org.elasticsearch.action.admin.indices.status.IndicesStatusRequest
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
@@ -87,11 +83,6 @@
   [^Client conn ^DeleteRequest req]
   (.delete ^Client conn req))
 
-(defn ^ActionFuture delete-by-query
-  "Executes a delete by query action request"
-  [^Client conn ^DeleteByQueryRequest req]
-  (.deleteByQuery ^Client conn req))
-
 (defn ^ActionFuture count
   "Executes a count action request"
   [^Client conn ^CountRequest req]
@@ -110,11 +101,6 @@
   "Executes a search action request"
   [^Client conn ^SearchScrollRequest req]
   (.searchScroll ^Client conn req))
-
-(defn ^ActionFuture more-like-this
-  "Executes a more-like-this action request"
-  [^Client conn ^MoreLikeThisRequest req]
-  (.moreLikeThis ^Client conn req))
 
 (defn ^ActionFuture percolate
   "Executes a more-like-this action request"
@@ -171,11 +157,6 @@
   [^Client conn ^PutMappingRequest req]
   (-> ^Client conn .admin .indices (.putMapping req)))
 
-(defn ^ActionFuture admin-delete-mapping
-  "Executes a delete mapping request"
-  [^Client conn ^DeleteMappingRequest req]
-  (-> ^Client conn .admin .indices (.deleteMapping req)))
-
 (defn ^ActionFuture admin-open-index
   "Executes an open index request"
   [^Client conn ^OpenIndexRequest req]
@@ -221,11 +202,6 @@
   [^Client conn ^ClearIndicesCacheRequest req]
   (-> ^Client conn .admin .indices (.clearCache req)))
 
-(defn ^ActionFuture admin-status
-  "Executes a status request"
-  [^Client conn ^IndicesStatusRequest req]
-  (-> ^Client conn .admin .indices (.status req)))
-
 (defn ^ActionFuture admin-index-stats
   "Executes an indices stats request"
   [^Client conn ^IndicesStatsRequest req]
@@ -260,14 +236,16 @@
   "Connects to one or more ElasticSearch cluster nodes using
    TCP/IP communication transport. Returns the client."
   ([]
-     (TransportClient.))
+     (.build (TransportClient/builder)))
   ([pairs]
-     (let [tc (TransportClient.)]
+     (let [tc (.build (TransportClient/builder))]
        (doseq [[host port] pairs]
          (.addTransportAddress tc (cnv/->socket-transport-address host port)))
        tc))
   ([pairs settings]
-     (let [tc (TransportClient. (cnv/->settings settings))]
+     (let [tcb (doto (TransportClient/builder)
+                 (.settings (cnv/->settings settings)))
+           tc (.build tcb)]
        (doseq [[host port] pairs]
          (.addTransportAddress tc (cnv/->socket-transport-address host port)))
        tc)))

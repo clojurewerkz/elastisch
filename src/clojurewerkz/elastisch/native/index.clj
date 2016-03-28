@@ -25,7 +25,6 @@
            org.elasticsearch.action.index.IndexResponse
            org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
-           org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
            org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
@@ -34,7 +33,6 @@
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheResponse
-           org.elasticsearch.action.admin.indices.status.IndicesStatusResponse
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateResponse
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsResponse))
@@ -119,13 +117,6 @@
   [^Client conn ^String index-name ^String mapping-type & args]
   (let [opts                    (ar/->opts args)
         ft                      (es/admin-put-mapping conn (cnv/->put-mapping-request index-name mapping-type opts))
-        ^PutMappingResponse res (.actionGet ft)]
-    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
-
-(defn delete-mapping
-  "Allow to delete a mapping (type) along with its data."
-  [^Client conn ^String index-name ^String mapping-type]
-  (let [ft                       (es/admin-delete-mapping conn (cnv/->delete-mapping-request index-name mapping-type))
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
@@ -218,19 +209,6 @@
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res)))
-
-(defn status
-  "Returns status for one or more indices.
-
-   Options may be used to define what exactly will be contained in the response:
-
-   :recovery (boolean, default: false): should the status include recovery information?
-   :snapshot (boolean, default: false): should the status include snapshot information?"
-  [^Client conn index-name & args]
-  (let [opts                       (ar/->opts args)
-        ft                         (es/admin-status conn (cnv/->indices-status-request index-name opts))
-        ^IndicesStatusResponse res (.actionGet ft)]
-    (cnv/broadcast-operation-response->map res)))
 
 (defn segments
   "Returns segments information for one or more indices."

@@ -45,7 +45,7 @@
       ;; search request
       (is (= 0 (count initial-hits)))
       (is (= 4 (total-hits scan-response)))
-      (is (= 4 (count scan-hits)))))
+      (is (= 3 (count scan-hits)))))
 
   (deftest ^{:rest true :scroll true} test-basic-scroll-query
     (let [index-name   "articles"

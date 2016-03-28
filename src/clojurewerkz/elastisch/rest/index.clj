@@ -110,14 +110,6 @@
                                            (join-names index-name-or-names) type-name)
               {:body mapping :query-params {:ignore_conflicts ignore_conflicts}})))
 
-(defn delete-mapping
-  "Allow to delete a mapping (type) along with its data.
-
-   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
-  [^Connection conn ^String index-name ^String type-name]
-  (rest/delete conn (rest/index-mapping-url conn
-                                            index-name type-name)))
-
 ;;
 ;; Settings
 ;;

@@ -24,7 +24,6 @@
            [org.elasticsearch.action.get GetResponse MultiGetResponse]
            org.elasticsearch.action.count.CountResponse
            org.elasticsearch.action.delete.DeleteResponse
-           org.elasticsearch.action.deletebyquery.DeleteByQueryResponse
            org.elasticsearch.action.search.SearchResponse
            [org.elasticsearch.action.suggest SuggestResponse]
            java.util.Map))
@@ -290,47 +289,6 @@
 ([^Client conn ^String languege ^String id]
   (delete conn ".scripts" languege id)))
 
-(defn delete-by-query
-  "Performs a delete-by-query operation.
-
-   Examples:
-
-   (require '[clojurewerkz.elastisch.native.document :as doc])
-   (require '[clojurewerkz.elastisch.query :as q])
-
-   (doc/delete-by-query conn \"people\" \"person\" (q/term :username \"appleseed\"))"
-  ([^Client conn index mapping-type query]
-     (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request index mapping-type query))
-           ^DeleteByQueryResponse res (.actionGet ft)]
-       (cnv/delete-by-query-response->map res)))
-  ([^Client conn index mapping-type query & args]
-     (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request index mapping-type query (ar/->opts args)))
-           ^DeleteByQueryResponse res (.actionGet ft)]
-       (cnv/delete-by-query-response->map res))))
-
-(defn delete-by-query-across-all-types
-  "Performs a delete-by-query operation across all mapping types."
-  ([^Client conn index query]
-     (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request-across-all-types index query))
-           ^DeleteByQueryResponse res (.actionGet ft)]
-       (cnv/delete-by-query-response->map res)))
-  ([^Client conn index query & args]
-     (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request-across-all-types index query (ar/->opts args)))
-           ^DeleteByQueryResponse res (.actionGet ft)]
-       (cnv/delete-by-query-response->map res))))
-
-(defn delete-by-query-across-all-indexes-and-types
-  "Performs a delete-by-query operation across all indexes and mapping types.
-   This may put very high load on your ElasticSearch cluster so use this function with care."
-  ([^Client conn query]
-     (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request-across-all-indices-and-types query))
-           ^DeleteByQueryResponse res (.actionGet ft)]
-       (cnv/delete-by-query-response->map res)))
-  ([^Client conn query & args]
-     (let [ft                         (es/delete-by-query conn (cnv/->delete-by-query-request-across-all-indices-and-types query (ar/->opts args)))
-           ^DeleteByQueryResponse res (.actionGet ft)]
-       (cnv/delete-by-query-response->map res))))
-
 (defn count
   "Performs a count query.
 
@@ -408,14 +366,6 @@
   [^Client conn index mapping-type id document]
   (delete conn index mapping-type id)
   (put conn index mapping-type id document))
-
-(defn more-like-this
-  "Performs a More Like This (MLT) query."
-  [^Client conn index mapping-type id & args]
-  (let [ft (es/more-like-this conn (cnv/->more-like-this-request index mapping-type id (ar/->opts args)))
-        ^SearchResponse res (.actionGet ft)]
-    (cnv/search-response->seq res)))
-
 
 (defn suggest
   "Suggests similar looking terms based on a provided text by using a suggester.
