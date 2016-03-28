@@ -113,31 +113,31 @@
                          :biography    {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
 
 (def people-suggestion-mapping
-  {:person {:properties {:username {:type "string"}
-                         :suggest {:type "completion"
-                                   :index_analyzer "simple"
-                                   :search_analyzer "simple"
-                                   :payloads true}}}})
+  {:person_suggestions {:properties {:username {:type "string"}
+                                     :suggest {:type "completion"
+                                               :index_analyzer "simple"
+                                               :search_analyzer "simple"
+                                               :payloads true}}}})
 
 (def people-suggestion-gender-context-mapping
-  {:person {:properties {:username {:type "string"}
-                         :suggest {:type "completion"
-                                   :index_analyzer "simple"
-                                   :search_analyzer "simple"
-                                   :payloads true
-                                   :context {:gender {:type "category"
-                                                      :default ["male" "female"]}}}}}})
+  {:person_suggestions_gender_ctx {:properties {:username {:type "string"}
+                                                :suggest {:type "completion"
+                                                          :index_analyzer "simple"
+                                                          :search_analyzer "simple"
+                                                          :payloads true
+                                                          :context {:gender {:type "category"
+                                                                             :default ["male" "female"]}}}}}})
 (def people-suggestion-location-context-mapping
-  {:person {:properties {:username {:type "string"}
-                         :suggest {:type "completion"
-                                   :index_analyzer "simple"
-                                   :search_analyzer "simple"
-                                   :payloads true
-                                   :context {:location {:type "geo"
-                                                        :precision ["100km"]
-                                                        :neighbors true
-                                                        :default {:lat 0.0
-                                                                  :lon 0.0}}}}}}})
+  {:person_suggestions_location_ctx {:properties {:username {:type "string"}
+                                                  :suggest {:type "completion"
+                                                            :index_analyzer "simple"
+                                                            :search_analyzer "simple"
+                                                            :payloads true
+                                                            :context {:location {:type "geo"
+                                                                                 :precision ["100km"]
+                                                                                 :neighbors true
+                                                                                 :default {:lat 0.0
+                                                                                           :lon 0.0}}}}}}})
 
 (def passport-mapping
   {:passport {:properties {:id {:type "string" :store "yes"}}
@@ -199,7 +199,7 @@
                           :tags     {:type "string" :analyzer "standard"}
                           :number-of-edits {:type "long"}
                           :latest-edit {:type       "object"
-                                        :properties {:date   {:type "date" :fuzzy_factor 3}
+                                        :properties {:date   {:type "date"}
                                                      :author {:type "string" :index "not_analyzed" :null_value "N/A"}}}}}})
 
 ;;
@@ -210,7 +210,7 @@
                                           :text      {:type "string" :analyzer "standard"}
                                           :timestamp {:type "date" :include_in_all false :format "basic_date_time_no_millis"}
                                           :retweets  {:type "integer" :include_in_all false}
-                                          :promoted  {:type "boolean" :default false :boost 10.0 :include_in_all false}
+                                          :promoted  {:type "boolean" :boost 10.0 :include_in_all false}
                                           :location  {:type "object" :include_in_all false :properties {:country {:type "string" :index "not_analyzed"}
                                                                                                         :state   {:type "string" :index "not_analyzed"}
                                                                                                         :city    {:type "string" :index "not_analyzed"}}}}}})
@@ -319,8 +319,8 @@
 
 (defn prepopulate-people-suggestion
   [f]
-  (let [index-name "people"
-        mapping-type "person"]
+  (let [index-name "people_suggestions"
+        mapping-type "person_suggestions"]
     (idx/create conn index-name :mappings people-suggestion-mapping)
     ;; seeds suggestion data
     (is (created? (doc/put conn index-name mapping-type "1" suggest-jack)))
@@ -334,7 +334,7 @@
 (defn prepopulate-people-category-suggestion
   [f]
   (let [index-name "people_with_category"
-        mapping-type "person"]
+        mapping-type "person_suggestions"]
     (idx/create conn index-name :mappings people-suggestion-gender-context-mapping)
     ;; seeds suggestion data
     (is (created? (doc/put conn index-name mapping-type "1" 
@@ -352,7 +352,7 @@
 (defn prepopulate-people-location-suggestion
   [f]
   (let [index-name "people_with_locations"
-        mapping-type "person"
+        mapping-type "person_suggestions"
         local {:location {:lat 90 :lon 90}}
         faraway {:location {:lat 0 :lon -90}}]
     (idx/create conn index-name :mappings people-suggestion-location-context-mapping)
