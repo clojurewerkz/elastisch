@@ -31,7 +31,7 @@
       (is (found? (doc/delete conn index-name mapping-type id)))
       (is (not (doc/present? conn index-name mapping-type id)))))
 
-  (deftest ^{:rest true} test-delete-by-query-with-a-term-query-and-mapping
+  (deftest ^{:rest true, :plugin true} test-delete-by-query-with-a-term-query-and-mapping
     (idx/create conn index-name :mappings fx/people-mapping)
     (doc/create conn index-name mapping-type fx/person-jack)
     (doc/create conn index-name mapping-type fx/person-joe)
@@ -43,7 +43,7 @@
          0 (doc/count conn index-name mapping-type (q/term :username "esjoe"))
          0 (doc/count conn index-name mapping-type (q/term :username "esmary"))))
 
-  (deftest ^{:rest true} test-delete-by-query-with-a-term-query-across-all-mappings
+  (deftest ^{:rest true, :plugin true} test-delete-by-query-with-a-term-query-across-all-mappings
     (idx/create conn index-name :mappings fx/people-mapping)
     (doc/create conn index-name mapping-type fx/person-jack)
     (doc/create conn index-name mapping-type fx/person-joe)
