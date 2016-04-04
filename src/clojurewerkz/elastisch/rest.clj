@@ -225,11 +225,11 @@
   ([conn ^String index-name]
      (url-with-path conn index-name "_cache/clear")))
 
-(defn index-status-url
+(defn index-recovery-url
   ([conn]
-     (url-with-path conn "_status"))
+     (url-with-path conn "_recovery"))
   ([conn ^String index-name]
-     (url-with-path conn index-name "_status")))
+     (url-with-path conn index-name "_recovery")))
 
 (defn index-stats-url
   ([conn ^String index-name]
