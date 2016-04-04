@@ -107,7 +107,7 @@
   (deftest ^{:rest true :indexing true} test-put-with-a-10-seconds-ttl
     (let [id       "1"
           _        (idx/create conn index-name :mappings fx/people-mapping)
-          response (doc/put conn index-name index-type id fx/person-jack :ttl 10000)]
+          response (doc/put conn index-name index-type id fx/person-jack :ttl "10000ms")]
       (is (created? response))))
 
   (deftest ^{:rest true :indexing true} test-put-with-a-timeout
