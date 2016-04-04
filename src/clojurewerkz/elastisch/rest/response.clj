@@ -89,12 +89,6 @@
   [m]
   (get-in m [:hits :hits]))
 
-(defn facets-from
-  "Returns facets information (overview and actual facets) from a response as a map. Keys in the map depend on
-   the facets query performed"
-  [m]
-  (get m :facets {}))
-
 (defn ids-from
   "Returns search hit ids from a response"
   [m]
