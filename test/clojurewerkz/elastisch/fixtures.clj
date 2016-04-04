@@ -199,7 +199,7 @@
                           :tags     {:type "string" :analyzer "standard"}
                           :number-of-edits {:type "long"}
                           :latest-edit {:type       "object"
-                                        :properties {:date   {:type "date" :fuzzy_factor 3}
+                                        :properties {:date   {:type "date"}
                                                      :author {:type "string" :index "not_analyzed" :null_value "N/A"}}}}}})
 
 ;;
