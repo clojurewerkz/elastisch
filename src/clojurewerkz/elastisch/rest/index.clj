@@ -345,8 +345,8 @@
   ([^Connection conn]
      (rest/get conn (rest/index-segments-url conn)))
   ([^Connection conn index-name]
-     (rest/get conn (rest/index-status-url conn
-                                           (join-names index-name)))))
+     (rest/get conn (rest/index-segments-url conn
+                                             (join-names index-name)))))
 
 
 (defn stats
