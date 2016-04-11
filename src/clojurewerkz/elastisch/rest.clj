@@ -61,7 +61,7 @@
         (http/post (merge (.http-opts conn)
                           options
                           {:accept :json
-                           :throw-exceptions false ;;ables to see ES errors
+                           ;:throw-exceptions false ;;ables to see ES when debugging
                            :body (json/encode body)}))
         (:body)
         (parse-safely))))
@@ -278,8 +278,8 @@
      (url-with-path conn index-name mapping-type "_query")))
 
 (defn more-like-this-url
-  [conn ^String index-name ^String mapping-type id]
-  (url-with-path conn index-name mapping-type (URLEncoder/encode id encoding) "_mlt"))
+  [conn ^String index-name ^String mapping-type]
+  (url-with-path conn index-name mapping-type (URLEncoder/encode "" encoding) "_search"))
 
 (defn percolator-url
   [conn ^String index-name ^String percolator]

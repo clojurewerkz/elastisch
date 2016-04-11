@@ -29,6 +29,11 @@
       (doc/put conn index type "3" fx/article-on-nueva-york)
       (doc/put conn index type "4" fx/article-on-austin)
       (idx/refresh conn index)
-      (let [response (doc/more-like-this conn index type "2" :mlt_fields ["tags"] :min_term_freq 1 :min_doc_freq 1)]
+      (let [response (doc/more-like-this conn index type
+                                         :ids ["2"]
+                                         :fields ["tags"]
+                                         :min_term_freq 1
+                                         :min_doc_freq 1)]
         (is (= 1 (total-hits response)))
-        (is (= fx/article-on-elasticsearch (-> (hits-from response) first :_source)))))))
+        (is (= fx/article-on-elasticsearch
+               (-> (hits-from response) first :_source)))))))

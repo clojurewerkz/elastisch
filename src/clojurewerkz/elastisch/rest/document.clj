@@ -339,10 +339,10 @@
 
 (defn more-like-this
   "Performs a More Like This (MLT) query."
-  [^Connection conn index mapping-type id & args]
-  (rest/get conn (rest/more-like-this-url conn
-                                          index mapping-type id)
-            {:query-params (ar/->opts args)}))
+  [^Connection conn index mapping-type & args]
+  (rest/get conn
+            (rest/more-like-this-url conn index mapping-type)
+            {:body (json/encode {:query {:mlt (ar/->opts args)}})}))
 
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
@@ -350,7 +350,8 @@
   [^Connection conn index query & args]
   (rest/get conn (rest/query-validation-url conn
                                             index)
-            {:body (json/encode {:query query}) :query-params (ar/->opts args)}))
+            {:body (json/encode {:query query})
+             :query-params (ar/->opts args)}))
 
 
 (defn analyze
