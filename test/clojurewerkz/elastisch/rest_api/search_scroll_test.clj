@@ -44,7 +44,7 @@
       ;; scan queries don't return any hits from the initial
       ;; search request
       (is (= 0 (count initial-hits)))
-      (is (= 4 (total-hits scan-response))) 
+      (is (= 4 (total-hits scan-response)))
       ;;scroll query returns the next results & skips the 1st page
       (is (= 3 (count scan-hits)))))
 

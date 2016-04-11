@@ -47,10 +47,14 @@
   ([^Connection conn ^String uri]
    (post conn uri {}))
   ([^Connection conn ^String uri {:keys [body] :as options}]
-   (json/decode (:body (http/post uri (merge (.http-opts conn)
-                                             options
-                                             {:accept :json :body (json/encode body)})))
-                true)))
+    (-> uri
+        (http/post (merge (.http-opts conn)
+                          options
+                          {:accept :json
+                           :throw-exceptions false ;;ables to see ES errors
+                           :body (json/encode body)}))
+        (:body)
+        (json/decode true))))
 
 (defn put
   [^Connection conn ^String uri {:keys [body] :as options}]
