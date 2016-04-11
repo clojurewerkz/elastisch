@@ -32,6 +32,9 @@ Elastisch is a not a young project. Started in late 2011, it has been used
 in production since the early days. Elastisch API is stable. 1.0 was
 released in September 2012, 2.0 in June 2014, 2.1 in December 2014.
 
+After the Elastisch 2.2 release development will focus on
+ElasticSearch 2.x support.
+
 
 ## Artifacts
 
@@ -50,7 +53,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "2.2.0-beta4"]
+[![Clojars Project](http://clojars.org/clojurewerkz/elastisch/latest-version.svg)](http://clojars.org/clojurewerkz/elastisch)
 
 
 With Maven:
@@ -58,7 +61,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>2.2.0-beta4</version>
+      <version>2.2.1</version>
     </dependency>
 
 
@@ -78,9 +81,9 @@ The most recent stable release is highly recommended.
 
 ## Supported ElasticSearch Versions
 
-Elastisch 2.1 and 2.2 target ElasticSearch 1.x starting with 1.1.
-
-Elastisch 2.0 **requires** [ElasticSearch 1.x](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/breaking-changes.html).
+Elastisch 2.1 and 2.2 target ElasticSearch 1.x starting with 1.1 and through 1.7.x.
+Elastisch **does not** currently support ElasticSearch 2.x. It will be our focus
+after the (Elastisch) 2.2 release.
 
 
 ## REST and Native Clients
@@ -150,7 +153,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 
 ## License
 
-Copyright (C) 2011-2015 Alex Petrov, Michael S. Klishin, and the ClojureWerkz Team.
+Copyright (C) 2011-2016 Alex Petrov, Michael S. Klishin, and the ClojureWerkz Team.
 
 Double-licensed under the [Eclipse Public License](https://www.eclipse.org/legal/epl-v10.html) (the same as Clojure) and
 [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).

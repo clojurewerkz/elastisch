@@ -323,20 +323,33 @@
   (rest/delete conn (rest/index-template-url conn
                                              template-name)))
 
+#_
+(defn recovery
+  "TODO refine description
 
-(defn status
-  "Returns recovery and/or snapshot status of an index.
+  Provides insight into index shard recoveries.
 
-   Accepted options:
+  Accepted options:
 
-   :recovery : should recovery status be returned?
-   :snapshot : should snapshot status be returned?
+  :detailed : Display a detailed view. This is primarily useful for viewing the recovery of physical index files. Default: false.
+  :active_only : Display only those recoveries that are currently on-going. Default: false.
 
-   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-status.html"
+  API reference: https://www.elastic.co/guide/en/elasticsearch/reference/1.7/indices-recovery.html"
+  ([^Connection conn & args]
+     (rest/get conn (rest/index-recovery-url conn)
+               {:query-params (ar/->opts args)}))
   ([^Connection conn index-name & args]
-     (rest/get conn (rest/index-status-url conn
-                                           (join-names index-name))
+     (rest/get conn (rest/index-recovery-url conn
+                                             (join-names index-name))
                {:query-params (ar/->opts args)})))
+
+;; The above fails with "Can't have more than 1 variadic overload"
+
+(defn recovery
+  "TODO refine description AND resolve the above issue"
+  [conn index-name]
+  (rest/get conn (rest/index-recovery-url conn
+                                          (join-names index-name))))
 
 (defn segments
   "Returns segments information for an index or multiple indexes.
@@ -345,8 +358,8 @@
   ([^Connection conn]
      (rest/get conn (rest/index-segments-url conn)))
   ([^Connection conn index-name]
-     (rest/get conn (rest/index-status-url conn
-                                           (join-names index-name)))))
+     (rest/get conn (rest/index-segments-url conn
+                                             (join-names index-name)))))
 
 
 (defn stats

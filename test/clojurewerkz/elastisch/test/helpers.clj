@@ -7,8 +7,7 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.test.helpers
-  (:require [clojurewerkz.elastisch.native :as es]))
+(ns clojurewerkz.elastisch.test.helpers)
 
 (defn ci?
   "Returns true if tests are running in the CI environment
@@ -25,10 +24,3 @@
   "returns cluster host ip from ES_CLUSTER_HOST env variable"
   (get (System/getenv) "ES_CLUSTER_HOST" "127.0.0.1"))
 
-(defn connect-native-client
-  ([]
-     (connect-native-client (infer-cluster-name) [[(infer-cluster-host) 9300]]))
-  ([cluster-name]
-     (connect-native-client cluster-name [[(infer-cluster-host) 9300]]))
-  ([cluster-name host-pairs]
-    (es/connect host-pairs {"cluster.name" cluster-name})))

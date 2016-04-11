@@ -1,10 +1,38 @@
-## Changes between Elastisch 2.1.x and 2.2.0
+## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
+
+### Correctly Pass Field List to the Native Client
+
+GitHub issue: [#193](https://github.com/clojurewerkz/elastisch/pull/193).
+
+Contributed by @dspiteself.
+
+### Allow overriding clj-http's :throw-exceptions option
+
+Options passed to elastisch.rest/connect can now include `:throw-exceptions true`, causing HTTP errors to throw exceptions.
+
+Contributed by @loganmhb.
+
+
+## Changes between Elastisch 2.1.x and 2.2.0 (Jan 3rd, 2016)
+
+### Corrected Filter Option Name in Native Client
+
+Native client now uses `:filter` for filters, just like the REST one.
 
 ### Add completion and fuzzy suggestors for Native Client
 
-`clojurewerkz.elastisch.native.document` has new function `suggest` for term autocompletion. It allows filter results by category and geolocation. 
+`clojurewerkz.elastisch.native.document` has new function `suggest`
+for term autocompletion. It allows filter results by category and
+geolocation:
 
-Contributed by Timo Sulg
+``` clojure
+(require '[clojurewerkz.elastisch.native.document :as doc])
+
+(doc/suggest conn index-name :completion "e" {:context {:gender "female"}})
+(doc/suggest conn index-name :fuzzy "esmor" {:fuzziness 1 :min-length 2})
+```
+
+Contributed by Timo Sulg (@timgluz).
 
 ### Fixed `index/close` and `index/open` argument type error
 
@@ -13,7 +41,7 @@ Contributed by Timo Sulg
   Fixed it with existing function `conversion/->string-array` and added missing tests for this usecase
   into `clojurewerkz.elastisch.native-api.indices-settings-test`.
 
-  Contributed by Timo Sulg (@timgluz)
+  Contributed by Timo Sulg (@timgluz).
 
 ### Fixed `update-with-script` in Native Client
 
@@ -23,7 +51,7 @@ recent changes.
 
 Contributed by Michael Nussbaum.
 
-### Index Stats Update for ES 1.3.x
+### Index Stats Update
 
 `clojurewerkz.elastisch.rest.index/stats` has been updated for ElasticSearch `1.3.x`
 and later versions.
@@ -84,7 +112,7 @@ Contributed by @loganmhb
 
 ### ElasticSearch Java Client Upgrade
 
-Elastisch now depends on ElasticSearch Java client version `1.5.x`.
+Elastisch now depends on ElasticSearch Java client version `1.7.x`.
 
 ### clj-http Update
 

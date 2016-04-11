@@ -1,4 +1,4 @@
-(defproject timgluz/elastisch "2.2.2"
+(defproject clojurewerkz/elastisch "3.0.0-SNAPSHOT"
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
   :license {:name "Eclipse Public License"}
@@ -7,21 +7,21 @@
                  [clj-http              "2.0.0" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "1.7.2"]]
+                 [org.elasticsearch/elasticsearch "2.0.0"]]
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
-                       :dependencies [[clj-time "0.9.0" :exclusions [org.clojure/clojure]]]
-                       :plugins [[codox           "0.8.12"]
-                                 [jonase/eastwood "0.2.1"]]
-                       :codox {:sources ["src"]
-                               :output-dir "doc/api"}}
+                       :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]
+                                      [org.elasticsearch/elasticsearch "2.0.0" :classifier "tests"]]
+                       :plugins [[lein-codox      "0.9.0"]
+                                 [jonase/eastwood "0.2.3"]]
+                       :codox {:source-paths ["src"]}}
                  ;; this version of clj-http depends on HTTPCore 4.2.x which
                  ;; some projects (e.g. using Spring's RestTemplate) can rely on,
                  ;; so we test for compatibility with it. MK.
                  :cljhttp076 {:dependencies [[clj-http "0.7.6"]]}
-                 :1.7 {:dependencies [[org.clojure/clojure "1.7.0-beta3"]]}
+                 :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}
                  :master {:dependencies [[org.clojure/clojure "1.8.0-master-SNAPSHOT"]]}}
-  :aliases      {"all" ["with-profile" "dev:dev,1.7:dev,cljhttp076"]}
+  :aliases      {"all" ["with-profile" "dev:dev,1.8:dev,cljhttp076"]}
   :repositories {"sonatype"         {:url "http://oss.sonatype.org/content/repositories/releases"
                                      :snapshots false
                                      :releases {:checksum :fail :update :always}}

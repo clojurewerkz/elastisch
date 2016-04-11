@@ -199,7 +199,7 @@
                           :tags     {:type "string" :analyzer "standard"}
                           :number-of-edits {:type "long"}
                           :latest-edit {:type       "object"
-                                        :properties {:date   {:type "date" :fuzzy_factor 3}
+                                        :properties {:date   {:type "date"}
                                                      :author {:type "string" :index "not_analyzed" :null_value "N/A"}}}}}})
 
 ;;
@@ -210,7 +210,7 @@
                                           :text      {:type "string" :analyzer "standard"}
                                           :timestamp {:type "date" :include_in_all false :format "basic_date_time_no_millis"}
                                           :retweets  {:type "integer" :include_in_all false}
-                                          :promoted  {:type "boolean" :default false :boost 10.0 :include_in_all false}
+                                          :promoted  {:type "boolean" :null_value false :boost 10.0 :include_in_all false}
                                           :location  {:type "object" :include_in_all false :properties {:country {:type "string" :index "not_analyzed"}
                                                                                                         :state   {:type "string" :index "not_analyzed"}
                                                                                                         :city    {:type "string" :index "not_analyzed"}}}}}})
