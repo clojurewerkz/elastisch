@@ -43,6 +43,16 @@
                                             {:accept :json :body body})))
                true))
 
+(defn parse-safely
+  [json-str]
+  (try
+    (json/decode json-str true)
+    (catch Exception e
+      (println "Failed to response: " json-str)
+      (throw (ex-info "NotValidJSON"
+                      {:message (str "Failed to parse " json-str)
+                       :reason (.getMessage e)})))))
+
 (defn post
   ([^Connection conn ^String uri]
    (post conn uri {}))
@@ -54,28 +64,29 @@
                            :throw-exceptions false ;;ables to see ES errors
                            :body (json/encode body)}))
         (:body)
-        (json/decode true))))
+        (parse-safely))))
 
 (defn put
   [^Connection conn ^String uri {:keys [body] :as options}]
-  (json/decode (:body (http/put uri (merge {:throw-exceptions throw-exceptions}
-                                           (.http-opts conn)
-                                           options
-                                           {:accept :json :body (json/encode body)})))
-               true))
+  (parse-safely
+    (:body (http/put uri (merge {:throw-exceptions throw-exceptions}
+                                (.http-opts conn)
+                                options
+                                {:accept :json
+                                 :body (json/encode body)})))))
 
 (defn get
   ([^Connection conn ^String uri]
-   (json/decode (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
-                                            (.http-opts conn)
-                                            {:accept :json})))
-                true))
-  ([^Connection conn ^String uri options]
-   (json/decode (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
-                                            (.http-opts conn)
-                                            options
-                                            {:accept :json})))
-                true)))
+    (parse-safely
+      (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
+                                  (.http-opts conn)
+                                  {:accept :json})))))
+  ([^Connection conn ^String uri ^IPersistentMap options]
+    (parse-safely
+      (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
+                                  (.http-opts conn)
+                                  options
+                                  {:accept :json}))))))
 
 (defn ^:private get*
   "Like get but takes no connection"
@@ -94,16 +105,15 @@
 
 (defn delete
   ([^Connection conn ^String uri]
-   (json/decode (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
-                                               (.http-opts conn)
-                                               {:accept :json})))
-                true))
+   (parse-safely (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
+                                                 (.http-opts conn)
+                                                 {:accept :json})))))
   ([^Connection conn ^String uri {:keys [body] :as options}]
-   (json/decode (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
+   (parse-safely
+     (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
                                                (.http-opts conn)
                                                options
-                                               {:accept :json :body (json/encode body)})))
-                true)))
+                                               {:accept :json :body (json/encode body)}))))))
 
 
 (defn url-with-path
