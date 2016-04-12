@@ -14,15 +14,18 @@
 
 (println (str "Using Clojure version " *clojure-version*))
 
-(deftest test-successful-connection
-  (is (= "http://localhost:9200" (.uri ^Connection rest/*endpoint*))))
+(def es-url (or (System/getenv "ES_URL")
+                (System/getenv "ELASTICSEARCH_URL")
+                "http://localhost:9200"))
 
+(deftest test-successful-connection
+  (is (= es-url (.uri ^Connection rest/*endpoint*))))
 
 (deftest test-mget-path
-  (let [conn (rest/connect "http://localhost:9200")]
-    (is (= "http://localhost:9200/_mget"
+  (let [conn (rest/connect es-url)]
+    (is (= (str es-url "/_mget")
          (rest/index-mget-url conn)))
-  (is (= "http://localhost:9200/index_name/_mget"
-         (rest/index-mget-url conn "index_name")))
-  (is (= "http://localhost:9200/index_name/type_name/_mget"
-         (rest/index-mget-url conn "index_name" "type_name")))))
+    (is (= (str es-url "/index_name/_mget")
+           (rest/index-mget-url conn "index_name")))
+    (is (= (str es-url "/index_name/type_name/_mget")
+           (rest/index-mget-url conn "index_name" "type_name")))))
