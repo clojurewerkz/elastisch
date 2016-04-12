@@ -31,13 +31,7 @@
           response (idx/update-mapping conn index "person" :mapping mapping)]
       (is (created-or-acknowledged? response))))
 
-  (deftest ^{:rest true} test-updating-index-mapping-ignoring-conflicts
-    (let [index    "people3"
-          mapping  fx/people-mapping
-          _        (idx/create conn index {:mappings {:person {:properties {:first-name {:type "string" :store "no"}}}}})
-          response (idx/update-mapping conn index "person" {:mapping mapping :ignore_conflicts true})]
-      (is (created-or-acknowledged? response))))
-
+  
   (deftest ^{:rest true} test-updating-blank-index-mapping
     (let [index    "people4"
           mapping  fx/people-mapping
