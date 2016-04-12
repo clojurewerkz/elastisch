@@ -104,11 +104,11 @@
 
    API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html"
   [^Connection conn ^String index-name-or-names ^String type-name & args]
-  (let [opts                               (ar/->opts args)
-        {:keys [mapping ignore_conflicts]} opts]
-    (rest/put conn (rest/index-mapping-url conn
-                                           (join-names index-name-or-names) type-name)
-              {:body mapping :query-params {:ignore_conflicts ignore_conflicts}})))
+  (let [{:keys [mapping] :as opts}  (ar/->opts args)]
+    (rest/put conn
+              (rest/index-mapping-url conn (join-names index-name-or-names) type-name)
+              {:body mapping
+               :query-params (dissoc opts :mapping)})))
 
 (defn delete-mapping
   "Allow to delete a mapping (type) along with its data.

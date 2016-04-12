@@ -26,12 +26,12 @@
 
   (deftest ^{:rest true} test-updating-index-mapping
     (let [index    "people2"
+          mapping2 {:person {:properties {:first-name {:type "string" :store "yes"}}}}
           mapping  fx/people-mapping
-          _        (idx/create conn index :mappings {:person {:properties {:first-name {:type "string"}}}})
+          _        (idx/create conn index :mappings mapping2)
           response (idx/update-mapping conn index "person" :mapping mapping)]
       (is (created-or-acknowledged? response))))
 
-  
   (deftest ^{:rest true} test-updating-blank-index-mapping
     (let [index    "people4"
           mapping  fx/people-mapping
