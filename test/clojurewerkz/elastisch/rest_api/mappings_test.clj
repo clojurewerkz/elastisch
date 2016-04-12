@@ -45,5 +45,5 @@
           mapping-type "person"
           _            (idx/create conn index {:mappings fx/people-mapping})
           response     (idx/delete-mapping conn index mapping-type)]
-      (is (created-or-acknowledged? response))
+      (is (not-found? response))
       (is (nil? ((idx/get-mapping conn index) mapping-type))))))
