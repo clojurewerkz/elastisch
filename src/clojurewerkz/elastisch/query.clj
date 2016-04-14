@@ -100,24 +100,6 @@
   [& args]
   {:filtered (ar/->opts args)})
 
-(defn fuzzy-like-this
-  "FLT (fuzzy like this) query
-
-   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-query.html"
-  [& args]
-  {:fuzzy_like_this (ar/->opts args)})
-
-(def flt fuzzy-like-this)
-
-(defn fuzzy-like-this-field
-  "FLT (fuzzy like this) query for a single field
-
-   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-field-query.html"
-  [& args]
-  {:fuzzy_like_this_field (ar/->opts args)})
-
-(def flt-field fuzzy-like-this-field)
-
 (defn fuzzy
   "Fuzzy or Levenshtein (edit distance) query
 
