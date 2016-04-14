@@ -143,15 +143,6 @@
 
 (def mlt more-like-this)
 
-(defn more-like-this-field
-  "MLT (More Like This) query that works for a single field
-
-   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-mlt-field-query.html"
-  [& args]
-  {:more_like_this_field (ar/->opts args)})
-
-(def mlt-field more-like-this-field)
-
 (defn query-string
   "Query String query
 
