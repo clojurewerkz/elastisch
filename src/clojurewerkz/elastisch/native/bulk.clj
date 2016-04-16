@@ -70,7 +70,9 @@
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
   [^Client conn index mapping-type operations & params]
-  (bulk conn (map #(add-default % {:_index index :_type mapping-type}) operations) params))
+  (bulk conn
+        (map #(add-default % {:_index index :_type mapping-type}) operations)
+        params))
 
 (def index-operation common-bulk/index-operation)
 

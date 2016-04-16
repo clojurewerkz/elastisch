@@ -89,10 +89,11 @@
           for-insert (assoc fx/person-jack :_id id)
           insert-ops (bulk-index [for-insert])
           response (bulk-with-index-and-type conn index-name index-type insert-ops {:refresh true})
-          script "ctx._source[\"ran_script\"] = true"
-          for-update (assoc for-insert :_script script)
+          for-update (assoc for-insert
+                            :_script "ctx._source[\"ran_script\"] = true")
           update-ops (bulk-update [for-update])
           update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
+      (is (= false (:has-failures? update-response))) ;;scripting must be switched on
       (is (get-in (doc/get conn index-name index-type id) [:_source :ran_script]))))
 
   (deftest ^{:native true :indexing true :scripting true} test-bulk-update-with-scripted-upsert

@@ -323,7 +323,8 @@
 
    (doc/search conn \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [^Client conn index mapping-type & args]
-  (let [ft                  (es/search conn (cnv/->search-request index mapping-type (ar/->opts args)))
+  (let [ft (es/search conn
+                      (cnv/->search-request index mapping-type (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 

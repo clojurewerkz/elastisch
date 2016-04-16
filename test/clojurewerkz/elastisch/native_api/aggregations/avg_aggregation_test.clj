@@ -18,6 +18,8 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
 
+;;ps: if it's throwing connection error - you've wrong value for ES_URL env-var
+;;that means fixtures, which are using rest-client, cant swipe content
 (let [conn (th/connect-native-client)]
   (deftest ^{:native true :aggregation true} test-avg-aggregation
     (let [index-name   "people"

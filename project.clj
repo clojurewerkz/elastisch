@@ -7,7 +7,7 @@
                  [clj-http              "2.0.1" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "2.0.1"]]
+                 [org.elasticsearch/elasticsearch "2.0.2"]]
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]]
@@ -18,7 +18,7 @@
                  ;; some projects (e.g. using Spring's RestTemplate) can rely on,
                  ;; so we test for compatibility with it. MK.
                  :cljhttp076 {:dependencies [[clj-http "0.7.6"]]}
-                 :1.8 {:dependencies [[org.clojure/clojure "1.8.0-RC4"]]}
+                 :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}
                  :master {:dependencies [[org.clojure/clojure "1.8.0-master-SNAPSHOT"]]}}
   :aliases      {"all" ["with-profile" "dev:dev,1.8:dev,cljhttp076"]}
   :repositories {"sonatype"         {:url "http://oss.sonatype.org/content/repositories/releases"
