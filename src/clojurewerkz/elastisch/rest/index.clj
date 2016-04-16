@@ -110,14 +110,6 @@
               {:body mapping
                :query-params (dissoc opts :mapping)})))
 
-(defn delete-mapping
-  "Allow to delete a mapping (type) along with its data.
-
-   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-mapping.html"
-  [^Connection conn ^String index-name ^String type-name]
-  (rest/delete conn (rest/index-mapping-url conn
-                                            index-name type-name)))
-
 ;;
 ;; Settings
 ;;

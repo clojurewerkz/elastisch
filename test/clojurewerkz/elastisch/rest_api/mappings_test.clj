@@ -47,3 +47,4 @@
           response     (idx/delete-mapping conn index mapping-type)]
       (is (not-found? response))
       (is (nil? ((idx/get-mapping conn index) mapping-type))))))
+

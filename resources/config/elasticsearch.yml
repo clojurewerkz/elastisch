@@ -1,0 +1,7 @@
+cluster:
+  name: "elasticsearch"
+node:
+  name: "elastisch-test"
+
+script.inline: on
+script.indexed: on

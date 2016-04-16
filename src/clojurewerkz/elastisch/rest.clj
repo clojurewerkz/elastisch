@@ -38,9 +38,10 @@
 
 (defn post-string
   [^Connection conn ^String uri {:keys [body] :as options}]
-  (json/decode (:body (http/post uri (merge (.http-opts conn)
+  (json/decode (:body (http/post uri (merge {:accept :json}
+                                            (.http-opts conn)
                                             options
-                                            {:accept :json :body body})))
+                                            {:body body})))
                true))
 
 (defn parse-safely
@@ -87,21 +88,20 @@
                                   (.http-opts conn)
                                   options
                                   {:accept :json}))))))
-
 (defn ^:private get*
   "Like get but takes no connection"
   ([^String uri]
    (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
                 true))
   ([^String uri options]
-   (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
+   (json/decode (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions}
+                                            options)))
                 true)))
 
 (defn head
   [^Connection conn ^String uri]
-  (http/head uri (merge {:throw-exceptions throw-exceptions}
-                        (.http-opts conn)
-                        {:accept :json})))
+  (http/head uri (merge {:accept :json :throw-exceptions throw-exceptions}
+                        (.http-opts conn))))
 
 (defn delete
   ([^Connection conn ^String uri]
@@ -114,7 +114,6 @@
                                                (.http-opts conn)
                                                options
                                                {:accept :json :body (json/encode body)}))))))
-
 
 (defn url-with-path
   [^Connection conn & segments]
