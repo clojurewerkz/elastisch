@@ -7,7 +7,7 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.native-api.aggregations.avg-aggregation-test
+(ns clojurewerkz.elastisch.native-api.aggregations.value-count-aggregation-test
   (:require [clojurewerkz.elastisch.native.document :as doc]
             [clojurewerkz.elastisch.query         :as q]
             [clojurewerkz.elastisch.aggregation   :as a]
@@ -19,11 +19,11 @@
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index)
 
 (let [conn (th/connect-native-client)]
-  (deftest ^{:native true :aggregation true} test-avg-aggregation
+  (deftest ^{:native true :aggregation true} test-value-count-aggregation
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
                                    :query (q/match-all)
-                                   :aggregations {:avg_age (a/avg "age")})
-          agg          (aggregation-from response :avg_age)]
-      (is (= {:value 29.0} agg)))))
+                                   :aggregations {:agg1 (a/value-count "age")})
+          agg          (aggregation-from response :agg1)]
+      (is (>= (:value agg) 4)))))
