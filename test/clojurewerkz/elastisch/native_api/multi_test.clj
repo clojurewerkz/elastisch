@@ -20,7 +20,7 @@
 (use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
 ;; TODO: this errors against ES 2.2.x
-#_ (let [conn (th/connect-native-client)]
+(let [conn (th/connect-native-client)]
   (deftest ^{:rest true} test-multi-search
     (let [res1 (doc/search conn "people" "person" :query (q/match-all) :size 1)
           res2 (doc/search conn "articles" "article" :query (q/match-all) :size 1)

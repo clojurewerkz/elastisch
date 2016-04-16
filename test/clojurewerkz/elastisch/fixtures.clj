@@ -115,29 +115,29 @@
 (def people-suggestion-mapping
   {:person_suggestions {:properties {:username {:type "string"}
                                      :suggest {:type "completion"
-                                               :index_analyzer "simple"
-                                               :search_analyzer "simple"
+                                               :analyzer "simple"
                                                :payloads true}}}})
 
 (def people-suggestion-gender-context-mapping
-  {:person_suggestions_gender_ctx {:properties {:username {:type "string"}
-                                                :suggest {:type "completion"
-                                                          :index_analyzer "simple"
-                                                          :search_analyzer "simple"
-                                                          :payloads true
-                                                          :context {:gender {:type "category"
-                                                                             :default ["male" "female"]}}}}}})
+  {:person_suggestions
+    {:properties {:username {:type "string"}
+     :suggest {:type "completion"
+               :analyzer "simple"
+               :payloads true
+               :context {:gender {:type "category"
+                                  :default ["male" "female"]}}}}}})
+
 (def people-suggestion-location-context-mapping
-  {:person_suggestions_location_ctx {:properties {:username {:type "string"}
-                                                  :suggest {:type "completion"
-                                                            :index_analyzer "simple"
-                                                            :search_analyzer "simple"
-                                                            :payloads true
-                                                            :context {:location {:type "geo"
-                                                                                 :precision ["100km"]
-                                                                                 :neighbors true
-                                                                                 :default {:lat 0.0
-                                                                                           :lon 0.0}}}}}}})
+  {:person_suggestions
+    {:properties {:username {:type "string"}
+     :suggest {:type "completion"
+               :analyzer "simple"
+               :payloads true
+               :context {:location {:type "geo"
+                                    :precision ["100km"]
+                                    :neighbors true
+                                    :default {:lat 0.0
+                                              :lon 0.0}}}}}}})
 
 (def passport-mapping
   {:passport {:properties {:id {:type "string" :store "yes"}}
@@ -225,16 +225,16 @@
                :city    "Moscow"}})
 
 (def test-template1
-    {:template 
-      {:filter 
-        {:term 
+    {:template
+      {:filter
+        {:term
           {:username "{{username}}"}}}})
 
 
 (def test-template2
-    {:template 
-      {:filter 
-        {:term 
+    {:template
+      {:filter
+        {:term
           {:username "{{username}}"}} :_source ["username"]}})
 
 (def tweet2
@@ -327,7 +327,7 @@
     (is (created? (doc/put conn index-name mapping-type "2" suggest-mary)))
     (is (created? (doc/put conn index-name mapping-type "3" suggest-joe)))
     (is (created? (doc/put conn index-name mapping-type "4" suggest-tony)))
-   
+
     (idx/refresh conn index-name)
     (f)))
 
@@ -337,7 +337,7 @@
         mapping-type "person_suggestions"]
     (idx/create conn index-name :mappings people-suggestion-gender-context-mapping)
     ;; seeds suggestion data
-    (is (created? (doc/put conn index-name mapping-type "1" 
+    (is (created? (doc/put conn index-name mapping-type "1"
                            (assoc-in suggest-jack [:suggest :context] {:gender "male"}))))
     (is (created? (doc/put conn index-name mapping-type "2"
                            (assoc-in suggest-mary [:suggest :context] {:gender "female"}))))
@@ -345,7 +345,7 @@
                            (assoc-in suggest-joe [:suggest :context] {:gender "male"}) )))
     (is (created? (doc/put conn index-name mapping-type "4"
                            (assoc-in suggest-tony [:suggest :context] {:gender "female"}) )))
-   
+
     (idx/refresh conn index-name)
     (f)))
 
@@ -353,11 +353,11 @@
   [f]
   (let [index-name "people_with_locations"
         mapping-type "person_suggestions"
-        local {:location {:lat 90 :lon 90}}
-        faraway {:location {:lat 0 :lon -90}}]
+        local {:location {:lat 90.0 :lon 90.0}}
+        faraway {:location {:lat 0.0 :lon -90.0}}]
     (idx/create conn index-name :mappings people-suggestion-location-context-mapping)
     ;; seeds suggestion data
-    (is (created? (doc/put conn index-name mapping-type "1" 
+    (is (created? (doc/put conn index-name mapping-type "1"
                            (assoc-in suggest-jack [:suggest :context] local))))
     (is (created? (doc/put conn index-name mapping-type "2"
                            (assoc-in suggest-mary [:suggest :context] faraway))))
@@ -365,7 +365,6 @@
                            (assoc-in suggest-joe [:suggest :context] faraway))))
     (is (created? (doc/put conn index-name mapping-type "4"
                            (assoc-in suggest-tony [:suggest :context] faraway))))
-   
+
     (idx/refresh conn index-name)
     (f)))
-

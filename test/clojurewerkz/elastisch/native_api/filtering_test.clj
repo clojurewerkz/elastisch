@@ -17,10 +17,11 @@
             [clojurewerkz.elastisch.native.response :refer :all]
             [clojure.test :refer :all]))
 
-(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index fx/prepopulate-articles-index fx/prepopulate-tweets-index)
+(use-fixtures :each fx/reset-indexes fx/prepopulate-people-index
+                    fx/prepopulate-articles-index fx/prepopulate-tweets-index)
 
 ;; TODO: this errors against ES 2.2.x
-#_ (let [conn (th/connect-native-client)]
+(let [conn (th/connect-native-client)]
   (deftest ^{:native true} test-term-filtering
     (let [index-name   "people"
           mapping-type "person"
