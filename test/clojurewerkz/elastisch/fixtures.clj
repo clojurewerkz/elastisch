@@ -102,21 +102,32 @@
              :payload person-tony}})
 
 (def people-mapping
-  {:person {:properties {:username     {:type "string" :store "yes"}
-                         :first-name   {:type "string" :store "yes"}
-                         :last-name    {:type "string"}
-                         :age          {:type "integer"}
-                         :signed_up_at {:type "date" :format "date_hour_minute_second"}
-                         :title        {:type "string" :analyzer "snowball"}
-                         :planet       {:type "string"}
-                         :country      {:type "string"}
-                         :biography    {:type "string" :analyzer "snowball" :term_vector "with_positions_offsets"}}}})
+  {:person
+    {:properties {:username     {:type "string" :store "yes"}
+                  :first-name   {:type "string" :store "yes"}
+                  :last-name    {:type "string"}
+                  :age          {:type "integer"}
+                  :signed_up_at {:type "date" :format "date_hour_minute_second"}
+                  :title        {:type "string" :analyzer "snowball"}
+                  :planet       {:type "string"}
+                  :country      {:type "string"}
+                  :biography    {:type "string"
+                                 :analyzer "snowball"
+                                 :term_vector "with_positions_offsets"}}}
+   :altperson
+    {:properties {:username {:type "string" :store "yes"}
+                  :signed_up_at {:type "date" :format "date_hour_minute_second"}
+                  :country      {:type "string"}
+                  :biography    {:type "string"
+                                 :analyzer "snowball"
+                                 :term_vector "with_positions_offsets"}}}})
 
 (def people-suggestion-mapping
-  {:person_suggestions {:properties {:username {:type "string"}
-                                     :suggest {:type "completion"
-                                               :analyzer "simple"
-                                               :payloads true}}}})
+  {:person_suggestions
+    {:properties {:username {:type "string"}
+                  :suggest {:type "completion"
+                            :analyzer "simple"
+                            :payloads true}}}})
 
 (def people-suggestion-gender-context-mapping
   {:person_suggestions
