@@ -49,7 +49,6 @@
   (try
     (json/decode json-str true)
     (catch Exception e
-      (println "Failed to response: " json-str)
       (throw (ex-info "NotValidJSON"
                       {:message (str "Failed to parse " json-str)
                        :reason (.getMessage e)})))))
