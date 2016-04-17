@@ -291,27 +291,39 @@
        :const true}
   optional-delete-query-parameters [:df :analyzer :default_operator :consistency])
 
+;;NB! requires delete-by-query plugin
 (defn delete-by-query
   "Performs a delete-by-query operation."
   ([^Connection conn index mapping-type query]
-     (rest/delete conn (rest/delete-by-query-url
-                        conn
-                        (join-names index) (join-names mapping-type)) {:body {:query query}}))
+     (rest/delete conn
+                  (rest/delete-by-query-url
+                    conn
+                    (join-names index)
+                    (join-names mapping-type))
+                  {:body {:query query}}))
   ([^Connection conn index mapping-type query & args]
-     (rest/delete conn (rest/delete-by-query-url conn
-                                                 (join-names index) (join-names mapping-type))
-                  {:query-params (select-keys (ar/->opts args) (conj optional-delete-query-parameters :ignore_unavailable))
+     (rest/delete conn
+                  (rest/delete-by-query-url
+                    conn
+                    (join-names index)
+                    (join-names mapping-type))
+                  {:query-params (select-keys (ar/->opts args)
+                                              (conj optional-delete-query-parameters
+                                                    :ignore_unavailable))
                    :body {:query query}})))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation across all mapping types."
   ([^Connection conn index query]
-     (rest/delete conn (rest/delete-by-query-url conn
-                                                 (join-names index)) {:body {:query query}}))
+     (rest/delete conn
+                  (rest/delete-by-query-url conn (join-names index))
+                  {:body {:query query}}))
   ([^Connection conn index query & args]
-     (rest/delete conn (rest/delete-by-query-url conn
-                                                 (join-names index))
-                  {:query-params (select-keys (ar/->opts args) (conj optional-delete-query-parameters :ignore_unavailable))
+     (rest/delete conn
+                  (rest/delete-by-query-url conn (join-names index))
+                  {:query-params (select-keys (ar/->opts args)
+                                              (conj optional-delete-query-parameters
+                                                    :ignore_unavailable))
                    :body {:query query}})))
 
 (defn delete-by-query-across-all-indexes-and-types
@@ -324,13 +336,22 @@
                   {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
                    :body {:query query}})))
 
+
+(defn more-like-this
+  "Performs a More Like This (MLT) query."
+  [^Connection conn index mapping-type & args]
+  (rest/get conn
+            (rest/more-like-this-url conn index mapping-type)
+            {:body (json/encode {:query {:mlt (ar/->opts args)}})}))
+
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as clojurewerkz.elastisch.rest.document/search
    but does not take the mapping type parameter."
   [^Connection conn index query & args]
   (rest/get conn (rest/query-validation-url conn
                                             index)
-            {:body (json/encode {:query query}) :query-params (ar/->opts args)}))
+            {:body (json/encode {:query query})
+             :query-params (ar/->opts args)}))
 
 
 (defn analyze

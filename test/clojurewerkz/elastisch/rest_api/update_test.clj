@@ -56,9 +56,8 @@
                (get-in (doc/get conn index-name index-type id) [:_source :biography])))
         ;; Can't perform a write when we pass the wrong version
         (let [e (:error (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") {:version original-version}))]
-          (is (.startsWith
-               (get-in e [:root_cause 0 :type])
-               "version_conflict_engine_exception")))
+          (is (:type e "version_conflict_engine_exception")))
+
         ;; Still should have the new data
         (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
 

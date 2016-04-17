@@ -44,35 +44,49 @@
                                             {:body body})))
                true))
 
+(defn parse-safely
+  [json-str]
+  (try
+    (json/decode json-str true)
+    (catch Exception e
+      (throw (ex-info "NotValidJSON"
+                      {:message (str "Failed to parse " json-str)
+                       :reason (.getMessage e)})))))
+
 (defn post
   ([^Connection conn ^String uri]
    (post conn uri {}))
   ([^Connection conn ^String uri {:keys [body] :as options}]
-   (json/decode (:body (http/post uri (merge {:accept :json}
-                                             (.http-opts conn)
-                                             options
-                                             {:body (json/encode body)})))
-                true)))
+    (-> uri
+        (http/post (merge (.http-opts conn)
+                          options
+                          {:accept :json
+                           ;:throw-exceptions false ;;ables to see ES when debugging
+                           :body (json/encode body)}))
+        (:body)
+        (parse-safely))))
 
 (defn put
   [^Connection conn ^String uri {:keys [body] :as options}]
-  (json/decode (:body (http/put uri (merge {:accept :json :throw-exceptions throw-exceptions}
-                                           (.http-opts conn)
-                                           options
-                                           {:body (json/encode body)})))
-               true))
+  (parse-safely
+    (:body (http/put uri (merge {:throw-exceptions throw-exceptions}
+                                (.http-opts conn)
+                                options
+                                {:accept :json
+                                 :body (json/encode body)})))))
 
 (defn get
   ([^Connection conn ^String uri]
-   (json/decode (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions}
-                                            (.http-opts conn))))
-                true))
-  ([^Connection conn ^String uri options]
-   (json/decode (:body (http/get uri (merge {:accept :json :throw-exceptions throw-exceptions}
-                                            (.http-opts conn)
-                                            options)))
-                true)))
-
+    (parse-safely
+      (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
+                                  (.http-opts conn)
+                                  {:accept :json})))))
+  ([^Connection conn ^String uri ^IPersistentMap options]
+    (parse-safely
+      (:body (http/get uri (merge {:throw-exceptions throw-exceptions}
+                                  (.http-opts conn)
+                                  options
+                                  {:accept :json}))))))
 (defn ^:private get*
   "Like get but takes no connection"
   ([^String uri]
@@ -90,16 +104,15 @@
 
 (defn delete
   ([^Connection conn ^String uri]
-   (json/decode (:body (http/delete uri (merge {:accept :json :throw-exceptions throw-exceptions}
-                                               (.http-opts conn))))
-                true))
+   (parse-safely (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
+                                                 (.http-opts conn)
+                                                 {:accept :json})))))
   ([^Connection conn ^String uri {:keys [body] :as options}]
-   (json/decode (:body (http/delete uri (merge {:accept :json :throw-exceptions throw-exceptions}
+   (parse-safely
+     (:body (http/delete uri (merge {:throw-exceptions throw-exceptions}
                                                (.http-opts conn)
                                                options
-                                               {:body (json/encode body)})))
-                true)))
-
+                                               {:accept :json :body (json/encode body)}))))))
 
 (defn url-with-path
   [^Connection conn & segments]
@@ -224,11 +237,11 @@
   ([conn ^String index-name]
      (url-with-path conn index-name "_cache/clear")))
 
-(defn index-status-url
+(defn index-recovery-url
   ([conn]
-     (url-with-path conn "_status"))
+     (url-with-path conn "_recovery"))
   ([conn ^String index-name]
-     (url-with-path conn index-name "_status")))
+     (url-with-path conn index-name "_recovery")))
 
 (defn index-stats-url
   ([conn ^String index-name]
@@ -261,6 +274,10 @@
      (url-with-path conn index-name "_query"))
   ([conn ^String index-name ^String mapping-type]
      (url-with-path conn index-name mapping-type "_query")))
+
+(defn more-like-this-url
+  [conn ^String index-name ^String mapping-type]
+  (url-with-path conn index-name mapping-type (URLEncoder/encode "" encoding) "_search"))
 
 (defn percolator-url
   [conn ^String index-name ^String percolator]

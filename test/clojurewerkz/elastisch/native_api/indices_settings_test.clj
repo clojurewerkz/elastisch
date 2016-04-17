@@ -21,12 +21,11 @@
 
 (let [conn (th/connect-native-client)
       index-name "people"]
-  (deftest ^{:indexing true :native true} test-closing-and-opening-existing-index 
-    (testing "it should close people's index" 
+  (deftest ^{:indexing true :native true} test-closing-and-opening-existing-index
+    (testing "it should close people's index"
       (let [res (idx/close conn index-name)]
         (is (acknowledged? res))))
 
     (testing "it should open people's index"
       (let [res (idx/open conn index-name)]
         (is (acknowledged? res))))))
-

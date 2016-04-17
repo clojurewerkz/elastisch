@@ -7,22 +7,20 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.native-api.highlighting-test
-  (:require [clojurewerkz.elastisch.native.document :as doc]
-            [clojurewerkz.elastisch.native :as es]
-            [clojurewerkz.elastisch.native.index :as idx]
+(ns clojurewerkz.elastisch.rest-api.more-like-this-test
+  (:require [clojurewerkz.elastisch.rest.document :as doc]
+            [clojurewerkz.elastisch.rest :as rest]
+            [clojurewerkz.elastisch.rest.index :as idx]
             [clojurewerkz.elastisch.query :as q]
             [clojurewerkz.elastisch.fixtures :as fx]
-            [clojurewerkz.elastisch.test.helpers    :as th]
-            [clojurewerkz.elastisch.native.response :refer :all]
+            [clojurewerkz.elastisch.rest.response :refer :all]
             [clojure.test :refer :all]))
 
 
 (use-fixtures :each fx/reset-indexes)
 
-;; TODO: this errors against ES 2.2.x
-(let [conn (th/connect-native-client)]
-  (deftest ^{:native true} test-highlighting-with-all-defaults
+(let [conn (rest/connect)]
+  (deftest ^{:rest true} test-more-like-this
     (let [index "articles"
           type  "article"]
       (idx/create conn index :mappings fx/articles-mapping)
@@ -31,8 +29,11 @@
       (doc/put conn index type "3" fx/article-on-nueva-york)
       (doc/put conn index type "4" fx/article-on-austin)
       (idx/refresh conn index)
-      (let [resp  (doc/search conn index type
-                              {:query (q/query-string :query "software" :default_field "summary")
-                               :highlight {:fields {:summary {}}}})
-            hits  (hits-from resp)]
-        (is (re-find #"<em>software</em>" (-> hits first :highlight :summary first)))))))
+      (let [response (doc/more-like-this conn index type
+                                         :ids ["2"]
+                                         :fields ["tags"]
+                                         :min_term_freq 1
+                                         :min_doc_freq 1)]
+        (is (= 1 (total-hits response)))
+        (is (= fx/article-on-elasticsearch
+               (-> (hits-from response) first :_source)))))))

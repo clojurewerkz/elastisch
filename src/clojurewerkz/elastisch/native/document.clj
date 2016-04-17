@@ -323,7 +323,8 @@
 
    (doc/search conn \"people\" \"person\" :query (q/prefix :username \"appl\"))"
   [^Client conn index mapping-type & args]
-  (let [ft                  (es/search conn (cnv/->search-request index mapping-type (ar/->opts args)))
+  (let [ft (es/search conn
+                      (cnv/->search-request index mapping-type (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
     (cnv/search-response->seq res)))
 
@@ -369,9 +370,7 @@
 
 (defn suggest
   "Suggests similar looking terms based on a provided text by using a suggester.
-
   Usage:
-
   (suggest es-conn \"locations\" :completion \"Stockh\" {:field \"suggest\" :size 5})"
   [^Client conn indices ^clojure.lang.Keyword suggest-type ^String term ^IPersistentMap opts]
   (let [q (cnv/->suggest-query suggest-type term opts)

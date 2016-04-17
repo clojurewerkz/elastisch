@@ -13,6 +13,45 @@ sure you have those two installed and then run tests against all supported Cloju
 
     lein all test
 
+
+#### Testing with docker
+
+* pull [Elasticsearch]() image 
+
+```
+$> docker pull elasticsearch:2.0.2
+```
+nb! Tag must match with Elasticsearch version in the `project.clj`
+
+* build and run instance with custom config file
+
+The custom file in the `resources/config/elasticsearch.yml` has all the required settings for full-scale test activated, so you dont have
+manually tweak them.
+
+```
+docker run -d -p 9200:9200 -p 9300:9300 --name="elastisch-test"  \
+	-v "$PWD/resources/config":/usr/share/elasticsearch/config   \
+	elasticsearch:2.0.2 \ 
+	-Des.node.name="es-test" -Des.network.bind_host=0.0.0.0
+```
+
+* set environment variables
+
+```
+$> export ES_URL="http://192.168.99.100:9200" ;;for rest-client
+$> export ES_CLUSTER_NAME="elasticsearch"
+$> export ES_CLUSTER_HOST="192.168.99.100"
+```
+
+* run tests
+
+
+```
+lein with-profile dev,1.8 test :only clojurewerkz.elastisch.native-api.count-test
+lein with-profile dev,1.8 test :native ;;only native client
+lein with-profile dev,1.8 test 	      ;;all the tests with clj1.8
+```
+
 ## Pull Requests
 
 Then create a branch and make your changes on it. Once you are done with your changes and all

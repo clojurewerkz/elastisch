@@ -7,8 +7,7 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns clojurewerkz.elastisch.common.bulk
-  (:require [clojure.set :refer :all]))
+(ns clojurewerkz.elastisch.common.bulk)
 
 (def ^:private special-operation-keys [:_doc_as_upsert
                                        :_index

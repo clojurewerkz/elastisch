@@ -6,8 +6,9 @@
             [clojure.test :refer :all]))
 
 ;; TODO: this errors against ES 2.2.x
-#_ (let [conn (th/connect-native-client)]
-  (use-fixtures :each fx/reset-indexes fx/prepopulate-people-suggestion
+(let [conn (th/connect-native-client)]
+  (use-fixtures :each fx/reset-indexes
+                      fx/prepopulate-people-suggestion
                       fx/prepopulate-people-category-suggestion
                       fx/prepopulate-people-location-suggestion)
 
@@ -44,7 +45,7 @@
   (deftest ^{:native true} test-suggest-complete-with-location-context
     (testing "autocomplete returns only matches nearby"
       (let [index-name "people_with_locations"
-            opts {:context {:location {:lat 90.23 :lon 90.56}}}
+            opts {:context {:location {:lat 90.0 :lon 90.1}}}
             res (doc/suggest conn index-name :completion "es" opts)]
         (is (map? (:hits res)))
         (is (= 1 (-> res :hits :options count)))
