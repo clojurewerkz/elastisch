@@ -16,7 +16,7 @@ sure you have those two installed and then run tests against all supported Cloju
 
 #### Testing with docker
 
-* pull [Elasticsearch]() image 
+* pull [Elasticsearch](https://hub.docker.com/_/elasticsearch/) image 
 
 ```
 $> docker pull elasticsearch:2.0.2
