@@ -78,7 +78,8 @@
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
-           org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
+           [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest] 
+           ;[org.elasticsearch.action.admin.indices.optimize ForceMergeAction]
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
@@ -1136,10 +1137,10 @@
   [index-name]
   (CloseIndexRequest. (->string-array index-name)))
 
-(defn ^OptimizeRequest ->optimize-index-request
+(defn ^ForceMergeRequest ->optimize-index-request
   [index-name {:keys [max-num-segments only-expunge-deletes flush]}]
   (let [ary (->string-array index-name)
-        r   (OptimizeRequest. ary)]
+        r   (ForceMergeRequest. ary)]
     (when max-num-segments
       (.maxNumSegments r ^{:tag "int"} max-num-segments))
     (when only-expunge-deletes
