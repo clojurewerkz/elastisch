@@ -152,12 +152,13 @@
         ^CloseIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
-;;DEPRECATED - replaced with forcemerge
-(defn optimize
+(defn force-merge
   "Optimizes an index or multiple indices"
   [^Client conn index-name & args]
-  (let [opts                  (ar/->opts args)
-        ft                    (es/admin-optimize-index conn (cnv/->optimize-index-request index-name opts))
+  (let [opts (ar/->opts args)
+        ft   (es/admin-merge-index
+               conn
+               (cnv/->force-merge-request index-name opts))
         ^ForceMergeResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 

@@ -169,10 +169,10 @@
   (-> ^Client conn .admin .indices (.close req)))
 
 ;;DEPRECATED in 2.1- replaced with forceMerge
-(defn ^ActionFuture admin-optimize-index
+(defn ^ActionFuture admin-merge-index
   "Executes a optimize index request"
   [^Client conn ^ForceMergeRequest req]
-  (-> ^Client conn .admin .indices (.optimize req)))
+  (-> ^Client conn .admin .indices (.forceMerge req)))
 
 (defn ^ActionFuture admin-flush-index
   "Executes a flush index request"

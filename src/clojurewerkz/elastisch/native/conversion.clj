@@ -1136,7 +1136,7 @@
   [index-name]
   (CloseIndexRequest. (->string-array index-name)))
 
-(defn ^ForceMergeRequest ->optimize-index-request
+(defn ^ForceMergeRequest ->force-merge-request
   [index-name {:keys [max-num-segments only-expunge-deletes flush]}]
   (let [ary (->string-array index-name)
         r   (ForceMergeRequest. ary)]

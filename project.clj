@@ -10,9 +10,7 @@
                  [org.elasticsearch/elasticsearch "2.3.1"]]
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
-                       :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]
-                                      ;[org.elasticsearch/elasticsearch "2.3.1" :classifier "tests"]
-                                      ]
+                       :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]]
                        :plugins [[lein-codox      "0.9.0"]
                                  [jonase/eastwood "0.2.3"]]
                        :codox {:source-paths ["src"]}}
