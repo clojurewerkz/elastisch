@@ -79,7 +79,6 @@
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
            [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest] 
-           ;[org.elasticsearch.action.admin.indices.optimize ForceMergeAction]
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
