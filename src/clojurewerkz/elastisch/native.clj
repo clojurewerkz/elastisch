@@ -38,7 +38,8 @@
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
-           org.elasticsearch.action.admin.indices.optimize.OptimizeRequest
+           [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest] 
+
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
@@ -167,10 +168,11 @@
   [^Client conn ^CloseIndexRequest req]
   (-> ^Client conn .admin .indices (.close req)))
 
-(defn ^ActionFuture admin-optimize-index
+;;DEPRECATED in 2.1- replaced with forceMerge
+(defn ^ActionFuture admin-merge-index
   "Executes a optimize index request"
-  [^Client conn ^OptimizeRequest req]
-  (-> ^Client conn .admin .indices (.optimize req)))
+  [^Client conn ^ForceMergeRequest req]
+  (-> ^Client conn .admin .indices (.forceMerge req)))
 
 (defn ^ActionFuture admin-flush-index
   "Executes a flush index request"

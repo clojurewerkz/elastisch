@@ -65,10 +65,10 @@
           _         (idx/create conn index :mappings fx/people-mapping)]
       (is (idx/update-settings conn index settings))))
 
-  (deftest ^{:indexing true :native true} test-optimize-index
+  (deftest ^{:indexing true :native true} test-force-merge-index
     (let [index     "people"
           _         (idx/create conn index :mappings fx/people-mapping)
-          response  (idx/optimize conn index :only_expunge_deletes 1)]
+          response  (idx/force-merge conn index :only_expunge_deletes 1)]
       (is (broadcast-operation-response? response))))
 
   (deftest ^{:indexing true :native true} test-flush-index

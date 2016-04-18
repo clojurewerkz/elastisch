@@ -27,7 +27,8 @@
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
-           org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
+           [org.elasticsearch.action.admin.indices.forcemerge.ForceMergeResponse]
+           ;org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
            org.elasticsearch.action.admin.indices.flush.FlushResponse
            org.elasticsearch.action.admin.indices.refresh.RefreshResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
@@ -151,12 +152,14 @@
         ^CloseIndexResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
-(defn optimize
+(defn force-merge
   "Optimizes an index or multiple indices"
   [^Client conn index-name & args]
-  (let [opts                  (ar/->opts args)
-        ft                    (es/admin-optimize-index conn (cnv/->optimize-index-request index-name opts))
-        ^OptimizeResponse res (.actionGet ft)]
+  (let [opts (ar/->opts args)
+        ft   (es/admin-merge-index
+               conn
+               (cnv/->force-merge-request index-name opts))
+        ^ForceMergeResponse res (.actionGet ft)]
     (cnv/broadcast-operation-response->map res)))
 
 (defn flush

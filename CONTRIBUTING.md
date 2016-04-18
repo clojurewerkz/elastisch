@@ -32,7 +32,6 @@ manually tweak them.
 docker run -d -p 9200:9200 -p 9300:9300 --name="elastisch-test"  \
 	-v "$PWD/resources/config":/usr/share/elasticsearch/config   \
 	elasticsearch:2.0.2 \ 
-	-Des.node.name="es-test" -Des.network.bind_host=0.0.0.0
 ```
 
 * set environment variables
