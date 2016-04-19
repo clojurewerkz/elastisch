@@ -14,17 +14,17 @@
             [clojure.test :refer :all]
             [clojurewerkz.elastisch.rest.response :refer [created?]]))
 
-(def es-url (or (System/getenv "ES_URL")
-                (System/getenv "ELASTICSEARCH_URL")
-                "http://127.0.0.1:9200"))
-
-(def conn (es/connect es-url))
+(def conn (es/connect))
 
 (defn reset-indexes*
   []
   ;; deletes all indices
-  (idx/delete conn)
-  (idx/delete-template conn "accounts"))
+  (try
+    (idx/delete conn)
+    (idx/delete-template conn "accounts")
+    (catch Exception e
+      (println "fixtures: failed to delete indexes")
+      (.printStackTrace e))))
 
 (defn reset-indexes
   [f]

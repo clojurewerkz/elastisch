@@ -1,16 +1,18 @@
 language: clojure
-sudo: true
+lein: lein
+sudo: required
 services:
-  - elasticsearch
+  - docker
+
 env:
-  - ES_CLUSTER_NAME=elasticsearch
+  - ES_VERSION="2.3.1"
+
 before_install:
   - "ulimit -u 4096"
-  - "curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.1.deb"
-  - "sudo dpkg -i --force-confnew elasticsearch-2.3.1.deb"
-  - "sudo service elasticsearch restart"
-  - "sudo service elasticsearch status"
+  - docker pull elasticsearch:2.3.1
+  - docker run -d -p 9200:9200 -p 9300:9300 -v "$PWD/resources/config":/usr/share/elasticsearch/config elasticsearch:2.3.1
+  - docker ps -a
 
-script: lein2 all test :ci
+script: lein all test
 jdk:
   - oraclejdk8
