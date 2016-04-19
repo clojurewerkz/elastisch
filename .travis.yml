@@ -1,3 +1,5 @@
+jdk:
+  - oraclejdk8
 language: clojure
 lein: lein
 sudo: required
@@ -8,11 +10,20 @@ env:
   - ES_VERSION="2.3.1"
 
 before_install:
-  - "ulimit -u 4096"
   - docker pull elasticsearch:2.3.1
-  - docker run -d -p 9200:9200 -p 9300:9300 -v "$PWD/resources/config":/usr/share/elasticsearch/config elasticsearch:2.3.1
-  - docker ps -a
 
-script: lein all test
-jdk:
-  - oraclejdk8
+install:
+  - docker run -d -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 --name="elastisch-test" -v "$PWD/resources/config/elasticsearch.yml":/usr/share/elasticsearch/config/elasticsearch.yml elasticsearch:2.3.1
+  - lein deps
+
+before_script:
+  - sleep 10
+
+script:
+  - docker logs elastisch-test
+  - curl -vvvv http://127.0.0.1:9200/_stats
+  - lein all test :ci
+
+after_script:
+  - docker stop elastisch-test
+  - docker rm elastisch-test
