@@ -6,7 +6,11 @@ env:
   - ES_CLUSTER_NAME=elasticsearch
 before_install:
   - "ulimit -u 4096"
+  - "curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.1.deb"
+  - "sudo dpkg -i --force-confnew elasticsearch-2.3.1.deb"
+  - "sudo service elasticsearch restart"
   - "sudo service elasticsearch status"
+
 script: lein2 all test :ci
 jdk:
   - oraclejdk8
