@@ -82,8 +82,10 @@
       (is (get-in response [:people :shards]))))
 
   (deftest ^{:rest true :indexing true} test-index-recovery-for-multiple-indexes-1
-    (idx/create conn "group1")
-    (idx/create conn "group2")
+    (is (acknowledged? (idx/create conn "group1")))
+    (is (acknowledged? (idx/create conn "group2")))
+    (idx/refresh conn "group2") ;; let's wait until ES has finished indexing
+   
     (let [response (idx/recovery conn ["group1" "group2"])]
       (is (get-in response [:group1 :shards]))
       (is (get-in response [:group2 :shards]))))

@@ -19,8 +19,8 @@
                  ;; so we test for compatibility with it. MK.
                  :cljhttp076 {:dependencies [[clj-http "0.7.6"]]}
                  :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}
-                 :master {:dependencies [[org.clojure/clojure "1.8.0"]]}}
-  :aliases      {"all" ["with-profile" "dev:dev,1.8:dev,cljhttp076"]}
+                 :master {:dependencies [[org.clojure/clojure "1.8.0-master-SNAPSHOT"]]}}
+  :aliases      {"all" ["with-profile" "dev:1.8,dev:master,dev:cljhttp076,dev"]} ;try dev, then dev+1.8, then dev+master
   :repositories {"sonatype"         {:url "http://oss.sonatype.org/content/repositories/releases"
                                      :snapshots false
                                      :releases {:checksum :fail :update :always}}
