@@ -1,12 +1,29 @@
-language: clojure
-sudo: true
-services:
-  - elasticsearch
-env:
-  - ES_CLUSTER_NAME=elasticsearch
-before_install:
-  - "ulimit -u 4096"
-  - "sudo service elasticsearch status"
-script: lein2 all test :ci
 jdk:
   - oraclejdk8
+language: clojure
+lein: lein
+sudo: required
+services:
+  - docker
+
+env:
+  - ES_VERSION="2.3.1"
+
+before_install:
+  - docker pull elasticsearch:2.3.1
+
+install:
+  - docker run -d -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 --name="elastisch-test" -v "$PWD/resources/config/elasticsearch.yml":/usr/share/elasticsearch/config/elasticsearch.yml elasticsearch:2.3.1
+  - lein deps
+
+before_script:
+  - sleep 10
+
+script:
+  - docker logs elastisch-test
+  - curl -vvvv http://127.0.0.1:9200/_stats
+  - lein all test :ci
+
+after_script:
+  - docker stop elastisch-test
+  - docker rm elastisch-test
