@@ -32,7 +32,7 @@ Elastisch is a not a young project. Started in late 2011, it has been used
 in production since the early days. Elastisch API is stable. 1.0 was
 released in September 2012, 2.0 in June 2014, 2.1 in December 2014.
 
-After the Elastisch 2.2 release development will focus on
+Since the Elastisch 2.2 release development focusses on
 ElasticSearch 2.x support.
 
 
@@ -82,8 +82,8 @@ The most recent stable release is highly recommended.
 ## Supported ElasticSearch Versions
 
 Elastisch 2.1 and 2.2 target ElasticSearch 1.x starting with 1.1 and through 1.7.x.
-Elastisch **does not** currently support ElasticSearch 2.x. It will be our focus
-after the (Elastisch) 2.2 release.
+Elastisch **master** provides ElasticSearch 2.x compatibility but not
+every ElasticSearch 2.3+ feature.
 
 
 ## REST and Native Clients
