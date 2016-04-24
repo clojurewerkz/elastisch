@@ -1,5 +1,12 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
+### ElasticSeach 2.3.x Compatibility
+
+This involves removing some features as [ElasticSearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
+
+Contributed by Timo Sulg and Josh Tilles.
+
+
 ### Make it Possible to Override *any* clj-http Option
 
 The default clj-http options that Elastisch sets can now be overridden in two ways:
