@@ -63,7 +63,7 @@
                                                :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
       (idx/create conn \"myapp_development\" :mappings mapping-types))
 
-   Related ElasticSearch API Reference section:
+   Related Elasticsearch API Reference section:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
   [^Client conn ^String index-name & args]
   (let [opts                        (ar/->opts args)

@@ -1,7 +1,7 @@
-# Elastisch, a Clojure client for ElasticSearch
+# Elastisch, a Clojure client for Elasticsearch
 
 Elastisch is a minimalistic [Clojure client for
-ElasticSearch](http://clojureelasticsearch.info), a modern distributed search engine.
+Elasticsearch](http://clojureelasticsearch.info), a modern distributed search engine.
 
 
 ## Project Goals
@@ -9,9 +9,9 @@ ElasticSearch](http://clojureelasticsearch.info), a modern distributed search en
  * Be reasonably feature complete
  * Be [well documented](http://clojureelasticsearch.info)
  * Be [well tested](https://github.com/clojurewerkz/elastisch/tree/master/test)
- * Closely follow [ElasticSearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
+ * Closely follow [Elasticsearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
  * Support multiple transports: HTTP, native ES client, possibly more (e.g. Memcached)
- * Follow recent ElasticSearch releases & developments
+ * Follow recent Elasticsearch releases & developments
 
 
 ## Community
@@ -33,7 +33,7 @@ in production since the early days. Elastisch API is stable. 1.0 was
 released in September 2012, 2.0 in June 2014, 2.1 in December 2014.
 
 Since the Elastisch 2.2 release development focusses on
-ElasticSearch 2.x support.
+Elasticsearch 2.x support.
 
 
 ## Artifacts
@@ -79,11 +79,11 @@ Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/cloj
 Elastisch requires Clojure 1.6.
 The most recent stable release is highly recommended.
 
-## Supported ElasticSearch Versions
+## Supported Elasticsearch Versions
 
-Elastisch 2.1 and 2.2 target ElasticSearch 1.x starting with 1.1 and through 1.7.x.
-Elastisch **master** provides ElasticSearch 2.x compatibility but not
-every ElasticSearch 2.3+ feature.
+Elastisch 2.1 and 2.2 target Elasticsearch 1.x starting with 1.1 and through 1.7.x.
+Elastisch **master** provides Elasticsearch 2.x compatibility but not
+every Elasticsearch 2.3+ feature.
 
 
 ## REST and Native Clients
@@ -114,9 +114,9 @@ and several others.
 
 ## Development
 
-### ElasticSearch Setup
+### Elasticsearch Setup
 
-Elastisch needs ElasticSearch running locally (`127.0.0.1`). `ES_CLUSTER_NAME` need to be exported
+Elastisch needs Elasticsearch running locally (`127.0.0.1`). `ES_CLUSTER_NAME` need to be exported
 with the name of the local cluster. To find it out, use
 
 ```
@@ -125,7 +125,7 @@ curl http://localhost:9200/_cluster/nodes
 
 ### Running Tests
 
-To run Elastisch tests, make sure you have ElasticSearch running. It must be the same
+To run Elastisch tests, make sure you have Elasticsearch running. It must be the same
 version that Elastisch depends on due to binary protocol changes between releases.
 [project.clj](project.clj) or [project page on Clojars](https://clojars.org/clojurewerkz/elastisch)
 can help find that out.

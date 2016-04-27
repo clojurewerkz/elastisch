@@ -334,7 +334,7 @@
 ;;
 
 (defn connect
-  "Connects to the given ElasticSearch endpoint and returns it"
+  "Connects to the given Elasticsearch endpoint and returns it"
   (^clojurewerkz.elastisch.rest.Connection []
                                            (connect (default-url)))
   (^clojurewerkz.elastisch.rest.Connection [uri]

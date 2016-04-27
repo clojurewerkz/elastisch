@@ -235,7 +235,7 @@
 ;;
 
 (defn ^Client connect
-  "Connects to one or more ElasticSearch cluster nodes using
+  "Connects to one or more Elasticsearch cluster nodes using
    TCP/IP communication transport. Returns the client."
   ([]
      (.build (TransportClient/builder)))
@@ -271,7 +271,7 @@
   node)
 
 (defn ^Client connect-to-local-node
-  "Connects to a local ElasticSearch cluster nodes using
+  "Connects to a local Elasticsearch cluster nodes using
    local transport. Returns the client. Supposed to be used for automated testing."
   [^Node node]
   (.client node))

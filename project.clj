@@ -1,6 +1,6 @@
 (defproject clojurewerkz/elastisch "3.0.0-SNAPSHOT"
   :url "http://clojureelasticsearch.info"
-  :description "Minimalistic fully featured well documented Clojure ElasticSearch client"
+  :description "Minimalistic fully featured well documented Clojure Elasticsearch client"
   :license {:name "Eclipse Public License"}
   :dependencies [[org.clojure/clojure   "1.7.0"]
                  [cheshire              "5.6.1"]

@@ -45,7 +45,7 @@
                                                :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
       (idx/create conn \"myapp_development\" :mappings mapping-types))
 
-   Related ElasticSearch API Reference section:
+   Related Elasticsearch API Reference section:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
   [^Connection conn ^String index-name & args]
   (let [opts                        (ar/->opts args)
@@ -167,7 +167,7 @@
   "Refreshes an index manually.
 
    Refreshing an index makes all changes (added, modified and deleted documents) since the last refresh available for search. In other
-   words, index changes become \"visible\" to clients. ElasticSearch periodically refreshes indexes, the period is configurable via index
+   words, index changes become \"visible\" to clients. Elasticsearch periodically refreshes indexes, the period is configurable via index
    settings.
 
    0-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
@@ -212,7 +212,7 @@
   "Flushes an index.
 
    This causes the index by flushing data to the index storage and clearing the internal transaction log.
-   Typically it is sufficient to let ElasticSearch when to periodically flush indexes.
+   Typically it is sufficient to let Elasticsearch when to periodically flush indexes.
 
    0-arity flushes *all* indexes and may be a very expensive operation. Use it carefully.
    1-arity flushes a single index.
@@ -265,7 +265,7 @@
    { :add    { :index \"test1\" :alias \"alias1\" } }
    { :remove { :index \"test1\" :alias \"alias1\" } }
 
-   and so on, the same as described in the ElasticSearch documentation guide on aliases:
+   and so on, the same as described in the Elasticsearch documentation guide on aliases:
    http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html"
   [^Connection conn & actions]
   (rest/post conn (rest/index-aliases-batch-url conn)
