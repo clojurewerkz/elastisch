@@ -75,7 +75,7 @@
   (.multiGet ^Client conn req))
 
 (defn ^ActionFuture update
-  "Executes a update action request"
+  "Executes an update action request"
   [^Client conn ^UpdateRequest req]
   (.update ^Client conn req))
 
@@ -124,7 +124,7 @@
   (-> ^Client conn .admin .indices (.exists req)))
 
 (defn ^ActionFuture admin-types-exists
-  "Executes an types exist request"
+  "Executes a types exist request"
   [^Client conn ^TypesExistsRequest req]
   (-> ^Client conn .admin .indices (.typesExists req)))
 
