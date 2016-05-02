@@ -70,15 +70,15 @@
        (cnv/index-response->map (.actionGet res)))))
 
 
-   (defn create-search-template
-    "Adds a search template to the .scripts index the template should be
-     a map of the form:
-     {:template {:filter {:term {:name \"{{name}}\"}}}}
-    templates can be referenced at search time using their given id"
-    ([^Client conn ^String id ^Map document]
-      (create-search-template conn "mustache" id document))
-    ([^Client conn ^String language ^String id ^Map document]
-      (create conn ".scripts" language document :id id)))
+(defn create-search-template
+  "Adds a search template to the .scripts index the template should be
+  a map of the form:
+  {:template {:filter {:term {:name \"{{name}}\"}}}}
+  templates can be referenced at search time using their given id"
+  ([^Client conn ^String id ^Map document]
+     (create-search-template conn "mustache" id document))
+  ([^Client conn ^String language ^String id ^Map document]
+     (create conn ".scripts" language document :id id)))
 
 (defn async-create
   "Adds document to the search index and returns a future without waiting
@@ -205,10 +205,10 @@
          (cnv/get-response->map (.actionGet ft))))))
 
 (defn get-search-template
-([^Client conn ^String id]
-  (get-search-template conn "mustache" id))
-([^Client conn ^String language ^String id]
-  (get conn ".scripts" language id)))
+  ([^Client conn ^String id]
+     (get-search-template conn "mustache" id))
+  ([^Client conn ^String language ^String id]
+     (get conn ".scripts" language id)))
 
 (defn async-get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -283,11 +283,11 @@
        (cnv/delete-response->map res))))
 
 (defn delete-search-template
-"Removes a search template from .scripts index"
-([^Client conn ^String id]
-  (delete-search-template conn "mustache" id))
-([^Client conn ^String language ^String id]
-  (delete conn ".scripts" language id)))
+  "Removes a search template from .scripts index"
+  ([^Client conn ^String id]
+     (delete-search-template conn "mustache" id))
+  ([^Client conn ^String language ^String id]
+     (delete conn ".scripts" language id)))
 
 (defn count
   "Performs a count query.
