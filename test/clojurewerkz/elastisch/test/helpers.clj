@@ -21,8 +21,9 @@
   []
   (get (System/getenv) "ES_CLUSTER_NAME" "elasticsearch"))
 
-(defn infer-cluster-host []
+(defn infer-cluster-host
   "returns cluster host ip from ES_CLUSTER_HOST env variable"
+  []
   (get (System/getenv) "ES_CLUSTER_HOST" "127.0.0.1"))
 
 (defn connect-native-client
