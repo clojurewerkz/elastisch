@@ -53,7 +53,7 @@
 
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
-   matched against the queries you register with clojurewerkz.elastisch.native.percolation/register-query."
+  matched against the queries you register with clojurewerkz.elastisch.native.percolation/register-query."
   [^Client conn index mapping-type & args]
   (let [opts (ar/->opts args)
         prb  (doto (.preparePercolate ^Client conn)

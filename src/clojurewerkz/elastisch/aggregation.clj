@@ -15,7 +15,7 @@
 (ns clojurewerkz.elastisch.aggregation
   "Convenience functions that build various aggregation types.
 
-   All functions return maps and are completely optional (but recommended)."
+  All functions return maps and are completely optional (but recommended)."
   (:refer-clojure :exclude [min max sum filter range]))
 
 (defn min

@@ -75,7 +75,7 @@
 
 (defn hits-from
   "Returns search hits from a response as a collection. To retrieve hits overview, get the :hits
-   key from the response"
+  key from the response"
   [m]
   (get-in m [:hits :hits]))
 

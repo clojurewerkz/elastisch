@@ -25,14 +25,14 @@
 (defn cluster-health
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html
 
-   Examples:
+  Examples:
 
-   (require '[clojurewerkz.elastisch.rest.admin :as admin])
+  (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/cluster-health conn)
-   (admin/cluster-health conn :index \"index1\")
-   (admin/cluster-health conn :index [\"index1\",\"index2\"])
-   (admin/cluster-health conn :index \"index1\" :pretty true :level \"indices\")"
+  (admin/cluster-health conn)
+  (admin/cluster-health conn :index \"index1\")
+  (admin/cluster-health conn :index [\"index1\",\"index2\"])
+  (admin/cluster-health conn :index \"index1\" :pretty true :level \"indices\")"
   [^Connection conn & args]
   (let [opts (ar/->opts args)]
     (rest/get conn (rest/cluster-health-url conn
@@ -42,11 +42,11 @@
 (defn cluster-state
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html
 
-   Examples:
+  Examples:
 
-   (require '[clojurewerkz.elastisch.rest.admin :as admin])
+  (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/cluster-state conn)"
+  (admin/cluster-state conn)"
   [^Connection conn & args]
   (rest/get conn (rest/cluster-state-url conn) {:query-params (ar/->opts args)}))
 
@@ -54,12 +54,12 @@
 (defn nodes-stats
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html
 
-   Examples:
+  Examples:
 
-   (require '[clojurewerkz.elastisch.rest.admin :as admin])
+  (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/nodes-stats conn)
-   (admin/nodes-stats conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])"
+  (admin/nodes-stats conn)
+  (admin/nodes-stats conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])"
   [^Connection conn & args]
   (let [opts (ar/->opts args)]
     (rest/get conn (rest/cluster-nodes-stats-url conn
@@ -69,12 +69,12 @@
 (defn nodes-info
   "see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html
 
-   Examples:
+  Examples:
 
-   (require '[clojurewerkz.elastisch.rest.admin :as admin])
+  (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
-   (admin/nodes-info conn)
-   (admin/nodes-info conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])"
+  (admin/nodes-info conn)
+  (admin/nodes-info conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])"
   [^Connection conn & args]
   (let [opts (ar/->opts args)]
     (rest/get conn (rest/cluster-nodes-info-url conn

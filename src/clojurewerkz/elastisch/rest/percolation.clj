@@ -37,7 +37,7 @@
 
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
-   matched against the queries you register with clojurewerkz.elastisch.rest.percolation/register-query."
+  matched against the queries you register with clojurewerkz.elastisch.rest.percolation/register-query."
   [^Connection conn index percolator & args]
   ;; rest/get won't serialize the body for us. MK.
   (rest/get conn (rest/index-percolation-url conn
