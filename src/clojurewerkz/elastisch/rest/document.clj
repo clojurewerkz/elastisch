@@ -102,8 +102,7 @@
   (require '[clojurewerkz.elastisch.rest.document :as doc])
 
   (doc/update-with-script conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\"
-                                  \"ctx._source.age = ctx._source.age += 1\" {} :lang \"groovy\")
-  "
+                                  \"ctx._source.age = ctx._source.age += 1\" {} :lang \"groovy\")"
   ([^Connection conn index mapping-type id script]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
