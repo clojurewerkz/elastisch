@@ -135,7 +135,7 @@
   default-content-type XContentType/JSON)
 
 (defprotocol XContentTypeConversion
-  (^XContentType to-content-type [input] "Picks a content type for given input"))
+  (^{:tag XContentType, :doc/format :markdown} to-content-type [input] "Picks a content type for given input"))
 
 (extend-protocol XContentTypeConversion
   clojure.lang.Named
@@ -158,7 +158,7 @@
     input))
 
 (defprotocol VersionTypeConversion
-  (^VersionType to-version-type [input] "Picks a content type for given input"))
+  (^{:tag VersionType} to-version-type [input] "Picks a content type for given input"))
 
 (extend-protocol VersionTypeConversion
   clojure.lang.Named
@@ -297,7 +297,7 @@
        gr)))
 
 (defn- convert-source-result
-  "Copied from clj-elasticsearch. More performant than doing wlk/keywordize-keys."
+  "Copied from clj-elasticsearch. More performant than doing `wlk/keywordize-keys`."
   [src]
   (cond
    (instance? java.util.HashMap src) (into {}

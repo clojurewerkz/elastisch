@@ -88,7 +88,7 @@
                                   options
                                   {:accept :json}))))))
 (defn ^:private get*
-  "Like get but takes no connection"
+  "Like [[get]] but takes no connection"
   ([^String uri]
    (json/decode (:body (http/get uri {:accept :json :throw-exceptions throw-exceptions}))
                 true))
@@ -129,11 +129,11 @@
 (defn search-url
   "Constructs search query URI for the given index (or multiple indexes) and mapping types.
 
-  0-arity form constructs a URI that searches across all indexes and all mappings
-  1-arity form constructs a URI for one or more indexes and all mappings in them.
-  2-arity form constructs a URI for one or more indexes and given mappings in them.
+  * 0-arity form constructs a URI that searches across all indexes and all mappings
+  * 1-arity form constructs a URI for one or more indexes and all mappings in them.
+  * 2-arity form constructs a URI for one or more indexes and given mappings in them.
 
-  Passing index name as \"_all\" means searching across all indexes.
+  Passing index name as `\"_all\"` means searching across all indexes.
 
   To specify multiple indexes or mapping types, pass them as collections"
   ([conn]
