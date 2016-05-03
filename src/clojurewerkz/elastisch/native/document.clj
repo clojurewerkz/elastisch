@@ -77,8 +77,8 @@
     templates can be referenced at search time using their given id"
     ([^Client conn ^String id ^Map document]
       (create-search-template conn "mustache" id document))
-    ([^Client conn ^String languege ^String id ^Map document]
-      (create conn ".scripts" languege document :id id)))
+    ([^Client conn ^String language ^String id ^Map document]
+      (create conn ".scripts" language document :id id)))
 
 (defn async-create
   "Adds document to the search index and returns a future without waiting
@@ -207,8 +207,8 @@
 (defn get-search-template
 ([^Client conn ^String id]
   (get-search-template conn "mustache" id))
-([^Client conn ^String languege ^String id]
-  (get conn ".scripts" languege id)))
+([^Client conn ^String language ^String id]
+  (get conn ".scripts" language id)))
 
 (defn async-get
   "Fetches and returns a document by id or nil if it does not exist.
@@ -286,8 +286,8 @@
 "Removes a search template from .scripts index"
 ([^Client conn ^String id]
   (delete-search-template conn "mustache" id))
-([^Client conn ^String languege ^String id]
-  (delete conn ".scripts" languege id)))
+([^Client conn ^String language ^String id]
+  (delete conn ".scripts" language id)))
 
 (defn count
   "Performs a count query.
