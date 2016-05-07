@@ -75,7 +75,7 @@
   (.multiGet ^Client conn req))
 
 (defn ^ActionFuture update
-  "Executes a update action request"
+  "Executes an update action request"
   [^Client conn ^UpdateRequest req]
   (.update ^Client conn req))
 
@@ -124,7 +124,7 @@
   (-> ^Client conn .admin .indices (.exists req)))
 
 (defn ^ActionFuture admin-types-exists
-  "Executes an types exist request"
+  "Executes a types exist request"
   [^Client conn ^TypesExistsRequest req]
   (-> ^Client conn .admin .indices (.typesExists req)))
 
@@ -235,8 +235,8 @@
 ;;
 
 (defn ^Client connect
-  "Connects to one or more ElasticSearch cluster nodes using
-   TCP/IP communication transport. Returns the client."
+  "Connects to one or more Elasticsearch cluster nodes using
+  TCP/IP communication transport. Returns the client."
   ([]
      (.build (TransportClient/builder)))
   ([pairs]
@@ -271,7 +271,7 @@
   node)
 
 (defn ^Client connect-to-local-node
-  "Connects to a local ElasticSearch cluster nodes using
-   local transport. Returns the client. Supposed to be used for automated testing."
+  "Connects to a local Elasticsearch cluster nodes using
+  local transport. Returns the client. Supposed to be used for automated testing."
   [^Node node]
   (.client node))

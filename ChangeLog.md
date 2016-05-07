@@ -2,7 +2,7 @@
 
 ### ElasticSeach 2.3.x Compatibility
 
-This involves removing some features as [ElasticSearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
+This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
 
 Contributed by Timo Sulg and Josh Tilles.
 
@@ -87,7 +87,7 @@ Contributed by Michael Nussbaum.
 
 ### Index Stats Update
 
-`clojurewerkz.elastisch.rest.index/stats` has been updated for ElasticSearch `1.3.x`
+`clojurewerkz.elastisch.rest.index/stats` has been updated for Elasticsearch `1.3.x`
 and later versions.
 
 Contributed by Roman Pearah.
@@ -144,9 +144,9 @@ special-case first request.
 
 Contributed by @loganmhb
 
-### ElasticSearch Java Client Upgrade
+### Elasticsearch Java Client Upgrade
 
-Elastisch now depends on ElasticSearch Java client version `1.7.x`.
+Elastisch now depends on Elasticsearch Java client version `1.7.x`.
 
 ### clj-http Update
 
@@ -207,9 +207,9 @@ Native client now supports nesting in the following aggregations
 
 Contributed by Mitchel Kuijpers (Avisi).
 
-### ElasticSearch Java Client Upgrade
+### Elasticsearch Java Client Upgrade
 
-Elastisch now depends on ElasticSearch Java client version `1.4.x`.
+Elastisch now depends on Elasticsearch Java client version `1.4.x`.
 
 ### clj-http Update
 
@@ -308,7 +308,7 @@ Contributed by Michael Nussbaum (Braintree).
 
 ### New Line in Multi-Search REST API
 
-ElasticSearch Multi Search REST API endpoint is sensitive to the trailing new line.
+Elasticsearch Multi Search REST API endpoint is sensitive to the trailing new line.
 When it is missing, the response contains one result too few.
 
 Elastisch now makes sure to append a new line to Multi Search request
@@ -327,9 +327,9 @@ Contributed by Nikita Burtsev.
 
 ## Changes between Elastisch 2.1.0-beta4 and 2.1.0-beta5
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `1.3.x`.
+Elastisch now depends on Elasticsearch native client version `1.3.x`.
 
 ### Single-Bucket Aggregation Fix in the Native Client
 
@@ -346,7 +346,7 @@ Native client now has support for [aggregations](http://www.elasticsearch.org/gu
 
 The API is [the same as in the REST client](http://clojureelasticsearch.info/articles/aggregation.html).
 
-Note that ElasticSearch 1.2 has 26 aggregations. Currently only the most commonly
+Note that Elasticsearch 1.2 has 26 aggregations. Currently only the most commonly
 used ones are supported but support for more types will be added eventually.
 The supported types are:
 
@@ -492,13 +492,13 @@ Contributed by Sandeep Jagtap.
 
 ## Changes between Elastisch 2.0.0-rc1 and 2.0.0
 
-### ElasticSearch Client Update
+### Elasticsearch Client Update
 
-ElasticSearch client has been upgraded to `1.2.x`.
+Elasticsearch client has been upgraded to `1.2.x`.
 
 ### Snapshotting Support in Native Client
 
-Native client now supports snapshotting (updated for ElasticSearch 1.2)
+Native client now supports snapshotting (updated for Elasticsearch 1.2)
 with the same Clojure API as the REST client (all the usual API conventions
 apply).
 
@@ -572,9 +572,9 @@ were adapted for recent ES releases.
 
 Contributed by Oliver McCormack (The Climate Corporation).
 
-### ElasticSearch Client Update
+### Elasticsearch Client Update
 
-ElasticSearch client has been upgraded to `1.1.1`.
+Elasticsearch client has been upgraded to `1.1.1`.
 
 
 ## Changes between Elastisch 2.0.0-beta3 and 2.0.0-beta4
@@ -615,9 +615,9 @@ REST API client now supports percolation of existing documents:
 
 ## Changes between Elastisch 2.0.0-beta2 and 2.0.0-beta3
 
-### ElasticSearch Client Update
+### Elasticsearch Client Update
 
-ElasticSearch client has been upgraded to `1.1.0`.
+Elasticsearch client has been upgraded to `1.1.0`.
 
 ### Clojure 1.6
 
@@ -643,7 +643,7 @@ Contributed by Halit Olali.
 ### (Improved) Aggregation Support
 
 Elastisch 2.0 features multiple convenience functions for working with
-[ElasticSearch aggregations](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations.html).
+[Elasticsearch aggregations](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations.html).
 
 `clojurewerkz.elastisch.aggregation` is a new namespace that contains
 helper functions that produce various types of aggregations. Just like
@@ -677,17 +677,17 @@ Aggregations support is primarily focused on REST client at the moment.
 
 ## Changes between Elastisch 1.4.0 and 2.0.0-beta1
 
-### ElasticSearch 1.0 Compatibility
+### Elasticsearch 1.0 Compatibility
 
-Main goal of Elastisch 2.0 is ElasticSearch 2.0 compatibility. This includes minor
-API changes (in line with [ElasticSearch 1.0 API and terminology changes](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/breaking-changes.html))
+Main goal of Elastisch 2.0 is Elasticsearch 2.0 compatibility. This includes minor
+API changes (in line with [Elasticsearch 1.0 API and terminology changes](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/breaking-changes.html))
 and moderate internal modifications.
 
 
 ### Support for cluster nodes stats and info REST APIs
 
 `clojureworkz.elastisch.rest.admin/nodes-info` and `clojureworkz.elastisch.rest.admin/nodes-stats`
-are new administrative functions that provide access to ElasticSearch
+are new administrative functions that provide access to Elasticsearch
 [cluster stats and node info](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html).
 
 Examples:
@@ -704,7 +704,7 @@ Examples:
 (admin/nodes-info :nodes ["node1" "node2"] ["indices" "os" "plugins"])
 ```
 
-See [ElasticSearch nodes stats
+See [Elasticsearch nodes stats
 documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html),
 [nodes info
 page](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html),
@@ -727,7 +727,7 @@ Examples:
 (admin/cluster-state :filter_nodes true)
 ```
 
-See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html) for more info.
+See [Elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html) for more info.
 
 Contributed by Joachim De Beule.
 
@@ -747,7 +747,7 @@ Example:
 (admin/cluster-health :index "index1" :pretty true :level "indices")
 ```
 
-See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html) for more info.
+See [Elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html) for more info.
 
 Contributed by Joachim De Beule.
 
@@ -756,7 +756,7 @@ Contributed by Joachim De Beule.
 
 Added `(doc/analyze text & {:as params})`
 
-See [ElasticSearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html) for more info.
+See [Elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html) for more info.
 
 Examples:
 
@@ -784,9 +784,9 @@ By default `clojurewerkz.elastisch.escape/escape-query-string-characters` is use
 Contributed by Ben Reinhart (Groupon).
 
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `1.0.1`.
+Elastisch now depends on Elasticsearch native client version `1.0.1`.
 
 
 ### clj-http Update
@@ -806,18 +806,18 @@ Contributed by Richie Vos (Groupon).
 
 GH issues: #56.
 
-### ElasticSearch Exceptions
+### Elasticsearch Exceptions
 
-Elastisch now uses ElasticSearch exceptions instead of generic ones in the native
+Elastisch now uses Elasticsearch exceptions instead of generic ones in the native
 client.
 
 Contributed by Richie Vos (Groupon).
 
 GH issues: #54, #57.
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.8`.
+Elastisch now depends on Elasticsearch native client version `0.90.8`.
 
 ### `clojurewerkz.elastisch.native.document/update-with-script` Fix
 
@@ -843,9 +843,9 @@ Contributed by Mark Wong-VanHaren.
 
 ## Changes between Elastisch 1.3.0-rc1 and 1.3.0-rc2
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.7`.
+Elastisch now depends on Elasticsearch native client version `0.90.7`.
 
 
 ## Changes between Elastisch 1.3.0-beta5 and 1.3.0-rc1
@@ -919,12 +919,12 @@ Contributed by Jim Dunn.
 
 Native client now returns the same value in `:fields` and `:_fields`
 keys in search hits. This makes it both backwards compatible with
-earlier versions and the format ElasticSearch HTTP API uses.
+earlier versions and the format Elasticsearch HTTP API uses.
 
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.5`.
+Elastisch now depends on Elasticsearch native client version `0.90.5`.
 
 
 
@@ -956,9 +956,9 @@ Elastisch now requires Clojure 1.4.
 
 ## Changes between Elastisch 1.2.0-beta3 and 1.2.0
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.3`.
+Elastisch now depends on Elasticsearch native client version `0.90.3`.
 
 
 ### Empty Bulk Operations are Ignored
@@ -971,9 +971,9 @@ Contributed by Baptiste Fontaine.
 
 ## Changes between Elastisch 1.2.0-beta2 and 1.2.0-beta3
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.2`.
+Elastisch now depends on Elasticsearch native client version `0.90.2`.
 
 ### Support for :ignore_indices in REST API client
 
@@ -1002,9 +1002,9 @@ the `:fields` option are now correctly converted to Clojure maps.
 
 Contributed by Soren Macbeth.
 
-### ElasticSearch Native Client Upgrade
+### Elasticsearch Native Client Upgrade
 
-Elastisch now depends on ElasticSearch native client version `0.90.1`.
+Elastisch now depends on Elasticsearch native client version `0.90.1`.
 
 
 ## Changes between Elastisch 1.1.0 and 1.2.0-beta1
@@ -1050,7 +1050,7 @@ client counterpart that takes the same arguments.
 ### Native Client Performance Improvements
 
 Native client is now over 50% faster on most commonly used operations
-thanks to much lower conversion overhead from ElasticSearch native client
+thanks to much lower conversion overhead from Elasticsearch native client
 data structures to Clojure maps.
 
 Contributed by Jon Pither.
@@ -1060,8 +1060,8 @@ Contributed by Jon Pither.
 
 ### Native Client
 
-Elastisch `1.1.0` includes a major new feature: native ElasticSearch client.
-The client uses ElasticSearch's Java API, and can be used with
+Elastisch `1.1.0` includes a major new feature: native Elasticsearch client.
+The client uses Elasticsearch's Java API, and can be used with
 both transport and node clients.
 
 #### Rationale
@@ -1150,7 +1150,7 @@ important for them.
 
 GH issues: #17, #18, #20.
 
-Note that native ElasticSearch client currently relies on [ElasticSearch 0.90.0.Beta1](http://www.elasticsearch.org/blog/2013/02/26/0.90.0.Beta1-released.html)
+Note that native Elasticsearch client currently relies on [Elasticsearch 0.90.0.Beta1](http://www.elasticsearch.org/blog/2013/02/26/0.90.0.Beta1-released.html)
 client libraries and some operations will only work with that version.
 
 
@@ -1303,7 +1303,7 @@ Elastisch now uses (and depends on) [Cheshire](https://github.com/dakrone/cheshi
 
 `clojurewerkz.elastisch.rest.response/facets-from` is a new convenience function that returns the facets section of a response.
 The exact response format will vary between facet types and queries but it is always returned as an immutable map and has the same
-structure as in the respective ElasticSearch response JSON document.
+structure as in the respective Elasticsearch response JSON document.
 
 
 ### Clojure 1.4 By Default
@@ -1316,8 +1316,8 @@ We encourage all users to upgrade to 1.4, it is a drop-in replacement for the ma
 
 ### Match Query Support
 
-[ElasticSearch 0.19.9](http://www.elasticsearch.org/blog/2012/08/23/0.19.9-released.html) renames Text Query to Match Query. Elastisch adapts by introducing `clojurewerkz.elastisch.query/match` that
-is effectively an alias for `clojurewerkz.elastisch.query/text` (ElasticSearch still supports `:text` in the query DSL for backwards
+[Elasticsearch 0.19.9](http://www.elasticsearch.org/blog/2012/08/23/0.19.9-released.html) renames Text Query to Match Query. Elastisch adapts by introducing `clojurewerkz.elastisch.query/match` that
+is effectively an alias for `clojurewerkz.elastisch.query/text` (Elasticsearch still supports `:text` in the query DSL for backwards
 compatibility).
 
 
@@ -1407,7 +1407,7 @@ are new functions that implement support for [index aliases](http://www.elastics
 (clojurewerkz.elastisch.rest.index/clear-cache "my-index" :filter true :field_data true)
 ```
 
-It takes the same options as documented in the [ElasticSearch guide on the Clear Cache Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html)
+It takes the same options as documented in the [Elasticsearch guide on the Clear Cache Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html)
 
 #### Status
 
@@ -1433,7 +1433,7 @@ It takes the same options as documented in the [ElasticSearch guide on the Clear
 (clojurewerkz.elastisch.rest.index/stats "my-index" :docs true :store true :indexing true)
 ```
 
-It takes the same options as documented in the [ElasticSearch guide on the Stats Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html)
+It takes the same options as documented in the [Elasticsearch guide on the Stats Index operation](http://www.elasticsearch.org/guide/reference/api/admin-indices-stats.html)
 
 
 ### clj-http Update

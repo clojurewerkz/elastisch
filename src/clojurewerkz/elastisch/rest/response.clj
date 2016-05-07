@@ -57,7 +57,7 @@
   (:accepted m))
 
 (defn valid?
-  "Returns true if a validation query response indicates valid query, false otherwise"
+  "Returns `true` if a validation query response indicates valid query, `false` otherwise"
   [m]
   (:valid m))
 
@@ -77,15 +77,15 @@
   (get m :count))
 
 (defn any-hits?
-  "Returns true if a response has any search hits, false otherwise"
+  "Returns `true` if a response has any search hits, `false` otherwise"
   [m]
   (> (total-hits m) 0))
 
 (def no-hits? (complement any-hits?))
 
 (defn hits-from
-  "Returns search hits from a response as a collection. To retrieve hits overview, get the :hits
-   key from the response"
+  "Returns search hits from a response as a collection. To retrieve hits overview, get the `:hits`
+  key from the response"
   [m]
   (get-in m [:hits :hits]))
 

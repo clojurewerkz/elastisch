@@ -45,26 +45,28 @@
 (defn create
   "Creates an index.
 
-   Accepted options are :mappings and :settings. Both accept maps with the same structure as in the REST API.
+  Accepted options are `:mappings` and `:settings`. Both accept maps with the same structure as in the REST API.
 
-   Examples:
+  Examples:
 
-    (require '[clojurewerkz.elastisch.native.index :as idx])
+  ```clojure
+  (require '[clojurewerkz.elastisch.native.index :as idx])
 
-    (idx/create conn \"myapp_development\")
-    (idx/create conn \"myapp_development\" :settings {\"number_of_shards\" 1})
+  (idx/create conn \"myapp_development\")
+  (idx/create conn \"myapp_development\" :settings {\"number_of_shards\" 1})
 
-    (let [mapping-types {:person {:properties {:username   {:type \"string\" :store \"yes\"}
-                                               :first-name {:type \"string\" :store \"yes\"}
-                                               :last-name  {:type \"string\"}
-                                               :age        {:type \"integer\"}
-                                               :title      {:type \"string\" :analyzer \"snowball\"}
-                                               :planet     {:type \"string\"}
-                                               :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
-      (idx/create conn \"myapp_development\" :mappings mapping-types))
+  (let [mapping-types {:person {:properties {:username   {:type \"string\" :store \"yes\"}
+                                             :first-name {:type \"string\" :store \"yes\"}
+                                             :last-name  {:type \"string\"}
+                                             :age        {:type \"integer\"}
+                                             :title      {:type \"string\" :analyzer \"snowball\"}
+                                             :planet     {:type \"string\"}
+                                             :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
+    (idx/create conn \"myapp_development\" :mappings mapping-types))
+  ```
 
-   Related ElasticSearch API Reference section:
-   http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html"
+  Related Elasticsearch API Reference section:
+  <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
   [^Client conn ^String index-name & args]
   (let [opts                        (ar/->opts args)
         {:keys [settings mappings]} opts
@@ -74,7 +76,7 @@
 
 
 (defn exists?
-  "Returns true if given index (or indices) exists"
+  "Returns `true` if given index (or indices) exists"
   [^Client conn ^String index-name]
   (let [ft                        (es/admin-index-exists conn (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.actionGet ft)]
@@ -82,7 +84,7 @@
 
 
 (defn type-exists?
-  "Returns true if a type/types exists in an index/indices"
+  "Returns `true` if a type/types exists in an index/indices"
   [^Client conn ^String index-name type-name]
   (let [ft                        (es/admin-types-exists conn (cnv/->types-exists-request index-name type-name))
         ^TypesExistsResponse res (.actionGet ft)]
@@ -103,7 +105,7 @@
 (defn get-mapping
   "The get mapping API allows to retrieve mapping definition of index or index/type.
 
-   API Reference: http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html"
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
   ([^Client conn ^String index-name]
      (let [ft                       (es/admin-get-mappings conn (cnv/->get-mappings-request))
            ^GetMappingsResponse res (.actionGet ft)]
@@ -144,9 +146,13 @@
 
 (defn close
   "Closes an index or indices
+
   Usage:
-    (idx/close conn \"my-index\")
-    (idx/close conn [\"my-index\" \"dein-index\"])"
+
+  ```clojure
+  (idx/close conn \"my-index\")
+  (idx/close conn [\"my-index\" \"dein-index\"])
+  ```"
   [^Client conn index-name]
   (let [ft (es/admin-close-index conn (cnv/->close-index-request index-name))
         ^CloseIndexResponse res (.actionGet ft)]
@@ -188,19 +194,19 @@
 (defn stats
   "Returns statistics about indexes.
 
-   No argument version returns all stats.
-   Options may be used to define what exactly will be contained in the response:
+  No argument version returns all stats.
+  Options may be used to define what exactly will be contained in the response:
 
-   :docs : the number of documents, deleted documents
-   :store : the size of the index
-   :indexing : indexing statistics
-   :types : document type level stats
-   :groups : search group stats to retrieve the stats for
-   :get : get operation statistics, including missing stats
-   :search : search statistics, including custom grouping using the groups parameter (search operations can be associated with one or more groups)
-   :merge : merge operation stats
-   :flush : flush operation stats
-   :refresh : refresh operation stats"
+  * `:docs`: the number of documents, deleted documents
+  * `:store`: the size of the index
+  * `:indexing`: indexing statistics
+  * `:types`: document type level stats
+  * `:groups`: search group stats to retrieve the stats for
+  * `:get`: get operation statistics, including missing stats
+  * `:search`: search statistics, including custom grouping using the groups parameter (search operations can be associated with one or more groups)
+  * `:merge`: merge operation stats
+  * `:flush`: flush operation stats
+  * `:refresh`: refresh operation stats"
   ([^Client conn]
      (let [ft                        (es/admin-index-stats conn (cnv/->index-stats-request))
            ^IndicesStatsResponse res (.actionGet ft)]
@@ -223,10 +229,12 @@
 
 (defn update-aliases
   "Performs a batch of alias operations. Takes a collection of actions in the following form where
-   plural keys (indices, aliases) can be supplied as collections or single strings
+  plural keys (indices, aliases) can be supplied as collections or single strings
 
+  ```edn
   [{:add    { :indices \"test1\" :alias \"alias1\" }}
-   {:remove { :index \"test1\" :aliases \"alias1\" }}]"
+   {:remove { :index \"test1\" :aliases \"alias1\" }}]
+  ```"
   [^Client conn ops & args]
   (let [opts                        (ar/->opts args)
         ft                          (es/admin-update-aliases conn (cnv/->indices-aliases-request ops opts))

@@ -135,7 +135,7 @@
   default-content-type XContentType/JSON)
 
 (defprotocol XContentTypeConversion
-  (^XContentType to-content-type [input] "Picks a content type for given input"))
+  (^{:tag XContentType, :doc/format :markdown} to-content-type [input] "Picks a content type for given input"))
 
 (extend-protocol XContentTypeConversion
   clojure.lang.Named
@@ -158,7 +158,7 @@
     input))
 
 (defprotocol VersionTypeConversion
-  (^VersionType to-version-type [input] "Picks a content type for given input"))
+  (^{:tag VersionType} to-version-type [input] "Picks a content type for given input"))
 
 (extend-protocol VersionTypeConversion
   clojure.lang.Named
@@ -186,7 +186,7 @@
 ;;
 
 (defn ^Settings ->settings
-  "Converts a Clojure map into immutable ElasticSearch settings"
+  "Converts a Clojure map into immutable Elasticsearch settings"
   [m]
   (if m
     (let [^Settings$Builder sb (Settings/builder)]
@@ -297,7 +297,7 @@
        gr)))
 
 (defn- convert-source-result
-  "Copied from clj-elasticsearch. More performant than doing wlk/keywordize-keys."
+  "Copied from clj-elasticsearch. More performant than doing `wlk/keywordize-keys`."
   [src]
   (cond
    (instance? java.util.HashMap src) (into {}
@@ -722,8 +722,8 @@
     (str text)))
 
 (defn attach-suggestion-context
-  [query context]
   "attach context for suggestion query."
+  [query context]
   (let [add-category! (fn [field-name context-value]
                         (.addCategory query
                                       ^String (->string field-name)
@@ -959,8 +959,8 @@
   ;;       :_source {:latest-edit {:date "2012-03-26T06:07:00", :author nil},
   ;;                 :number-of-edits 10,
   ;;                 :language "English",
-  ;;                 :title "ElasticSearch",
-  ;;                 :url "http://en.wikipedia.org/wiki/ElasticSearch",
+  ;;                 :title "Elasticsearch",
+  ;;                 :url "http://en.wikipedia.org/wiki/Elasticsearch",
   ;;                 :summary "...",
   ;;                 :tags "..." }}
   ;;       {:_index "articles",
