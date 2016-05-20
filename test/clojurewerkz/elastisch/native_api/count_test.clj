@@ -18,7 +18,6 @@
 
 (use-fixtures :each fx/reset-indexes)
 
-;; TODO: this errors against ES 2.2.x
 (let [conn (th/connect-native-client)]
   (deftest ^{:native true} test-count-with-the-default-query
     (let [index-name "people"
@@ -42,7 +41,6 @@
            1 (doc/count conn index-name index-type (q/term :username "esjoe"))
            0 (doc/count conn index-name index-type (q/term :username "esmary")))))
 
-  ;;brokes
   (deftest ^{:native true} test-count-with-mixed-mappings
     (let [index-name "people"
           index-type "person"
