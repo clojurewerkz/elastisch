@@ -5,7 +5,6 @@
             [clojurewerkz.elastisch.test.helpers :as th]
             [clojure.test :refer :all]))
 
-;; TODO: this errors against ES 2.2.x
 (let [conn (th/connect-native-client)]
   (use-fixtures :each fx/reset-indexes
                       fx/prepopulate-people-suggestion
