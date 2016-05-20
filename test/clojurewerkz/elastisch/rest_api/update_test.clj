@@ -23,7 +23,7 @@
   (deftest ^{:rest true} test-replacing-documents
     (let [index-name   "people"
           mapping-type "person"
-          id           "1"
+          id           "3"
           new-bio      "Such a brilliant person"]
       (idx/create conn index-name :mappings fx/people-mapping)
       (doc/put conn index-name mapping-type "1" fx/person-jack)
@@ -35,8 +35,7 @@
       (doc/replace conn index-name mapping-type id (assoc fx/person-joe :biography new-bio))
       (idx/refresh conn index-name)
       (is (any-hits? (doc/search conn index-name mapping-type :query (q/term :biography "brilliant"))))
-      ;; TODO: investigate this. MK.
-      #_ (is (no-hits? (doc/search conn index-name mapping-type :query (q/term :biography "nice"))))))
+      (is (no-hits? (doc/search conn index-name mapping-type :query (q/term :biography "nice"))))))
 
   (deftest ^{:rest true} test-versioning
     (let [index-name "people"
