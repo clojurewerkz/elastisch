@@ -200,7 +200,8 @@
 (defn search
   "Performs a search query across one or more indexes and one or more mapping types.
 
-  Passing index name as `\"_all\"` means searching across all indexes.
+  Passing index name as `\"_all\"` means searching across all indexes, multiple
+  indexes or types can be passed in as a seq of strings.
 
   Examples:
 
@@ -222,7 +223,9 @@
                 :query-params qp})))
 
 (defn search-all-types
-  "Performs a search query across one or more indexes and all mapping types."
+  "Performs a search query across one or more indexes and all mapping types.
+
+  Multiple indexes can be passed in as a seq of strings."
   [^Connection conn index & args]
   (let [opts (ar/->opts args)
         qk   [:search_type :scroll :routing :preference :ignore_unavailable]
@@ -277,7 +280,10 @@
 
 
 (defn count
-  "Performs a count query.
+  "Performs a count query over one or more indexes and types.
+
+  Multiple indexes and types can be specified using a seq of strings, otherwise
+  specifying a string is enough.
 
   ```clojure
   Examples:
@@ -308,7 +314,10 @@
 
 ;;NB! requires delete-by-query plugin
 (defn delete-by-query
-  "Performs a delete-by-query operation."
+  "Performs a delete-by-query operation over one or more indexes and types.
+
+  Multiple indexes and types can be specified by passing in a seq of strings,
+  otherwise specifying a string suffices."
   ([^Connection conn index mapping-type query]
      (rest/delete conn
                   (rest/delete-by-query-url
@@ -328,7 +337,11 @@
                    :body {:query query}})))
 
 (defn delete-by-query-across-all-types
-  "Performs a delete-by-query operation across all mapping types."
+  "Performs a delete-by-query operation over one or more indexes, across all
+  mapping types.
+
+  Multiple indexes can be specified using a seq of strings, otherwise a single
+  string suffices."
   ([^Connection conn index query]
      (rest/delete conn
                   (rest/delete-by-query-url conn (join-names index))
