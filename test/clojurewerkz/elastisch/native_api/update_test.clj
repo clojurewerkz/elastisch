@@ -37,7 +37,6 @@
       (doc/replace conn index-name index-type id (assoc fx/person-joe :biography new-bio))
       (idx/refresh conn index-name)
       (is (any-hits? (doc/search conn index-name index-type :query (q/term :biography "brilliant"))))
-      ;; TODO: investigate this. MK.
       (is (no-hits? (doc/search conn index-name index-type :query (q/term :biography "nice"))))))
 
   (deftest test-versioning
