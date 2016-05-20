@@ -9,8 +9,7 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-articles-index)
 
-;; TODO: this errors against ES 2.2.x
-#_ (let [conn (th/connect-native-client)]
+(let [conn (th/connect-native-client)]
   (deftest ^{:native true :aggregation true} test-top-hits-aggregation
     (let [index-name   "articles"
           mapping-type "article"
