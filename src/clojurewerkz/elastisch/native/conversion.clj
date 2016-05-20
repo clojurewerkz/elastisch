@@ -1088,9 +1088,9 @@
   [^Range$Bucket b]
   (merge-sub-aggregations
    {:doc_count (.getDocCount b)
-    :from_as_string (String/valueOf ^{:tag "long"} (.. b getFrom longValue))
+    :from_as_string (.getFromAsString b)
     :from (.. b getFrom longValue)
-    :to_as_string (String/valueOf ^{:tag "long"} (.. b getTo longValue))
+    :to_as_string (.getToAsString b)
     :to (.. b getTo longValue)}
    b))
 
