@@ -24,7 +24,7 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:age_stats (a/stats "age")})
+                                   {:query (q/match-all)
+                                    :aggregations {:age_stats (a/stats "age")}})
           agg          (aggregation-from response :age_stats)]
       (is (= #{:count :min :max :avg :sum} (set (keys agg)))))))

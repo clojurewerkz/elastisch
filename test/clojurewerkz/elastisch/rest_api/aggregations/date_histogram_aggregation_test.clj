@@ -23,7 +23,7 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:age_ranges (a/date-histogram "signed_up_at" "1d")})
+                                   {:query (q/match-all)
+                                    :aggregations {:age_ranges (a/date-histogram "signed_up_at" "1d")}})
           agg          (aggregation-from response :age_ranges)]
       (is (:buckets agg)))))

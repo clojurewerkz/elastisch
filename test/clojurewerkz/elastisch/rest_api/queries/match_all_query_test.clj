@@ -22,7 +22,7 @@
   (deftest ^{:rest true :query true} test-basic-match-all-query
   (let [index-name   "articles"
         mapping-type "article"
-        response     (doc/search conn index-name mapping-type :query (q/match-all))
+        response     (doc/search conn index-name mapping-type {:query (q/match-all)})
         hits         (hits-from response)]
     (is (any-hits? response))
     (is (= 4 (total-hits response))))))

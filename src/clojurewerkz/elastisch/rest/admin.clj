@@ -14,8 +14,7 @@
 
 (ns clojurewerkz.elastisch.rest.admin
   (:require [clojurewerkz.elastisch.rest :as rest]
-            [clojurewerkz.elastisch.rest.utils :refer [join-names]]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.rest.utils :refer [join-names]])
   (:import clojurewerkz.elastisch.rest.Connection))
 
 ;;
@@ -31,15 +30,15 @@
   (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
   (admin/cluster-health conn)
-  (admin/cluster-health conn :index \"index1\")
-  (admin/cluster-health conn :index [\"index1\",\"index2\"])
-  (admin/cluster-health conn :index \"index1\" :pretty true :level \"indices\")
+  (admin/cluster-health conn {:index \"index1\"})
+  (admin/cluster-health conn {:index [\"index1\",\"index2\"]})
+  (admin/cluster-health conn {:index \"index1\" :pretty true :level \"indices\"})
   ```"
-  [^Connection conn & args]
-  (let [opts (ar/->opts args)]
-    (rest/get conn (rest/cluster-health-url conn
-                                            (join-names (:index opts)))
-              {:query-params (dissoc opts :index)})))
+  ([^Connection conn] (cluster-health conn nil))
+  ([^Connection conn opts]
+   (rest/get conn (rest/cluster-health-url conn
+                                           (join-names (:index opts)))
+             {:query-params (dissoc opts :index)})))
 
 (defn cluster-state
   "see <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html>
@@ -51,8 +50,9 @@
 
   (admin/cluster-state conn)
   ```"
-  [^Connection conn & args]
-  (rest/get conn (rest/cluster-state-url conn) {:query-params (ar/->opts args)}))
+  ([^Connection conn] (cluster-state conn nil))
+  ([^Connection conn opts]
+   (rest/get conn (rest/cluster-state-url conn) {:query-params opts})))
 
 
 (defn nodes-stats
@@ -64,13 +64,13 @@
   (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
   (admin/nodes-stats conn)
-  (admin/nodes-stats conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
+  (admin/nodes-stats conn {:nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"]})
   ```"
-  [^Connection conn & args]
-  (let [opts (ar/->opts args)]
-    (rest/get conn (rest/cluster-nodes-stats-url conn
-                                                 (join-names (get opts :nodes "_all"))
-                                                 (join-names (get opts :attributes "_all"))))))
+  ([^Connection conn] (nodes-stats conn nil))
+  ([^Connection conn opts]
+   (rest/get conn (rest/cluster-nodes-stats-url conn
+                                                (join-names (get opts :nodes "_all"))
+                                                (join-names (get opts :attributes "_all"))))))
 
 (defn nodes-info
   "see <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>
@@ -81,40 +81,41 @@
   (require '[clojurewerkz.elastisch.rest.admin :as admin])
 
   (admin/nodes-info conn)
-  (admin/nodes-info conn :nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"])
+  (admin/nodes-info conn {:nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"]})
   ```"
-  [^Connection conn & args]
-  (let [opts (ar/->opts args)]
-    (rest/get conn (rest/cluster-nodes-info-url conn
-                                                (join-names (get opts :nodes "_all"))
-                                                (join-names (get opts :attributes "_all"))))))
+  ([^Connection conn] (nodes-info conn nil))
+  ([^Connection conn opts]
+   (rest/get conn (rest/cluster-nodes-info-url conn
+                                               (join-names (get opts :nodes "_all"))
+                                               (join-names (get opts :attributes "_all"))))))
 
 
 (defn register-snapshot-repository
-  [^Connection conn ^String name & args]
-  (rest/put conn (rest/snapshot-repository-registration-url conn
-                                                            name)
-            {:body (ar/->opts args)}))
+  ([^Connection conn ^String name] (register-snapshot-repository conn name nil))
+  ([^Connection conn ^String name opts]
+   (rest/put conn (rest/snapshot-repository-registration-url conn
+                                                             name)
+             {:body opts})))
 
 
 (defn take-snapshot
-  [^Connection conn ^String repo ^String name & args]
-  (let [opts (ar/->opts args)]
-    (rest/put conn (rest/snapshot-url conn
-                                      repo name)
-              {:body opts :query-params (select-keys opts [:wait-for-completion?])})))
+  ([^Connection conn ^String repo ^String name] (take-snapshot conn repo name nil))
+  ([^Connection conn ^String repo ^String name opts]
+   (rest/put conn (rest/snapshot-url conn
+                                     repo name)
+             {:body opts :query-params (select-keys opts [:wait-for-completion?])})))
 
 (defn restore-snapshot
-  [^Connection conn ^String repo ^String name & args]
-  (let [opts (ar/->opts args)]
-    (rest/post conn (rest/restore-snapshot-url conn
-                                               repo name)
-             {:body opts
-              :query-params (select-keys opts [:wait-for-completion?])})))
+  ([^Connection conn ^String repo ^String name] (restore-snapshot conn repo name nil))
+  ([^Connection conn ^String repo ^String name opts]
+   (rest/post conn (rest/restore-snapshot-url conn
+                                              repo name)
+              {:body opts
+               :query-params (select-keys opts [:wait-for-completion?])})))
 
 (defn delete-snapshot
-  [^Connection conn ^String repo ^String name & args]
-  (let [opts (ar/->opts args)]
-    (rest/delete conn (rest/snapshot-url conn
-                                         repo name)
-                 {:query-params (select-keys opts [:wait-for-completion?])})))
+  ([^Connection conn ^String repo ^String name] (delete-snapshot conn repo name nil))
+  ([^Connection conn ^String repo ^String name opts]
+   (rest/delete conn (rest/snapshot-url conn
+                                        repo name)
+                {:query-params (select-keys opts [:wait-for-completion?])})))

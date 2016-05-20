@@ -54,7 +54,7 @@
   (deftest ^{:rest true :indexing true} test-bulk-with-index-and-type
     (let [document          fx/person-jack
           insert-operations (bulk/bulk-index (repeat 10 document))
-          response          (bulk/bulk-with-index-and-type conn index-name index-type insert-operations :refresh true)
+          response          (bulk/bulk-with-index-and-type conn index-name index-type insert-operations {:refresh true})
           first-id          (-> response :items first :create :_id)
           get-result        (doc/get conn index-name index-type first-id)]
       (are-all-successful (->> response :items (map :create)))
@@ -71,7 +71,7 @@
           response        (bulk/bulk-with-index-and-type conn index-name index-type insert-ops {:refresh true})
           docs            (->> response :items (map :create) )
           initial-count   (:count (doc/count conn index-name index-type))
-          delete-response (bulk/bulk-with-index-and-type conn index-name index-type (bulk/bulk-delete docs) :refresh true)]
+          delete-response (bulk/bulk-with-index-and-type conn index-name index-type (bulk/bulk-delete docs) {:refresh true})]
       (is (= 10 initial-count))
       (are-all-successful (->> response :items (map :create)))
       (is (= 0 (:count (doc/count conn index-name index-type))))))

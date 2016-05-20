@@ -28,6 +28,6 @@
       (testing "that the functions that default to throwing exceptions can be configured to swallow them"
         (is (thrown-with-msg? ExceptionInfo
                               #"clj-http: status 400"
-                              (es.document/create default-conn index mapping doc :id id)))
-        (is (= (es.document/create no-throwing-conn index mapping doc :id id)
+                              (es.document/create default-conn index mapping doc {:id id})))
+        (is (= (es.document/create no-throwing-conn index mapping doc {:id id})
                {:error "This is an example exception.", :status 400}))))))

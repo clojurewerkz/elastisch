@@ -19,9 +19,9 @@
   (deftest ^{:rest true} cluster-health
   (let [r (admin/cluster-health conn)]
     (is (contains? r :number_of_nodes)))
-  (let [r (admin/cluster-health conn :index "tweets")]
+  (let [r (admin/cluster-health conn {:index "tweets"})]
     (is (contains? r :number_of_nodes)))
-  (let [r (admin/cluster-health conn :index ["tweets" "people"])]
+  (let [r (admin/cluster-health conn {:index ["tweets" "people"]})]
     (is (contains? r :number_of_nodes)))
   (let [r (admin/cluster-health conn {:index ["tweets"] :level "shards"})]
     (is (contains? r :number_of_nodes)))))

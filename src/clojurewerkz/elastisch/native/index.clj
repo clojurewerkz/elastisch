@@ -15,8 +15,7 @@
 (ns clojurewerkz.elastisch.native.index
   (:refer-clojure :exclude [flush])
   (:require [clojurewerkz.elastisch.native :as es]
-            [clojurewerkz.elastisch.native.conversion :as cnv]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import org.elasticsearch.client.Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse
            org.elasticsearch.action.admin.indices.create.CreateIndexResponse
@@ -53,7 +52,7 @@
   (require '[clojurewerkz.elastisch.native.index :as idx])
 
   (idx/create conn \"myapp_development\")
-  (idx/create conn \"myapp_development\" :settings {\"number_of_shards\" 1})
+  (idx/create conn \"myapp_development\" {:settings {\"number_of_shards\" 1}})
 
   (let [mapping-types {:person {:properties {:username   {:type \"string\" :store \"yes\"}
                                              :first-name {:type \"string\" :store \"yes\"}
@@ -62,17 +61,17 @@
                                              :title      {:type \"string\" :analyzer \"snowball\"}
                                              :planet     {:type \"string\"}
                                              :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
-    (idx/create conn \"myapp_development\" :mappings mapping-types))
+    (idx/create conn \"myapp_development\" {:mappings mapping-types}))
   ```
 
   Related Elasticsearch API Reference section:
   <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
-  [^Client conn ^String index-name & args]
-  (let [opts                        (ar/->opts args)
-        {:keys [settings mappings]} opts
-        ft                       (es/admin-index-create conn (cnv/->create-index-request index-name settings mappings))
-        ^CreateIndexResponse res (.actionGet ft)]
-    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
+  ([^Client conn ^String index-name] (create conn index-name nil))
+  ([^Client conn ^String index-name opts]
+   (let [{:keys [settings mappings]} opts
+         ft                       (es/admin-index-create conn (cnv/->create-index-request index-name settings mappings))
+         ^CreateIndexResponse res (.actionGet ft)]
+     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
 
 (defn exists?
@@ -117,9 +116,8 @@
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type."
-  [^Client conn ^String index-name ^String mapping-type & args]
-  (let [opts                    (ar/->opts args)
-        ft                      (es/admin-put-mapping conn (cnv/->put-mapping-request index-name mapping-type opts))
+  [^Client conn ^String index-name ^String mapping-type opts]
+  (let [ft                      (es/admin-put-mapping conn (cnv/->put-mapping-request index-name mapping-type opts))
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
@@ -160,21 +158,21 @@
 
 (defn force-merge
   "Optimizes an index or multiple indices"
-  [^Client conn index-name & args]
-  (let [opts (ar/->opts args)
-        ft   (es/admin-merge-index
-               conn
-               (cnv/->force-merge-request index-name opts))
-        ^ForceMergeResponse res (.actionGet ft)]
-    (cnv/broadcast-operation-response->map res)))
+  ([^Client conn index-name] (force-merge conn index-name nil))
+  ([^Client conn index-name opts]
+   (let [ft   (es/admin-merge-index
+                conn
+                (cnv/->force-merge-request index-name opts))
+         ^ForceMergeResponse res (.actionGet ft)]
+     (cnv/broadcast-operation-response->map res))))
 
 (defn flush
   "Flushes an index or multiple indices"
-  [^Client conn index-name & args]
-  (let [opts               (ar/->opts args)
-        ft                 (es/admin-flush-index conn (cnv/->flush-index-request index-name opts))
-        ^FlushResponse res (.actionGet ft)]
-    (cnv/broadcast-operation-response->map res)))
+  ([^Client conn index-name] (flush conn index-name nil))
+  ([^Client conn index-name opts]
+   (let [ft                 (es/admin-flush-index conn (cnv/->flush-index-request index-name opts))
+         ^FlushResponse res (.actionGet ft)]
+     (cnv/broadcast-operation-response->map res))))
 
 (defn refresh
   "Refreshes an index or multiple indices"
@@ -185,11 +183,11 @@
 
 (defn clear-cache
   "Clears caches index or multiple indices"
-  [^Client conn index-name & args]
-  (let [opts                           (ar/->opts args)
-        ft                             (es/admin-clear-cache conn (cnv/->clear-indices-cache-request index-name opts))
-        ^ClearIndicesCacheResponse res (.actionGet ft)]
-    (cnv/broadcast-operation-response->map res)))
+  ([^Client conn index-name] (clear-cache conn index-name nil))
+  ([^Client conn index-name opts]
+   (let [ft                             (es/admin-clear-cache conn (cnv/->clear-indices-cache-request index-name opts))
+         ^ClearIndicesCacheResponse res (.actionGet ft)]
+     (cnv/broadcast-operation-response->map res))))
 
 (defn stats
   "Returns statistics about indexes.
@@ -212,9 +210,8 @@
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res))
-  ([^Client conn & args]
-     (let [opts                      (ar/->opts args)
-           ft                        (es/admin-index-stats conn (cnv/->index-stats-request opts))
+  ([^Client conn opts]
+     (let [ft                        (es/admin-index-stats conn (cnv/->index-stats-request opts))
            ^IndicesStatsResponse res (.actionGet ft)]
        ;; TODO: convert stats into a map
        res)))
@@ -235,25 +232,25 @@
   [{:add    { :indices \"test1\" :alias \"alias1\" }}
    {:remove { :index \"test1\" :aliases \"alias1\" }}]
   ```"
-  [^Client conn ops & args]
-  (let [opts                        (ar/->opts args)
-        ft                          (es/admin-update-aliases conn (cnv/->indices-aliases-request ops opts))
-        ^IndicesAliasesResponse res (.actionGet ft)]
-    {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
+  ([^Client conn ops] (update-aliases conn ops nil))
+  ([^Client conn ops opts]
+   (let [ft                          (es/admin-update-aliases conn (cnv/->indices-aliases-request ops opts))
+         ^IndicesAliasesResponse res (.actionGet ft)]
+     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
 (defn create-template
-  [^Client conn ^String template-name & args]
-  (let [opts                          (ar/->opts args)
-        ft                            (es/admin-put-index-template conn (cnv/->create-index-template-request template-name opts))
-        ^PutIndexTemplateResponse res (.actionGet ft)]
-    {:ok true :acknowledged (.isAcknowledged res)}))
+  ([^Client conn ^String template-name] (create-template conn template-name nil))
+  ([^Client conn ^String template-name opts]
+   (let [ft                            (es/admin-put-index-template conn (cnv/->create-index-template-request template-name opts))
+         ^PutIndexTemplateResponse res (.actionGet ft)]
+     {:ok true :acknowledged (.isAcknowledged res)})))
 
 (defn put-template
-  [^Client conn ^String template-name & args]
-  (let [opts                          (ar/->opts args)
-        ft                            (es/admin-put-index-template conn (cnv/->put-index-template-request template-name opts))
-        ^PutIndexTemplateResponse res (.actionGet ft)]
-    {:ok true :acknowledged (.isAcknowledged res)}))
+  ([^Client conn ^String template-name] (put-template conn template-name nil))
+  ([^Client conn ^String template-name opts]
+   (let [ft                            (es/admin-put-index-template conn (cnv/->put-index-template-request template-name opts))
+         ^PutIndexTemplateResponse res (.actionGet ft)]
+     {:ok true :acknowledged (.isAcknowledged res)})))
 
 (defn delete-template
   [^Client conn ^String template-name]

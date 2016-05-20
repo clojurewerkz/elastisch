@@ -30,8 +30,8 @@
         _            (idx/create conn index-name
                                  {:mappings fx/articles-mapping
                                   :settings {"index.number_of_shards" 1}})
-        result1      (pcl/register-query conn index-name query-name :query {:term {:title "search"}})
-        result2      (pcl/percolate conn index-name "article" :doc {:title "You know, for search"} :refresh true)
+        result1      (pcl/register-query conn index-name query-name {:query {:term {:title "search"}}})
+        result2      (pcl/percolate conn index-name "article" {:doc {:title "You know, for search"} :refresh true})
         result3      (pcl/unregister-query conn index-name query-name)]
     (is (= [query-name] (matches-from result2)))
     (is (= index-name (:_index result3)))

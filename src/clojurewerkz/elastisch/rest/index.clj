@@ -16,8 +16,7 @@
   (:refer-clojure :exclude [flush])
   (:require [clojurewerkz.elastisch.rest :as rest]
             [clj-http.client             :as http]
-            [clojurewerkz.elastisch.rest.utils :refer [join-names]]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.rest.utils :refer [join-names]])
   (:import clojurewerkz.elastisch.rest.Connection))
 
 ;;
@@ -49,14 +48,14 @@
 
   Related Elasticsearch API Reference section:
   <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
-  [^Connection conn ^String index-name & args]
-  (let [opts                        (ar/->opts args)
-        {:keys [settings mappings]} opts]
-    (rest/post conn (rest/index-url conn
-                                    index-name)
-               {:body (if mappings
-                        {:settings settings :mappings mappings}
-                        {:settings settings})})))
+  ([^Connection conn ^String index-name] (create conn index-name nil))
+  ([^Connection conn ^String index-name opts]
+   (let [{:keys [settings mappings]} opts]
+     (rest/post conn (rest/index-url conn
+                                     index-name)
+                {:body (if mappings
+                         {:settings settings :mappings mappings}
+                         {:settings settings})}))))
 
 (defn exists?
   "Used to check if the index (indices) exists or not.
@@ -105,8 +104,8 @@
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html>"
-  [^Connection conn ^String index-name-or-names ^String type-name & args]
-  (let [{:keys [mapping] :as opts}  (ar/->opts args)]
+  [^Connection conn ^String index-name-or-names ^String type-name opts]
+  (let [{:keys [mapping]} opts]
     (rest/put conn
               (rest/index-mapping-url conn (join-names index-name-or-names) type-name)
               {:body mapping
@@ -203,10 +202,12 @@
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-optimize-url conn)))
-  ([^Connection conn index-name & args]
+  ([^Connection conn index-name]
+     (optimize conn index-name nil))
+  ([^Connection conn index-name opts]
      (rest/post conn (rest/index-optimize-url conn
                                               (join-names index-name))
-                {:body (ar/->opts args)})))
+                {:body opts})))
 
 
 (defn flush
@@ -228,9 +229,9 @@
   ([^Connection conn index-name]
      (rest/post conn (rest/index-flush-url conn
                                            (join-names index-name))))
-  ([^Connection conn index-name & args]
+  ([^Connection conn index-name opts]
      (rest/post conn (rest/index-flush-url conn
-                                           (join-names index-name)) {:body (ar/->opts args)})))
+                                           (join-names index-name)) {:body opts})))
 
 
 (defn clear-cache
@@ -251,10 +252,10 @@
   ([^Connection conn index-name]
      (rest/post conn (rest/index-clear-cache-url conn
                                                  (join-names index-name))))
-  ([^Connection conn index-name & args]
+  ([^Connection conn index-name opts]
      (rest/post conn (rest/index-clear-cache-url conn
                                                  (join-names index-name))
-                {:body (ar/->opts args)})))
+                {:body opts})))
 
 ;;
 ;; Aliases
@@ -297,16 +298,16 @@
   * `:aliases`: template aliases configuration
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html>"
-  [^Connection conn ^String template-name & args]
-  (let [opts                                 (ar/->opts args)
-        {:keys [template settings mappings aliases]} opts]
-    (rest/post conn (rest/index-template-url conn
-                                             template-name)
-               {:body (merge {:template template
-                             :settings settings}
-                             (if mappings {:mappings mappings})
-                             (if aliases {:aliases aliases}))
-                            })))
+  ([^Connection conn ^String template-name] (create-template conn template-name nil))
+  ([^Connection conn ^String template-name opts]
+   (let [{:keys [template settings mappings aliases]} opts]
+     (rest/post conn (rest/index-template-url conn
+                                              template-name)
+                {:body (merge {:template template
+                              :settings settings}
+                              (if mappings {:mappings mappings})
+                              (if aliases {:aliases aliases}))
+                             }))))
 
 (defn get-template
   [^Connection conn ^String template-name]
@@ -330,13 +331,13 @@
   `:active_only`: Display only those recoveries that are currently on-going. Default: `false`.
 
   API reference: <https://www.elastic.co/guide/en/elasticsearch/reference/1.7/indices-recovery.html>"
-  ([^Connection conn & args]
+  ([^Connection conn opts]
      (rest/get conn (rest/index-recovery-url conn)
-               {:query-params (ar/->opts args)}))
-  ([^Connection conn index-name & args]
+               {:query-params opts}))
+  ([^Connection conn index-name opts]
      (rest/get conn (rest/index-recovery-url conn
                                              (join-names index-name))
-               {:query-params (ar/->opts args)})))
+               {:query-params opts})))
 
 ;; The above fails with "Can't have more than 1 variadic overload"
 
@@ -370,9 +371,9 @@
   * `:fielddata_fields`: fields to be included in the fielddata statistics
 
   API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/1.5/indices-stats.html>"
-  ([^Connection conn index-name & args]
-   (let [opts (ar/->opts args)]
-     (rest/get conn (rest/index-stats-url conn
-                                          (join-names index-name)
-                                          (join-names (get opts :stats "_all")))
-               {:query-params (dissoc opts :stats)}))))
+  ([^Connection conn index-name] (stats conn index-name nil))
+  ([^Connection conn index-name opts]
+   (rest/get conn (rest/index-stats-url conn
+                                        (join-names index-name)
+                                        (join-names (get opts :stats "_all")))
+             {:query-params (dissoc opts :stats)})))

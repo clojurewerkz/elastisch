@@ -52,7 +52,7 @@
               :end_offset 11,
               :type "word",
               :position 1}]}
-           (doc/analyze conn "foo bar-baz" :analyzer "whitespace"))))
+           (doc/analyze conn "foo bar-baz" {:analyzer "whitespace"}))))
 
   (deftest ^{:rest true} test-analyze-with-map-options
     (is (= {:tokens

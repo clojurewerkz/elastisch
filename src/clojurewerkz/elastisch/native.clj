@@ -253,12 +253,13 @@
        tc)))
 
 (defn ^Node build-local-node
-  [settings & {:keys [client] :or {client true}}]
-  (let [is (cnv/->settings settings)
-        nb (.. NodeBuilder nodeBuilder
-               (settings is)
-               (client client))]
-    (.build ^NodeBuilder nb)))
+  ([settings] (build-local-node settings nil))
+  ([settings {:keys [client], :or {client true}}]
+   (let [is (cnv/->settings settings)
+         nb (.. NodeBuilder nodeBuilder
+                (settings is)
+                (client client))]
+     (.build ^NodeBuilder nb))))
 
 (defn ^Node start-local-node
   [^Node node]

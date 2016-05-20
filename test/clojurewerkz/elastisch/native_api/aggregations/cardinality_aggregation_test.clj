@@ -23,7 +23,7 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:username_count {:cardinality {:field "username"}}})
+                                   {:query (q/match-all)
+                                    :aggregations {:username_count {:cardinality {:field "username"}}}})
           agg          (aggregation-from response :username_count)]
       (is (>= (:value agg) 4)))))

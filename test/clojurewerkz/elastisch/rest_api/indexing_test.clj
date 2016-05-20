@@ -80,46 +80,46 @@
 
   (deftest ^{:rest true :indexing true} test-put-with-new-document-version
     (let [id       "1"
-          _        (doc/put conn index-name index-type id fx/person-jack :version 1 :version_type "external")
-          _        (doc/put conn index-name index-type id fx/person-mary :version 2 :version_type "external")
-          response (doc/put conn index-name index-type id fx/person-joe  :version 3 :version_type "external")]
+          _        (doc/put conn index-name index-type id fx/person-jack {:version 1 :version_type "external"})
+          _        (doc/put conn index-name index-type id fx/person-mary {:version 2 :version_type "external"})
+          response (doc/put conn index-name index-type id fx/person-joe  {:version 3 :version_type "external"})]
       (is (not (conflict? response)))
       (is (= 3 (:_version response)))))
 
   (deftest ^{:rest true :indexing true} create-when-already-created-test
     (let [id       "1"
           _        (doc/put conn index-name index-type id fx/person-jack)
-          response (doc/put conn index-name index-type id fx/person-joe :op_type "create")]
+          response (doc/put conn index-name index-type id fx/person-joe {:op_type "create"})]
       (is (conflict? response))))
 
   (deftest ^{:rest true :indexing true} test-put-with-a-timestamp
     (let [id       "1"
-          _        (idx/create conn index-name :mappings fx/people-mapping)
+          _        (idx/create conn index-name {:mappings fx/people-mapping})
           response (doc/put conn index-name index-type id fx/person-jack {:timestamp (-> 2 months ago)})]
       (is (created? response))))
 
   (deftest ^{:rest true :indexing true} test-put-with-a-1-day-ttl
     (let [id       "1"
-          _        (idx/create conn index-name :mappings fx/people-mapping)
-          response (doc/put conn index-name index-type id fx/person-jack :ttl "1d")]
+          _        (idx/create conn index-name {:mappings fx/people-mapping})
+          response (doc/put conn index-name index-type id fx/person-jack {:ttl "1d"})]  ; TODO ttl is deprecated
       (is (created? response))))
 
   (deftest ^{:rest true :indexing true} test-put-with-a-10-seconds-ttl
     (let [id       "1"
-          _        (idx/create conn index-name :mappings fx/people-mapping)
-          response (doc/put conn index-name index-type id fx/person-jack :ttl "10000ms")]
+          _        (idx/create conn index-name {:mappings fx/people-mapping})
+          response (doc/put conn index-name index-type id fx/person-jack {:ttl "10000ms"})]  ; TODO ttl is deprecated
       (is (created? response))))
 
   (deftest ^{:rest true :indexing true} test-put-with-a-timeout
     (let [id       "1"
-          _        (idx/create conn index-name :mappings fx/people-mapping)
-          response (doc/put conn index-name index-type id fx/person-jack :timeout "1m")]
+          _        (idx/create conn index-name {:mappings fx/people-mapping})
+          response (doc/put conn index-name index-type id fx/person-jack {:timeout "1m"})]
       (is (created? response))))
 
   (deftest ^{:rest true :indexing true} test-put-with-refresh-set-to-true
     (let [id       "1"
-          _        (idx/create conn index-name :mappings fx/people-mapping)
-          response (doc/put conn index-name index-type id fx/person-jack :refresh true)]
+          _        (idx/create conn index-name {:mappings fx/people-mapping})
+          response (doc/put conn index-name index-type id fx/person-jack {:refresh true})]
       (is (created? response))))
 
   (deftest ^{:rest true :indexing true} test-put-create-autogenerate-id-test
@@ -133,13 +133,13 @@
 
   (deftest ^{:rest true :indexing true} test-a-custom-analyzer-and-stop-word-list
     (is (acknowledged? (idx/create conn "alt-tweets"
-                                   :settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
-                                                                                         :filter    ["standard" "lowercase" "stop"]
-                                                                                         :stopwords ["lol" "rockstar" "ninja" "cloud" "event"]}}}}}
-                                   :mappings {:tweet {:properties {:text {:type "string" :analyzer "antiposers"}}}})))
+                                   {:settings {:index {:analysis {:analyzer {:antiposers {:type      "standard"
+                                                                                          :filter    ["standard" "lowercase" "stop"]
+                                                                                          :stopwords ["lol" "rockstar" "ninja" "cloud" "event"]}}}}}
+                                    :mappings {:tweet {:properties {:text {:type "string" :analyzer "antiposers"}}}}})))
     (is (created? (doc/create conn "alt-tweets" "tweet" {:text "I am a ninja rockstar brogrammer, yo. I like that event-driven thing."})))
     (idx/refresh conn "alt-tweets")
-    (let [r1 (doc/search conn "alt-tweets" "tweet" :query (q/query-string :query "text:event-driven" :default_field :text))
-          r2 (doc/search conn "alt-tweets" "tweet" :query (q/query-string :query "text:(rockstar OR ninja)" :default_field :text))]
+    (let [r1 (doc/search conn "alt-tweets" "tweet" {:query (q/query-string {:query "text:event-driven" :default_field :text})})
+          r2 (doc/search conn "alt-tweets" "tweet" {:query (q/query-string {:query "text:(rockstar OR ninja)" :default_field :text})})]
       (is (any-hits? r1))
       (is (no-hits? r2)))))

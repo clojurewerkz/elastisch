@@ -14,28 +14,27 @@
 
 (ns clojurewerkz.elastisch.native.admin
   (:require [clojurewerkz.elastisch.native :as es]
-            [clojurewerkz.elastisch.native.conversion :as cnv]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import org.elasticsearch.client.Client
            org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryResponse
            org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotResponse
            org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotResponse))
 
 (defn register-snapshot-repository
-  [^Client conn ^String name & args]
-  (let [opts                       (ar/->opts args)
-        ft                         (es/admin-put-repository conn (cnv/->put-repository-request name opts))
-        ^PutRepositoryResponse res (.actionGet ft)]
-    (cnv/acknowledged-response->map res)))
+  ([^Client conn ^String name] (register-snapshot-repository conn name nil))
+  ([^Client conn ^String name opts]
+   (let [ft                         (es/admin-put-repository conn (cnv/->put-repository-request name opts))
+         ^PutRepositoryResponse res (.actionGet ft)]
+     (cnv/acknowledged-response->map res))))
 
 (defn take-snapshot
   "Takes a snapshot"
-  [^Client conn ^String repository ^String snapshot & args]
-  (let [opts                         (ar/->opts args)
-        ft                           (es/admin-create-snapshot conn (cnv/->create-snapshot-request repository snapshot opts))
-        ^CreateSnapshotResponse res (.actionGet ft)]
-    ;; TODO: actually calculate this using RestStatus
-    {:accepted true}))
+  ([^Client conn ^String repository ^String snapshot] (take-snapshot conn repository snapshot nil))
+  ([^Client conn ^String repository ^String snapshot opts]
+   (let [ft                           (es/admin-create-snapshot conn (cnv/->create-snapshot-request repository snapshot opts))
+         ^CreateSnapshotResponse res (.actionGet ft)]
+     ;; TODO: actually calculate this using RestStatus
+     {:accepted true})))
 
 (defn delete-snapshot
   "Deletes a snapshot"

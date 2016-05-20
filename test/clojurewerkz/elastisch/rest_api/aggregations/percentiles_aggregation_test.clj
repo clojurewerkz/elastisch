@@ -23,8 +23,8 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:percentiles_age (a/percentiles "age")})
+                                   {:query (q/match-all)
+                                    :aggregations {:percentiles_age (a/percentiles "age")}})
           agg          (aggregation-from response :percentiles_age)]
       (is (= #{:1.0 :5.0 :25.0 :50.0 :75.0 :95.0 :99.0}
              (set (keys (get agg :values))))))))

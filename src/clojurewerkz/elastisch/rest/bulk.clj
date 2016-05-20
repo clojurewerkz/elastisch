@@ -18,37 +18,39 @@
             [cheshire.core :as json]
             [clojure.string :as string]
             [clojure.set :refer :all]
-            [clojurewerkz.elastisch.common.bulk :as common-bulk]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.common.bulk :as common-bulk])
   (:import clojurewerkz.elastisch.rest.Connection))
 
 (defn ^:private bulk-with-url
-  [conn url operations & args]
-  (let [opts      (ar/->opts args)
-        bulk-json (map json/encode operations)
-        bulk-json (-> bulk-json
-                      (interleave (repeat "\n"))
-                      (string/join))]
-    (rest/post-string conn url
-                      {:body bulk-json
-                       :query-params opts})))
+  ([conn url operations] (bulk-with-url conn url operations nil))
+  ([conn url operations opts]
+   (let [bulk-json (map json/encode operations)
+         bulk-json (-> bulk-json
+                       (interleave (repeat "\n"))
+                       (string/join))]
+     (rest/post-string conn url
+                       {:body bulk-json
+                        :query-params opts}))))
 (defn bulk
   "Performs a bulk operation"
-  [^Connection conn operations & params]
-  (when (not-empty operations)
-    (apply bulk-with-url conn (rest/bulk-url conn) operations params)))
+  ([^Connection conn operations] (bulk conn operations nil))
+  ([^Connection conn operations params]
+   (when (not-empty operations)
+     (bulk-with-url conn (rest/bulk-url conn) operations params))))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
-  [^Connection conn index operations & params]
-  (apply bulk-with-url conn (rest/bulk-url conn
-                                           index) operations params))
+  ([^Connection conn index operations] (bulk-with-index conn index operations nil))
+  ([^Connection conn index operations params]
+   (bulk-with-url conn (rest/bulk-url conn
+                                      index) operations params)))
 
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
-  [^Connection conn index mapping-type operations & params]
-  (apply bulk-with-url conn (rest/bulk-url conn
-                                           index mapping-type) operations params))
+  ([^Connection conn index mapping-type operations] (bulk-with-index-and-type conn index mapping-type operations nil))
+  ([^Connection conn index mapping-type operations params]
+   (bulk-with-url conn (rest/bulk-url conn
+                                      index mapping-type) operations params)))
 
 (def index-operation common-bulk/index-operation)
 

@@ -23,7 +23,7 @@
   (let [index-name   "people"
         mapping-type "person"
         response     (doc/search conn index-name mapping-type
-                                 :query (q/match-all)
-                                 :aggregations {:title_terms (a/terms "title")})
+                                 {:query (q/match-all)
+                                  :aggregations {:title_terms (a/terms "title")}})
         agg          (aggregation-from response :title_terms)]
     (is (= 6 (count (:buckets agg)))))))

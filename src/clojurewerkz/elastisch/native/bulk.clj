@@ -18,7 +18,6 @@
             [clojure.string :as string]
             [clojure.set :refer :all]
             [clojurewerkz.elastisch.native.conversion :as cnv]
-            [clojurewerkz.elastisch.arguments :as ar]
             [clojurewerkz.elastisch.common.bulk :as common-bulk])
   (:import clojure.lang.IPersistentMap
            org.elasticsearch.client.Client
@@ -52,27 +51,30 @@
 
 (defn bulk
   "Performs a bulk operation"
-  [^Client conn operations & params]
-  (let [^BulkRequestBuilder req (reduce #(add-operation %2 %1) (.prepareBulk conn)
-                                        (cnv/->action-requests operations))]
-    (when (:refresh (first (flatten params)))
-      (.setRefresh req true))
-    (-> req
-        .execute
-        ^BulkResponse .actionGet
-        cnv/bulk-response->map)))
+  ([^Client conn operations] (bulk conn operations nil))
+  ([^Client conn operations params]
+   (let [^BulkRequestBuilder req (reduce #(add-operation %2 %1) (.prepareBulk conn)
+                                         (cnv/->action-requests operations))]
+     (when (:refresh params)
+       (.setRefresh req true))
+     (-> req
+         .execute
+         ^BulkResponse .actionGet
+         cnv/bulk-response->map))))
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
-  [^Client conn index operations & params]
-  (bulk conn (map #(add-default % {:_index index}) operations) params))
+  ([^Client conn index operations] (bulk-with-index conn index operations nil))
+  ([^Client conn index operations params]
+   (bulk conn (map #(add-default % {:_index index}) operations) params)))
 
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
-  [^Client conn index mapping-type operations & params]
-  (bulk conn
-        (map #(add-default % {:_index index :_type mapping-type}) operations)
-        params))
+  ([^Client conn index mapping-type operations] (bulk-with-index-and-type conn index mapping-type operations nil))
+  ([^Client conn index mapping-type operations params]
+   (bulk conn
+         (map #(add-default % {:_index index :_type mapping-type}) operations)
+         params)))
 
 (def index-operation common-bulk/index-operation)
 

@@ -14,11 +14,11 @@
     (let [index-name   "articles"
           mapping-type "article"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations
-                                   {:top-hits
-                                    {:top_hits {:sort [{:title {:order "asc"}}]
-                                                :size 4}}})
+                                   {:query (q/match-all)
+                                    :aggregations
+                                    {:top-hits
+                                     {:top_hits {:sort [{:title {:order "asc"}}]
+                                                 :size 4}}}})
           agg          (aggregation-from response :top-hits)]
       (is (= 4 (get-in agg [:hits :total])))
       (is (= 4 (count (get-in agg [:hits :hits])))))))

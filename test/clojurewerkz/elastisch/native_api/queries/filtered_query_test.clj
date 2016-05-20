@@ -23,7 +23,7 @@
   (deftest ^{:query true :native true} test-basic-filtered-query
     (let [index-name   "people"
           mapping-type "person"
-          response     (doc/search conn index-name mapping-type {:query (q/filtered :query  (q/term :planet "earth")
-                                                                                    :filter {:range {:age {:from 20 :to 30}}})})]
+          response     (doc/search conn index-name mapping-type {:query (q/filtered {:query  (q/term :planet "earth")
+                                                                                     :filter {:range {:age {:from 20 :to 30}}}})})]
       (is (any-hits? response))
       (is (= 3 (total-hits response))))))

@@ -20,7 +20,7 @@
   (deftest ^{:rest true} test-getting-index-mapping
     (let [index    "people1"
           mappings fx/people-mapping
-          response (idx/create conn index :mappings mappings)]
+          response (idx/create conn index {:mappings mappings})]
       (is (created-or-acknowledged? response))
       (is (get-in (idx/get-mapping conn index) [:people1 :mappings :person :properties :username :store]))))
 
@@ -28,8 +28,8 @@
     (let [index    "people2"
           mapping2 {:person {:properties {:first-name {:type "string" :store "yes"}}}}
           mapping  fx/people-mapping
-          _        (idx/create conn index :mappings mapping2)
-          response (idx/update-mapping conn index "person" :mapping mapping)]
+          _        (idx/create conn index {:mappings mapping2})
+          response (idx/update-mapping conn index "person" {:mapping mapping})]
       (is (created-or-acknowledged? response))))
 
   (deftest ^{:rest true} test-updating-blank-index-mapping

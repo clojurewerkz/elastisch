@@ -17,8 +17,7 @@
   (:require [clojurewerkz.elastisch.native :as es]
             [clojurewerkz.elastisch.native.conversion :as cnv]
             [clojurewerkz.elastisch.query  :as q]
-            [clojurewerkz.elastisch.native.response :as r]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.native.response :as r])
   (:import clojure.lang.IPersistentMap
            org.elasticsearch.client.Client
            [org.elasticsearch.action.get GetResponse MultiGetResponse]
@@ -55,7 +54,7 @@
 
   (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28})
 
-  (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")
+  (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} {:id \"1825c5432775b8d1a477acfae57e91ac8c767aed\"})
   ```"
   ([^Client conn index mapping-type document]
      (let [res (es/index conn (cnv/->index-request index
@@ -63,9 +62,8 @@
                                                           document
                                                           {:op-type "create"}))]
        (cnv/index-response->map (.actionGet res))))
-  ([^Client conn index mapping-type document & args]
-     (let [opts (ar/->opts args)
-           res (es/index conn (cnv/->index-request index
+  ([^Client conn index mapping-type document opts]
+     (let [res (es/index conn (cnv/->index-request index
                                                           mapping-type
                                                           document
                                                           (merge opts {:op-type "create"})))]
@@ -80,15 +78,15 @@
   ([^Client conn ^String id ^Map document]
      (create-search-template conn "mustache" id document))
   ([^Client conn ^String language ^String id ^Map document]
-     (create conn ".scripts" language document :id id)))
+     (create conn ".scripts" language document {:id id})))
 
 (defn async-create
   "Adds document to the search index and returns a future without waiting
   for the response. Takes exactly the same arguments as [[create]]."
   ([^Client conn index mapping-type document]
      (future (create conn index mapping-type document)))
-  ([^Client conn index mapping-type document & args]
-     (future (create conn index mapping-type document (ar/->opts args)))))
+  ([^Client conn index mapping-type document opts]
+     (future (create conn index mapping-type document opts))))
 
 (defn put
   "Creates or updates a document in the search index using the provided document id
@@ -99,9 +97,8 @@
                                               document
                                               {:id id :op-type "index"}))]
        (cnv/index-response->map (.actionGet res))))
-  ([^Client conn index mapping-type id document & args]
-     (let [opts (ar/->opts args)
-           res  (es/index conn (cnv/->index-request index
+  ([^Client conn index mapping-type id document opts]
+     (let [res  (es/index conn (cnv/->index-request index
                                                mapping-type
                                                document
                                                (merge opts {:id id :op-type "index"})))]
@@ -121,8 +118,8 @@
   and returns a future without waiting for the response. Takes exactly the same arguments as [[put]]."
   ([^Client conn index mapping-type id document]
      (future (put conn index mapping-type id document)))
-  ([^Client conn index mapping-type id document & args]
-     (future (put conn index mapping-type id document (ar/->opts args)))))
+  ([^Client conn index mapping-type id document opts]
+     (future (put conn index mapping-type id document opts))))
 
 (defn upsert
   "Updates or creates a document using provided data"
@@ -166,9 +163,8 @@
                                                 {:script_params params
                                                  :script script}))]
        (cnv/update-response->map (.actionGet res))))
-  ([^Client conn index mapping-type ^String id ^String script ^Map params & args]
-   (let [optional-params (ar/->opts args)
-         res (es/update conn
+  ([^Client conn index mapping-type ^String id ^String script ^Map params optional-params]
+   (let [res (es/update conn
                         (cnv/->update-request index
                                               mapping-type
                                               id
@@ -198,9 +194,8 @@
            ^GetResponse res (.actionGet ft)]
        (when (.isExists res)
          (cnv/get-response->map res))))
-  ([^Client conn index mapping-type id & args]
-     (let [opts             (ar/->opts args)
-           ft               (es/get conn (cnv/->get-request index
+  ([^Client conn index mapping-type id opts]
+     (let [ft               (es/get conn (cnv/->get-request index
                                                        mapping-type
                                                        id
                                                        opts))
@@ -219,8 +214,8 @@
   Returns a future without waiting."
   ([^Client conn index mapping-type id]
      (future (get conn index mapping-type id)))
-  ([^Client conn index mapping-type id & args]
-     (future (get conn index mapping-type id (ar/->opts args)))))
+  ([^Client conn index mapping-type id opts]
+     (future (get conn index mapping-type id opts))))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
@@ -288,8 +283,8 @@
      (let [ft                  (es/delete conn (cnv/->delete-request index mapping-type id))
            ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res)))
-  ([^Client conn index mapping-type id & args]
-     (let [ft                  (es/delete conn (cnv/->delete-request index mapping-type id (ar/->opts args)))
+  ([^Client conn index mapping-type id opts]
+     (let [ft                  (es/delete conn (cnv/->delete-request index mapping-type id opts))
            ^DeleteResponse res (.actionGet ft)]
        (cnv/delete-response->map res))))
 
@@ -310,7 +305,7 @@
   (require '[clojurewerkz.elastisch.query :as q])
 
   (doc/count conn \"people\" \"person\")
-  (doc/count conn \"people\" \"person\" (q/prefix :username \"appl\"))
+  (doc/count conn \"people\" \"person\" (q/prefix {:username \"appl\"}))
   ```"
   ([^Client conn index mapping-type]
      (count conn index mapping-type (q/match-all)))
@@ -319,8 +314,8 @@
            ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
               (cnv/broadcast-operation-response->map res))))
-  ([^Client conn index mapping-type query & args]
-     (let [ft (es/count conn (cnv/->count-request index mapping-type (merge (ar/->opts args)
+  ([^Client conn index mapping-type query opts]
+     (let [ft (es/count conn (cnv/->count-request index mapping-type (merge opts
                                                                        {:source query})))
            ^CountResponse res (.actionGet ft)]
        (merge {:count (.getCount res)}
@@ -337,38 +332,42 @@
   (require '[clojurewerkz.elastisch.native.document :as doc])
   (require '[clojurewerkz.elastisch.query :as q])
 
-  (doc/search conn \"people\" \"person\" :query (q/prefix :username \"appl\"))
+  (doc/search conn \"people\" \"person\" {:query (q/prefix {:username \"appl\"})})
   ```"
-  [^Client conn index mapping-type & args]
-  (let [ft (es/search conn
-                      (cnv/->search-request index mapping-type (ar/->opts args)))
-        ^SearchResponse res (.actionGet ft)]
-    (cnv/search-response->seq res)))
+  ([^Client conn index mapping-type] (search conn index mapping-type nil))
+  ([^Client conn index mapping-type opts]
+   (let [ft (es/search conn
+                       (cnv/->search-request index mapping-type opts))
+         ^SearchResponse res (.actionGet ft)]
+     (cnv/search-response->seq res))))
 
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types.
 
   Multiple indexes can be passed in as a seq of strings."
-  [^Client conn index & args]
-  (let [ft                  (es/search conn (cnv/->search-request index nil (ar/->opts args)))
-        ^SearchResponse res (.actionGet ft)]
-    (cnv/search-response->seq res)))
+  ([^Client conn index] (search-all-types conn index nil))
+  ([^Client conn index opts]
+   (let [ft                  (es/search conn (cnv/->search-request index nil opts))
+         ^SearchResponse res (.actionGet ft)]
+     (cnv/search-response->seq res))))
 
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
   Elasticsearch cluster so use this function with care."
-  [^Client conn & args]
-  (let [ft                  (es/search conn (cnv/->search-request [] nil (ar/->opts args)))
-        ^SearchResponse res (.actionGet ft)]
-    (cnv/search-response->seq res)))
+  ([^Client conn] (search-all-indexes-and-types conn nil))
+  ([^Client conn opts]
+   (let [ft                  (es/search conn (cnv/->search-request [] nil opts))
+         ^SearchResponse res (.actionGet ft)]
+     (cnv/search-response->seq res))))
 
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
   query given a scroll id"
-  [^Client conn scroll-id & args]
-  (let [ft                  (es/search-scroll conn (cnv/->search-scroll-request scroll-id (ar/->opts args)))
-        ^SearchResponse res (.actionGet ft)]
-    (cnv/search-response->seq res)))
+  ([^Client conn scroll-id] (scroll conn scroll-id nil))
+  ([^Client conn scroll-id opts]
+   (let [ft                  (es/search-scroll conn (cnv/->search-scroll-request scroll-id opts))
+         ^SearchResponse res (.actionGet ft)]
+     (cnv/search-response->seq res))))
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
@@ -376,7 +375,7 @@
    (let [hits (r/hits-from prev-resp)
          scroll-id (:_scroll_id prev-resp)]
      (if (or (seq hits) (= search_type "scan"))
-       (concat hits (lazy-seq (scroll-seq conn (scroll conn scroll-id :scroll "1m"))))
+       (concat hits (lazy-seq (scroll-seq conn (scroll conn scroll-id {:scroll "1m"}))))
        hits)))
   ([^Client conn prev-resp]
     (scroll-seq conn prev-resp nil)))

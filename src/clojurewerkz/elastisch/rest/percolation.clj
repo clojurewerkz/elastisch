@@ -14,8 +14,7 @@
 
 (ns clojurewerkz.elastisch.rest.percolation
   (:require [clojurewerkz.elastisch.rest :as rest]
-            [cheshire.core :as json]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [cheshire.core :as json])
   (:import clojurewerkz.elastisch.rest.Connection))
 
 ;;
@@ -24,10 +23,11 @@
 
 (defn register-query
   "Registers a percolator for the given index"
-  [^Connection conn index percolator & args]
-  (rest/put conn (rest/percolator-url conn
-                                      index percolator)
-            {:body (ar/->opts args)}))
+  ([^Connection conn index percolator] (register-query conn index percolator nil))
+  ([^Connection conn index percolator opts]
+   (rest/put conn (rest/percolator-url conn
+                                       index percolator)
+             {:body opts})))
 
 (defn unregister-query
   "Unregisters a percolator query for the given index"
@@ -38,11 +38,12 @@
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
   matched against the queries you register with [[register-query]]."
-  [^Connection conn index percolator & args]
-  ;; rest/get won't serialize the body for us. MK.
-  (rest/get conn (rest/index-percolation-url conn
-                                             index percolator)
-            {:body (json/encode (ar/->opts args))}))
+  ([^Connection conn index percolator] (percolate conn index percolator nil))
+  ([^Connection conn index percolator opts]
+   ;; rest/get won't serialize the body for us. MK.
+   (rest/get conn (rest/index-percolation-url conn
+                                              index percolator)
+             {:body (json/encode opts)})))
 
 (defn percolate-existing
   "Percolates an existing document and sees which queries match on it."
