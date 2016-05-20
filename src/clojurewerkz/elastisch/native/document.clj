@@ -329,6 +329,8 @@
 (defn search
   "Performs a search query across one or more indexes and one or more mapping types.
 
+  Multiple indexes or types can be passed in as a seq of strings.
+
   Examples:
 
   ```clojure
@@ -344,7 +346,9 @@
     (cnv/search-response->seq res)))
 
 (defn search-all-types
-  "Performs a search query across one or more indexes and all mapping types."
+  "Performs a search query across one or more indexes and all mapping types.
+
+  Multiple indexes can be passed in as a seq of strings."
   [^Client conn index & args]
   (let [ft                  (es/search conn (cnv/->search-request index nil (ar/->opts args)))
         ^SearchResponse res (.actionGet ft)]
