@@ -23,7 +23,7 @@
   (deftest ^{:rest true :query true} test-basic-fuzzy-query-with-string-fields
     (let [index-name   "articles"
           mapping-type "article"
-          response     (doc/search conn index-name mapping-type :query (q/fuzzy :title "Nueva"))
+          response     (doc/search conn index-name mapping-type {:query (q/fuzzy {:title "Nueva"})})
           hits         (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))
@@ -32,7 +32,7 @@
   (deftest ^{:rest true :query true} test-basic-fuzzy-query-with-numeric-fields
     (let [index-name   "articles"
           mapping-type "article"
-          response (doc/search conn index-name mapping-type :query (q/fuzzy :number-of-edits {:value 13000 :fuzziness 3}))
+          response (doc/search conn index-name mapping-type {:query (q/fuzzy {:number-of-edits {:value 13000 :fuzziness 3}})})
           hits     (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))
@@ -41,7 +41,7 @@
   (deftest ^{:rest true :query true} test-basic-fuzzy-query-with-date-fields
     (let [index-name   "articles"
           mapping-type "article"
-          response     (doc/search conn index-name mapping-type :query (q/fuzzy "latest-edit.date" {:value "2012-03-25T12:00:00" :fuzziness "1d"}))
+          response     (doc/search conn index-name mapping-type {:query (q/fuzzy {"latest-edit.date" {:value "2012-03-25T12:00:00" :fuzziness "1d"}})})
           hits         (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))

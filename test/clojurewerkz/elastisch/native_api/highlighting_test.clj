@@ -24,14 +24,14 @@
   (deftest ^{:native true} test-highlighting-with-all-defaults
     (let [index "articles"
           type  "article"]
-      (idx/create conn index :mappings fx/articles-mapping)
+      (idx/create conn index {:mappings fx/articles-mapping})
       (doc/put conn index type "1" fx/article-on-elasticsearch)
       (doc/put conn index type "2" fx/article-on-lucene)
       (doc/put conn index type "3" fx/article-on-nueva-york)
       (doc/put conn index type "4" fx/article-on-austin)
       (idx/refresh conn index)
       (let [resp  (doc/search conn index type
-                              {:query (q/query-string :query "software" :default_field "summary")
+                              {:query (q/query-string {:query "software" :default_field "summary"})
                                :highlight {:fields {:summary {}}}})
             hits  (hits-from resp)]
         (is (re-find #"<em>software</em>" (-> hits first :highlight :summary first)))))))

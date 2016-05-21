@@ -20,7 +20,7 @@
 
 (let [conn (rest/connect)]
   (deftest ^{:rest true :query true} test-trailing-wildcard-query-with-nested-fields
-    (let [response     (doc/search conn "articles" "article" :query (q/wildcard "latest-edit.author" "Thorw*"))
+    (let [response     (doc/search conn "articles" "article" {:query (q/wildcard {"latest-edit.author" "Thorw*"})})
           hits         (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))
@@ -28,7 +28,7 @@
 
 
   (deftest ^{:rest true :query true} test-leading-wildcard-query-with-non-analyzd-field
-    (let [response     (doc/search conn "tweets" "tweet" :query (q/wildcard :username "*werkz"))
+    (let [response     (doc/search conn "tweets" "tweet" {:query (q/wildcard {:username "*werkz"})})
           hits         (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))

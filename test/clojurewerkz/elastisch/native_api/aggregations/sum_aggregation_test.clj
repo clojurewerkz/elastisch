@@ -23,7 +23,7 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:sum_age (a/sum "age")})
+                                   {:query (q/match-all)
+                                    :aggregations {:sum_age (a/sum "age")}})
           agg          (aggregation-from response :sum_age)]
       (is (>= (:value agg) 116)))))

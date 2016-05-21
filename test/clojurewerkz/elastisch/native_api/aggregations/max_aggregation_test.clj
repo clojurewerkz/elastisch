@@ -23,7 +23,7 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:max_age (a/max "age")})
+                                   {:query (q/match-all)
+                                    :aggregations {:max_age (a/max "age")}})
           agg          (aggregation-from response :max_age)]
       (is (= {:value 37.0} agg)))))

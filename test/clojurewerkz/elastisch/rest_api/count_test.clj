@@ -26,7 +26,7 @@
   (deftest ^{:rest true} test-count-with-the-default-query
   (let [index-name "people"
         index-type "person"]
-    (idx/create conn index-name :mappings fx/people-mapping)
+    (idx/create conn index-name {:mappings fx/people-mapping})
     (doc/create conn index-name index-type fx/person-jack)
     (doc/create conn index-name index-type fx/person-joe)
     (idx/refresh conn index-name)
@@ -36,7 +36,7 @@
   (deftest ^{:rest true} test-count-with-a-term-query
     (let [index-name "people"
           index-type "person"]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
       (doc/create conn index-name index-type fx/person-jack)
       (doc/create conn index-name index-type fx/person-joe)
       (idx/refresh conn index-name)

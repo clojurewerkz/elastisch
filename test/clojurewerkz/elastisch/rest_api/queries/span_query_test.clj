@@ -25,7 +25,7 @@
     ;; [[clojurewerkz.elastisch.fixtures/person-jack]]) requires searching for
     ;; the word “eat” —not “eating”— because the `biography` field is indexed
     ;; with the `snowball` analyzer.
-    (let [response (doc/search conn "people" "person" :query (q/span-first :match {:span_term {:biography "eat"}} :end 5))
+    (let [response (doc/search conn "people" "person" {:query (q/span-first {:match {:span_term {:biography "eat"}} :end 5})})
           hits     (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))
@@ -35,8 +35,8 @@
     ;; Similarly to the previous test, we search for “document” instead of
     ;; “documents” (which is what [[clojurewerkz.elastisch.fixtures/article-on-elasticsearch]])
     ;; *actually* contains).
-    (let [response (doc/search conn "articles" "article" :query (q/span-near :clauses [{:span_term {:summary "search"}}
-                                                                                       {:span_term {:summary "document"}}] :slop 5 :in_order true))
+    (let [response (doc/search conn "articles" "article" {:query (q/span-near {:clauses [{:span_term {:summary "search"}}
+                                                                                         {:span_term {:summary "document"}}] :slop 5 :in_order true})})
           hits (hits-from response)]
       (is (any-hits? response))
       (is (= 1 (total-hits response)))

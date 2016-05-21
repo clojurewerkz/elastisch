@@ -23,7 +23,7 @@
   (let [index-name   "people"
         mapping-type "person"
         response     (doc/search conn index-name mapping-type
-                                 :query (q/match-all)
-                                 :aggregations {:no_country (a/missing :country)})
+                                 {:query (q/match-all)
+                                  :aggregations {:no_country (a/missing :country)}})
         agg          (aggregation-from response :no_country)]
     (is (>= (:doc_count agg) 3)))))

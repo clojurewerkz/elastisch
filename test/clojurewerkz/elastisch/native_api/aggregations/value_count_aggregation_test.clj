@@ -23,7 +23,7 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:agg1 (a/value-count "age")})
+                                   {:query (q/match-all)
+                                    :aggregations {:agg1 (a/value-count "age")}})
           agg          (aggregation-from response :agg1)]
       (is (>= (:value agg) 4)))))

@@ -25,10 +25,10 @@
       (let [info (admin/nodes-info conn)
             node-id (first (keys (:nodes info)))
             node-name (get-in info [:nodes node-id :name])]
-        (is (empty? (:nodes (admin/nodes-info conn :nodes ["foo"]))))
-        (is (= 1 (count (:nodes (admin/nodes-info conn :nodes (name node-id))))))
-        (is (= 1 (count (:nodes (admin/nodes-info conn :nodes (vector (name node-id)))))))
-        (is (= 1 (count (:nodes (admin/nodes-info conn :nodes node-name)))))))
+        (is (empty? (:nodes (admin/nodes-info conn {:nodes ["foo"]}))))
+        (is (= 1 (count (:nodes (admin/nodes-info conn {:nodes (name node-id)})))))
+        (is (= 1 (count (:nodes (admin/nodes-info conn {:nodes (vector (name node-id))})))))
+        (is (= 1 (count (:nodes (admin/nodes-info conn {:nodes node-name})))))))
     (testing "parameters"
-      (is (not (= (admin/nodes-info conn :attributes ["plugins"])
-                  (admin/nodes-info conn :attributes ["os"])))))))
+      (is (not (= (admin/nodes-info conn {:attributes ["plugins"]})
+                  (admin/nodes-info conn {:attributes ["os"]})))))))

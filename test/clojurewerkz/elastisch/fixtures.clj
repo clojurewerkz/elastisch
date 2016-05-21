@@ -289,7 +289,7 @@
   [f]
   (let [index-name   "people"
         mapping-type "person"]
-    (idx/create conn index-name :mappings people-mapping)
+    (idx/create conn index-name {:mappings people-mapping})
 
     (is (created? (doc/put conn index-name mapping-type "1" person-jack)))
     (is (created? (doc/put conn index-name mapping-type "2" person-mary)))
@@ -303,7 +303,7 @@
   [f]
   (let [index-name   "articles"
         mapping-type "article"]
-    (idx/create conn index-name :mappings articles-mapping)
+    (idx/create conn index-name {:mappings articles-mapping})
 
     (is (created? (doc/put conn index-name mapping-type "1" article-on-elasticsearch)))
     (is (created? (doc/put conn index-name mapping-type "2" article-on-lucene)))
@@ -317,7 +317,7 @@
   [f]
   (let [index-name   "tweets"
         mapping-type "tweet"]
-    (idx/create conn index-name :mappings tweets-mapping)
+    (idx/create conn index-name {:mappings tweets-mapping})
 
     (is (created? (doc/put conn index-name mapping-type "1" tweet1)))
     (is (created? (doc/put conn index-name mapping-type "2" tweet2)))
@@ -332,7 +332,7 @@
   [f]
   (let [index-name "people_suggestions"
         mapping-type "person_suggestions"]
-    (idx/create conn index-name :mappings people-suggestion-mapping)
+    (idx/create conn index-name {:mappings people-suggestion-mapping})
     ;; seeds suggestion data
     (is (created? (doc/put conn index-name mapping-type "1" suggest-jack)))
     (is (created? (doc/put conn index-name mapping-type "2" suggest-mary)))
@@ -346,7 +346,7 @@
   [f]
   (let [index-name "people_with_category"
         mapping-type "person_suggestions"]
-    (idx/create conn index-name :mappings people-suggestion-gender-context-mapping)
+    (idx/create conn index-name {:mappings people-suggestion-gender-context-mapping})
     ;; seeds suggestion data
     (is (created? (doc/put conn index-name mapping-type "1"
                            (assoc-in suggest-jack [:suggest :context] {:gender "male"}))))
@@ -366,7 +366,7 @@
         mapping-type "person_suggestions"
         local {:location {:lat 90.0 :lon 90.0}}
         faraway {:location {:lat 0.0 :lon -90.0}}]
-    (idx/create conn index-name :mappings people-suggestion-location-context-mapping)
+    (idx/create conn index-name {:mappings people-suggestion-location-context-mapping})
     ;; seeds suggestion data
     (is (created? (doc/put conn index-name mapping-type "1"
                            (assoc-in suggest-jack [:suggest :context] local))))

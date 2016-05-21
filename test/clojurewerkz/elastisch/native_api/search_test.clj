@@ -35,15 +35,15 @@
                                                     :planet     "Earth"
                                                     :age 42}))
         (idx/refresh conn index-name)
-        (let [result (doc/search conn index-name mapping-type :query (q/term :biography "say"))]
+        (let [result (doc/search conn index-name mapping-type {:query (q/term :biography "say")})]
           (is (= 1 (total-hits result)))))))
 
   (deftest ^{:native true} test-search-query-with-basic-filtering
     (let [index-name   "people"
           mapping-type "person"
           hits         (hits-from (doc/search conn index-name mapping-type
-                                              :query  (q/match-all)
-                                              :filter {:term {:username "esmary"}}))]
+                                              {:query  (q/match-all)
+                                               :filter {:term {:username "esmary"}}}))]
       (is (= 1 (count hits)))))
 
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-implicit-order
@@ -59,8 +59,8 @@
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-desc-order
     (let [index-name   "articles"
           mapping-type "article"
-          response     (doc/search conn index-name mapping-type :query (q/match-all)
-                                   :sort (array-map "title" "desc"))
+          response     (doc/search conn index-name mapping-type {:query (q/match-all)
+                                                                 :sort (array-map "title" "desc")})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
       (is (= "Nueva York" (-> hits first :_source :title)))
@@ -69,8 +69,8 @@
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-asc-order
     (let [index-name   "articles"
           mapping-type "article"
-          response     (doc/search conn index-name mapping-type :query (q/match-all)
-                                   :sort (array-map "title" "asc"))
+          response     (doc/search conn index-name mapping-type {:query (q/match-all)
+                                                                 :sort (array-map "title" "asc")})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
       (is (= "Nueva York" (-> hits last :_source :title)))
@@ -80,8 +80,8 @@
     (let [index-name   "articles"
           mapping-type "article"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :fields ["title"])
+                                   {:query (q/match-all)
+                                    :fields ["title"]})
           hits         (hits-from response)
           title-fields (remove nil? (map #(get-in % [:_fields :title]) hits))
           title-source (remove nil? (map #(get-in % [:_source :title]) hits))]
@@ -93,8 +93,8 @@
     (let [index-name   "articles"
           mapping-type "article"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :fields ["title" "_source"])
+                                   {:query (q/match-all)
+                                    :fields ["title" "_source"]})
           hits         (hits-from response)
           title-fields (remove nil? (map #(get-in % [:_fields :title]) hits))
           title-source (remove nil? (map #(get-in % [:_source :title]) hits))]
@@ -106,9 +106,9 @@
     (let [index-name   "people"
           mapping-type "person"
           hits         (hits-from (doc/search conn index-name mapping-type
-                                              :query   (q/match-all)
-                                              :sort    {"first-name" "asc"}
-                                              :_source ["first-name" "age"]))]
+                                              {:query   (q/match-all)
+                                               :sort    {"first-name" "asc"}
+                                               :_source ["first-name" "age"]}))]
       (is (= 4 (count hits)))
       (is (= {:first-name "Tony" :age 29} (-> hits last :_source)))))
 
@@ -116,11 +116,11 @@
     (let [index-name   "people"
           mapping-type "person"
           hits         (hits-from (doc/search conn index-name mapping-type
-                                              :query   (q/match-all)
-                                              :sort    {"first-name" "asc"}
-                                              :_source {"exclude" ["title" "country"
-                                                                   "planet" "biography"
-                                                                   "last-name" "username"]}))]
+                                              {:query   (q/match-all)
+                                               :sort    {"first-name" "asc"}
+                                               :_source {"exclude" ["title" "country"
+                                                                    "planet" "biography"
+                                                                    "last-name" "username"]}}))]
       (is (= 4 (count hits)))
       (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last :_source)))))))
 
@@ -128,18 +128,18 @@
     (let [index-name   "people"
           mapping-type "person"
           hits         (hits-from (doc/search conn index-name mapping-type
-                                              :query   (q/match-all)
-                                              :sort    (q/sort "surname"
-                                                               {:order "asc"
-                                                                :ignore-unmapped true})))]
+                                              {:query   (q/match-all)
+                                               :sort    (q/sort "surname"
+                                                                {:order "asc"
+                                                                 :ignore-unmapped true})}))]
       (is (= 4 (count hits)))))
 
   (deftest ^{:native true} search-using-template-with-results
   (doc/create-search-template conn "test-template1" fx/test-template1)
   (doc/create conn "tweets" "tweet" fx/tweet1)
     (let [result (map :source (hits-from (doc/search conn "tweets" "tweet"
-                             :template {:id "test-template1"}
-                             :params {:username "clojurewerkz"})))]
+                             {:template {:id "test-template1"}
+                              :params {:username "clojurewerkz"}})))]
   (is (= 1 (count result)))))
 
 
@@ -148,6 +148,6 @@
   (doc/create-search-template conn "test-template1" fx/test-template1)
   (doc/create conn "tweets" "tweet" fx/tweet1)
     (let [result (map :source (hits-from (doc/search conn "tweets" "tweet"
-                             :template {:id "test-template1"}
-                             :params {:username "returns nothing"})))]
+                             {:template {:id "test-template1"}
+                              :params {:username "returns nothing"}})))]
   (is (empty?  result)))))

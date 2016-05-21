@@ -21,8 +21,8 @@
 
 (let [conn (th/connect-native-client)]
   (deftest ^{:rest true} test-multi-search
-    (let [res1 (doc/search conn "people" "person" :query (q/match-all) :size 1)
-          res2 (doc/search conn "articles" "article" :query (q/match-all) :size 1)
+    (let [res1 (doc/search conn "people" "person" {:query (q/match-all) :size 1})
+          res2 (doc/search conn "articles" "article" {:query (q/match-all) :size 1})
           multires (multi/search conn [{:index "people" :type "person"} {:query (q/match-all) :size 1}
                                        {:index "articles" :type "article"} {:query (q/match-all) :size 1}])]
       (is (= (-> res1 :hits :hits first :_source)
@@ -31,8 +31,8 @@
              (-> multires second :hits :hits first :_source)))))
 
   (deftest ^{:rest true} test-multi-with-index-and-type
-    (let [res1 (doc/search conn "people" "person" :query (q/term :planet "earth"))
-          res2 (doc/search conn "people" "person" :query (q/term :first-name "mary"))
+    (let [res1 (doc/search conn "people" "person" {:query (q/term :planet "earth")})
+          res2 (doc/search conn "people" "person" {:query (q/term :first-name "mary")})
           multires (multi/search-with-index-and-type conn
                                                      "people" "person"
                                                      [{} {:query (q/term :planet "earth")}

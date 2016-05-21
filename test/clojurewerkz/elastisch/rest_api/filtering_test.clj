@@ -23,8 +23,8 @@
     (let [index-name   "people"
           mapping-type "person"
           hits         (hits-from (doc/search conn index-name mapping-type
-                                              :query  (q/match-all)
-                                              :filter {:term {:username "esmary"}}))]
+                                              {:query  (q/match-all)
+                                               :filter {:term {:username "esmary"}}}))]
       (is (= 1 (count hits)))
       (is (= "Lindey" (-> hits first :_source :last-name)))))
 
@@ -32,7 +32,7 @@
     (let [index-name   "people"
           mapping-type "person"
           hits         (hits-from (doc/search conn index-name mapping-type
-                                              :query  (q/match-all)
-                                              :filter {:range {:age {:from 26 :to 30}}}))]
+                                              {:query  (q/match-all)
+                                               :filter {:range {:age {:from 26 :to 30}}}}))]
       (is (= 2 (count hits)))
       (is (#{28 29} (-> hits first :_source :age))))))

@@ -18,7 +18,7 @@
     (is (= expected (query/term :foo "bar"))))
 
   (let [expected {:term {:foo :bar} :minimum_match 2}]
-    (is (= expected (query/term :foo :bar :minimum_match 2)))))
+    (is (= expected (query/term :foo :bar {:minimum_match 2})))))
 
 (deftest terms-query-test
   (let [expected {:terms {:foo [:bar :baz]}}]
@@ -26,7 +26,7 @@
 
 (deftest range-query-test
   (is (= {:range {:foo {:gt 5 :lt 10 :include_upper false :include_lower false}}}
-         (query/range :foo :gt 5 :lt 10 :include_upper false :include_lower false))))
+         (query/range :foo {:gt 5 :lt 10 :include_upper false :include_lower false}))))
 
 (deftest bool-query-test
   (let [must                         {:term {:user  "kimchy"}}
@@ -36,11 +36,11 @@
         boost                        1.0
 
         result                       (query/bool
-                                      :must (query/term :user "kimchy")
-                                      :must_not (query/range :age :from 10 :to 20)
-                                      :should [(query/term :tag "wow") (query/term :tag "elasticsearch")]
-                                      :minimum_number_should_match 1
-                                      :boost 1.0)
+                                      {:must (query/term :user "kimchy")
+                                       :must_not (query/range :age {:from 10 :to 20})
+                                       :should [(query/term :tag "wow") (query/term :tag "elasticsearch")]
+                                       :minimum_number_should_match 1
+                                       :boost 1.0})
         bool                         (:bool result)]
     (are [actual expected] (= actual expected)
          must (:must bool)
@@ -55,10 +55,10 @@
         positive-boost 1.0
         negative-boost 0.2
         result         (query/boosting
-                        :positive (query/term :field1 "value1")
-                        :negative (query/term :field2 "value2")
-                        :positive_boost 1.0
-                        :negative_boost 0.2)
+                        {:positive (query/term :field1 "value1")
+                         :negative (query/term :field2 "value2")
+                         :positive_boost 1.0
+                         :negative_boost 0.2})
         boosting       (:boosting result)]
 
     (are [actual expected] (= actual expected)
@@ -75,8 +75,8 @@
   (let [query   {:terms {:foo [:bar :baz]}}
         boost   2.0
         result  (query/constant-score
-                 :query   (query/term :foo [:bar :baz])
-                 :boost   boost)
+                 {:query   (query/term :foo [:bar :baz])
+                  :boost   boost})
         constant-score (:constant_score result)]
     (are [actual expected] (= actual expected)
          query    (:query constant-score)
@@ -88,9 +88,9 @@
         boost       2.0
         tie-breaker 0.7
         result  (query/dis-max
-                 :queries     [query1 query2]
-                 :boost       boost
-                 :tie_breaker tie-breaker)
+                 {:queries     [query1 query2]
+                  :boost       boost
+                  :tie_breaker tie-breaker})
         dis-max  (:dis_max result)]
     (are [actual expected] (= actual expected)
          query1   (first  (:queries dis-max))
@@ -102,8 +102,8 @@
   (deftest query-string-test
     (let [raw-query "+ - && & || | ! ( ) { } [ ] ^ \" ~ * ? : \\"
           escaped-query "\\+ \\- \\&& & \\|| | \\! \\( \\) \\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\"
-          result-with-default-escaping (query/query-string :query raw-query)
-          result-with-explicit-escape-fn (query/query-string :query raw-query :escape-with identity)]
+          result-with-default-escaping (query/query-string {:query raw-query})
+          result-with-explicit-escape-fn (query/query-string {:query raw-query :escape-with identity})]
       (is (= escaped-query
              (get-in result-with-default-escaping [:query_string :query])))
       (is (= raw-query

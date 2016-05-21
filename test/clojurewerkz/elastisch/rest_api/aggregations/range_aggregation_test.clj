@@ -23,10 +23,10 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:age_ranges (a/range "age" [{:from 15 :to 20}
-                                                                              {:from 21 :to 25}
-                                                                              {:from 26 :to 30}
-                                                                              {:from 31}])})
+                                   {:query (q/match-all)
+                                    :aggregations {:age_ranges (a/range "age" [{:from 15 :to 20}
+                                                                               {:from 21 :to 25}
+                                                                               {:from 26 :to 30}
+                                                                               {:from 31}])}})
           agg          (aggregation-from response :age_ranges)]
       (is (:buckets agg)))))

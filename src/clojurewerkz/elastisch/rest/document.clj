@@ -20,7 +20,6 @@
             [clojure.string :as string]
             [clojure.set :refer :all]
             [clojurewerkz.elastisch.rest.utils :refer [join-names]]
-            [clojurewerkz.elastisch.arguments :as ar]
             [clojurewerkz.elastisch.rest.response :refer [not-found? hits-from]])
   (:import clojurewerkz.elastisch.rest.Connection))
 
@@ -54,12 +53,13 @@
 
   (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28})
 
-  (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} :id \"1825c5432775b8d1a477acfae57e91ac8c767aed\")
+  (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} {:id \"1825c5432775b8d1a477acfae57e91ac8c767aed\"})
   ```"
-  ([^Connection conn index mapping-type document & args]
+  ([^Connection conn index mapping-type document] (create conn index mapping-type document nil))
+  ([^Connection conn index mapping-type document opts]
      (rest/post conn (rest/mapping-type-url conn
                                             index mapping-type)
-                {:body document :query-params (ar/->opts args)})))
+                {:body document :query-params opts})))
 
 (defn put
   "Creates or updates a document in the search index, using the provided document id"
@@ -67,10 +67,10 @@
      (rest/put conn (rest/record-url conn
                                      index mapping-type id)
                {:body document}))
-  ([^Connection conn index mapping-type id document & args]
+  ([^Connection conn index mapping-type id document opts]
      (rest/put conn (rest/record-url conn
                                      index mapping-type id)
-               {:body document :query-params (ar/->opts args)})))
+               {:body document :query-params opts})))
 
 (defn upsert
   "Updates an existing document in the search index with given partial document,
@@ -79,22 +79,22 @@
     (rest/post conn (rest/record-update-url conn
                                             index mapping-type id) {:body {:doc partial-doc
                                                                            :doc_as_upsert true}}))
-  ([^Connection conn index mapping-type id partial-doc & args]
+  ([^Connection conn index mapping-type id partial-doc opts]
     (rest/post conn (rest/record-update-url conn
                                             index mapping-type id)
                {:body {:doc partial-doc
                        :doc_as_upsert true}
-                :query-params (ar/->opts args)})))
+                :query-params opts})))
 
 (defn update-with-partial-doc
   "Updates an existing document in the search index with given partial document"
   ([^Connection conn index mapping-type id partial-doc]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id) {:body {:doc partial-doc}}))
-  ([^Connection conn index mapping-type id partial-doc & args]
+  ([^Connection conn index mapping-type id partial-doc opts]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
-                {:body {:doc partial-doc} :query-params (ar/->opts args)})))
+                {:body {:doc partial-doc} :query-params opts})))
 
 (defn update-with-script
   "Updates a document using a script.
@@ -105,7 +105,7 @@
   (require '[clojurewerkz.elastisch.rest.document :as doc])
 
   (doc/update-with-script conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\"
-                               \"ctx._source.age = ctx._source.age += 1\" {} :lang \"groovy\")
+                               \"ctx._source.age = ctx._source.age += 1\" {} {:lang \"groovy\"})
   ```"
   ([^Connection conn index mapping-type id script]
      (rest/post conn (rest/record-update-url conn
@@ -115,11 +115,11 @@
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
                 {:body {:script script :params params}}))
-  ([^Connection conn index mapping-type id script params & args]
+  ([^Connection conn index mapping-type id script params opts]
      (rest/post conn (rest/record-update-url conn
                                              index mapping-type id)
-                (let [optional-params (ar/->opts args)]
-                  {:body (merge {:script script :params params} optional-params)}))))
+                {:body (merge {:script script :params params}
+                              opts)})))
 
 
 (defn get
@@ -132,23 +132,24 @@
 
   (doc/get conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")
   ```"
-  [^Connection conn index mapping-type id & args]
-  (let [result (rest/get conn (rest/record-url conn
-                                               index mapping-type id)
-                         {:query-params (ar/->opts args)})]
-    (if (not-found? result)
-      nil
-      result)))
+  ([^Connection conn index mapping-type id] (get conn index mapping-type id nil))
+  ([^Connection conn index mapping-type id opts]
+   (let [result (rest/get conn (rest/record-url conn
+                                                index mapping-type id)
+                          {:query-params opts})]
+     (if (not-found? result)
+       nil
+       result))))
 
 (defn delete
   "Deletes document from the index."
   ([^Connection conn index mapping-type id]
      (rest/delete conn (rest/record-url conn
                                         index mapping-type id)))
-  ([^Connection conn index mapping-type id & args]
+  ([^Connection conn index mapping-type id opts]
      (rest/delete conn(rest/record-url conn
                                        index mapping-type id)
-                  {:query-params (ar/->opts args)})))
+                  {:query-params opts})))
 
 (defn present?
   "Returns true if a document with the given id is present in the provided index
@@ -209,57 +210,57 @@
   (require '[clojurewerkz.elastisch.rest.document :as doc])
   (require '[clojurewerkz.elastisch.query :as q])
 
-  (doc/search conn \"people\" \"person\" :query (q/prefix :username \"appl\"))
+  (doc/search conn \"people\" \"person\" :query (q/prefix {:username \"appl\"}))
   ```"
-  [^Connection conn index mapping-type & args]
-  (let [opts (ar/->opts args)
-        qk   [:search_type :scroll :routing :preference :ignore_unavailable]
-        qp   (select-keys opts qk)
-        body (apply dissoc (concat [opts] qk))]
-    (rest/post conn (rest/search-url conn
-                                     (join-names index)
-                                     (join-names mapping-type))
-               {:body body
-                :query-params qp})))
+  ([^Connection conn index mapping-type] (search conn index mapping-type nil))
+  ([^Connection conn index mapping-type opts]
+   (let [qk [:search_type :scroll :routing :preference :ignore_unavailable]
+         qp (select-keys opts qk)
+         body (apply dissoc (concat [opts] qk))]
+     (rest/post conn (rest/search-url conn
+                                      (join-names index)
+                                      (join-names mapping-type))
+                {:body body
+                 :query-params qp}))))
 
 (defn search-all-types
   "Performs a search query across one or more indexes and all mapping types.
 
   Multiple indexes can be passed in as a seq of strings."
-  [^Connection conn index & args]
-  (let [opts (ar/->opts args)
-        qk   [:search_type :scroll :routing :preference :ignore_unavailable]
-        qp   (select-keys opts qk)
-        body (apply dissoc (concat [opts] qk))]
-    (rest/post conn (rest/search-url conn
-                                     (join-names index))
-               {:body body
-                :query-params qp})))
+  ([^Connection conn index] (search-all-types conn index nil))
+  ([^Connection conn index opts]
+   (let [qk   [:search_type :scroll :routing :preference :ignore_unavailable]
+         qp   (select-keys opts qk)
+         body (apply dissoc (concat [opts] qk))]
+     (rest/post conn (rest/search-url conn
+                                      (join-names index))
+                {:body body
+                 :query-params qp}))))
 
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types.
   This may put very high load on your Elasticsearch cluster so use
   this function with care."
-  [^Connection conn & args]
-  (let [opts (ar/->opts args)
-        qk   [:search_type :scroll :routing :preference]
-        qp   (select-keys opts qk)
-        body (apply dissoc (concat [opts] qk))]
-    (rest/post conn (rest/search-url conn)
-               {:body body
-                :query-params qp})))
+  ([^Connection conn] (search-all-types conn nil))
+  ([^Connection conn opts]
+   (let [qk   [:search_type :scroll :routing :preference]
+         qp   (select-keys opts qk)
+         body (apply dissoc (concat [opts] qk))]
+     (rest/post conn (rest/search-url conn)
+                {:body body
+                 :query-params qp}))))
 
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
   query given a scroll id"
-  [^Connection conn scroll-id & args]
-  (let [opts (ar/->opts args)
-        qk   [:search_type :scroll :routing :preference]
-        qp   (select-keys opts qk)
-        body scroll-id]
-    (rest/post-string conn (rest/scroll-url conn)
-                      {:body body
-                       :query-params qp})))
+  ([^Connection conn scroll-id] (scroll conn scroll-id nil))
+  ([^Connection conn scroll-id opts]
+   (let [qk [:search_type :scroll :routing :preference]
+         qp   (select-keys opts qk)
+         body scroll-id]
+     (rest/post-string conn (rest/scroll-url conn)
+                       {:body body
+                        :query-params qp}))))
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
@@ -267,7 +268,7 @@
    (let [hits (hits-from prev-resp)
          scroll-id (:_scroll_id prev-resp)]
      (if (or (seq hits) (= search_type "scan"))
-       (concat hits (lazy-seq (scroll-seq conn (scroll conn scroll-id :scroll "1m"))))
+       (concat hits (lazy-seq (scroll-seq conn (scroll conn scroll-id {:scroll "1m"}))))
        hits)))
   ([^Connection conn prev-resp]
    (scroll-seq conn prev-resp nil)))
@@ -292,7 +293,7 @@
   (require '[clojurewerkz.elastisch.query :as q])
 
   (doc/count conn \"people\" \"person\")
-  (doc/count conn \"people\" \"person\" (q/prefix :username \"appl\"))
+  (doc/count conn \"people\" \"person\" (q/prefix {:username \"appl\"}))
   ```"
   ([^Connection conn index mapping-type]
      (rest/get conn (rest/count-url conn
@@ -301,10 +302,10 @@
      (rest/post conn (rest/count-url conn
                                      (join-names index) (join-names mapping-type))
                 {:body {:query query}}))
-  ([^Connection conn index mapping-type query & args]
+  ([^Connection conn index mapping-type query opts]
      (rest/post conn (rest/count-url conn
                                      (join-names index) (join-names mapping-type))
-                {:query-params (select-keys (ar/->opts args) [:df :analyzer :default_operator :ignore_unavailable])
+                {:query-params (select-keys opts [:df :analyzer :default_operator :ignore_unavailable])
                  :body {:query query}})))
 
 (def ^{:doc "Optional parameters that all query-based delete functions share"
@@ -325,13 +326,13 @@
                     (join-names index)
                     (join-names mapping-type))
                   {:body {:query query}}))
-  ([^Connection conn index mapping-type query & args]
+  ([^Connection conn index mapping-type query opts]
      (rest/delete conn
                   (rest/delete-by-query-url
                     conn
                     (join-names index)
                     (join-names mapping-type))
-                  {:query-params (select-keys (ar/->opts args)
+                  {:query-params (select-keys opts
                                               (conj optional-delete-query-parameters
                                                     :ignore_unavailable))
                    :body {:query query}})))
@@ -346,10 +347,10 @@
      (rest/delete conn
                   (rest/delete-by-query-url conn (join-names index))
                   {:body {:query query}}))
-  ([^Connection conn index query & args]
+  ([^Connection conn index query opts]
      (rest/delete conn
                   (rest/delete-by-query-url conn (join-names index))
-                  {:query-params (select-keys (ar/->opts args)
+                  {:query-params (select-keys opts
                                               (conj optional-delete-query-parameters
                                                     :ignore_unavailable))
                    :body {:query query}})))
@@ -359,27 +360,29 @@
   This may put very high load on your Elasticsearch cluster so use this function with care."
   ([^Connection conn query]
      (rest/delete conn (rest/delete-by-query-url conn) {:body {:query query}}))
-  ([^Connection conn query & args]
+  ([^Connection conn query opts]
      (rest/delete conn (rest/delete-by-query-url conn)
-                  {:query-params (select-keys (ar/->opts args) optional-delete-query-parameters)
+                  {:query-params (select-keys opts optional-delete-query-parameters)
                    :body {:query query}})))
 
 
 (defn more-like-this
   "Performs a More Like This (MLT) query."
-  [^Connection conn index mapping-type & args]
-  (rest/get conn
-            (rest/more-like-this-url conn index mapping-type)
-            {:body (json/encode {:query {:mlt (ar/->opts args)}})}))
+  ([^Connection conn index mapping-type] (more-like-this conn index mapping-type nil))
+  ([^Connection conn index mapping-type opts]
+   (rest/get conn
+             (rest/more-like-this-url conn index mapping-type)
+             {:body (json/encode {:query {:mlt opts}})})))
 
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as [[search]]
   but does not take the `mapping-type` parameter."
-  [^Connection conn index query & args]
-  (rest/get conn (rest/query-validation-url conn
-                                            index)
-            {:body (json/encode {:query query})
-             :query-params (ar/->opts args)}))
+  ([^Connection conn index query] (validate-query conn index query nil))
+  ([^Connection conn index query opts]
+   (rest/get conn (rest/query-validation-url conn
+                                             index)
+             {:body (json/encode {:query query})
+              :query-params opts})))
 
 
 (defn analyze
@@ -389,12 +392,12 @@
   (require '[clojurewerkz.elastisch.rest.document :as doc])
 
   (doc/analyze conn \"foo bar baz\")
-  (doc/analyze conn \"foo bar baz\" :index \"some-index-name\")
-  (doc/analyze conn \"foo bar baz\" :analyzer \"whitespace\")
-  (doc/analyze conn \"foo bar baz\" :index \"some-index-name\" :field \"some-field-name\")
+  (doc/analyze conn \"foo bar baz\" {:index \"some-index-name\"})
+  (doc/analyze conn \"foo bar baz\" {:analyzer \"whitespace\"})
+  (doc/analyze conn \"foo bar baz\" {:index \"some-index-name\" :field \"some-field-name\"})
   ```"
-  ([^Connection conn text & args]
-     (let [opts (ar/->opts args)]
-       (rest/get conn (rest/analyze-url conn
-                                        (:index opts))
-                 {:query-params (assoc opts :text text)}))))
+  ([^Connection conn text] (analyze conn text nil))
+  ([^Connection conn text opts]
+     (rest/get conn (rest/analyze-url conn
+                                      (:index opts))
+               {:query-params (assoc opts :text text)})))

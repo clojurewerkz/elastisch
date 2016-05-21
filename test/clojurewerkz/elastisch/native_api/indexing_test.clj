@@ -81,7 +81,7 @@
   (let [id       "1"
         _        (doc/put conn index-name index-type id fx/person-jack)
         _        (doc/put conn index-name index-type id fx/person-mary)
-        response (doc/put conn index-name index-type id fx/person-joe :version 2)]
+        response (doc/put conn index-name index-type id fx/person-joe {:version 2})]
     (is (:_index response))
     (is (:_type response))))
 
@@ -105,28 +105,28 @@
 (deftest ^{:indexing true :native true} test-create-when-already-created
   (let [id       "1"
         _        (doc/put conn index-name index-type id fx/person-jack)
-        response (doc/put conn index-name index-type id fx/person-joe :op_type "create")]
+        response (doc/put conn index-name index-type id fx/person-joe {:op_type "create"})]
     (is (:_index response))
     (is (:_type response))))
 
 (deftest ^{:indexing true :native true} test-sync-put-with-a-timestamp
   (let [id       "1"
-        _        (idx/create conn index-name :mappings fx/people-mapping)
-        response (doc/put conn index-name index-type id fx/person-jack :timestamp "2009-11-15T14:12:12")]
+        _        (idx/create conn index-name {:mappings fx/people-mapping})
+        response (doc/put conn index-name index-type id fx/person-jack {:timestamp "2009-11-15T14:12:12"})]
     (is (:_index response))
     (is (:_type response))))
 
 (deftest ^{:indexing true :native true} test-sync-put-with-a-10-seconds-ttl
   (let [id       "1"
-        _        (idx/create conn index-name :mappings fx/people-mapping)
-        response (doc/put conn index-name index-type id fx/person-jack :ttl 10000)]
+        _        (idx/create conn index-name {:mappings fx/people-mapping})
+        response (doc/put conn index-name index-type id fx/person-jack {:ttl 10000})]
     (is (:_index response))
     (is (:_type response))))
 
 (deftest ^{:indexing true :native true} test-sync-put-with-refresh-set-to-true
   (let [id       "1"
-        _        (idx/create conn index-name :mappings fx/people-mapping)
-        response (doc/put conn index-name index-type id fx/person-jack :refresh true)]
+        _        (idx/create conn index-name {:mappings fx/people-mapping})
+        response (doc/put conn index-name index-type id fx/person-jack {:refresh true})]
     (is (:_index response))
     (is (:_type response))))
 

@@ -23,10 +23,10 @@
     (let [stats (admin/nodes-stats conn)
           node-id (first (keys (:nodes stats))) 
           node-name (get-in stats [:nodes node-id :name])]
-      (is (empty? (:nodes (admin/nodes-stats conn :nodes "foo"))))
-      (is (= 1 (count (:nodes (admin/nodes-stats conn :nodes (name node-id))))))
-      (is (= 1 (count (:nodes (admin/nodes-stats conn :nodes (vector (name node-id)))))))
-      (is (= 1 (count (:nodes (admin/nodes-stats conn :nodes node-name)))))))
+      (is (empty? (:nodes (admin/nodes-stats conn {:nodes "foo"}))))
+      (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes (name node-id)})))))
+      (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes (vector (name node-id))})))))
+      (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes node-name})))))))
   (testing "parameters"
-    (is (not (= (admin/nodes-stats conn {:indices true}) (admin/nodes-stats conn :indices false))))
-    (is (not (= (admin/nodes-stats conn {:network true}) (admin/nodes-stats conn :network false)))))))
+    (is (not (= (admin/nodes-stats conn {:indices true}) (admin/nodes-stats conn {:indices false}))))
+    (is (not (= (admin/nodes-stats conn {:network true}) (admin/nodes-stats conn {:network false})))))))

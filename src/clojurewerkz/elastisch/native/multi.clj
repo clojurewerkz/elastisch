@@ -14,30 +14,29 @@
 
 (ns clojurewerkz.elastisch.native.multi
   (:require [clojurewerkz.elastisch.native :as es]
-            [clojurewerkz.elastisch.native.conversion :as cnv]
-            [clojurewerkz.elastisch.arguments :as ar])
+            [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import org.elasticsearch.client.Client))
 
 (defn search
   "Performs multi search"
-  [^Client conn queries & params]
-  (let [opts (ar/->opts params)
-        res  (es/multi-search conn (cnv/->multi-search-request conn queries opts))]
-    (cnv/multi-search-response->seq (.actionGet res))))
+  ([^Client conn queries] (search conn queries nil))
+  ([^Client conn queries opts]
+   (let [res  (es/multi-search conn (cnv/->multi-search-request conn queries opts))]
+     (cnv/multi-search-response->seq (.actionGet res)))))
 
 (defn search-with-index
   "Performs multi search defaulting to the index specified"
-  [^Client conn index queries & params]
-  (let [opts (ar/->opts params)
-        res  (es/multi-search conn (cnv/->multi-search-request conn index queries opts))]
-    (cnv/multi-search-response->seq (.actionGet res))))
+  ([^Client conn index queries] (search-with-index conn index queries nil))
+  ([^Client conn index queries opts]
+   (let [res (es/multi-search conn (cnv/->multi-search-request conn index queries opts))]
+     (cnv/multi-search-response->seq (.actionGet res)))))
 
 (defn search-with-index-and-type
   "Performs multi search defaulting to the index and type specified"
-  [^Client conn index mapping-type queries & params]
-  (let [opts (ar/->opts params)
-        res  (es/multi-search conn (cnv/->multi-search-request conn
-                                                               index
-                                                               mapping-type
-                                                               queries opts))]
-    (cnv/multi-search-response->seq (.actionGet res))))
+  ([^Client conn index mapping-type queries] (search-with-index-and-type conn index mapping-type queries nil))
+  ([^Client conn index mapping-type queries opts]
+   (let [res  (es/multi-search conn (cnv/->multi-search-request conn
+                                                                index
+                                                                mapping-type
+                                                                queries opts))]
+     (cnv/multi-search-response->seq (.actionGet res)))))

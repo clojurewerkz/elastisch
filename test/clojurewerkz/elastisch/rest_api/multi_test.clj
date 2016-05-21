@@ -35,8 +35,8 @@
              (-> multires second :hits :hits first :_source)))))
 
   (deftest ^{:rest true} test-multi-with-index-and-type
-    (let [res1 (doc/search conn "people" "person" :query (q/term :planet "earth"))
-          res2 (doc/search conn "people" "person" :query (q/term :first-name "mary"))
+    (let [res1 (doc/search conn "people" "person" {:query (q/term :planet "earth")})
+          res2 (doc/search conn "people" "person" {:query (q/term :first-name "mary")})
           multires (multi/search-with-index-and-type conn
                                                      "people" "person"
                                                      [{} {:query (q/term :planet "earth")}

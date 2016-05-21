@@ -23,11 +23,11 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:age_ranges (a/date-range "signed_up_at"
-                                                                            "date_hour_minute_second"
-                                                                            [{:from "2012-02-01T00:00:00" :to "2012-02-29T23:59:59"}
-                                                                             {:from "2012-03-01T00:00:00"}])})
+                                   {:query (q/match-all)
+                                    :aggregations {:age_ranges (a/date-range "signed_up_at"
+                                                                             "date_hour_minute_second"
+                                                                             [{:from "2012-02-01T00:00:00" :to "2012-02-29T23:59:59"}
+                                                                              {:from "2012-03-01T00:00:00"}])}})
           agg          (aggregation-from response :age_ranges)]
       (is (:buckets agg))))
 
@@ -35,12 +35,12 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:age_ranges (merge
-                                                               {:aggs {:avg_age (a/avg "age")}}
-                                                               (a/date-range "signed_up_at"
+                                   {:query (q/match-all)
+                                    :aggregations {:age_ranges (merge
+                                                                {:aggs {:avg_age (a/avg "age")}}
+                                                                (a/date-range "signed_up_at"
                                                                              "date_hour_minute_second"
                                                                              [{:from "2012-02-01T00:00:00" :to "2012-02-29T23:59:59"}
-                                                                              {:from "2012-03-01T00:00:00"}]))})
+                                                                              {:from "2012-03-01T00:00:00"}]))}})
           agg          (aggregation-from response :age_ranges)]
       (is (= (count (:buckets agg)) (count (filter #(contains? % :avg_age) (:buckets agg))))))))

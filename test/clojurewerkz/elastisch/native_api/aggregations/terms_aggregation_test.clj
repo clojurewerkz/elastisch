@@ -23,8 +23,8 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:title_terms (a/terms "title")})
+                                   {:query (q/match-all)
+                                    :aggregations {:title_terms (a/terms "title")}})
           agg          (aggregation-from response :title_terms)]
       (is (= 6 (count (:buckets agg))))))
 
@@ -32,9 +32,9 @@
     (let [index-name   "people"
           mapping-type "person"
           response     (doc/search conn index-name mapping-type
-                                   :query (q/match-all)
-                                   :aggregations {:title_terms (merge
-                                                                {:aggs {:avg_age (a/avg "age")}}
-                                                                (a/terms "title"))})
+                                   {:query (q/match-all)
+                                    :aggregations {:title_terms (merge
+                                                                 {:aggs {:avg_age (a/avg "age")}}
+                                                                 (a/terms "title"))}})
           agg          (aggregation-from response :title_terms)]
       (is (= 6 (count (filter #(contains? % :avg_age) (:buckets agg))))))))

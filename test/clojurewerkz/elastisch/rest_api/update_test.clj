@@ -25,25 +25,25 @@
           mapping-type "person"
           id           "3"
           new-bio      "Such a brilliant person"]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
       (doc/put conn index-name mapping-type "1" fx/person-jack)
       (doc/put conn index-name mapping-type "2" fx/person-mary)
       (doc/put conn index-name mapping-type "3" fx/person-joe)
       (idx/refresh conn index-name)
-      (is (any-hits? (doc/search conn index-name mapping-type :query (q/term :biography "nice"))))
-      (is (no-hits? (doc/search conn index-name mapping-type :query (q/term :biography "brilliant"))))
+      (is (any-hits? (doc/search conn index-name mapping-type {:query (q/term :biography "nice")})))
+      (is (no-hits? (doc/search conn index-name mapping-type {:query (q/term :biography "brilliant")})))
       (doc/replace conn index-name mapping-type id (assoc fx/person-joe :biography new-bio))
       (idx/refresh conn index-name)
-      (is (any-hits? (doc/search conn index-name mapping-type :query (q/term :biography "brilliant"))))
-      (is (no-hits? (doc/search conn index-name mapping-type :query (q/term :biography "nice"))))))
+      (is (any-hits? (doc/search conn index-name mapping-type {:query (q/term :biography "brilliant")})))
+      (is (no-hits? (doc/search conn index-name mapping-type {:query (q/term :biography "nice")})))))
 
   (deftest ^{:rest true} test-versioning
     (let [index-name "people"
           index-type "person"
           id         "1"]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
 
-      (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") :id id)
+      (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") {:id id})
       (idx/refresh conn index-name)
 
       (let [original-document (doc/get conn index-name index-type id)
@@ -65,9 +65,9 @@
           index-type "person"
           id         "1"
           person (assoc fx/person-jack :biography "brilliant1")]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
 
-      (doc/create conn index-name index-type person :id id)
+      (doc/create conn index-name index-type person {:id id})
       (idx/refresh conn index-name)
 
       (let [original-document (doc/get conn index-name index-type id)]
@@ -85,7 +85,7 @@
           index-type "person"
           id         "1"
           person (assoc fx/person-jack :biography "brilliant1" :country "India")]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
 
       (idx/refresh conn index-name)
       ;; http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html#upserts
@@ -101,9 +101,9 @@
     (let [index-name "people"
           index-type "person"
           id         "1"]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
 
-      (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") :id id)
+      (doc/create conn index-name index-type (assoc fx/person-jack :biography "brilliant1") {:id id})
       (idx/refresh conn index-name)
 
       (let [original-document (doc/get conn index-name index-type id)]
@@ -121,9 +121,9 @@
     (let [index-name "people"
           index-type "person"
           id "1"]
-      (idx/create conn index-name :mappings fx/people-mapping)
+      (idx/create conn index-name {:mappings fx/people-mapping})
 
-      (doc/create conn index-name index-type fx/person-jack :id id)
+      (doc/create conn index-name index-type fx/person-jack {:id id})
 
       (idx/refresh conn index-name)
 
@@ -149,7 +149,7 @@
       (testing "update with groovy script no params"
         (let [orig (doc/get conn index-name index-type id)]
           (doc/update-with-script conn index-name index-type id
-                                  "ctx._source.age = ctx._source.age += 1" {} :lang "groovy")
+                                  "ctx._source.age = ctx._source.age += 1" {} {:lang "groovy"})
           (idx/refresh conn index-name)
           (is (= (-> orig :_source :age inc)
                  (-> (doc/get conn index-name index-type id) :_source  :age))))))))

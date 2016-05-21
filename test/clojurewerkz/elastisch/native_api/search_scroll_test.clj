@@ -23,13 +23,13 @@
     (let [index-name "articles"
           mapping-type "article"
           response (doc/search conn index-name mapping-type
-                               :query (q/match-all)
-                               :search_type "scan"
-                               :scroll "1m"
-                               :size 1)
+                               {:query (q/match-all)
+                                :search_type "scan"
+                                :scroll "1m"
+                                :size 1})
           initial-hits (hits-from response)
           scroll-id (:_scroll_id response)
-          scan-response (doc/scroll conn scroll-id :scroll "1m")
+          scan-response (doc/scroll conn scroll-id {:scroll "1m"})
           scan-hits (hits-from scan-response)]
       (is (any-hits? response))
       (is scroll-id)
@@ -41,20 +41,20 @@
     (let [index-name "articles"
           mapping-type "article"
           response (doc/search conn index-name mapping-type
-                               :query (q/match-all)
-                               :search_type "query_then_fetch"
-                               :scroll "1m"
-                               :size 2)
+                               {:query (q/match-all)
+                                :search_type "query_then_fetch"
+                                :scroll "1m"
+                                :size 2})
           initial-hits (hits-from response)
           scroll-id (:_scroll_id response)
-          scroll-response (doc/scroll conn scroll-id :scroll "1m")
+          scroll-response (doc/scroll conn scroll-id {:scroll "1m"})
           scroll-hits (hits-from scroll-response)]
       (is (= 4 (total-hits scroll-response)))
       (is (= 2 (count scroll-hits)))))
 
   (defn fetch-scroll-results
     [scroll-id results]
-    (let [scroll-response (doc/scroll conn scroll-id :scroll "1m")
+    (let [scroll-response (doc/scroll conn scroll-id {:scroll "1m"})
           hits (hits-from scroll-response)]
       (if (seq hits)
         (recur (:_scroll_id scroll-response) (concat results hits))
@@ -64,10 +64,10 @@
     (let [index-name "articles"
           mapping-type "article"
           response (doc/search conn index-name mapping-type
-                               :query (q/match-all)
-                               :search_type "query_then_fetch"
-                               :scroll "1m"
-                               :size 1)
+                               {:query (q/match-all)
+                                :search_type "query_then_fetch"
+                                :scroll "1m"
+                                :size 1})
           initial-hits (hits-from response)
           scroll-id (:_scroll_id response)
           all-hits (fetch-scroll-results scroll-id initial-hits)]
@@ -79,10 +79,10 @@
           mapping-type "article"
           res-seq (doc/scroll-seq conn
                                   (doc/search conn index-name mapping-type
-                                              :query (q/match-all)
-                                              :search_type "query_then_fetch"
-                                              :scroll "1m"
-                                              :size 2))]
+                                              {:query (q/match-all)
+                                               :search_type "query_then_fetch"
+                                               :scroll "1m"
+                                               :size 2}))]
       (is (= false (realized? res-seq)))
       (is (= 4 (count res-seq)))
       (is (= 4 (count (distinct res-seq))))
@@ -93,10 +93,10 @@
           mapping-type "article"
           res-seq (doc/scroll-seq conn
                                   (doc/search conn index-name mapping-type
-                                              :query (q/match-all)
-                                              :search_type "scan"
-                                              :scroll "1m"
-                                              :size 2)
+                                              {:query (q/match-all)
+                                               :search_type "scan"
+                                               :scroll "1m"
+                                               :size 2})
                                   {:search_type "scan"})]
       (is (= false (realized? res-seq)))
       (is (= 4 (count res-seq)))
@@ -108,10 +108,10 @@
           mapping-type "article"
           res-seq (doc/scroll-seq conn
                                   (doc/search conn index-name mapping-type
-                                              :query (q/term :title "Emptiness")
-                                              :search_type "query_then_fetch"
-                                              :scroll "1m"
-                                              :size 2))]
+                                              {:query (q/term :title "Emptiness")
+                                               :search_type "query_then_fetch"
+                                               :scroll "1m"
+                                               :size 2}))]
       (is (= 0 (count res-seq)))
       (is (coll? res-seq)))))
 
