@@ -72,7 +72,7 @@
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
            [org.elasticsearch.action.admin.indices.mapping.get GetMappingsRequest GetMappingsResponse]
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
-           org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest
+           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest IndicesStatsResponse]
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse
@@ -1271,6 +1271,10 @@
           {}
           (.getIndices r)))
 
+(defn ^IPersistentMap indices-stats-response->map
+  "transforms indices stats response to the Clojure hash-map"
+  [^IndicesStatsResponse r]
+  (json/parse-string (.toString r) true))
 
 (defn- apply-add-alias
   [^IndicesAliasesRequest req {:keys [index indices alias aliases filter]}]
