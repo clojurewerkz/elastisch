@@ -277,10 +277,12 @@
   ([^Connection conn prev-resp]
    (scroll-seq conn prev-resp nil)))
 
-(defn scroll-clear
+(defn clear-scroll
   "Clear the scroll."
   [^Connection conn scroll-id]
-  (rest/delete conn (rest/delete-by-query-url conn) {:scroll_id scroll-id}))
+  (rest/delete conn
+               (rest-api/url-with-path conn "_search" "scroll")
+               {:body {:scroll_id [scroll-id]}}))
 
 (defn replace
   "Replaces document with given id with a new one"
