@@ -277,6 +277,11 @@
   ([^Connection conn prev-resp]
    (scroll-seq conn prev-resp nil)))
 
+(defn scroll-clear
+  "Clear the scroll."
+  [^Connection conn scroll-id]
+  (rest/delete conn (rest/delete-by-query-url conn) {:scroll_id scroll-id}))
+
 (defn replace
   "Replaces document with given id with a new one"
   [^Connection conn index mapping-type id document]
