@@ -95,8 +95,9 @@
     (let [res (idx/stats conn {:docs true :store true :indexing true})]
       (is (contains? res :_all))
       (is (contains? res :indices))
-      (is (false? (empty? (get-in res [:indices :group1]))))
-      (is (false? (empty? (get-in res [:indices :group2]))))))
+
+      (is (false? (empty? (get-in res [:indices "group1"]))))
+      (is (false? (empty? (get-in res [:indices "group2"]))))))
 
   (deftest ^{:indexing true :native true} test-indices-with-aliases
     (idx/create conn "aliased-index1" {:settings {"index" {"refresh_interval" "42s"}}})

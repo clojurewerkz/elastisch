@@ -15,7 +15,8 @@
 (ns clojurewerkz.elastisch.native.conversion
   (:refer-clojure :exclude [get merge flush])
   (:require [clojure.walk :as wlk]
-            [cheshire.core :as json])
+            [cheshire.core :as json]
+            [clojurewerkz.elastisch.native.conversion-stats :as cnv-stats])
   (:import [org.elasticsearch.common.settings Settings Settings$Builder]
            [org.elasticsearch.common.transport
             TransportAddress InetSocketTransportAddress LocalTransportAddress]
@@ -1226,34 +1227,39 @@
 
 (defn ^IndicesStatsRequest ->index-stats-request
   ([]
-     (let [r (IndicesStatsRequest.)]
-       (.all r)
-       r))
+    (let [r (IndicesStatsRequest.)]
+      (.all r)
+      r))
   ([{:keys [docs store indexing types groups get
-            search merge flush refresh]}]
-     (let [r   (IndicesStatsRequest.)]
-       (.clear r)
-       (when docs
-         (.docs r docs))
-       (when store
-         (.store r store))
-       (when indexing
-         (.indexing r indexing))
-       (when types
-         (.types r (into-array String types)))
-       (when groups
-         (.groups r (into-array String groups)))
-       (when get
-         (.get r get))
-       (when search
-         (.search r search))
-       (when merge
-         (.merge r merge))
-       (when flush
-         (.flush r flush))
-       (when refresh
-         (.refresh r refresh))
-       r)))
+            search merge flush refresh]
+     :as request-opts}]
+    (let [r   (IndicesStatsRequest.)]
+      (if (empty? request-opts)
+        (.all r)
+        ;;if user attached filters for response fields
+        (do
+          (.clear r)
+          (when docs
+            (.docs r docs))
+          (when store
+            (.store r store))
+          (when indexing
+            (.indexing r indexing))
+          (when types
+            (.types r (into-array String types)))
+          (when groups
+            (.groups r (into-array String groups)))
+          (when get
+            (.get r get))
+          (when search
+            (.search r search))
+          (when merge
+            (.merge r merge))
+          (when flush
+            (.flush r flush))
+          (when refresh
+            (.refresh r refresh))))
+      r)))
 
 (defn ^IndicesSegmentsRequest ->indices-segments-request
   [index-name]
@@ -1272,9 +1278,18 @@
           (.getIndices r)))
 
 (defn ^IPersistentMap indices-stats-response->map
-  "transforms indices stats response to the Clojure hash-map"
-  [^IndicesStatsResponse r]
-  (json/parse-string (.toString r) true))
+  "transforms a response of indices stats to the Clojure hash-map
+  
+  note: parsing from JSON string presents index-names as Clojure keywords,
+  which mean it may fail if you use characters not allowed as keyword.
+  JSON version is used only for testing purpose or fallback when native version
+  misses conversion method for a new field sneaked into newest release;"
+  ([^IndicesStatsResponse r]
+    (indices-stats-response->map r false))
+  ([^IndicesStatsResponse r ^Boolean from-json?]
+    (if from-json?
+      (json/parse-string (.toString r) true) ;;used for testing and when native solution misses key
+      (cnv-stats/to-stats r))))
 
 (defn- apply-add-alias
   [^IndicesAliasesRequest req {:keys [index indices alias aliases filter]}]
