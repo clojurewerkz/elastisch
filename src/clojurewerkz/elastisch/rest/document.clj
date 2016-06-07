@@ -265,13 +265,13 @@
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
   ([^Connection conn prev-resp {scroll-ttl :scroll
-                                :keys [search_type] :as opts}]
+                                :or {scroll-ttl "1m"}
+                                :keys [search_type]}]
    (let [hits (hits-from prev-resp)
-         scroll-ttl (or scroll-ttl "1m")
          scroll-id (:_scroll_id prev-resp)]
      (if (or (seq hits) (= search_type "scan"))
        (->> (scroll conn scroll-id {:scroll scroll-ttl})
-            (#(scroll-seq conn % opts))
+            (#(scroll-seq conn % {:scroll scroll-ttl}))
             (lazy-seq)
             (concat hits))
        hits)))
