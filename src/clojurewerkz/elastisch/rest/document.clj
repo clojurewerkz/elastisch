@@ -264,14 +264,26 @@
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
-  ([^Connection conn prev-resp {:keys [search_type]}]
+  ([^Connection conn prev-resp {scroll-ttl :scroll
+                                :or {scroll-ttl "1m"}
+                                :keys [search_type]}]
    (let [hits (hits-from prev-resp)
          scroll-id (:_scroll_id prev-resp)]
      (if (or (seq hits) (= search_type "scan"))
-       (concat hits (lazy-seq (scroll-seq conn (scroll conn scroll-id {:scroll "1m"}))))
+       (->> (scroll conn scroll-id {:scroll scroll-ttl})
+            (#(scroll-seq conn % {:scroll scroll-ttl}))
+            (lazy-seq)
+            (concat hits))
        hits)))
   ([^Connection conn prev-resp]
    (scroll-seq conn prev-resp nil)))
+
+(defn clear-scroll
+  "Clear the scroll."
+  [^Connection conn scroll-id]
+  (rest/delete conn
+               (rest/url-with-path conn "_search" "scroll")
+               {:body {:scroll_id [scroll-id]}}))
 
 (defn replace
   "Replaces document with given id with a new one"
