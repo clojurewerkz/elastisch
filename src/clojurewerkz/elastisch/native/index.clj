@@ -27,7 +27,6 @@
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
            [org.elasticsearch.action.admin.indices.forcemerge.ForceMergeResponse]
-           ;org.elasticsearch.action.admin.indices.optimize.OptimizeResponse
            org.elasticsearch.action.admin.indices.flush.FlushResponse
            org.elasticsearch.action.admin.indices.refresh.RefreshResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
@@ -206,15 +205,11 @@
   * `:flush`: flush operation stats
   * `:refresh`: refresh operation stats"
   ([^Client conn]
-     (let [ft                        (es/admin-index-stats conn (cnv/->index-stats-request))
-           ^IndicesStatsResponse res (.actionGet ft)]
-       ;; TODO: convert stats into a map
-       res))
+     (stats conn {}))
   ([^Client conn opts]
-     (let [ft                        (es/admin-index-stats conn (cnv/->index-stats-request opts))
+     (let [ft (es/admin-index-stats conn (cnv/->index-stats-request opts))
            ^IndicesStatsResponse res (.actionGet ft)]
-       ;; TODO: convert stats into a map
-       res)))
+       (cnv/indices-stats-response->map res))))
 
 (defn segments
   "Returns segments information for one or more indices."
