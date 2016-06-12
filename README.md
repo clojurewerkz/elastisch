@@ -49,7 +49,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 </repository>
 ```
 
-### The Most Recent Release
+### The Most Recent 2.x Release
 
 With Leiningen:
 
@@ -64,11 +64,33 @@ With Maven:
       <version>2.2.1</version>
     </dependency>
 
+### The Most Recent 3.0 Release Preview
+
+Note: Elastisch documentation is not currently updated for version 3.0.
+
+With Leiningen:
+
+    <dependency>
+      <groupId>clojurewerkz</groupId>
+      <artifactId>elastisch</artifactId>
+      <version>3.0.0-beta1</version>
+    </dependency>
+
+
+With Maven:
+
+    <dependency>
+      <groupId>clojurewerkz</groupId>
+      <artifactId>elastisch</artifactId>
+      <version>3.0.0-beta1</version>
+    </dependency>
+
 
 
 ## Documentation & Examples
 
 Please see our [documentation guides site](http://clojureelasticsearch.info/).
+Note: Elastisch documentation is not currently updated for version 3.0.
 
 Our [test suite](https://github.com/clojurewerkz/elastisch/tree/master/test/clojurewerkz/elastisch) also has many code examples.
 
