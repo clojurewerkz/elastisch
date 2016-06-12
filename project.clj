@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"}
   :dependencies [[org.clojure/clojure   "1.7.0"]
                  [cheshire              "5.6.1"]
-                 [clj-http              "2.0.1" :exclusions [org.clojure/clojure]]
+                 [clj-http              "2.2.0" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
                  ;; used by the native client
                  [org.elasticsearch/elasticsearch "2.3.1"]]
