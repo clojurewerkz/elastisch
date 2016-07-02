@@ -67,6 +67,14 @@
   [opts]
   {:boosting opts})
 
+
+(defn type
+  "Type Query
+
+  For more information, please refer to http://www.elastic.co/guide/en/elasticsearch/reference/2.0/query-dsl-type-query.html"
+  [type]
+  {:type {:value type}})
+
 (defn ids
   "IDs Query
 
