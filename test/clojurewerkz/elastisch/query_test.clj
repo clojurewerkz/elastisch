@@ -67,6 +67,10 @@
          positive-boost (:positive_boost boosting)
          negative-boost (:negative_boost boosting))))
 
+(deftest type-query-test
+  (is (=  {:type {:value "my_type"}}
+          (query/type "my_type"))))
+
 (deftest ids-query-test
   (is (=  {:ids {:type "my_type" :values  ["1" "4" "100"]}}
           (query/ids "my_type" ["1" "4" "100"]))))
