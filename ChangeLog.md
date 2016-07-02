@@ -1,11 +1,15 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
+### Add support for type query
+Added helper function for a [type query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html).
+
+Contributed by @nivekuil.
+
 ### ElasticSeach 2.3.x Compatibility
 
 This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
 
 Contributed by Timo Sulg and Josh Tilles.
-
 
 ### Make it Possible to Override *any* clj-http Option
 
