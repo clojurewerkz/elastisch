@@ -253,7 +253,8 @@
        tc)))
 
 (defn ^Node build-local-node
-  ([settings] (build-local-node settings nil))
+  ([settings]
+   (build-local-node settings nil))
   ([settings {:keys [client], :or {client true}}]
    (let [is (cnv/->settings settings)
          nb (.. NodeBuilder nodeBuilder

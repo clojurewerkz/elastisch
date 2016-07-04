@@ -51,7 +51,8 @@
 
 (defn bulk
   "Performs a bulk operation"
-  ([^Client conn operations] (bulk conn operations nil))
+  ([^Client conn operations]
+   (bulk conn operations nil))
   ([^Client conn operations params]
    (let [^BulkRequestBuilder req (reduce #(add-operation %2 %1) (.prepareBulk conn)
                                          (cnv/->action-requests operations))]
@@ -64,13 +65,15 @@
 
 (defn bulk-with-index
   "Performs a bulk operation defaulting to the index specified"
-  ([^Client conn index operations] (bulk-with-index conn index operations nil))
+  ([^Client conn index operations]
+   (bulk-with-index conn index operations nil))
   ([^Client conn index operations params]
    (bulk conn (map #(add-default % {:_index index}) operations) params)))
 
 (defn bulk-with-index-and-type
   "Performs a bulk operation defaulting to the index and type specified"
-  ([^Client conn index mapping-type operations] (bulk-with-index-and-type conn index mapping-type operations nil))
+  ([^Client conn index mapping-type operations]
+   (bulk-with-index-and-type conn index mapping-type operations nil))
   ([^Client conn index mapping-type operations params]
    (bulk conn
          (map #(add-default % {:_index index :_type mapping-type}) operations)

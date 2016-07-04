@@ -48,7 +48,8 @@
 
   Related Elasticsearch API Reference section:
   <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
-  ([^Connection conn ^String index-name] (create conn index-name nil))
+  ([^Connection conn ^String index-name]
+   (create conn index-name nil))
   ([^Connection conn ^String index-name opts]
    (let [{:keys [settings mappings]} opts]
      (rest/post conn (rest/index-url conn
@@ -298,7 +299,8 @@
   * `:aliases`: template aliases configuration
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html>"
-  ([^Connection conn ^String template-name] (create-template conn template-name nil))
+  ([^Connection conn ^String template-name]
+   (create-template conn template-name nil))
   ([^Connection conn ^String template-name opts]
    (let [{:keys [template settings mappings aliases]} opts]
      (rest/post conn (rest/index-template-url conn
@@ -371,7 +373,8 @@
   * `:fielddata_fields`: fields to be included in the fielddata statistics
 
   API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/1.5/indices-stats.html>"
-  ([^Connection conn index-name] (stats conn index-name nil))
+  ([^Connection conn index-name]
+   (stats conn index-name nil))
   ([^Connection conn index-name opts]
    (rest/get conn (rest/index-stats-url conn
                                         (join-names index-name)

@@ -30,7 +30,8 @@
 
 (defn register-query
   "Registers a percolator for the given index"
-  ([^Client conn index query-name] (register-query conn index query-name nil))
+  ([^Client conn index query-name]
+   (register-query conn index query-name nil))
   ([^Client conn index query-name opts]
    (let [^IndexRequestBuilder irb (doto (.prepareIndex ^Client conn
                                                        index
@@ -53,7 +54,8 @@
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
   matched against the queries you register with [[register-query]]."
-  ([^Client conn index mapping-type] (percolate conn index mapping-type nil))
+  ([^Client conn index mapping-type]
+   (percolate conn index mapping-type nil))
   ([^Client conn index mapping-type opts]
    (let [prb  (doto (.preparePercolate ^Client conn)
                 (.setIndices (cnv/->string-array index))

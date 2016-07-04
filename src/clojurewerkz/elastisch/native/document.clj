@@ -334,7 +334,8 @@
 
   (doc/search conn \"people\" \"person\" {:query (q/prefix {:username \"appl\"})})
   ```"
-  ([^Client conn index mapping-type] (search conn index mapping-type nil))
+  ([^Client conn index mapping-type]
+   (search conn index mapping-type nil))
   ([^Client conn index mapping-type opts]
    (let [ft (es/search conn
                        (cnv/->search-request index mapping-type opts))
@@ -345,7 +346,8 @@
   "Performs a search query across one or more indexes and all mapping types.
 
   Multiple indexes can be passed in as a seq of strings."
-  ([^Client conn index] (search-all-types conn index nil))
+  ([^Client conn index]
+   (search-all-types conn index nil))
   ([^Client conn index opts]
    (let [ft                  (es/search conn (cnv/->search-request index nil opts))
          ^SearchResponse res (.actionGet ft)]
@@ -354,7 +356,8 @@
 (defn search-all-indexes-and-types
   "Performs a search query across all indexes and all mapping types. This may put very high load on your
   Elasticsearch cluster so use this function with care."
-  ([^Client conn] (search-all-indexes-and-types conn nil))
+  ([^Client conn]
+   (search-all-indexes-and-types conn nil))
   ([^Client conn opts]
    (let [ft                  (es/search conn (cnv/->search-request [] nil opts))
          ^SearchResponse res (.actionGet ft)]
@@ -363,7 +366,8 @@
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
   query given a scroll id"
-  ([^Client conn scroll-id] (scroll conn scroll-id nil))
+  ([^Client conn scroll-id]
+   (scroll conn scroll-id nil))
   ([^Client conn scroll-id opts]
    (let [ft                  (es/search-scroll conn (cnv/->search-scroll-request scroll-id opts))
          ^SearchResponse res (.actionGet ft)]

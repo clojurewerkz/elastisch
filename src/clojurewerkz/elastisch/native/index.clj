@@ -65,7 +65,8 @@
 
   Related Elasticsearch API Reference section:
   <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
-  ([^Client conn ^String index-name] (create conn index-name nil))
+  ([^Client conn ^String index-name]
+   (create conn index-name nil))
   ([^Client conn ^String index-name opts]
    (let [{:keys [settings mappings]} opts
          ft                       (es/admin-index-create conn (cnv/->create-index-request index-name settings mappings))
@@ -157,7 +158,8 @@
 
 (defn force-merge
   "Optimizes an index or multiple indices"
-  ([^Client conn index-name] (force-merge conn index-name nil))
+  ([^Client conn index-name]
+   (force-merge conn index-name nil))
   ([^Client conn index-name opts]
    (let [ft   (es/admin-merge-index
                 conn
@@ -167,7 +169,8 @@
 
 (defn flush
   "Flushes an index or multiple indices"
-  ([^Client conn index-name] (flush conn index-name nil))
+  ([^Client conn index-name]
+   (flush conn index-name nil))
   ([^Client conn index-name opts]
    (let [ft                 (es/admin-flush-index conn (cnv/->flush-index-request index-name opts))
          ^FlushResponse res (.actionGet ft)]
@@ -182,7 +185,8 @@
 
 (defn clear-cache
   "Clears caches index or multiple indices"
-  ([^Client conn index-name] (clear-cache conn index-name nil))
+  ([^Client conn index-name]
+   (clear-cache conn index-name nil))
   ([^Client conn index-name opts]
    (let [ft                             (es/admin-clear-cache conn (cnv/->clear-indices-cache-request index-name opts))
          ^ClearIndicesCacheResponse res (.actionGet ft)]
@@ -227,21 +231,24 @@
   [{:add    { :indices \"test1\" :alias \"alias1\" }}
    {:remove { :index \"test1\" :aliases \"alias1\" }}]
   ```"
-  ([^Client conn ops] (update-aliases conn ops nil))
+  ([^Client conn ops]
+   (update-aliases conn ops nil))
   ([^Client conn ops opts]
    (let [ft                          (es/admin-update-aliases conn (cnv/->indices-aliases-request ops opts))
          ^IndicesAliasesResponse res (.actionGet ft)]
      {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
 (defn create-template
-  ([^Client conn ^String template-name] (create-template conn template-name nil))
+  ([^Client conn ^String template-name]
+   (create-template conn template-name nil))
   ([^Client conn ^String template-name opts]
    (let [ft                            (es/admin-put-index-template conn (cnv/->create-index-template-request template-name opts))
          ^PutIndexTemplateResponse res (.actionGet ft)]
      {:ok true :acknowledged (.isAcknowledged res)})))
 
 (defn put-template
-  ([^Client conn ^String template-name] (put-template conn template-name nil))
+  ([^Client conn ^String template-name]
+   (put-template conn template-name nil))
   ([^Client conn ^String template-name opts]
    (let [ft                            (es/admin-put-index-template conn (cnv/->put-index-template-request template-name opts))
          ^PutIndexTemplateResponse res (.actionGet ft)]

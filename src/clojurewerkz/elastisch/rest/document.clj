@@ -55,7 +55,8 @@
 
   (doc/create conn \"people\" \"person\" {:first-name \"John\" :last-name \"Appleseed\" :age 28} {:id \"1825c5432775b8d1a477acfae57e91ac8c767aed\"})
   ```"
-  ([^Connection conn index mapping-type document] (create conn index mapping-type document nil))
+  ([^Connection conn index mapping-type document]
+   (create conn index mapping-type document nil))
   ([^Connection conn index mapping-type document opts]
      (rest/post conn (rest/mapping-type-url conn
                                             index mapping-type)
@@ -132,7 +133,8 @@
 
   (doc/get conn \"people\" \"person\" \"1825c5432775b8d1a477acfae57e91ac8c767aed\")
   ```"
-  ([^Connection conn index mapping-type id] (get conn index mapping-type id nil))
+  ([^Connection conn index mapping-type id]
+   (get conn index mapping-type id nil))
   ([^Connection conn index mapping-type id opts]
    (let [result (rest/get conn (rest/record-url conn
                                                 index mapping-type id)
@@ -212,7 +214,8 @@
 
   (doc/search conn \"people\" \"person\" {:query (q/prefix {:username \"appl\"}}))
   ```"
-  ([^Connection conn index mapping-type] (search conn index mapping-type nil))
+  ([^Connection conn index mapping-type]
+   (search conn index mapping-type nil))
   ([^Connection conn index mapping-type opts]
    (let [qk [:search_type :scroll :routing :preference :ignore_unavailable]
          qp (select-keys opts qk)
@@ -227,7 +230,8 @@
   "Performs a search query across one or more indexes and all mapping types.
 
   Multiple indexes can be passed in as a seq of strings."
-  ([^Connection conn index] (search-all-types conn index nil))
+  ([^Connection conn index]
+   (search-all-types conn index nil))
   ([^Connection conn index opts]
    (let [qk   [:search_type :scroll :routing :preference :ignore_unavailable]
          qp   (select-keys opts qk)
@@ -241,7 +245,8 @@
   "Performs a search query across all indexes and all mapping types.
   This may put very high load on your Elasticsearch cluster so use
   this function with care."
-  ([^Connection conn] (search-all-types conn nil))
+  ([^Connection conn]
+   (search-all-types conn nil))
   ([^Connection conn opts]
    (let [qk   [:search_type :scroll :routing :preference]
          qp   (select-keys opts qk)
@@ -253,7 +258,8 @@
 (defn scroll
   "Performs a scroll query, fetching the next page of results from a
   query given a scroll id"
-  ([^Connection conn scroll-id] (scroll conn scroll-id nil))
+  ([^Connection conn scroll-id]
+   (scroll conn scroll-id nil))
   ([^Connection conn scroll-id opts]
    (let [qk [:search_type :scroll :routing :preference]
          qp   (select-keys opts qk)
@@ -380,7 +386,8 @@
 
 (defn more-like-this
   "Performs a More Like This (MLT) query."
-  ([^Connection conn index mapping-type] (more-like-this conn index mapping-type nil))
+  ([^Connection conn index mapping-type]
+   (more-like-this conn index mapping-type nil))
   ([^Connection conn index mapping-type opts]
    (rest/get conn
              (rest/more-like-this-url conn index mapping-type)
@@ -389,7 +396,8 @@
 (defn validate-query
   "Validates a query without actually executing it. Has the same API as [[search]]
   but does not take the `mapping-type` parameter."
-  ([^Connection conn index query] (validate-query conn index query nil))
+  ([^Connection conn index query]
+   (validate-query conn index query nil))
   ([^Connection conn index query opts]
    (rest/get conn (rest/query-validation-url conn
                                              index)
@@ -408,7 +416,8 @@
   (doc/analyze conn \"foo bar baz\" {:analyzer \"whitespace\"})
   (doc/analyze conn \"foo bar baz\" {:index \"some-index-name\" :field \"some-field-name\"})
   ```"
-  ([^Connection conn text] (analyze conn text nil))
+  ([^Connection conn text]
+   (analyze conn text nil))
   ([^Connection conn text opts]
      (rest/get conn (rest/analyze-url conn
                                       (:index opts))

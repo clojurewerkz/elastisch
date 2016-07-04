@@ -28,20 +28,23 @@
 
 (defn search
   "Performs multi search"
-  ([conn queries] (search conn queries nil))
+  ([conn queries]
+   (search conn queries nil))
   ([conn queries params]
    (:responses (msearch-with-url conn (rest/multi-search-url conn) queries params))))
 
 (defn search-with-index
   "Performs multi search defaulting to the index specified"
-  ([^Connection conn index queries] (search-with-index conn index queries nil))
+  ([^Connection conn index queries]
+   (search-with-index conn index queries nil))
   ([^Connection conn index queries params]
    (:responses (msearch-with-url conn (rest/multi-search-url conn
                                                              index) queries params))))
 
 (defn search-with-index-and-type
   "Performs multi search defaulting to the index and type specified"
-  ([^Connection conn index mapping-type queries] (search-with-index-and-type conn index mapping-type queries nil))
+  ([^Connection conn index mapping-type queries]
+   (search-with-index-and-type conn index mapping-type queries nil))
   ([^Connection conn index mapping-type queries params]
    (:responses (msearch-with-url conn (rest/multi-search-url conn
                                                              index mapping-type)

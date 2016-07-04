@@ -23,7 +23,8 @@
 
 (defn register-query
   "Registers a percolator for the given index"
-  ([^Connection conn index percolator] (register-query conn index percolator nil))
+  ([^Connection conn index percolator]
+   (register-query conn index percolator nil))
   ([^Connection conn index percolator opts]
    (rest/put conn (rest/percolator-url conn
                                        index percolator)
@@ -38,7 +39,8 @@
 (defn percolate
   "Percolates a document and see which queries match on it. The document is not indexed, just
   matched against the queries you register with [[register-query]]."
-  ([^Connection conn index percolator] (percolate conn index percolator nil))
+  ([^Connection conn index percolator]
+   (percolate conn index percolator nil))
   ([^Connection conn index percolator opts]
    ;; rest/get won't serialize the body for us. MK.
    (rest/get conn (rest/index-percolation-url conn

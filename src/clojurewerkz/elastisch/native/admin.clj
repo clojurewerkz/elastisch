@@ -21,7 +21,8 @@
            org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotResponse))
 
 (defn register-snapshot-repository
-  ([^Client conn ^String name] (register-snapshot-repository conn name nil))
+  ([^Client conn ^String name]
+   (register-snapshot-repository conn name nil))
   ([^Client conn ^String name opts]
    (let [ft                         (es/admin-put-repository conn (cnv/->put-repository-request name opts))
          ^PutRepositoryResponse res (.actionGet ft)]
@@ -29,7 +30,8 @@
 
 (defn take-snapshot
   "Takes a snapshot"
-  ([^Client conn ^String repository ^String snapshot] (take-snapshot conn repository snapshot nil))
+  ([^Client conn ^String repository ^String snapshot]
+   (take-snapshot conn repository snapshot nil))
   ([^Client conn ^String repository ^String snapshot opts]
    (let [ft                           (es/admin-create-snapshot conn (cnv/->create-snapshot-request repository snapshot opts))
          ^CreateSnapshotResponse res (.actionGet ft)]

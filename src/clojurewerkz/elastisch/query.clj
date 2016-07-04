@@ -24,7 +24,8 @@
   "Term Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html"
-  ([key values] (term key values nil))
+  ([key values]
+   (term key values nil))
   ([key values opts]
    (merge { (if (coll? values) :terms :term) (hash-map key values) }
           opts)))
@@ -33,7 +34,8 @@
   "Terms Query
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html"
-  ([key values] (terms key values nil))
+  ([key values]
+   (terms key values nil))
   ([key values opts]
    (term key values opts)))
 
@@ -48,7 +50,8 @@
   "Match Query, before 0.19.9 known as Text Query.
 
   For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-match-query.html"
-  ([field query] (match field query nil))
+  ([field query]
+   (match field query nil))
   ([field query opts]
    {:match {field (merge {:query query} opts)}}))
 

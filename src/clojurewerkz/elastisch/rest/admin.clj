@@ -34,7 +34,8 @@
   (admin/cluster-health conn {:index [\"index1\",\"index2\"]})
   (admin/cluster-health conn {:index \"index1\" :pretty true :level \"indices\"})
   ```"
-  ([^Connection conn] (cluster-health conn nil))
+  ([^Connection conn]
+   (cluster-health conn nil))
   ([^Connection conn opts]
    (rest/get conn (rest/cluster-health-url conn
                                            (join-names (:index opts)))
@@ -50,7 +51,8 @@
 
   (admin/cluster-state conn)
   ```"
-  ([^Connection conn] (cluster-state conn nil))
+  ([^Connection conn]
+   (cluster-state conn nil))
   ([^Connection conn opts]
    (rest/get conn (rest/cluster-state-url conn) {:query-params opts})))
 
@@ -66,7 +68,8 @@
   (admin/nodes-stats conn)
   (admin/nodes-stats conn {:nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"]})
   ```"
-  ([^Connection conn] (nodes-stats conn nil))
+  ([^Connection conn]
+   (nodes-stats conn nil))
   ([^Connection conn opts]
    (rest/get conn (rest/cluster-nodes-stats-url conn
                                                 (join-names (get opts :nodes "_all"))
@@ -83,7 +86,8 @@
   (admin/nodes-info conn)
   (admin/nodes-info conn {:nodes [\"10.0.0.1\", \"10.0.0.2\"] :attributes [\"os\" \"plugins\"]})
   ```"
-  ([^Connection conn] (nodes-info conn nil))
+  ([^Connection conn]
+   (nodes-info conn nil))
   ([^Connection conn opts]
    (rest/get conn (rest/cluster-nodes-info-url conn
                                                (join-names (get opts :nodes "_all"))
@@ -91,7 +95,8 @@
 
 
 (defn register-snapshot-repository
-  ([^Connection conn ^String name] (register-snapshot-repository conn name nil))
+  ([^Connection conn ^String name]
+   (register-snapshot-repository conn name nil))
   ([^Connection conn ^String name opts]
    (rest/put conn (rest/snapshot-repository-registration-url conn
                                                              name)
@@ -99,14 +104,16 @@
 
 
 (defn take-snapshot
-  ([^Connection conn ^String repo ^String name] (take-snapshot conn repo name nil))
+  ([^Connection conn ^String repo ^String name]
+   (take-snapshot conn repo name nil))
   ([^Connection conn ^String repo ^String name opts]
    (rest/put conn (rest/snapshot-url conn
                                      repo name)
              {:body opts :query-params (select-keys opts [:wait-for-completion?])})))
 
 (defn restore-snapshot
-  ([^Connection conn ^String repo ^String name] (restore-snapshot conn repo name nil))
+  ([^Connection conn ^String repo ^String name]
+   (restore-snapshot conn repo name nil))
   ([^Connection conn ^String repo ^String name opts]
    (rest/post conn (rest/restore-snapshot-url conn
                                               repo name)
@@ -114,7 +121,8 @@
                :query-params (select-keys opts [:wait-for-completion?])})))
 
 (defn delete-snapshot
-  ([^Connection conn ^String repo ^String name] (delete-snapshot conn repo name nil))
+  ([^Connection conn ^String repo ^String name]
+   (delete-snapshot conn repo name nil))
   ([^Connection conn ^String repo ^String name opts]
    (rest/delete conn (rest/snapshot-url conn
                                         repo name)
