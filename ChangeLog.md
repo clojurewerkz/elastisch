@@ -1,15 +1,16 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
-### Add support for type query
-Added helper function for a [type query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html).
-
-Contributed by @nivekuil.
-
 ### ElasticSeach 2.3.x Compatibility
 
 This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
 
 Contributed by Timo Sulg and Josh Tilles.
+
+### Add Support for Type Queries
+
+Added helper function for a [type query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html).
+
+Contributed by @nivekuil.
 
 ### Make it Possible to Override *any* clj-http Option
 
@@ -24,7 +25,8 @@ GitHub issue: [clojurewerkz/elastisch#200](https://github.com/clojurewerkz/elast
 
 Contributed by [@MerelyAPseudonym](https://github.com/MerelyAPseudonym).
 
-### Added support for search templates
+### Added Support for Search Templates
+
   `clojurewerks.elastisch.native.conversion/->search-request` now accepts
   :template and :params arguments for use with search templates
   `clojurewerks.elastish.native.document/create-search-template`,
