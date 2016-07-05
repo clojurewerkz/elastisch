@@ -71,7 +71,7 @@
       (idx/refresh conn index-name)
 
       (let [original-document (doc/get conn index-name index-type id)]
-        ;; http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html#upserts
+        ;; http://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html#upserts
         (doc/upsert conn index-name index-type id {:country "India"})
         (idx/refresh conn index-name)
         ;; Now should have merged document data
@@ -88,7 +88,7 @@
       (idx/create conn index-name {:mappings fx/people-mapping})
 
       (idx/refresh conn index-name)
-      ;; http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html#upserts
+      ;; http://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html#upserts
       (doc/upsert conn index-name index-type id person)
       (idx/refresh conn index-name)
       ;; Now should have new document data
@@ -108,7 +108,7 @@
 
       (let [original-document (doc/get conn index-name index-type id)]
         ;; Udpate with partial document. doc key is needed by update partial api of elastic search
-        ;; http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/partial-updates.html
+        ;; http://www.elastic.co/guide/en/elasticsearch/guide/current/partial-updates.html
         (doc/update-with-partial-doc conn index-name index-type id {:country "India"})
         (idx/refresh conn index-name)
         ;; Now should have merged document data

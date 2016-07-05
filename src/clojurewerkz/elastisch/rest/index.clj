@@ -47,7 +47,7 @@
   ```
 
   Related Elasticsearch API Reference section:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
+  <http://www.elastic.co/guide/reference/api/admin-indices-create-index.html>"
   ([^Connection conn ^String index-name] (create conn index-name nil))
   ([^Connection conn ^String index-name opts]
    (let [{:keys [settings mappings]} opts]
@@ -60,7 +60,7 @@
 (defn exists?
   "Used to check if the index (indices) exists or not.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-indices-exists.html>"
   [^Connection conn ^String index-name]
   (= 200 (:status (rest/head conn (rest/index-url conn
                                                   index-name)))))
@@ -68,7 +68,7 @@
 (defn type-exists?
   "Used to check if a type/types exists in an index/indices.
 
-  API Reference: <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>"
+  API Reference: <http://www.elastic.co/guide/en/elasticsearch/reference/current/indices-types-exists.html>"
   [^Connection conn ^String index-name ^String type-name]
   (= 200 (:status (rest/head conn (rest/mapping-type-url conn
                                                          index-name type-name)))))
@@ -76,7 +76,7 @@
 (defn delete
   "Deletes an existing index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-delete-index.html>"
   ([^Connection conn]
      (rest/delete conn (rest/index-url conn
                                        "_all")))
@@ -91,7 +91,7 @@
 (defn get-mapping
   "The get mapping API allows to retrieve mapping definition of index or index/type.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-get-mapping.html>"
   ([^Connection conn ^String index-name]
      (rest/get conn (rest/index-mapping-url conn
                                             (join-names index-name))))
@@ -103,7 +103,7 @@
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-put-mapping.html>"
   [^Connection conn ^String index-name-or-names ^String type-name opts]
   (let [{:keys [mapping]} opts]
     (rest/put conn
@@ -118,7 +118,7 @@
 (defn update-settings
   "Change specific index level settings in real time.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-update-settings.html>"
   ([^Connection conn settings]
      (rest/put conn (rest/index-settings-url conn) {:body settings}))
   ([^Connection conn ^String index-name settings]
@@ -129,7 +129,7 @@
 (defn get-settings
   "The get settings API allows to retrieve settings of an index or multiple indices
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-get-settings.html>"
   ([^Connection conn]
      (rest/get conn (rest/index-settings-url conn)))
   ([^Connection conn ^String index-name]
@@ -142,7 +142,7 @@
 (defn open
   "Opens an index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-open-url conn
                                        index-name)))
@@ -150,7 +150,7 @@
 (defn close
   "Closes an index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-close-url conn
                                         index-name)))
@@ -158,7 +158,7 @@
 (defn snapshot
   "Takes a snapshot of an index or multiple indexes.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-gateway-snapshot.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-gateway-snapshot.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-snapshot-url conn
                                            index-name)))
@@ -173,7 +173,7 @@
   * 0-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
   * 1-arity refreshes a single index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-refresh.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-refresh-url conn)))
   ([^Connection conn index-name]
@@ -199,7 +199,7 @@
   * `:wait_for_merge`: should the request wait for the merge to end?
 
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-optimize.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-optimize-url conn)))
   ([^Connection conn index-name]
@@ -223,7 +223,7 @@
 
   * `:refresh`: should a refresh be performed after the flush?
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-flush.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-flush-url conn)))
   ([^Connection conn index-name]
@@ -246,7 +246,7 @@
   * `:field_data`: should field data caches be cleared?
   * `:bloom`: should Bloom filter caches be cleared?
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-clearcache.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-clear-cache-url conn)))
   ([^Connection conn index-name]
@@ -270,7 +270,7 @@
   ```
 
   and so on, the same as described in the Elasticsearch documentation guide on aliases:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html>"
+  <http://www.elastic.co/guide/reference/api/admin-indices-aliases.html>"
   [^Connection conn & actions]
   (rest/post conn (rest/index-aliases-batch-url conn)
              {:body {:actions actions}}))
@@ -278,7 +278,7 @@
 (defn get-aliases
   "Fetches and returns aliases for an index or multiple indexes.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-aliases.html>"
   [^Connection conn index-name]
   (rest/get conn (rest/index-aliases-url conn
                                          (join-names index-name))))
@@ -297,7 +297,7 @@
   * `:mappings`: the same as for [[create]]
   * `:aliases`: template aliases configuration
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-templates.html>"
   ([^Connection conn ^String template-name] (create-template conn template-name nil))
   ([^Connection conn ^String template-name opts]
    (let [{:keys [template settings mappings aliases]} opts]
@@ -350,7 +350,7 @@
 (defn segments
   "Returns segments information for an index or multiple indexes.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-segments.html>"
+  API Reference: <http://www.elastic.co/guide/reference/api/admin-indices-segments.html>"
   ([^Connection conn]
      (rest/get conn (rest/index-segments-url conn)))
   ([^Connection conn index-name]
