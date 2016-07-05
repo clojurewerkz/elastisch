@@ -215,6 +215,13 @@
   [opts]
   {:nested opts})
 
+(defn type
+  "Type Query
+
+  For more information, please refer to http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-type-query.html"
+  [type]
+  {:type {:value type}})
+
 (defn sort
   "Sort query results."
   [attribute {:keys [ignore-unmapped order] :as v}]
