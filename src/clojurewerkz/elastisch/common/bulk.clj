@@ -22,7 +22,9 @@
                                        :_script_params
                                        :_scripted_upsert
                                        :_timestamp
-                                       :_ttl])
+                                       :_ttl
+                                       :_version
+                                       :_version_type])
 
 (defn index-operation
   [doc]
