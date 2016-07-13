@@ -6,7 +6,7 @@ This involves removing some features as [Elasticsearch 2.0 has breaking public A
 
 Contributed by Timo Sulg and Josh Tilles.
 
-### Add Support for Type Queries
+### Support for Type Queries
 
 Added helper function for a [type query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html).
 
@@ -25,7 +25,13 @@ GitHub issue: [clojurewerkz/elastisch#200](https://github.com/clojurewerkz/elast
 
 Contributed by [@MerelyAPseudonym](https://github.com/MerelyAPseudonym).
 
-### Added Support for Search Templates
+### _version and _version_type are Supported in Bulk Operations
+
+`_version` and `_version_type` are supported in bulk operations.
+
+Contributed by Joe Einertson.
+
+### Support for Search Templates
 
   `clojurewerks.elastisch.native.conversion/->search-request` now accepts
   :template and :params arguments for use with search templates
