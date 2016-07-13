@@ -1,4 +1,9 @@
-## Changes between Elastisch 2.2.1 and 2.2.2
+## Changes between Elastisch 2.2.2 and 2.2.3 (unreleased)
+
+No changes yet.
+
+
+## Changes between Elastisch 2.2.1 and 2.2.2 (July 13th, 2016)
 
 ### _version and _version_type are Supported in Bulk Operations
 
