@@ -1,4 +1,10 @@
-## Changes between Elastisch 2.2.1 and 2.2.2 (unreleased)
+## Changes between Elastisch 2.2.1 and 2.2.2
+
+### _version and _version_type are Supported in Bulk Operations
+
+`_version` and `_version_type` are supported in bulk operations.
+
+Contributed by Joe Einertson.
 
 ### Make it Possible to Override *any* clj-http Option
 
