@@ -1,3 +1,9 @@
+### Added Sort Attribute to native search results
+Added the key :sort to each hit from the search results in order to remain
+close to feature parity
+
+Contributed by @KeeganMyers
+
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
 ### ElasticSeach 2.3.x Compatibility
