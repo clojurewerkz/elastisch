@@ -24,7 +24,14 @@
 ;;
 
 (defn create
-  "Creates an index.
+  "Creates an index. You may provide mappings, settings, warmers, aliases, and a creation
+
+  Options:
+  * `:mappings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/mapping.html>
+  * `:settings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index-modules.html>
+  * `:warmers`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-warmers.html>
+  * `:aliases`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-aliases.html>
+  * `:creation_date`: override the index’s creation-date in its metadata
 
   Accepted options are `:mappings` and `:settings`. Both accept maps with the same structure as in the REST API.
 
@@ -47,7 +54,7 @@
   ```
 
   Related Elasticsearch API Reference section:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
+  <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-create-index.html>"
   ([^Connection conn ^String index-name]
    (create conn index-name nil))
   ([^Connection conn ^String index-name opts]
