@@ -58,6 +58,14 @@ Options passed to elastisch.rest/connect can now include `:throw-exceptions true
 
 Contributed by @loganmhb.
 
+### Added Sort Attribute to native search results
+
+Added the key :sort to each hit from the search results in order to remain
+close to feature parity
+
+Contributed by @KeeganMyers
+
+
 
 ## Changes between Elastisch 2.1.x and 2.2.0 (Jan 3rd, 2016)
 

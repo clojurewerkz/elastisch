@@ -811,6 +811,7 @@
                                        :_type     (.getType sh)
                                        :_id       (.getId sh)
                                        :_score    (.getScore sh)
+                                       :sort      (vec (.getSortValues sh))
                                        :_version  (.getVersion sh)})
         result-with-source (if source
                              (assoc result :_source (convert-source-result source))
