@@ -210,7 +210,7 @@
   (require '[clojurewerkz.elastisch.rest.document :as doc])
   (require '[clojurewerkz.elastisch.query :as q])
 
-  (doc/search conn \"people\" \"person\" :query (q/prefix {:username \"appl\"}))
+  (doc/search conn \"people\" \"person\" {:query (q/prefix {:username \"appl\"}}))
   ```"
   ([^Connection conn index mapping-type] (search conn index mapping-type nil))
   ([^Connection conn index mapping-type opts]
