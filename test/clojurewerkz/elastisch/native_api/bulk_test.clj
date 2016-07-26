@@ -37,6 +37,26 @@
       (is (= 2 (count (:items (bulk conn bulk-operations {:refresh true})))))
       (is (= 2 (:count (doc/count conn index-name index-type))))))
 
+  (deftest ^{:native true :indexing true} test-bulk-indexing-create-flag
+    (let [person fx/person-jack
+          for-index (assoc person :_type index-type :_index index-name)
+          bulk-operations (bulk-index [(assoc for-index :_create true :_id "foo")
+                                       (assoc for-index :_create true :_id "foo")
+                                       (assoc for-index :_id "foo")])
+          bulk-res (bulk conn bulk-operations {:refresh true})]
+      (is (= 3 (count (:items bulk-res))))
+      (is (= 1 (:count (doc/count conn index-name index-type))))
+      (is (= '(1 -1 2) (map :version (:items bulk-res))))))
+
+  (deftest ^{:native true :indexing true} test-bulk-create
+    (let [person fx/person-jack
+          for-index (assoc person :_type index-type :_index index-name :_id "foo")
+          bulk-operations (bulk-create (repeat 2 for-index))
+          bulk-res (bulk conn bulk-operations {:refresh true})]
+      (is (= 2 (count (:items bulk-res))))
+      (is (= 1 (:count (doc/count conn index-name index-type))))
+      (is (= '(1 -1) (map :version (:items bulk-res))))))
+
   (deftest ^{:native true :indexing true} test-bulk-with-index
     (let [document fx/person-jack
           for-index (assoc document :_type index-type)

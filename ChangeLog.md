@@ -1,7 +1,12 @@
 ## Changes between Elastisch 2.2.2 and 2.2.3 (unreleased)
 
-No changes yet.
+### add support for native bulk create
 
+2 possible methods to perform create operations using native bulk
+* set the `_create` option to true in bulk index operations
+* use bulk-create
+
+Contributed by Mathieu Viel (@vielmath)
 
 ## Changes between Elastisch 2.2.1 and 2.2.2 (July 13th, 2016)
 

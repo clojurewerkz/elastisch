@@ -12,6 +12,7 @@
 
 (def ^:private special-operation-keys [:_doc_as_upsert
                                        :_index
+                                       :_create
                                        :_type
                                        :_id
                                        :_retry_on_conflict
