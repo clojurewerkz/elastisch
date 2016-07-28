@@ -43,7 +43,9 @@
 (defn create
   "Creates an index.
 
-  Accepted options are `:mappings` and `:settings`. Both accept maps with the same structure as in the REST API.
+  Options:
+  * `:mappings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/mapping.html>.
+  * `:settings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index-modules.html>.
 
   Examples:
 
@@ -64,7 +66,7 @@
   ```
 
   Related Elasticsearch API Reference section:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
+  <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-create-index.html>"
   ([^Client conn ^String index-name]
    (create conn index-name nil))
   ([^Client conn ^String index-name opts]
