@@ -26,9 +26,11 @@
 (defn create
   "Creates an index.
 
-  Options:
+  Supported Options:
   * `:mappings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/mapping.html>.
   * `:settings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index-modules.html>.
+
+  Not-yet-supported Options:
   * `:warmers`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-warmers.html>.
   * `:aliases`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-aliases.html>.
   * `:creation_date`: override the creation-date stored in the index’s metadata.
