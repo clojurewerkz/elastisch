@@ -81,7 +81,9 @@ The value should be an integer, the epoch time in milliseconds."
 
 
 (defn exists?
-  "Returns `true` if given index (or indices) exists"
+  "Used to check if the index (indices) exists or not.
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html>"
   [^Client conn ^String index-name]
   (let [ft                        (es/admin-index-exists conn (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.actionGet ft)]
