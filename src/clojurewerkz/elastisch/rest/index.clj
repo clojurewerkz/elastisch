@@ -67,7 +67,7 @@
 (defn exists?
   "Used to check if the index (indices) exists or not.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-exists.html>"
   [^Connection conn ^String index-name]
   (= 200 (:status (rest/head conn (rest/index-url conn
                                                   index-name)))))
