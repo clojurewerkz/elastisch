@@ -24,16 +24,15 @@
 ;;
 
 (defn create
-  "Creates an index. You may provide mappings, settings, warmers, aliases, and a creation
+  "Creates an index.
 
   Options:
-  * `:mappings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/mapping.html>
-  * `:settings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index-modules.html>
-  * `:warmers`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-warmers.html>
-  * `:aliases`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-aliases.html>
-  * `:creation_date`: override the index’s creation-date in its metadata
-
-  Accepted options are `:mappings` and `:settings`. Both accept maps with the same structure as in the REST API.
+  * `:mappings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/mapping.html>.
+  * `:settings`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index-modules.html>.
+  * `:warmers`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-warmers.html>.
+  * `:aliases`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-aliases.html>.
+  * `:creation_date`: override the creation-date stored in the index’s metadata.
+    The value should be an integer, the epoch time in milliseconds.
 
   Examples:
 
