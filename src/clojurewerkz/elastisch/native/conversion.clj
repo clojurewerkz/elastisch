@@ -235,6 +235,7 @@
   ;; non-variadic because it is more convenient and efficient to
   ;; invoke this internal implementation fn this way. MK.
   ([index mapping-type ^Map doc {:keys [id
+                                        create
                                         routing
                                         parent
                                         timestamp
@@ -248,6 +249,8 @@
                   (.source ^String (json/encode doc)))]
        (when id
          (.id ^IndexRequest ir ^String id))
+       (when create
+         (.create ^IndexRequest ir ^Boolean create))
        (when content-type
          (.contentType ^IndexRequest ir (to-content-type content-type)))
        (when routing
@@ -1634,6 +1637,7 @@
 (defn get-bulk-item-action
   [doc]
   (cond (contains? doc "index") "index"
+        (contains? doc "create") "create"
         (contains? doc "update") "update"
         (contains? doc "delete") "delete"
         :else nil))
@@ -1660,6 +1664,13 @@
                            (:_type opts)
                            source
                            (remove-underscores opts)))
+                "create" (let [source (second actions)
+                               opts (clojure.core/get curr "create")]
+                           (->index-request
+                            (:_index opts)
+                            (:_type opts)
+                            source
+                            (assoc (remove-underscores opts) :create true)))
                 "delete" (let [opts (clojure.core/get curr "delete")]
                            (->delete-request
                             (:_index opts)
@@ -1670,6 +1681,7 @@
           new-results (if (nil? add) results (conj results add))
           next-rest (case request-type
                       "index" (rest (rest actions))
+                      "create" (rest (rest actions))
                       "update" (rest (rest actions))
                       "delete" (rest actions)
                       nil ())]
