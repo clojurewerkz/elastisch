@@ -75,7 +75,7 @@
 (defn type-exists?
   "Used to check if a type/types exists in an index/indices.
 
-  API Reference: <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-types-exists.html>"
   [^Connection conn ^String index-name ^String type-name]
   (= 200 (:status (rest/head conn (rest/mapping-type-url conn
                                                          index-name type-name)))))

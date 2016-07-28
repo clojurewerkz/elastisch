@@ -93,7 +93,7 @@ The value should be an integer, the epoch time in milliseconds."
 (defn type-exists?
   "Used to check if a type/types exists in an index/indices.
 
-  API Reference: <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-types-exists.html>"
   [^Client conn ^String index-name type-name]
   (let [ft                        (es/admin-types-exists conn (cnv/->types-exists-request index-name type-name))
         ^TypesExistsResponse res (.actionGet ft)]
