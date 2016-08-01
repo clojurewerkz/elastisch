@@ -123,7 +123,9 @@
        (cnv/get-mappings-response->map res))))
 
 (defn update-mapping
-  "The put mapping API allows to register or modify specific mapping definition for a specific type."
+  "The put mapping API allows to register or modify specific mapping definition for a specific type.
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html>"
   [^Client conn ^String index-name ^String mapping-type opts]
   (let [ft                      (es/admin-put-mapping conn (cnv/->put-mapping-request index-name mapping-type opts))
         ^PutMappingResponse res (.actionGet ft)]
