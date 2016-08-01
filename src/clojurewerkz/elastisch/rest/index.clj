@@ -149,7 +149,7 @@
 (defn open
   "Opens an index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-open-url conn
                                        index-name)))

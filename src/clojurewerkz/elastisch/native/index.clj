@@ -152,7 +152,7 @@
 (defn open
   "Opens an index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-open-close.html>"
   [^Client conn index-name]
   (let [ft (es/admin-open-index conn (cnv/->open-index-request index-name))
         ^OpenIndexResponse res (.actionGet ft)]
