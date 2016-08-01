@@ -166,7 +166,7 @@
   (idx/close conn [\"my-index\" \"dein-index\"])
   ```
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-close-url conn
                                         (join-names index-name))))

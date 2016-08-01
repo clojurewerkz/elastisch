@@ -168,7 +168,7 @@
   (idx/close conn [\"my-index\" \"dein-index\"])
   ```
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-open-close.html>"
   [^Client conn index-name]
   (let [ft (es/admin-close-index conn (cnv/->close-index-request index-name))
         ^CloseIndexResponse res (.actionGet ft)]
