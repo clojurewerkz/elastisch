@@ -159,6 +159,13 @@
 (defn close
   "Closes an index or indices.
 
+  Usage:
+
+  ```clojure
+  (idx/close conn \"my-index\")
+  (idx/close conn [\"my-index\" \"dein-index\"])
+  ```
+
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-close-url conn
