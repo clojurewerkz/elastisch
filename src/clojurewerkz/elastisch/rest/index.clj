@@ -136,7 +136,7 @@
 (defn get-settings
   "The get settings API allows to retrieve settings of an index or multiple indices
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-get-settings.html>"
   ([^Connection conn]
      (rest/get conn (rest/index-settings-url conn)))
   ([^Connection conn ^String index-name]
