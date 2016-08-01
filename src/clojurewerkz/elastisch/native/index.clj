@@ -110,7 +110,7 @@
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
 (defn get-mapping
-  "The get mapping API allows to retrieve mapping definition of index or index/type.
+  "The get mapping API allows to retrieve mapping definitions for an index or index/type.
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
   ([^Client conn ^String index-name]
