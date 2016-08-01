@@ -98,7 +98,7 @@
 (defn get-mapping
   "The get mapping API allows to retrieve mapping definitions for an index or index/type.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-get-mapping.html>"
   ([^Connection conn ^String index-name]
      (rest/get conn (rest/index-mapping-url conn
                                             (join-names index-name))))
