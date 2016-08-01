@@ -141,7 +141,9 @@
        true)))
 
 (defn get-settings
-  "Gets index settings."
+  "The get settings API allows to retrieve settings of an index or multiple indices
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html>"
   ([^Client conn index-name]
      (let [ft (es/admin-get-index-settings conn (cnv/->get-settings-request index-name))
            res (.actionGet ft)]
