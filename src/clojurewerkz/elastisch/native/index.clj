@@ -159,7 +159,7 @@
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn close
-  "Closes an index or indices
+  "Closes an index or indices.
 
   Usage:
 
