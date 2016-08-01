@@ -108,9 +108,9 @@
                                        index-name type-name))))
 
 (defn update-mapping
-  "The put mapping API allows to register or modify specific mapping definition for a specific type.
+  "The PUT mapping API allows you to provide type mappings while creating a new index, add a new type to an existing index, or add new fields to an existing type.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-put-mapping.html>"
   [^Connection conn ^String index-name-or-names ^String type-name opts]
   (let [{:keys [mapping]} opts]
     (rest/put conn
