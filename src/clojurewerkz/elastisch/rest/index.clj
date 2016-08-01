@@ -149,12 +149,12 @@
 ;;
 
 (defn open
-  "Opens an index.
+  "Opens an index or indices.
 
   API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-open-url conn
-                                       index-name)))
+                                       (join-names index-name))))
 
 (defn close
   "Closes an index.

@@ -150,7 +150,7 @@
        (cnv/->get-settings-response->map res))))
 
 (defn open
-  "Opens an index.
+  "Opens an index or indices.
 
   API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-open-close.html>"
   [^Client conn index-name]
