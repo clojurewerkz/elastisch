@@ -125,7 +125,7 @@
 (defn update-settings
   "Change specific index level settings in real time.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-update-settings.html>"
   ([^Connection conn settings]
      (rest/put conn (rest/index-settings-url conn) {:body settings}))
   ([^Connection conn ^String index-name settings]

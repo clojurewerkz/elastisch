@@ -134,7 +134,7 @@
 (defn update-settings
   "Change specific index level settings in real time.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-update-settings.html>"
   ([^Client conn index-name settings]
      (let [ft (es/admin-update-index-settings conn (cnv/->update-settings-request index-name settings))]
        (.actionGet ft)
