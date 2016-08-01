@@ -74,10 +74,6 @@
          ft                       (es/admin-index-create conn (cnv/->create-index-request index-name settings mappings))
          ^CreateIndexResponse res (.actionGet ft)]
      {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
-"* `:warmers`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-warmers.html>.
-* `:aliases`: see <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-aliases.html>.
-* `:creation_date`: override the creation-date stored in the index’s metadata.
-The value should be an integer, the epoch time in milliseconds."
 
 
 (defn exists?
