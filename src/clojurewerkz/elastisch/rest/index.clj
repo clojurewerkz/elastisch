@@ -157,12 +157,12 @@
                                        (join-names index-name))))
 
 (defn close
-  "Closes an index.
+  "Closes an index or indices.
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
   [^Connection conn index-name]
   (rest/post conn (rest/index-close-url conn
-                                        index-name)))
+                                        (join-names index-name))))
 
 (defn snapshot
   "Takes a snapshot of an index or multiple indexes.
