@@ -99,7 +99,7 @@
 (defn delete
   "Deletes an existing index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-delete-index.html>"
   ([^Client conn]
      (let [ft                       (es/admin-index-delete conn (cnv/->delete-index-request))
            ^DeleteIndexResponse res (.actionGet ft)]
