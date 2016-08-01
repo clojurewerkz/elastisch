@@ -101,7 +101,9 @@ The value should be an integer, the epoch time in milliseconds."
 
 
 (defn delete
-  "Deletes an existing index"
+  "Deletes an existing index.
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html>"
   ([^Client conn]
      (let [ft                       (es/admin-index-delete conn (cnv/->delete-index-request))
            ^DeleteIndexResponse res (.actionGet ft)]
