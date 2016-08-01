@@ -132,7 +132,9 @@
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
 
 (defn update-settings
-  "Updates index settings. No argument version updates index settings globally"
+  "Change specific index level settings in real time.
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html>"
   ([^Client conn index-name settings]
      (let [ft (es/admin-update-index-settings conn (cnv/->update-settings-request index-name settings))]
        (.actionGet ft)
