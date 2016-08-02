@@ -253,8 +253,8 @@
 (defn clear-cache
   "Clears index caches.
 
-  * 0-arity clears caches for *all* indexes and may be a very expensive operation. Use it carefully.
-  * 1-arity clears caches for a single index.
+  * 1-arity clears caches for *all* indexes and may be a very expensive operation. Use it carefully.
+  * 2-arity clears caches for a single index.
 
   Accepted options:
 
