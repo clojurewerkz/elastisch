@@ -203,8 +203,8 @@
   Optimization makes searches over the index faster and also reclaims some disk space used by
   deleted documents. Optionally you can optimize and refresh an index in a single request.
 
-  * 0-arity optimizes *all* indexes and may be a very expensive operation. Use it carefully.
-  * 1-arity optimizes a single index.
+  * 1-arity optimizes *all* indexes and may be a very expensive operation. Use it carefully.
+  * 2-arity optimizes a single index.
 
   Accepted options:
 
