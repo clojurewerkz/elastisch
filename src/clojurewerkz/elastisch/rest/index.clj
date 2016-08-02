@@ -180,7 +180,7 @@
                                            index-name)))
 
 (defn refresh
-  "Refreshes an index manually.
+  "Refreshes an index or multiple indices manually.
 
   Refreshing an index makes all changes (added, modified and deleted documents) since the last refresh available for search. In other
   words, index changes become \"visible\" to clients. Elasticsearch periodically refreshes indexes, the period is configurable via index

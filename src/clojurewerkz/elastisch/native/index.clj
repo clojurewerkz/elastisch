@@ -201,7 +201,13 @@
      (cnv/broadcast-operation-response->map res))))
 
 (defn refresh
-  "Refreshes an index or multiple indices"
+  "Refreshes an index or multiple indices manually.
+
+  Refreshing an index makes all changes (added, modified and deleted documents) since the last refresh available for search. In other
+  words, index changes become \"visible\" to clients. Elasticsearch periodically refreshes indexes, the period is configurable via index
+  settings.
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html>"
   [^Client conn index-name]
   (let [ft                 (es/admin-refresh-index conn (cnv/->refresh-index-request index-name))
         ^RefreshResponse res (.actionGet ft)]
