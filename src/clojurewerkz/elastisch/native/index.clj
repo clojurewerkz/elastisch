@@ -192,7 +192,12 @@
      (cnv/broadcast-operation-response->map res))))
 
 (defn flush
-  "Flushes an index or multiple indices"
+  "Flushes an index or multiple indices.
+
+  This causes the index by flushing data to the index storage and clearing the internal transaction log.
+  Typically it is sufficient to let Elasticsearch when to periodically flush indexes.
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html>"
   ([^Client conn index-name]
    (flush conn index-name nil))
   ([^Client conn index-name opts]
