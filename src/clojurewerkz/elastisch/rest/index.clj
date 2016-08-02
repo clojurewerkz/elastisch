@@ -186,8 +186,8 @@
   words, index changes become \"visible\" to clients. Elasticsearch periodically refreshes indexes, the period is configurable via index
   settings.
 
-  * 0-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
-  * 1-arity refreshes a single index.
+  * 1-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
+  * 2-arity refreshes a single index.
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html>"
   ([^Connection conn]
