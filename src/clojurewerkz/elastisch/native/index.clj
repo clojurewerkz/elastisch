@@ -235,7 +235,17 @@
     (cnv/broadcast-operation-response->map res)))
 
 (defn clear-cache
-  "Clears caches index or multiple indices"
+  "Clears index caches.
+
+  Accepted options:
+
+  * `:filter-cache`: should filter caches be cleared?
+  * `:field-data-cache`: should field data caches be cleared?
+  * `:id-cache`: should ID caches for parent/child be cleared?
+  * `:fields`: a collection of fields to clear when using
+    the `:field-data-cache` option (defaults to clearing *all* fields)
+
+  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html>"
   ([^Client conn index-name]
    (clear-cache conn index-name nil))
   ([^Client conn index-name opts]
