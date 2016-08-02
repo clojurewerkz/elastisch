@@ -232,8 +232,8 @@
   This causes the index by flushing data to the index storage and clearing the internal transaction log.
   Typically it is sufficient to let Elasticsearch when to periodically flush indexes.
 
-  * 0-arity flushes *all* indexes and may be a very expensive operation. Use it carefully.
-  * 1-arity flushes a single index.
+  * 1-arity flushes *all* indexes and may be a very expensive operation. Use it carefully.
+  * 2-arity flushes a single index.
 
   Accepted options:
 
