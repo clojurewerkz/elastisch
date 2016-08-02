@@ -189,7 +189,7 @@
   * 1-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
   * 2-arity refreshes a single index.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-refresh.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-refresh-url conn)))
   ([^Connection conn index-name]

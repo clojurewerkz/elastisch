@@ -207,7 +207,7 @@
   words, index changes become \"visible\" to clients. Elasticsearch periodically refreshes indexes, the period is configurable via index
   settings.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html>"
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-refresh.html>"
   [^Client conn index-name]
   (let [ft                 (es/admin-refresh-index conn (cnv/->refresh-index-request index-name))
         ^RefreshResponse res (.actionGet ft)]
