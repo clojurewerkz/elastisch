@@ -194,10 +194,26 @@
 (defn flush
   "Flushes an index or multiple indices.
 
-  This causes the index by flushing data to the index storage and clearing the internal transaction log.
-  Typically it is sufficient to let Elasticsearch when to periodically flush indexes.
+  The flush process of an index basically frees memory from the index
+  by flushing data to the index storage and clearing the internal
+  transaction log. By default, Elasticsearch uses memory heuristics
+  in order to automatically trigger flush operations as required in
+  order to clear memory.
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html>"
+  Accepted options:
+
+  * `:wait-if-ongoing` (boolean, default: `false`): If set to `true`
+    the flush operation will block until the flush can be executed if
+    another flush operation is already executing. The default is false
+    and will cause an exception to be thrown on the shard level if
+    another flush operation is already running.
+  * `:force` (boolean): Whether a flush should be forced even if it is
+    not necessarily needed ie. if no changes will be committed to the
+    index. This is useful if transaction log IDs should be incremented
+    even if no uncommitted changes are present. (This setting can be
+    considered as internal)
+
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-flush.html>"
   ([^Client conn index-name]
    (flush conn index-name nil))
   ([^Client conn index-name opts]
