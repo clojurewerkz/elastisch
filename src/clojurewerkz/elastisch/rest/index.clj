@@ -283,7 +283,7 @@
   ([^Connection conn index-name opts]
      (rest/post conn (rest/index-clear-cache-url conn
                                                  (join-names index-name))
-                {:body opts})))
+                {:query-params opts})))
 
 ;;
 ;; Aliases
