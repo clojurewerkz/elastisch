@@ -247,7 +247,7 @@
                                            (join-names index-name))))
   ([^Connection conn index-name opts]
      (rest/post conn (rest/index-flush-url conn
-                                           (join-names index-name)) {:body opts})))
+                                           (join-names index-name)) {:query-params opts})))
 
 
 (defn clear-cache
