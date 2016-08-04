@@ -239,13 +239,16 @@
 
   Accepted options:
 
-  * `:filter-cache`: should filter caches be cleared?
-  * `:field-data-cache`: should field data caches be cleared?
-  * `:id-cache`: should ID caches for parent/child be cleared?
-  * `:fields`: a collection of fields to clear when using
-    the `:field-data-cache` option (defaults to clearing *all* fields)
+  * `:filter-cache` (boolean, default: `true`): clear query caches
+  * `:field-data-cache` (boolean, default: `true`): clear field data
+  * `:fields` (collection of strings): specify which fields to clear when using
+    the `:field-data-cache` option (Elasticsearch defaults to clearing
+    *all* of the fields.)
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html>"
+  Obsolete options:
+  * `:id-cache`: should ID caches for parent/child be cleared?
+
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-clearcache.html>"
   ([^Client conn index-name]
    (clear-cache conn index-name nil))
   ([^Client conn index-name opts]

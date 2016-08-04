@@ -270,11 +270,17 @@
 
   Accepted options:
 
-  * `:filter`: should filter caches be cleared?
-  * `:field_data`: should field data caches be cleared?
-  * `:bloom`: should Bloom filter caches be cleared?
+  * `:query` (boolean, default: `true`): clear query caches
+  * `:fielddata` (boolean, default: `true`): clear field data
+  * `:request` (boolean, default: `true`): clear request cache
 
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html>"
+  Not-yet-accepted options:
+
+  * `:fields` (collection of strings): specify which fields to clear when using
+    the `:fielddata` option (Elasticsearch defaults to clearing
+    *all* of the fields.)
+
+  API Reference: <https://www.elastic.co/guide/en/elasticsearch/reference/2.3/indices-clearcache.html>"
   ([^Connection conn]
      (rest/post conn (rest/index-clear-cache-url conn)))
   ([^Connection conn index-name]
