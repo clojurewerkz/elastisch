@@ -1,12 +1,5 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
-### Honor boolean _source param
-
-This change allows the source attribute to be explicitly included/excluded from
-search results. Also resolved failing unit test  'test-to-stats-for-common-stats'
-
-Contributed by @KeeganMyers
-
 ### ElasticSeach 2.3.x Compatibility
 
 This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
@@ -31,6 +24,13 @@ This was achieved by changing the order in which the options-maps are merged.
 GitHub issue: [clojurewerkz/elastisch#200](https://github.com/clojurewerkz/elastisch/pull/200).
 
 Contributed by [@MerelyAPseudonym](https://github.com/MerelyAPseudonym).
+
+### Honor Boolean `_source` Parameter
+
+This change allows the source attribute to be explicitly included/excluded from
+search results.
+
+Contributed by @KeeganMyers.
 
 ### _version and _version_type are Supported in Bulk Operations
 
