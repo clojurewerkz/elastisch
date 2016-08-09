@@ -231,12 +231,13 @@
     (is (contains? res :docs))
     (is (contains? res :fielddata))))
 
+
 (deftest ^{:indexing true :native true} test-to-stats-for-common-stats
   (let [s (get-raw-stats es-conn)
         res (-> s cnv-stats/to-stats)]
     (is (map? res))
     (is (contains? res :_all))
     (is (contains? res :indices))
-    (is (= ["tweets" "people" "articles"]
-           (vec (keys (get res :indices {})))))))
+    (is (empty? (clojure.set/difference #{"tweets" "people" "articles"}
+           (keys (get res :indices {})))))))
 

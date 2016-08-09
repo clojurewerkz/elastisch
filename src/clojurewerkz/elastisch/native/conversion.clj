@@ -540,6 +540,8 @@
             (.sort sb (->field-sort-builder k v))))
   sb)
 
+ (defn ^Boolean boolean? [value] (instance? Boolean value))
+
 (defn ^:private add-partial-fields-to-builder
   [^SearchSourceBuilder sb _source]
   (cond

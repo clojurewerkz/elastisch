@@ -66,6 +66,31 @@
       (is (= "Nueva York" (-> hits first :_source :title)))
       (is (= "Austin" (-> hits last :_source :title)))))
 
+  (deftest ^{:native true} test-search-with-source-enabled
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type {:query (q/match-all)
+                                                                 :sort (array-map "title" "desc")
+                                                                 :fields ["title"]
+                                                                 :_source true
+                                                                 })
+          hit         (first (hits-from response))]
+    (is (some? (:_source hit))
+    (is (= (get-in hit [:_fields  :title])  ["Nueva York"])))))
+
+  (deftest ^{:native true} test-search-with-source-disabled
+
+    (let [index-name   "articles"
+          mapping-type "article"
+          response     (doc/search conn index-name mapping-type {:query (q/match-all)
+                                                                 :sort (array-map "title" "desc")
+                                                                 :fields ["title"]
+                                                                 :_source false
+                                                                 })
+          hit         (first (hits-from response))]
+    (is (nil? (:_source hit))
+    (is (= (get-in hit [:_fields  :title])  ["Nueva York"])))))
+
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-asc-order
     (let [index-name   "articles"
           mapping-type "article"
