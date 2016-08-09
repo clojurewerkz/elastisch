@@ -540,11 +540,13 @@
             (.sort sb (->field-sort-builder k v))))
   sb)
 
+ (defn ^Boolean boolean? [value] (instance? Boolean value))
+
 (defn ^:private add-partial-fields-to-builder
   [^SearchSourceBuilder sb _source]
   (cond
    (nil? _source)        sb
-   (false? _source)      (.fetchSource sb false)
+   (boolean? _source)    (.fetchSource sb _source)
    (map? _source)        (let [m  (wlk/stringify-keys _source)
                                in (->string-array (m "include" []))
                                ex (->string-array (m "exclude" []))]

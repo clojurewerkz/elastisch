@@ -1,5 +1,12 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
+### Honor boolean _source param
+
+This change allows the source attribute to be explicitly included/excluded from
+search results. Also resolved failing unit test  'test-to-stats-for-common-stats'
+
+Contributed by @KeeganMyers
+
 ### ElasticSeach 2.3.x Compatibility
 
 This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
