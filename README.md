@@ -61,7 +61,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>2.2.1</version>
+      <version>2.2.2</version>
     </dependency>
 
 ### The Most Recent 3.0 Release Preview
@@ -70,11 +70,7 @@ Note: Elastisch documentation is not currently updated for version 3.0.
 
 With Leiningen:
 
-    <dependency>
-      <groupId>clojurewerkz</groupId>
-      <artifactId>elastisch</artifactId>
-      <version>3.0.0-beta1</version>
-    </dependency>
+    [clojurewerkz/elastisch "3.0.0-beta1"]
 
 
 With Maven:
