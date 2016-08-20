@@ -148,27 +148,16 @@
 (defn update-with-script
   "Updates a document using a script"
   ([^Client conn index mapping-type ^String id ^String script]
-     (let [res (es/update conn (cnv/->update-request index
-                                                mapping-type
-                                                id
-                                                nil
-                                                {:script script}))]
-       (cnv/update-response->map (.actionGet res))))
-
+     (update-with-script conn index mapping-type id script nil nil))
   ([^Client conn index mapping-type ^String id ^String script ^Map params]
-     (let [res (es/update conn (cnv/->update-request index
-                                                mapping-type
-                                                id
-                                                nil
-                                                {:script_params params
-                                                 :script script}))]
-       (cnv/update-response->map (.actionGet res))))
-  ([^Client conn index mapping-type ^String id ^String script ^Map params optional-params]
+     (update-with-script conn index mapping-type id script params nil))
+  ([^Client conn index mapping-type ^String id ^String script ^Map params
+    {upsert :upsert :as optional-params}]
    (let [res (es/update conn
                         (cnv/->update-request index
                                               mapping-type
                                               id
-                                              nil
+                                              upsert
                                               (assoc optional-params
                                                      :script_params params
                                                      :script script)))]
