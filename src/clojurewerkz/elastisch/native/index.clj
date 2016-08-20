@@ -65,8 +65,8 @@
 
   Related Elasticsearch API Reference section:
   <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
-  ([^Client conn ^String index-name] (create conn index-name nil))
-  ([^Client conn ^String index-name opts]
+  ([^Client conn index-name] (create conn index-name nil))
+  ([^Client conn index-name opts]
    (let [{:keys [settings mappings]} opts
          ft                       (es/admin-index-create conn (cnv/->create-index-request index-name settings mappings))
          ^CreateIndexResponse res (.actionGet ft)]
@@ -75,7 +75,7 @@
 
 (defn exists?
   "Returns `true` if given index (or indices) exists"
-  [^Client conn ^String index-name]
+  [^Client conn index-name]
   (let [ft                        (es/admin-index-exists conn (cnv/->index-exists-request index-name))
         ^IndicesExistsResponse res (.actionGet ft)]
     (.isExists res)))
@@ -83,7 +83,7 @@
 
 (defn type-exists?
   "Returns `true` if a type/types exists in an index/indices"
-  [^Client conn ^String index-name type-name]
+  [^Client conn index-name type-name]
   (let [ft                        (es/admin-types-exists conn (cnv/->types-exists-request index-name type-name))
         ^TypesExistsResponse res (.actionGet ft)]
     (.isExists res)))
@@ -95,7 +95,7 @@
      (let [ft                       (es/admin-index-delete conn (cnv/->delete-index-request))
            ^DeleteIndexResponse res (.actionGet ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
-  ([^Client conn ^String index-name]
+  ([^Client conn index-name]
      (let [ft                       (es/admin-index-delete conn (cnv/->delete-index-request index-name))
            ^DeleteIndexResponse res (.actionGet ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
@@ -104,18 +104,18 @@
   "The get mapping API allows to retrieve mapping definition of index or index/type.
 
   API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
-  ([^Client conn ^String index-name]
+  ([^Client conn index-name]
      (let [ft                       (es/admin-get-mappings conn (cnv/->get-mappings-request))
            ^GetMappingsResponse res (.actionGet ft)]
        (cnv/get-mappings-response->map res)))
-  ([^Client conn ^String index-name ^String type-name]
+  ([^Client conn index-name type-name]
      (let [ft                       (es/admin-get-mappings conn (cnv/->get-mappings-request index-name type-name))
            ^GetMappingsResponse res (.actionGet ft)]
        (cnv/get-mappings-response->map res))))
 
 (defn update-mapping
   "The put mapping API allows to register or modify specific mapping definition for a specific type."
-  [^Client conn ^String index-name ^String mapping-type opts]
+  [^Client conn index-name mapping-type opts]
   (let [ft                      (es/admin-put-mapping conn (cnv/->put-mapping-request index-name mapping-type opts))
         ^PutMappingResponse res (.actionGet ft)]
     {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
