@@ -108,8 +108,8 @@
   "Coerces argument to an array of strings"
   [index-name]
   (if (coll? index-name)
-    (into-array String index-name)
-    (into-array String [index-name])))
+    (into-array String (map name index-name))
+    (into-array String [(name index-name)])))
 
 (defprotocol DeepMapConversion
   (deep-java-map->map [o]))
@@ -1054,7 +1054,7 @@
 
 (defn ^CreateIndexRequest ->create-index-request
   [index-name settings mappings]
-  (let [r (CreateIndexRequest. ^String index-name)
+  (let [r (CreateIndexRequest. (name index-name))
         s (wlk/stringify-keys settings)
         m (wlk/stringify-keys mappings)]
     (when settings

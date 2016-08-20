@@ -33,7 +33,7 @@
   ([^Client conn index query-name] (register-query conn index query-name nil))
   ([^Client conn index query-name opts]
    (let [^IndexRequestBuilder irb (doto (.prepareIndex ^Client conn
-                                                       index
+                                                       (name index)
                                                        PercolatorService/TYPE_NAME
                                                        query-name)
                                     (.setSource ^Map (wlk/stringify-keys opts)))
@@ -57,7 +57,7 @@
   ([^Client conn index mapping-type opts]
    (let [prb  (doto (.preparePercolate ^Client conn)
                 (.setIndices (cnv/->string-array index))
-                (.setDocumentType mapping-type)
+                (.setDocumentType (name mapping-type))
                 (.setSource ^Map (wlk/stringify-keys opts)))
          ft  (.execute prb)
          ^PercolateResponse res (.actionGet ft)]
