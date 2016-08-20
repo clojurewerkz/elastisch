@@ -38,13 +38,30 @@
       (is (any-hits? (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})))
       (is (no-hits?  (doc/search conn index-name index-type {:query (q/term :biography "nice")})))))
 
+  (deftest test-upserting-with-separate-upsert-document
+    (let [index-name "people"
+          index-type "person"
+          new-bio    "Such a brilliant person"
+          new-joe    (assoc fx/person-joe :biography new-bio)]
+      (idx/create conn index-name {:mappings fx/people-mapping})
+
+      (doc/put conn index-name index-type "1" fx/person-joe)
+      (doc/upsert conn index-name index-type "1" fx/person-joe {:upsert new-joe})
+      (doc/upsert conn index-name index-type "2" fx/person-joe {:upsert new-joe})
+
+      (idx/refresh conn index-name)
+      (let [result (doc/search conn index-name index-type {:query (q/term :biography "nice")})]
+        (is (= 1 (total-hits result)))
+        (is (= "1" (:_id (first (get-in result [:hits :hits]))))))
+      (let [result (doc/search conn index-name index-type {:query (q/term :biography "brilliant")})]
+        (is (= 1 (total-hits result)))
+        (is (= "2" (:_id (first (get-in result [:hits :hits]))))))))
+
   (deftest test-upserting-document-with-parent
     (let [index-name "people"
           index-type "person"
           child-index-name "passports"
-          child-index-type "passport"
-          id         "3"
-          new-bio    "Such a brilliant person"]
+          child-index-type "passport"]
       (idx/create conn index-name  {:mappings fx/people-mapping})
       (idx/create conn child-index-name {:mappings fx/passport-mapping})
       (doc/put conn index-name index-type "1" fx/person-jack)

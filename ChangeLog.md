@@ -6,6 +6,13 @@ This involves removing some features as [Elasticsearch 2.0 has breaking public A
 
 Contributed by Timo Sulg and Josh Tilles.
 
+### Support for separate upsert document when upserting with native client
+
+You can now supply a separate upsert document by using the `:upsert` options key.
+The upsert document is used if the document does _not_ already exist.
+
+Contributed by [Henrik Lundahl](https://github.com/henriklundahl).
+
 ### Support for Type Queries
 
 Added helper function for a [type query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html).
