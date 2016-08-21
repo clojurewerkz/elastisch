@@ -483,11 +483,17 @@
        r))
 
 (defn ^UpdateRequest ->upsert-request
-  ([index-name mapping-type ^String id ^Map doc {:keys [routing refresh retry-on-conflict fields parent]}]
+  ([index-name mapping-type ^String id ^Map doc {:keys [routing
+                                                        refresh
+                                                        retry-on-conflict
+                                                        fields
+                                                        parent
+                                                        upsert]}]
      (let [doc (wlk/stringify-keys doc)
+           upsert (wlk/stringify-keys upsert)
            r   (UpdateRequest. (name index-name) (name mapping-type) id)]
        (.doc r ^Map doc)
-       (.upsert r ^Map doc)
+       (.upsert r ^Map (or upsert doc))
        (when refresh
          (.refresh r refresh))
        (when retry-on-conflict
