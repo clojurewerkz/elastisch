@@ -79,7 +79,7 @@
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
-           [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest] 
+           [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest]
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
@@ -451,7 +451,9 @@
        (when parent
          (.parent ^UpdateRequest r parent))
        (when script
-         (.script ^UpdateRequest r ^String script))
+         (.script ^UpdateRequest r ^String script)
+         (when doc
+           (.upsert ^UpdateRequest r ^Map stringified-doc)))
        (when scripted_upsert
          (.upsert ^UpdateRequest r ^Map stringified-doc)
          (.scriptedUpsert ^UpdateRequest r ^Boolean scripted_upsert))

@@ -13,6 +13,13 @@ The upsert document is used if the document does _not_ already exist.
 
 Contributed by [Henrik Lundahl](https://github.com/henriklundahl).
 
+### Support for upsert document when updating with script with native client
+
+You can now supply an upsert document by using the `:upsert` options key.
+The upsert document is used if the document does _not_ already exist.
+
+Contributed by [Henrik Lundahl](https://github.com/henriklundahl).
+
 ### Support for Type Queries
 
 Added helper function for a [type query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html).

@@ -115,25 +115,38 @@
       (testing "update with mvel script no params"
         (let [orig (doc/get conn index-name index-type id)]
           (doc/update-with-script conn index-name index-type id
-                                  "ctx._source.age += 1")
+                                  "ctx._source.age += 1" nil {:lang "mvel"})
           (idx/refresh conn index-name)
           (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source  :age)))))
+                 (-> (doc/get conn index-name index-type id) :_source :age)))))
 
       ;; this works in ES<1.2, later dynamic scripting is disabled by default, so no mvel
       (testing "update with mvel script and params"
         (let [orig (doc/get conn index-name index-type id)]
           (doc/update-with-script conn index-name index-type id
-                                  "ctx._source.age = ctx._source.age + timespan" {:timespan 1})
+                                  "ctx._source.age = ctx._source.age + timespan" {:timespan 1} {:lang "mvel"})
           (idx/refresh conn index-name)
           (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source  :age)))))
+                 (-> (doc/get conn index-name index-type id) :_source :age)))))
 
       ;; this works in ES>=1.3 or with lang-groovy plugin, or with ES>=1.4 with dynamic scripting enabled
       (testing "update with groovy script no params"
         (let [orig (doc/get conn index-name index-type id)]
           (doc/update-with-script conn index-name index-type id
-                                  "ctx._source.age = ctx._source.age += 1" {} {:lang "groovy"})
+                                  "ctx._source.age += 1" {} {:lang "groovy"})
           (idx/refresh conn index-name)
           (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source  :age))))))))
+                 (-> (doc/get conn index-name index-type id) :_source :age)))))
+
+      ;; this works in ES>=1.3 or with lang-groovy plugin, or with ES>=1.4 with dynamic scripting enabled
+      (testing "update with groovy script no params and upsert doc"
+        (let [id "2"
+              upsert (assoc fx/person-jack :age 10)]
+          (doc/update-with-script conn index-name index-type id
+                                  "ctx._source.age += 1" {} {:lang "groovy"
+                                                             :upsert upsert})
+          (doc/update-with-script conn index-name index-type id
+                                  "ctx._source.age += 1" {} {:lang "groovy"
+                                                             :upsert upsert})
+          (idx/refresh conn index-name)
+          (is (= 11 (-> (doc/get conn index-name index-type id) :_source :age))))))))
