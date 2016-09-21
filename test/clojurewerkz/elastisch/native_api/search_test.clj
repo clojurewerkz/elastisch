@@ -53,8 +53,8 @@
                                                                  :sort  "title"})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
-      (is (= "Apache Lucene" (-> hits first :_source :title)))
-      (is (= "Nueva York" (-> hits last :_source :title)))))
+      (is (= "Apache Lucene" (-> hits first source-from :title)))
+      (is (= "Nueva York" (-> hits last source-from :title)))))
   
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-desc-order
     (let [index-name   "articles"
@@ -63,8 +63,8 @@
                                                                  :sort (array-map "title" "desc")})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
-      (is (= "Nueva York" (-> hits first :_source :title)))
-      (is (= "Austin" (-> hits last :_source :title)))))
+      (is (= "Nueva York" (-> hits first source-from :title)))
+      (is (= "Austin" (-> hits last source-from :title)))))
 
   (deftest ^{:native true} test-search-with-source-enabled
     (let [index-name   "articles"
@@ -75,7 +75,7 @@
                                                                  :_source true
                                                                  })
           hit         (first (hits-from response))]
-    (is (some? (:_source hit))
+    (is (some? (source-from hit))
     (is (= (get-in hit [:_fields  :title])  ["Nueva York"])))))
 
   (deftest ^{:native true} test-search-with-source-disabled
@@ -88,7 +88,7 @@
                                                                  :_source false
                                                                  })
           hit         (first (hits-from response))]
-    (is (nil? (:_source hit))
+    (is (nil? (source-from hit))
     (is (= (get-in hit [:_fields  :title])  ["Nueva York"])))))
 
   (deftest ^{:native true} test-basic-sorting-over-string-field-with-asc-order
@@ -98,8 +98,8 @@
                                                                  :sort (array-map "title" "asc")})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
-      (is (= "Nueva York" (-> hits last :_source :title)))
-      (is (= "Apache Lucene" (-> hits first :_source :title)))))
+      (is (= "Nueva York" (-> hits last source-from :title)))
+      (is (= "Apache Lucene" (-> hits first source-from :title)))))
 
   (deftest test-searching-returning-fields
     (let [index-name   "articles"
@@ -109,7 +109,7 @@
                                     :fields ["title"]})
           hits         (hits-from response)
           title-fields (remove nil? (map #(get-in % [:_fields :title]) hits))
-          title-source (remove nil? (map #(get-in % [:_source :title]) hits))]
+          title-source (remove nil? (map #(-> % source-from :title) hits))]
       (is (= 4 (total-hits response)))
       (is (= 4 (count title-fields)))
       (is (= 0 (count title-source)))))
@@ -122,7 +122,7 @@
                                     :fields ["title" "_source"]})
           hits         (hits-from response)
           title-fields (remove nil? (map #(get-in % [:_fields :title]) hits))
-          title-source (remove nil? (map #(get-in % [:_source :title]) hits))]
+          title-source (remove nil? (map #(-> % source-from :title) hits))]
       (is (= 4 (total-hits response)))
       (is (= 4 (count title-fields)))
       (is (= 4 (count title-source)))))
@@ -135,7 +135,7 @@
                                                :sort    {"first-name" "asc"}
                                                :_source ["first-name" "age"]}))]
       (is (= 4 (count hits)))
-      (is (= {:first-name "Tony" :age 29} (-> hits last :_source)))))
+      (is (= {:first-name "Tony" :age 29} (-> hits last source-from)))))
 
   (deftest ^{:native true} test-search-query-with-source-filtering-via-exclude
     (let [index-name   "people"
@@ -147,7 +147,7 @@
                                                                     "planet" "biography"
                                                                     "last-name" "username"]}}))]
       (is (= 4 (count hits)))
-      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last :_source)))))))
+      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last source-from)))))))
 
   (deftest ^{:native true} test-sorting-on-unmapped-field
     (let [index-name   "people"

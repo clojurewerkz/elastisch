@@ -44,14 +44,14 @@
     (let [mget-result (doc/multi-get conn
                                      [{:_index index-name :_type mapping-type :_id "1"}
                                       {:_index index-name :_type mapping-type :_id "2"}])]
-      (is (= fx/person-jack (:_source (first mget-result))))
-      (is (= fx/person-mary (:_source (second mget-result)))))
+      (is (= fx/person-jack (source-from (first mget-result))))
+      (is (= fx/person-mary (source-from (second mget-result)))))
     (let [mget-result (doc/multi-get conn index-name
                                      [{:_type mapping-type :_id "1"}
                                       {:_type mapping-type :_id "2"}])]
-      (is (= fx/person-jack (:_source (first mget-result))))
-      (is (= fx/person-mary (:_source (second mget-result)))))
+      (is (= fx/person-jack (source-from (first mget-result))))
+      (is (= fx/person-mary (source-from (second mget-result)))))
     (let [mget-result (doc/multi-get conn index-name mapping-type
                                      [{:_id "1"} {:_id "2"}])]
-      (is (= fx/person-jack (:_source (first mget-result))))
-      (is (= fx/person-mary (:_source (second mget-result)))))))
+      (is (= fx/person-jack (source-from (first mget-result))))
+      (is (= fx/person-mary (source-from (second mget-result)))))))

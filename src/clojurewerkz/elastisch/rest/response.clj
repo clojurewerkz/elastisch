@@ -110,3 +110,13 @@
   "Return a single aggregation from a search response"
   [m name]
   (get-in m [:aggregations name] []))
+
+(defn source-from
+  "Returns document source from a get response"
+  [m]
+  (get m :_source))
+
+(defn sources-from
+  "Returns search hit sources from a response as a collection"
+  [m]
+  (map source-from (hits-from m)))

@@ -49,10 +49,10 @@
       (let [original-document (doc/get conn index-name index-type id)
             original-version (:_version original-document)]
         (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant2") {:version original-version})
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+        (is (= "brilliant2" (-> (doc/get conn index-name index-type id) source-from :biography)))
                                         ; Can't perform a write when we pass the wrong version
         (is (thrown? VersionConflictEngineException (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") {:version original-version})))
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+        (is (= "brilliant2" (-> (doc/get conn index-name index-type id) source-from :biography))))))
 
   (deftest test-retry-on-conflict
     (let [index-name "people"
@@ -68,7 +68,7 @@
             (fn [i]
               (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant2")))
               (repeat 10 10)))
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+        (is (= "brilliant2" (-> (doc/get conn index-name index-type id) source-from :biography))))))
 
   (deftest update-with-partial-doc
     (let [index-name "people"
@@ -81,8 +81,8 @@
         (doc/update-with-partial-doc conn index-name index-type id {:country "Sweden"})
         (idx/refresh conn index-name)
         (let [updated (doc/get conn index-name index-type id)]
-          (is (= "brilliant1" (get-in updated [:_source :biography])))
-          (is (= "Sweden" (get-in updated [:_source :country])))))))
+          (is (= "brilliant1" (-> updated source-from :biography)))
+          (is (= "Sweden" (-> updated source-from :country)))))))
 
   (deftest ^{:native true} create-search-template
     (let [{:keys [index id _type]}
@@ -117,8 +117,8 @@
           (doc/update-with-script conn index-name index-type id
                                   "ctx._source.age += 1" nil {:lang "mvel"})
           (idx/refresh conn index-name)
-          (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source :age)))))
+          (is (= (-> orig source-from :age inc)
+                 (-> (doc/get conn index-name index-type id) source-from :age)))))
 
       ;; this works in ES<1.2, later dynamic scripting is disabled by default, so no mvel
       (testing "update with mvel script and params"
@@ -126,8 +126,8 @@
           (doc/update-with-script conn index-name index-type id
                                   "ctx._source.age = ctx._source.age + timespan" {:timespan 1} {:lang "mvel"})
           (idx/refresh conn index-name)
-          (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source :age)))))
+          (is (= (-> orig source-from :age inc)
+                 (-> (doc/get conn index-name index-type id) source-from :age)))))
 
       ;; this works in ES>=1.3 or with lang-groovy plugin, or with ES>=1.4 with dynamic scripting enabled
       (testing "update with groovy script no params"
@@ -135,8 +135,8 @@
           (doc/update-with-script conn index-name index-type id
                                   "ctx._source.age += 1" {} {:lang "groovy"})
           (idx/refresh conn index-name)
-          (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source :age)))))
+          (is (= (-> orig source-from :age inc)
+                 (-> (doc/get conn index-name index-type id) source-from :age)))))
 
       ;; this works in ES>=1.3 or with lang-groovy plugin, or with ES>=1.4 with dynamic scripting enabled
       (testing "update with groovy script no params and upsert doc"
@@ -149,4 +149,4 @@
                                   "ctx._source.age += 1" {} {:lang "groovy"
                                                              :upsert upsert})
           (idx/refresh conn index-name)
-          (is (= 11 (-> (doc/get conn index-name index-type id) :_source :age))))))))
+          (is (= 11 (-> (doc/get conn index-name index-type id) source-from :age))))))))

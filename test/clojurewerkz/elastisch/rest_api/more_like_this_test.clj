@@ -36,4 +36,4 @@
                                           :min_doc_freq 1})]
         (is (= 1 (total-hits response)))
         (is (= fx/article-on-elasticsearch
-               (-> (hits-from response) first :_source)))))))
+               (-> (hits-from response) first source-from)))))))

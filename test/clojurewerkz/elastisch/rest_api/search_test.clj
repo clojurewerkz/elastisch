@@ -44,7 +44,7 @@
                                               {:query  (q/match-all)
                                                :filter {:term {:username "esmary"}}}))]
       (is (= 1 (count hits)))
-      (is (= "Lindey" (-> hits first :_source :last-name)))))
+      (is (= "Lindey" (-> hits first source-from :last-name)))))
 
   (deftest ^{:query true} test-query-validation
     (let [index-name   "articles"
@@ -58,8 +58,8 @@
                                                                  :sort {"title" "desc"}})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
-      (is (= "Nueva York" (-> hits first :_source :title)))
-      (is (= "Austin" (-> hits last :_source :title)))))
+      (is (= "Nueva York" (-> hits first source-from :title)))
+      (is (= "Austin" (-> hits last source-from :title)))))
 
   (deftest ^{:rest true} test-basic-sorting-over-string-field-with-asc-order
     (let [index-name   "articles"
@@ -68,8 +68,8 @@
                                                                  :sort {"title" "asc"}})
           hits         (hits-from response)]
       (is (= 4 (total-hits response)))
-      (is (= "Nueva York" (-> hits last :_source :title)))
-      (is (= "Apache Lucene" (-> hits first :_source :title)))))
+      (is (= "Nueva York" (-> hits last source-from :title)))
+      (is (= "Apache Lucene" (-> hits first source-from :title)))))
 
   (deftest ^{:rest true} test-search-query-with-source-filtering-via-include
     (let [index-name   "people"
@@ -79,7 +79,7 @@
                                                :sort    {"first-name" "asc"}
                                                :_source ["first-name" "age"]}))]
       (is (= 4 (count hits)))
-      (is (= {:first-name "Tony" :age 29} (-> hits last :_source)))))
+      (is (= {:first-name "Tony" :age 29} (-> hits last source-from)))))
 
   (deftest ^{:rest true} test-search-query-with-source-filtering-via-exclude
     (let [index-name   "people"
@@ -91,7 +91,7 @@
                                                                     "planet" "biography"
                                                                     "last-name" "username"]}}))]
       (is (= 4 (count hits)))
-      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last :_source)))))))
+      (is (= #{:first-name :age :signed_up_at} (set (keys (-> hits last source-from)))))))
 
   (deftest ^{:rest true} test-sorting-on-unmapped-field
     (let [index-name   "people"

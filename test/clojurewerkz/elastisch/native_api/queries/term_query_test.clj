@@ -23,7 +23,7 @@
   (deftest ^{:query true :native true} test-basic-term-query-with-person-mapping
     (let [result (doc/search conn "people" "person" {:query (q/term :biography "avoid")})]
       (is (any-hits? result))
-      (is (= fx/person-jack (-> result hits-from first :_source)))))
+      (is (= fx/person-jack (-> result hits-from first source-from)))))
 
 
   (deftest ^{:query true :native true} test-term-query-with-person-mapping-and-a-limit
@@ -36,12 +36,12 @@
   (deftest ^{:query true :native true} test-basic-term-query-with-tweets-mapping
     (let [result (doc/search conn "tweets" "tweet" {:query (q/term :text "improved")})]
       (is (any-hits? result))
-      (is (= fx/tweet1 (-> result hits-from first :_source)))))
+      (is (= fx/tweet1 (-> result hits-from first source-from)))))
 
   (deftest ^{:query true :native true} test-basic-terms-query-with-tweets-mapping
     (let [result (doc/search conn "tweets" "tweet" {:query (q/term :text ["supported" "improved"])})]
       (is (any-hits? result))
-      (is (= fx/tweet1 (-> result hits-from first :_source)))))
+      (is (= fx/tweet1 (-> result hits-from first source-from)))))
 
   (deftest ^{:query true :native true} test-basic-term-query-over-non-analyzed-usernames
     (are [username id] (= id (-> (doc/search conn "tweets" "tweet" {:query (q/term :username username) :sort {:timestamp "asc"}})

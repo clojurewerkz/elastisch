@@ -24,17 +24,17 @@
   (deftest ^{:native true} test-term-filtering
     (let [index-name   "people"
           mapping-type "person"
-          hits         (hits-from (doc/search conn index-name mapping-type
+          sources         (sources-from (doc/search conn index-name mapping-type
                                               {:query  (q/match-all)
                                                :filter {:term {:username "esmary"}}}))]
-      (is (= 1 (count hits)))
-      (is (= "Lindey" (-> hits first :_source :last-name)))))
+      (is (= 1 (count sources)))
+      (is (= "Lindey" (-> sources first :last-name)))))
 
   (deftest ^{:native true} test-range-filtering
     (let [index-name   "people"
           mapping-type "person"
-          hits         (hits-from (doc/search conn index-name mapping-type
-                                              {:query  (q/match-all)
-                                               :filter {:range {:age {:from 26 :to 30}}}}))]
-      (is (= 2 (count hits)))
-      (is (#{28 29} (-> hits first :_source :age))))))
+          sources      (sources-from (doc/search conn index-name mapping-type
+                                                 {:query  (q/match-all)
+                                                  :filter {:range {:age {:from 26 :to 30}}}}))]
+      (is (= 2 (count sources)))
+      (is (#{28 29} (-> sources first :age))))))

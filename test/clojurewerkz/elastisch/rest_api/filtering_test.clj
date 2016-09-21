@@ -26,7 +26,7 @@
                                               {:query  (q/match-all)
                                                :filter {:term {:username "esmary"}}}))]
       (is (= 1 (count hits)))
-      (is (= "Lindey" (-> hits first :_source :last-name)))))
+      (is (= "Lindey" (-> hits first source-from :last-name)))))
 
   (deftest ^{:rest true} test-range-filtering
     (let [index-name   "people"
@@ -35,4 +35,4 @@
                                               {:query  (q/match-all)
                                                :filter {:range {:age {:from 26 :to 30}}}}))]
       (is (= 2 (count hits)))
-      (is (#{28 29} (-> hits first :_source :age))))))
+      (is (#{28 29} (-> hits first source-from :age))))))
