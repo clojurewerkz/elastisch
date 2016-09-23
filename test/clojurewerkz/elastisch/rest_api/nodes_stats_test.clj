@@ -15,18 +15,28 @@
 
 (use-fixtures :each fx/reset-indexes fx/prepopulate-tweets-index)
 
+(defn- node-stats-group
+  [stats node-id stats-group]
+  (-> stats :nodes node-id stats-group))
+
 (let [conn (rest/connect)]
   (deftest ^{:rest true} nodes-stats
   (is (= #{:cluster_name :nodes}
          (into #{} (keys (admin/nodes-stats conn)))))
-  (testing "node selection"
     (let [stats (admin/nodes-stats conn)
-          node-id (first (keys (:nodes stats))) 
+          node-id (first (keys (:nodes stats)))
           node-name (get-in stats [:nodes node-id :name])]
-      (is (empty? (:nodes (admin/nodes-stats conn {:nodes "foo"}))))
-      (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes (name node-id)})))))
-      (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes (vector (name node-id))})))))
-      (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes node-name})))))))
-  (testing "parameters"
-    (is (not (= (admin/nodes-stats conn {:indices true}) (admin/nodes-stats conn {:indices false}))))
-    (is (not (= (admin/nodes-stats conn {:network true}) (admin/nodes-stats conn {:network false})))))))
+
+      (testing "node selection"
+        (is (empty? (:nodes (admin/nodes-stats conn {:nodes "foo"}))))
+        (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes (name node-id)})))))
+        (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes (vector (name node-id))})))))
+        (is (= 1 (count (:nodes (admin/nodes-stats conn {:nodes node-name}))))))
+
+      (testing "parameters"
+        (is (node-stats-group (admin/nodes-stats conn {:attributes ["indices"]})
+                              node-id
+                              :indices))
+        (is (nil? (node-stats-group (admin/nodes-stats conn {:attributes ["fs"]})
+                                    node-id
+                                    :indices)))))))
