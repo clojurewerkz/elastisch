@@ -52,13 +52,13 @@
         (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant2") {:version original-version})
         ;; Now should have the new data
         (is (= "brilliant2"
-               (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+               (-> (doc/get conn index-name index-type id) source-from :biography)))
         ;; Can't perform a write when we pass the wrong version
         (let [e (:error (doc/put conn index-name index-type id (assoc fx/person-jack :biography "brilliant3") {:version original-version}))]
           (is (:type e "version_conflict_engine_exception")))
 
         ;; Still should have the new data
-        (is (= "brilliant2" (get-in (doc/get conn index-name index-type id) [:_source :biography]))))))
+        (is (= "brilliant2" (-> (doc/get conn index-name index-type id) source-from :biography))))))
 
   (deftest ^{:rest true} upsert-existing
     (let [index-name "people"
@@ -76,9 +76,9 @@
         (idx/refresh conn index-name)
         ;; Now should have merged document data
         (is (= "brilliant1"
-               (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+               (-> (doc/get conn index-name index-type id) source-from :biography)))
         (is (= "India"
-               (get-in (doc/get conn index-name index-type id) [:_source :country]))))))
+               (-> (doc/get conn index-name index-type id) source-from :country))))))
 
   (deftest ^{:rest true} upsert-new
     (let [index-name "people"
@@ -93,9 +93,9 @@
       (idx/refresh conn index-name)
       ;; Now should have new document data
       (is (= "brilliant1"
-             (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+             (-> (doc/get conn index-name index-type id) source-from :biography)))
       (is (= "India"
-             (get-in (doc/get conn index-name index-type id) [:_source :country])))))
+             (-> (doc/get conn index-name index-type id) source-from :country)))))
 
   (deftest ^{:rest true} update-with-partial-doc
     (let [index-name "people"
@@ -113,9 +113,9 @@
         (idx/refresh conn index-name)
         ;; Now should have merged document data
         (is (= "brilliant1"
-               (get-in (doc/get conn index-name index-type id) [:_source :biography])))
+               (-> (doc/get conn index-name index-type id) source-from :biography)))
         (is (= "India"
-               (get-in (doc/get conn index-name index-type id) [:_source :country]))))))
+               (-> (doc/get conn index-name index-type id) source-from :country))))))
 
   (deftest ^{:rest true :version-dependent true} update-with-script
     (let [index-name "people"
@@ -133,8 +133,8 @@
             (doc/update-with-script conn index-name index-type id
                                     "ctx._source.age += 1")
             (idx/refresh conn index-name)
-            (is (= (-> orig :_source :age inc)
-                   (-> (doc/get conn index-name index-type id) :_source  :age)))))
+            (is (= (-> orig source-from :age inc)
+                   (-> (doc/get conn index-name index-type id) source-from :age)))))
 
       ;; this works in ES<1.2, later dynamic scripting is disabled by default, so no mvel
       (testing "update with mvel script and params"
@@ -142,8 +142,8 @@
           (doc/update-with-script conn index-name index-type id
                                   "ctx._source.age = ctx._source.age + timespan" {:timespan 1})
           (idx/refresh conn index-name)
-          (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source  :age)))))
+          (is (= (-> orig source-from :age inc)
+                 (-> (doc/get conn index-name index-type id) source-from :age)))))
 
       ;; this works in ES>=1.3 or with lang-groovy plugin
       (testing "update with groovy script no params"
@@ -151,5 +151,5 @@
           (doc/update-with-script conn index-name index-type id
                                   "ctx._source.age = ctx._source.age += 1" {} {:lang "groovy"})
           (idx/refresh conn index-name)
-          (is (= (-> orig :_source :age inc)
-                 (-> (doc/get conn index-name index-type id) :_source  :age))))))))
+          (is (= (-> orig source-from :age inc)
+                 (-> (doc/get conn index-name index-type id) source-from :age))))))))

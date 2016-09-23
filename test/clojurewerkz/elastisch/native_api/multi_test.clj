@@ -25,10 +25,10 @@
           res2 (doc/search conn "articles" "article" {:query (q/match-all) :size 1})
           multires (multi/search conn [{:index "people" :type "person"} {:query (q/match-all) :size 1}
                                        {:index "articles" :type "article"} {:query (q/match-all) :size 1}])]
-      (is (= (-> res1 :hits :hits first :_source)
-             (-> multires first :hits :hits first :_source)))
-      (is (= (-> res2 :hits :hits first :_source)
-             (-> multires second :hits :hits first :_source)))))
+      (is (= (-> res1 sources-from first)
+             (-> multires first sources-from first)))
+      (is (= (-> res2 sources-from first)
+             (-> multires second sources-from first)))))
 
   (deftest ^{:rest true} test-multi-with-index-and-type
     (let [res1 (doc/search conn "people" "person" {:query (q/term :planet "earth")})

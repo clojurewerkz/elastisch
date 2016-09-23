@@ -13,7 +13,7 @@
             [clojurewerkz.elastisch.native.document :as doc]
             [clojurewerkz.elastisch.fixtures        :as fx]
             [clojurewerkz.elastisch.test.helpers    :as th]
-            [clojurewerkz.elastisch.native.response :refer [created?]]
+            [clojurewerkz.elastisch.native.response :refer [created? source-from]]
             [clojure.test :refer :all]))
 
 (use-fixtures :each fx/reset-indexes)
@@ -75,14 +75,14 @@
           for-update (assoc for-insert :biography "updated")
           update-ops (bulk-update [for-update])
           update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
-      (is (= "updated" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))
+      (is (= "updated" (-> (doc/get conn index-name index-type id) source-from :biography)))))
 
   (deftest ^{:native true :indexing true} test-bulk-updating-with-doc-as-upsert
     (let [id "1"
           for-update (assoc fx/person-jack :_id id :biography "original" :_doc_as_upsert true)
           update-ops (bulk-update [for-update])
           update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
-      (is (= "original" (get-in (doc/get conn index-name index-type id) [:_source :biography])))))
+      (is (= "original" (-> (doc/get conn index-name index-type id) source-from :biography)))))
 
   (deftest ^{:native true :indexing true :scripting true} test-bulk-update-with-scripting
     (let [id "1"
@@ -94,7 +94,7 @@
           update-ops (bulk-update [for-update])
           update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
       (is (= false (:has-failures? update-response))) ;;scripting must be switched on
-      (is (get-in (doc/get conn index-name index-type id) [:_source :ran_script]))))
+      (is (-> (doc/get conn index-name index-type id) source-from :ran_script))))
 
   (deftest ^{:native true :indexing true :scripting true} test-bulk-update-with-scripted-upsert
     (let [id "2"
@@ -102,7 +102,7 @@
           for-update (assoc fx/person-jack :_id id :_scripted_upsert true :_script script)
           update-ops (bulk-update [for-update])
           update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
-      (is (get-in (doc/get conn index-name index-type id) [:_source :ran_script]))))
+      (is (-> (doc/get conn index-name index-type id) source-from :ran_script))))
 
   (deftest ^{:native true :indexing true :scripting true} test-bulk-update-with-script-params
     (let [id "3"
@@ -113,4 +113,4 @@
           for-update (assoc fx/person-jack :_id id :_script script :_script_params {:val "param1"})
           update-ops (bulk-update [for-update])
           update-response (bulk-with-index-and-type conn index-name index-type update-ops {:refresh true})]
-      (is (= "param1" (get-in (doc/get conn index-name index-type id) [:_source :ran_script]))))))
+      (is (= "param1" (-> (doc/get conn index-name index-type id) source-from :ran_script))))))

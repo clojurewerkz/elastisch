@@ -29,10 +29,10 @@
                                        {:index "tweets"
                                         :type "tweet"}   {:query (q/match-all) :size 1}])]
       (is (= 3 (count multires)))
-      (is (= (-> res1 :hits :hits first :_source)
-             (-> multires first :hits :hits first :_source)))
-      (is (= (-> res2 :hits :hits first :_source)
-             (-> multires second :hits :hits first :_source)))))
+      (is (= (-> res1 hits-from first source-from)
+             (-> multires first hits-from first source-from)))
+      (is (= (-> res2 hits-from first source-from)
+             (-> multires second hits-from first source-from)))))
 
   (deftest ^{:rest true} test-multi-with-index-and-type
     (let [res1 (doc/search conn "people" "person" {:query (q/term :planet "earth")})
