@@ -310,7 +310,7 @@
 
 (defn cluster-nodes-stats-url
   ([conn ^String nodes ^String attrs]
-     (url-with-path conn "_nodes" nodes "stats")))
+     (url-with-path conn "_nodes" nodes "stats" attrs)))
 
 (defn cluster-nodes-info-url
   ([conn ^String nodes ^String attrs]
