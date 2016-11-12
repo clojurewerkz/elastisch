@@ -115,6 +115,16 @@
   (deep-java-map->map [o]))
 
 (extend-protocol DeepMapConversion
+  ImmutableOpenMap
+  (deep-java-map->map [o]
+    ;; The iterator implementation for ImmutableOpenMap is, ironically, a mutable
+    ;; cursor - each call to .next() will return the same cursor instance. We must
+    ;; ensure that it is consumed eagerly.
+    (->> o
+         (into {} (map (fn [^ObjectObjectCursor cursor]
+                         [(.key cursor) (.value cursor)])))
+         (deep-java-map->map)))
+
   java.util.Map
   (deep-java-map->map [o]
     (reduce (fn [m [^String k v]]
