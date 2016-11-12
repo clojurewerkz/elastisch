@@ -1123,22 +1123,18 @@
        (.indices (->string-array index-name))
        (.types (->string-array mapping-type)))))
 
+(defn ^IPersistentMap ^:private index-mapping->map
+  [index-mapping]
+  (->> index-mapping
+       (into {} (map (fn [[field-name ^MappingMetaData field-mapping]]
+                       [field-name (deep-java-map->map (.sourceAsMap field-mapping))])))))
+
 (defn ^IPersistentMap get-mappings-response->map
   [^GetMappingsResponse res]
-  ;; TODO: a sane way of converting ImmutableOpenMaps to Clojure maps. MK.
-  (reduce (fn [acc ^ObjectObjectCursor el]
-            (let [^String           k (.key el)
-                  ^ImmutableOpenMap v (.value el)]
-              (assoc acc (keyword k)
-                     ;; to match HTTP API responses. MK.
-                     {:mappings (reduce (fn [acc2 ^ObjectObjectCursor el]
-                                          (let [^String          k (.key el)
-                                                ^MappingMetaData v (.value el)]
-                                            (assoc acc (keyword k) (deep-java-map->map (.sourceAsMap v)))))
-                                        {}
-                                        v)})))
-          {}
-          (.mappings res)))
+  (->> (deep-java-map->map (.mappings res))
+       (into {} (map (fn [[index-name index-mapping]]
+                       ;; to match HTTP API responses. MK.
+                       [index-name {:mappings (index-mapping->map index-mapping)}])))))
 
 
 (defn ^PutMappingRequest ->put-mapping-request
