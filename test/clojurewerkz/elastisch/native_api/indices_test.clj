@@ -15,7 +15,8 @@
               [response :refer [acknowledged?]]]
             [clojurewerkz.elastisch.fixtures      :as fx]
             [clojurewerkz.elastisch.test.helpers  :as th]
-            [clojure.test :refer :all]))
+            [clojure.test :refer :all])
+  (:import org.elasticsearch.index.IndexNotFoundException))
 
 (use-fixtures :each fx/reset-indexes)
 
@@ -102,9 +103,23 @@
   (deftest ^{:indexing true :native true} test-indices-with-aliases
     (idx/create conn "aliased-index1" {:settings {"index" {"refresh_interval" "42s"}}})
     (idx/create conn "aliased-index2" {:settings {"index" {"refresh_interval" "42s"}}})
+    (idx/create conn "non-aliased-index1" {:settings {"index" {"refresh_interval" "42s"}}})
+
+    (is (= (idx/get-aliases conn) {}))
+
     (is (acknowledged?
           (idx/update-aliases conn [{:add {:alias "alias1" :index "aliased-index1"}}
-                                    {:add {:alias "alias2" :index "aliased-index2"}}])))
+                                    {:add {:alias "alias2" :index "aliased-index2"}}
+                                    {:add {:alias "filtered-alias1" :index "aliased-index1" :filter {"term" {"foo" "bar"}}}}])))
+
+    (is (= (idx/get-aliases conn) {:aliased-index1 {:aliases {:alias1 {}
+                                                              :filtered-alias1 {:filter {"term" {"foo" "bar"}}}}}
+                                   :aliased-index2 {:aliases {:alias2 {}}}}))
+    (is (= (idx/get-aliases conn ["aliased-index1"]) {:aliased-index1 {:aliases {:alias1 {}
+                                                                                 :filtered-alias1 {:filter {"term" {"foo" "bar"}}}}}}))
+    (is (= (idx/get-aliases conn ["non-aliased-index1"]) {}))
+    (is (thrown? IndexNotFoundException (idx/get-aliases conn ["non-existent-index"])))
+
     (is (doc/put conn "aliased-index1" "type" "id1" {}))
     (is (doc/put conn "aliased-index2" "type" "id2" {}))
     (is (doc/get conn "alias1" "type" "id1"))

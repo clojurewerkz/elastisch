@@ -84,11 +84,13 @@
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
+           [org.elasticsearch.action.admin.indices.alias.get GetAliasesResponse GetAliasesRequest]
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
            com.carrotsearch.hppc.cursors.ObjectObjectCursor
            org.elasticsearch.common.collect.ImmutableOpenMap
+           org.elasticsearch.cluster.metadata.AliasMetaData
            org.elasticsearch.cluster.metadata.MappingMetaData
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
            org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequest
@@ -1329,6 +1331,26 @@
     (doseq [index indices-array]
       (.removeAlias req ^String index aliases-array)))
   req)
+
+(defn ^GetAliasesRequest ->get-aliases-request
+  [indices]
+  (doto (GetAliasesRequest.)
+    (.indices (->string-array indices))))
+
+(defn ^IPersistentMap ^:private aliases->map
+  [aliases]
+  (->> aliases
+       (into {} (map (fn [^AliasMetaData alias]
+                       (let [alias-filter (some-> (.filter alias) (.toString) (json/parse-string))]
+                         [(keyword (.alias alias)) (cond-> {}
+                                                     alias-filter (assoc :filter alias-filter))]))))))
+
+(defn ^IPersistentMap get-aliases-response->map
+  [^GetAliasesResponse r]
+  (->> (deep-java-map->map (.getAliases r))
+       (into {} (map (fn [[index-name aliases]]
+                       ;; To match HTTP API responses.
+                       [index-name {:aliases (aliases->map aliases)}])))))
 
 (defn ^IndicesAliasesRequest ->indices-aliases-request
   [ops {:keys [timeout]}]
