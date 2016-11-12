@@ -1323,7 +1323,7 @@
 (defn ^IndicesAliasesRequest ->indices-aliases-request
   [ops {:keys [timeout]}]
   (let [r (IndicesAliasesRequest.)]
-    (doseq [{:keys [add remove timeout]} ops]
+    (doseq [{:keys [add remove]} ops]
       (when add
         (apply-add-alias r add))
       (when remove
