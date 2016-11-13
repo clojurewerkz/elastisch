@@ -136,7 +136,7 @@
 
   java.util.List
   (deep-java-map->map [o]
-    (vec (map deep-java-map->map o)))
+    (mapv deep-java-map->map o))
 
   java.lang.Object
   (deep-java-map->map [o] o)
@@ -819,8 +819,8 @@
   [^SearchHit sh m]
   (let [hls (.highlightFields sh)
         hlm (reduce (fn [acc [^String k ^HighlightField hlf]]
-                      (assoc acc (keyword k) (vec (map (fn [^Text t]
-                                                         (.string t)) (.getFragments hlf)))))
+                      (assoc acc (keyword k) (mapv (fn [^Text t]
+                                                     (.string t)) (.getFragments hlf))))
                     {}
                     hls)]
     (assoc m :highlight hlm)))
@@ -956,15 +956,15 @@
 
   Histogram
   (aggregation-value [^Histogram agg]
-    {:buckets (vec (map histogram-bucket->map (.getBuckets agg)))})
+    {:buckets (mapv histogram-bucket->map (.getBuckets agg))})
 
   Range
   (aggregation-value [^Range agg]
-    {:buckets (vec (map range-bucket->map (.getBuckets agg)))})
+    {:buckets (mapv range-bucket->map (.getBuckets agg))})
 
   Terms
   (aggregation-value [^Terms agg]
-    {:buckets (vec (map terms-bucket->map (.getBuckets agg)))}))
+    {:buckets (mapv terms-bucket->map (.getBuckets agg))}))
 
 (defn search-response->seq
   [^SearchResponse r]
