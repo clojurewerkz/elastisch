@@ -746,7 +746,7 @@
 
 (defn attach-suggestion-context
   "attach context for suggestion query."
-  [query context]
+  [^CompletionSuggestionBuilder query context]
   (let [add-category! (fn [field-name context-value]
                         (.addCategory query
                                       ^String (->string field-name)
