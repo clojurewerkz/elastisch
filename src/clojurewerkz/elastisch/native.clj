@@ -48,6 +48,7 @@
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentsRequest
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
+           org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
@@ -213,6 +214,11 @@
   "Executes an indices segments request"
   [^Client conn ^IndicesSegmentsRequest req]
   (-> ^Client conn .admin .indices (.segments req)))
+
+(defn ^ActionFuture admin-get-aliases
+  "Executes a get aliases request"
+  [^Client conn ^GetAliasesRequest req]
+  (-> ^Client conn .admin .indices (.getAliases req)))
 
 (defn ^ActionFuture admin-update-aliases
   "Executes an update aliases request"

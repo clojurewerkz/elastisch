@@ -30,6 +30,7 @@
            org.elasticsearch.action.admin.indices.flush.FlushResponse
            org.elasticsearch.action.admin.indices.refresh.RefreshResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
+           org.elasticsearch.action.admin.indices.alias.get.GetAliasesResponse
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheResponse
            org.elasticsearch.action.admin.indices.segments.IndicesSegmentResponse
@@ -218,6 +219,15 @@
         ^IndicesSegmentResponse res (.actionGet ft)]
     (merge (cnv/broadcast-operation-response->map res)
            (cnv/indices-segments-response->map res))))
+
+(defn get-aliases
+  "Fetches and returns the aliases for the given indices. Returns all aliases if no indices are given."
+  ([^Client conn]
+   (get-aliases conn []))
+  ([^Client conn indices]
+   (let [ft                      (es/admin-get-aliases conn (cnv/->get-aliases-request indices))
+         ^GetAliasesResponse res (.actionGet ft)]
+     (cnv/get-aliases-response->map res))))
 
 (defn update-aliases
   "Performs a batch of alias operations. Takes a collection of actions in the following form where

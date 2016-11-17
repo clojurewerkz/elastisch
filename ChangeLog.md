@@ -6,6 +6,14 @@ This involves removing some features as [Elasticsearch 2.0 has breaking public A
 
 Contributed by Timo Sulg and Josh Tilles.
 
+### Support for getting aliases in the native client
+
+There is now a `clojurewerkz.elastisch.native.index/get-aliases` function, which
+can be used to retrieve all aliases for given indices (defaults to all aliases
+for the cluster if no indices are provided).
+
+Contributed by [Mikey Griffiths](https://github.com/cichli).
+
 ### Support for separate upsert document when upserting with native client
 
 You can now supply a separate upsert document by using the `:upsert` options key.

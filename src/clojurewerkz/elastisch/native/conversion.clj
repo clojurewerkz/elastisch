@@ -84,11 +84,13 @@
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
            [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
+           [org.elasticsearch.action.admin.indices.alias.get GetAliasesResponse GetAliasesRequest]
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
            com.carrotsearch.hppc.cursors.ObjectObjectCursor
            org.elasticsearch.common.collect.ImmutableOpenMap
+           org.elasticsearch.cluster.metadata.AliasMetaData
            org.elasticsearch.cluster.metadata.MappingMetaData
            org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest
            org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequest
@@ -115,6 +117,16 @@
   (deep-java-map->map [o]))
 
 (extend-protocol DeepMapConversion
+  ImmutableOpenMap
+  (deep-java-map->map [o]
+    ;; The iterator implementation for ImmutableOpenMap is, ironically, a mutable
+    ;; cursor - each call to .next() will return the same cursor instance. We must
+    ;; ensure that it is consumed eagerly.
+    (->> o
+         (into {} (map (fn [^ObjectObjectCursor cursor]
+                         [(.key cursor) (.value cursor)])))
+         (deep-java-map->map)))
+
   java.util.Map
   (deep-java-map->map [o]
     (reduce (fn [m [^String k v]]
@@ -124,7 +136,7 @@
 
   java.util.List
   (deep-java-map->map [o]
-    (vec (map deep-java-map->map o)))
+    (mapv deep-java-map->map o))
 
   java.lang.Object
   (deep-java-map->map [o] o)
@@ -734,7 +746,7 @@
 
 (defn attach-suggestion-context
   "attach context for suggestion query."
-  [query context]
+  [^CompletionSuggestionBuilder query context]
   (let [add-category! (fn [field-name context-value]
                         (.addCategory query
                                       ^String (->string field-name)
@@ -807,8 +819,8 @@
   [^SearchHit sh m]
   (let [hls (.highlightFields sh)
         hlm (reduce (fn [acc [^String k ^HighlightField hlf]]
-                      (assoc acc (keyword k) (vec (map (fn [^Text t]
-                                                         (.string t)) (.getFragments hlf)))))
+                      (assoc acc (keyword k) (mapv (fn [^Text t]
+                                                     (.string t)) (.getFragments hlf))))
                     {}
                     hls)]
     (assoc m :highlight hlm)))
@@ -944,15 +956,15 @@
 
   Histogram
   (aggregation-value [^Histogram agg]
-    {:buckets (vec (map histogram-bucket->map (.getBuckets agg)))})
+    {:buckets (mapv histogram-bucket->map (.getBuckets agg))})
 
   Range
   (aggregation-value [^Range agg]
-    {:buckets (vec (map range-bucket->map (.getBuckets agg)))})
+    {:buckets (mapv range-bucket->map (.getBuckets agg))})
 
   Terms
   (aggregation-value [^Terms agg]
-    {:buckets (vec (map terms-bucket->map (.getBuckets agg)))}))
+    {:buckets (mapv terms-bucket->map (.getBuckets agg))}))
 
 (defn search-response->seq
   [^SearchResponse r]
@@ -1111,22 +1123,18 @@
        (.indices (->string-array index-name))
        (.types (->string-array mapping-type)))))
 
+(defn ^IPersistentMap ^:private index-mapping->map
+  [index-mapping]
+  (->> index-mapping
+       (into {} (map (fn [[field-name ^MappingMetaData field-mapping]]
+                       [field-name (deep-java-map->map (.sourceAsMap field-mapping))])))))
+
 (defn ^IPersistentMap get-mappings-response->map
   [^GetMappingsResponse res]
-  ;; TODO: a sane way of converting ImmutableOpenMaps to Clojure maps. MK.
-  (reduce (fn [acc ^ObjectObjectCursor el]
-            (let [^String           k (.key el)
-                  ^ImmutableOpenMap v (.value el)]
-              (assoc acc (keyword k)
-                     ;; to match HTTP API responses. MK.
-                     {:mappings (reduce (fn [acc2 ^ObjectObjectCursor el]
-                                          (let [^String          k (.key el)
-                                                ^MappingMetaData v (.value el)]
-                                            (assoc acc (keyword k) (deep-java-map->map (.sourceAsMap v)))))
-                                        {}
-                                        v)})))
-          {}
-          (.mappings res)))
+  (->> (deep-java-map->map (.mappings res))
+       (into {} (map (fn [[index-name index-mapping]]
+                       ;; to match HTTP API responses. MK.
+                       [index-name {:mappings (index-mapping->map index-mapping)}])))))
 
 
 (defn ^PutMappingRequest ->put-mapping-request
@@ -1320,10 +1328,30 @@
       (.removeAlias req ^String index aliases-array)))
   req)
 
+(defn ^GetAliasesRequest ->get-aliases-request
+  [indices]
+  (doto (GetAliasesRequest.)
+    (.indices (->string-array indices))))
+
+(defn ^IPersistentMap ^:private aliases->map
+  [aliases]
+  (->> aliases
+       (into {} (map (fn [^AliasMetaData alias]
+                       (let [alias-filter (some-> (.filter alias) (.toString) (json/parse-string))]
+                         [(keyword (.alias alias)) (cond-> {}
+                                                     alias-filter (assoc :filter alias-filter))]))))))
+
+(defn ^IPersistentMap get-aliases-response->map
+  [^GetAliasesResponse r]
+  (->> (deep-java-map->map (.getAliases r))
+       (into {} (map (fn [[index-name aliases]]
+                       ;; To match HTTP API responses.
+                       [index-name {:aliases (aliases->map aliases)}])))))
+
 (defn ^IndicesAliasesRequest ->indices-aliases-request
   [ops {:keys [timeout]}]
   (let [r (IndicesAliasesRequest.)]
-    (doseq [{:keys [add remove timeout]} ops]
+    (doseq [{:keys [add remove]} ops]
       (when add
         (apply-add-alias r add))
       (when remove
