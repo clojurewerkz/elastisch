@@ -22,7 +22,7 @@
 ;;
 
 (defn cluster-health
-  "see <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html>
+  "see <https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html>
 
   Examples:
 
@@ -41,7 +41,7 @@
              {:query-params (dissoc opts :index)})))
 
 (defn cluster-state
-  "see <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html>
+  "see <https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-state.html>
 
   Examples:
 
@@ -54,9 +54,13 @@
   ([^Connection conn opts]
    (rest/get conn (rest/cluster-state-url conn) {:query-params opts})))
 
+(defn cluster-stats
+  []
+  ;; TODO: https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-stats.html
+  )
 
 (defn nodes-stats
-  "see <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html>
+  "see <https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html>
 
   Examples:
 
@@ -73,7 +77,7 @@
                                                 (join-names (get opts :attributes "_all"))))))
 
 (defn nodes-info
-  "see <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>
+  "see <https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>
 
   Examples:
 
