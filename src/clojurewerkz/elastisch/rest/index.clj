@@ -51,8 +51,8 @@
   ([^Connection conn ^String index-name] (create conn index-name nil))
   ([^Connection conn ^String index-name opts]
    (let [{:keys [settings mappings]} opts]
-     (rest/post conn (rest/index-url conn
-                                     index-name)
+     (rest/put conn (rest/index-url conn
+                                    index-name)
                 {:body (if mappings
                          {:settings settings :mappings mappings}
                          {:settings settings})}))))
