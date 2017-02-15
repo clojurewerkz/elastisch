@@ -93,7 +93,7 @@
 (defn delete
   "Deletes an existing index"
   ([^Client conn]
-     (let [ft                       (es/admin-index-delete conn (cnv/->delete-index-request))
+     (let [ft                       (es/admin-index-delete conn (cnv/->delete-index-request) "_all")
            ^DeleteIndexResponse res (.actionGet ft)]
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)}))
   ([^Client conn index-name]
