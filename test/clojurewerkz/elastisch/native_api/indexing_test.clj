@@ -136,4 +136,7 @@
     (are [expected actual] (= expected (actual response))
          index-name :_index
          index-type :_type
-         1          :_version))))
+         1          :_version)))
+
+(deftest ^{:indexing true :native true} test-delete-index
+  (is (idx/delete conn))))
