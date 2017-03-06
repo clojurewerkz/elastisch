@@ -93,7 +93,8 @@
   (deftest ^{:indexing true :native true} test-index-stats-for-all-indexes
     (idx/create conn "group1")
     (idx/create conn "group2")
-    (Thread/sleep 1000)
+    (idx/refresh conn "group1")
+    (idx/refresh conn "group2")
     (let [res (idx/stats conn {:docs true :store true :indexing true})]
       (is (contains? res :_all))
       (is (contains? res :indices))
