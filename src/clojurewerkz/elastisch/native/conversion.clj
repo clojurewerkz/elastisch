@@ -1086,9 +1086,9 @@
 
 (defn ^DeleteIndexRequest ->delete-index-request
   ([]
-     (DeleteIndexRequest. (->string-array [])))
+   (DeleteIndexRequest. "_all"))
   ([index-name]
-     (DeleteIndexRequest. (->string-array index-name))))
+   (DeleteIndexRequest. (->string-array index-name))))
 
 (defn ^UpdateSettingsRequest ->update-settings-request
   [index-name settings]
@@ -1298,7 +1298,7 @@
 
 (defn ^IPersistentMap indices-stats-response->map
   "transforms a response of indices stats to the Clojure hash-map
-  
+
   note: parsing from JSON string presents index-names as Clojure keywords,
   which mean it may fail if you use characters not allowed as keyword.
   JSON version is used only for testing purpose or fallback when native version
