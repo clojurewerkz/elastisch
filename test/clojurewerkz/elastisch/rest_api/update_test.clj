@@ -20,6 +20,24 @@
 (use-fixtures :each fx/reset-indexes)
 
 (let [conn (rest/connect)]
+  (deftest ^{:rest true} test-ok?-on-a-successful-update-issue-192
+    (let [index-name   "people"
+          mapping-type "person"
+          id           "3"
+          new-bio      "Such a brilliant person"]
+      (idx/create conn index-name {:mappings fx/people-mapping})
+      (let [r (doc/put conn index-name mapping-type "1" fx/person-jack)]
+        (ok? r))
+      (idx/refresh conn index-name)
+      (let [r (doc/put conn index-name mapping-type "1" fx/person-jack)]
+        (ok? r))
+      (idx/refresh conn index-name)
+      (let [r (doc/put conn index-name mapping-type "1" (assoc fx/person-jack :biography new-bio))]
+        (ok? r))
+      (idx/refresh conn index-name)
+      (is (any-hits? (doc/search conn index-name mapping-type {:query (q/term :biography "brilliant")})))
+      (is (no-hits? (doc/search conn index-name mapping-type {:query (q/term :biography "nice")})))))
+
   (deftest ^{:rest true} test-replacing-documents
     (let [index-name   "people"
           mapping-type "person"

@@ -22,18 +22,6 @@
   [m]
   (:created m))
 
-(defn ok?
-  [m]
-  (created? m))
-
-(defn found?
-  [m]
-  (true? (get m :found)))
-
-(defn not-found?
-  [m]
-  (false? (:found m)))
-
 (defn acknowledged?
   [m]
   (:acknowledged m))
@@ -42,6 +30,24 @@
   [m]
   (or (created? m)
       (acknowledged? m)))
+
+(defn all-shards-report-success?
+  [m]
+  (= (get-in m [:_shards :failed]) 0))
+
+(defn ok?
+  [m]
+  (or (created-or-acknowledged? m)
+      (and (all-shards-report-success? m)
+           (nil? (:error m)))))
+
+(defn found?
+  [m]
+  (true? (get m :found)))
+
+(defn not-found?
+  [m]
+  (false? (:found m)))
 
 (defn accepted?
   [m]
