@@ -68,12 +68,13 @@
 
 (defn put
   [^Connection conn ^String uri {:keys [body] :as options}]
-  (parse-safely
-    (:body (http/put uri (merge {:throw-exceptions throw-exceptions}
-                                (.http-opts conn)
-                                options
-                                {:accept :json
-                                 :body (json/encode body)})))))
+  (let [args (merge {:throw-exceptions throw-exceptions}
+                    (.http-opts conn)
+                    options
+                    {:accept :json
+                     :body (json/encode body)})]
+    (parse-safely   
+     (:body (http/put uri args)))))
 
 (defn get
   ([^Connection conn ^String uri]
