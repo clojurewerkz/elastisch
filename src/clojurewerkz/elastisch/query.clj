@@ -16,7 +16,7 @@
   "Convenience functions that build various query types.
 
    All functions return maps and are completely optional (but recommended)."
-  (:refer-clojure :exclude [range sort])
+  (:refer-clojure :exclude [range sort type])
   (:require [clojure.set :as set]
             [clojurewerkz.elastisch.escape    :as escape]))
 
