@@ -255,12 +255,15 @@
   query given a scroll id"
   ([^Connection conn scroll-id] (scroll conn scroll-id nil))
   ([^Connection conn scroll-id opts]
-   (let [qk [:search_type :scroll :routing :preference]
+   (let [qk (cond-> [:search_type :routing :preference]
+              (not scroll-id) (conj :scroll))
          qp   (select-keys opts qk)
-         body scroll-id]
-     (rest/post-string conn (rest/scroll-url conn)
-                       {:body body
-                        :query-params qp}))))
+         body (if scroll-id
+                {:scroll (:scroll opts)
+                 :scroll_id scroll-id})]
+     (rest/post conn (rest/scroll-url conn)
+                {:body body
+                 :query-params qp}))))
 
 (defn scroll-seq
   "Returns a lazy sequence of all documents for a given scroll query"
