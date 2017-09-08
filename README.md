@@ -100,9 +100,10 @@ The most recent stable release is highly recommended.
 ## Supported Elasticsearch Versions
 
 Elastisch 2.1 and 2.2 target Elasticsearch 1.x starting with 1.1 and through 1.7.x.
-Elastisch **master** provides Elasticsearch 2.x compatibility but not
-every Elasticsearch 2.3+ feature.
+Elastisch **master** provides Elasticsearch 3.x compatibility but not
+every ElasticSearch 3.0+ feature.
 
+ElasticSearch 5.0 support will be available in a future version.
 
 ## REST and Native Clients
 
