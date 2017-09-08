@@ -271,11 +271,11 @@
 
 (defn delete-by-query-url
   ([conn]
-     (url-with-path conn "/_all/_query"))
+     (url-with-path conn "/_all/_delete_by_query"))
   ([conn ^String index-name]
-     (url-with-path conn index-name "_query"))
+     (url-with-path conn index-name "_delete_by_query"))
   ([conn ^String index-name ^String mapping-type]
-     (url-with-path conn index-name mapping-type "_query")))
+     (url-with-path conn index-name mapping-type "_delete_by_query")))
 
 (defn more-like-this-url
   [conn ^String index-name ^String mapping-type]
