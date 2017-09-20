@@ -811,6 +811,28 @@
     (when context (attach-suggestion-context query context))
     query))
 
+(defmethod ^TermSuggestionBuilder ->suggest-query :term
+  [qtype term {:keys [field size analyzer context max-edits max-term-freq
+                      min-doc-freq min-word-length prefix-length accuracy sort
+                      string-distance suggest-mode]
+               :or {field "suggest"}}]
+  (let [query (doto (TermSuggestionBuilder. "hits")
+                (.text ^String term)
+                (.field ^String field))]
+    (when accuracy (.setAccuracy query accuracy))
+    (when analyzer (.analyzer query analyzer))
+    (when context (attach-suggestion-context query context))
+    (when max-edits (.maxEdits query max-edits))
+    (when max-term-freq (.maxTermFreq query max-term-freq))
+    (when min-doc-freq (.minDocFreq query min-doc-freq))
+    (when min-word-length (.minWordLength query min-word-length))
+    (when prefix-length (.prefixLength query prefix-length))
+    (when size (.size query size))
+    (when sort (.sort query sort))
+    (when string-distance (.stringDistance query string-distance))
+    (when suggest-mode (.suggestMode query suggest-mode))
+    query))
+
 (defn ^:private highlight-field-to-map
   [^HighlightField hlf]
   {})
