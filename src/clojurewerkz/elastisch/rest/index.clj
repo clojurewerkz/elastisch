@@ -34,7 +34,7 @@
   (require '[clojurewerkz.elastisch.rest.index :as idx])
 
   (idx/create conn \"myapp_development\")
-  (idx/create conn \"myapp_development\" :settings {\"number_of_shards\" 1})
+  (idx/create conn \"myapp_development\" {:settings {\"number_of_shards\" 1}})
 
   (let [mapping-types {:person {:properties {:username   {:type \"string\" :store \"yes\"}
                                              :first-name {:type \"string\" :store \"yes\"}
@@ -43,16 +43,15 @@
                                              :title      {:type \"string\" :analyzer \"snowball\"}
                                              :planet     {:type \"string\"}
                                              :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
-    (idx/create conn \"myapp_development\" :mappings mapping-types))
+    (idx/create conn \"myapp_development\" {:mappings mapping-types}))
   ```"
   ([^Connection conn ^String index-name] (create conn index-name nil))
   ([^Connection conn ^String index-name opts]
    (let [{:keys [settings mappings]} opts]
-     (rest/post conn (rest/index-url conn
-                                     index-name)
-                {:body (if mappings
-                         {:settings settings :mappings mappings}
-                         {:settings settings})}))))
+     (rest/put conn (rest/index-url conn
+                                    index-name)
+               {:body (cond-> {:settings (or settings {})}
+                        mappings (assoc :mappings mappings))}))))
 
 (defn exists?
   "Used to check if the index (indices) exists or not."
