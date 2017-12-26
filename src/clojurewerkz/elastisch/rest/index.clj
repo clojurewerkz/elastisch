@@ -44,10 +44,7 @@
                                              :planet     {:type \"string\"}
                                              :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
     (idx/create conn \"myapp_development\" :mappings mapping-types))
-  ```
-
-  Related Elasticsearch API Reference section:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
+  ```"
   ([^Connection conn ^String index-name] (create conn index-name nil))
   ([^Connection conn ^String index-name opts]
    (let [{:keys [settings mappings]} opts]
@@ -58,25 +55,19 @@
                          {:settings settings})}))))
 
 (defn exists?
-  "Used to check if the index (indices) exists or not.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-indices-exists.html>"
+  "Used to check if the index (indices) exists or not."
   [^Connection conn ^String index-name]
   (= 200 (:status (rest/head conn (rest/index-url conn
                                                   index-name)))))
 
 (defn type-exists?
-  "Used to check if a type/types exists in an index/indices.
-
-  API Reference: <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>"
+  "Used to check if a type/types exists in an index/indices."
   [^Connection conn ^String index-name ^String type-name]
   (= 200 (:status (rest/head conn (rest/mapping-type-url conn
                                                          index-name type-name)))))
 
 (defn delete
-  "Deletes an existing index.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-delete-index.html>"
+  "Deletes an existing index."
   ([^Connection conn]
      (rest/delete conn (rest/index-url conn
                                        "_all")))
@@ -89,9 +80,7 @@
 ;;
 
 (defn get-mapping
-  "The get mapping API allows to retrieve mapping definition of index or index/type.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
+  "The get mapping API allows to retrieve mapping definition of index or index/type."
   ([^Connection conn ^String index-name]
      (rest/get conn (rest/index-mapping-url conn
                                             (join-names index-name))))
@@ -101,9 +90,7 @@
                                        index-name type-name))))
 
 (defn update-mapping
-  "The put mapping API allows to register or modify specific mapping definition for a specific type.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping.html>"
+  "The put mapping API allows to register or modify specific mapping definition for a specific type."
   [^Connection conn ^String index-name-or-names ^String type-name opts]
   (let [{:keys [mapping]} opts]
     (rest/put conn
@@ -116,9 +103,7 @@
 ;;
 
 (defn update-settings
-  "Change specific index level settings in real time.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html>"
+  "Change specific index level settings in real time."
   ([^Connection conn settings]
      (rest/put conn (rest/index-settings-url conn) {:body settings}))
   ([^Connection conn ^String index-name settings]
@@ -127,9 +112,7 @@
 
 
 (defn get-settings
-  "The get settings API allows to retrieve settings of an index or multiple indices
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-settings.html>"
+  "The get settings API allows to retrieve settings of an index or multiple indices."
   ([^Connection conn]
      (rest/get conn (rest/index-settings-url conn)))
   ([^Connection conn ^String index-name]
@@ -140,25 +123,19 @@
 ;;
 
 (defn open
-  "Opens an index.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  "Opens an index."
   [^Connection conn index-name]
   (rest/post conn (rest/index-open-url conn
                                        index-name)))
 
 (defn close
-  "Closes an index.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-open-close.html>"
+  "Closes an index."
   [^Connection conn index-name]
   (rest/post conn (rest/index-close-url conn
                                         index-name)))
 
 (defn snapshot
-  "Takes a snapshot of an index or multiple indexes.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-gateway-snapshot.html>"
+  "Takes a snapshot of an index or multiple indexes."
   [^Connection conn index-name]
   (rest/post conn (rest/index-snapshot-url conn
                                            index-name)))
@@ -171,9 +148,7 @@
   settings.
 
   * 0-arity updates *all* indexes and may be a very expensive operation. Use it carefully.
-  * 1-arity refreshes a single index.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html>"
+  * 1-arity refreshes a single index."
   ([^Connection conn]
      (rest/post conn (rest/index-refresh-url conn)))
   ([^Connection conn index-name]
@@ -196,10 +171,7 @@
   * `:only_expunge_deletes`: should the optimize process only expunge segments with deleted documents in it?
   * `:refresh`: when set to `true`, refreshes the index
   * `:flush`: when set to `true`, flushes the index
-  * `:wait_for_merge`: should the request wait for the merge to end?
-
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html>"
+  * `:wait_for_merge`: should the request wait for the merge to end?"
   ([^Connection conn]
      (rest/post conn (rest/index-optimize-url conn)))
   ([^Connection conn index-name]
@@ -221,9 +193,7 @@
 
   Accepted options:
 
-  * `:refresh`: should a refresh be performed after the flush?
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html>"
+  * `:refresh`: should a refresh be performed after the flush?"
   ([^Connection conn]
      (rest/post conn (rest/index-flush-url conn)))
   ([^Connection conn index-name]
@@ -244,9 +214,7 @@
 
   * `:filter`: should filter caches be cleared?
   * `:field_data`: should field data caches be cleared?
-  * `:bloom`: should Bloom filter caches be cleared?
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html>"
+  * `:bloom`: should Bloom filter caches be cleared?"
   ([^Connection conn]
      (rest/post conn (rest/index-clear-cache-url conn)))
   ([^Connection conn index-name]
@@ -267,18 +235,13 @@
   ```edn
   { :add    { :index \"test1\" :alias \"alias1\" } }
   { :remove { :index \"test1\" :alias \"alias1\" } }
-  ```
-
-  and so on, the same as described in the Elasticsearch documentation guide on aliases:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html>"
+  ```"
   [^Connection conn & actions]
   (rest/post conn (rest/index-aliases-batch-url conn)
              {:body {:actions actions}}))
 
 (defn get-aliases
-  "Fetches and returns aliases for an index or multiple indexes.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases.html>"
+  "Fetches and returns aliases for an index or multiple indexes."
   [^Connection conn index-name]
   (rest/get conn (rest/index-aliases-url conn
                                          (join-names index-name))))
@@ -295,9 +258,7 @@
   * `:template`: a pattern of index name that this template will be applied to
   * `:settings`: the same as for [[create]]
   * `:mappings`: the same as for [[create]]
-  * `:aliases`: template aliases configuration
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-templates.html>"
+  * `:aliases`: template aliases configuration"
   ([^Connection conn ^String template-name] (create-template conn template-name nil))
   ([^Connection conn ^String template-name opts]
    (let [{:keys [template settings mappings aliases]} opts]
@@ -348,9 +309,7 @@
                                           (join-names index-name))))
 
 (defn segments
-  "Returns segments information for an index or multiple indexes.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-segments.html>"
+  "Returns segments information for an index or multiple indexes."
   ([^Connection conn]
      (rest/get conn (rest/index-segments-url conn)))
   ([^Connection conn index-name]
