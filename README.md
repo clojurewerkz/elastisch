@@ -35,6 +35,8 @@ released in September 2012, 2.0 in June 2014, 2.1 in December 2014,
 
 Elastisch 3.x focuses on Elasticsearch 2.x support.
 
+Elastisch 6.x (master) targets ElasticSearch 6.x (and 5.x to the extent possible).
+
 
 ## Artifacts
 
