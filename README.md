@@ -33,7 +33,9 @@ in production since the early days. Elastisch API is stable. 1.0 was
 released in September 2012, 2.0 in June 2014, 2.1 in December 2014,
 2.2 in January 2016.
 
-Elastisch 3.0 (currently in master) focusses on Elasticsearch 2.x support.
+Elastisch 3.x focuses on Elasticsearch 2.x support.
+
+Elastisch 6.x (master) targets ElasticSearch 6.x (and 5.x to the extent possible).
 
 
 ## Artifacts
@@ -49,6 +51,24 @@ If you are using Maven, add the following repository definition to your `pom.xml
 </repository>
 ```
 
+### The Most Recent 3.x Release
+
+Note: Elastisch documentation is not currently updated for version 3.0.
+
+With Leiningen:
+
+    [clojurewerkz/elastisch "3.0.0"]
+
+
+With Maven:
+
+    <dependency>
+      <groupId>clojurewerkz</groupId>
+      <artifactId>elastisch</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
+
 ### The Most Recent 2.x Release
 
 With Leiningen:
@@ -62,23 +82,6 @@ With Maven:
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
       <version>2.2.2</version>
-    </dependency>
-
-### The Most Recent 3.0 Release Preview
-
-Note: Elastisch documentation is not currently updated for version 3.0.
-
-With Leiningen:
-
-    [clojurewerkz/elastisch "3.0.0-beta2"]
-
-
-With Maven:
-
-    <dependency>
-      <groupId>clojurewerkz</groupId>
-      <artifactId>elastisch</artifactId>
-      <version>3.0.0-beta2</version>
     </dependency>
 
 
@@ -100,9 +103,10 @@ The most recent stable release is highly recommended.
 ## Supported Elasticsearch Versions
 
 Elastisch 2.1 and 2.2 target Elasticsearch 1.x starting with 1.1 and through 1.7.x.
-Elastisch **master** provides Elasticsearch 2.x compatibility but not
-every Elasticsearch 2.3+ feature.
+Elastisch **master** provides Elasticsearch 3.x compatibility but not
+every ElasticSearch 3.0+ feature.
 
+ElasticSearch 5.0 support will be available in a future version.
 
 ## REST and Native Clients
 

@@ -1,4 +1,4 @@
-(defproject clojurewerkz/elastisch "3.0.0-beta3-SNAPSHOT"
+(defproject clojurewerkz/elastisch "6.0.0-SNAPSHOT"
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure Elasticsearch client"
   :license {:name "Eclipse Public License"}
@@ -7,7 +7,7 @@
                  [clj-http              "2.2.0" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
                  ;; used by the native client
-                 [org.elasticsearch/elasticsearch "2.3.3"]]
+                 [org.elasticsearch/elasticsearch "2.4.6"]]
   :min-lein-version "2.5.1"
   :profiles     {:dev {:resource-paths ["test/resources"]
                        :dependencies [[clj-time "0.11.0" :exclusions [org.clojure/clojure]]]

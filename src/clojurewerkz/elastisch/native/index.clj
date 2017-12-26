@@ -62,10 +62,7 @@
                                              :planet     {:type \"string\"}
                                              :biography  {:type \"string\" :analyzer \"snowball\" :term_vector \"with_positions_offsets\"}}}}]
     (idx/create conn \"myapp_development\" {:mappings mapping-types}))
-  ```
-
-  Related Elasticsearch API Reference section:
-  <http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html>"
+  ```"
   ([^Client conn index-name] (create conn index-name nil))
   ([^Client conn index-name opts]
    (let [{:keys [settings mappings]} opts
@@ -102,9 +99,7 @@
        {:ok (.isAcknowledged res) :acknowledged (.isAcknowledged res)})))
 
 (defn get-mapping
-  "The get mapping API allows to retrieve mapping definition of index or index/type.
-
-  API Reference: <http://www.elasticsearch.org/guide/reference/api/admin-indices-get-mapping.html>"
+  "The get mapping API allows to retrieve mapping definition of index or index/type."
   ([^Client conn index-name]
      (let [ft                       (es/admin-get-mappings conn (cnv/->get-mappings-request))
            ^GetMappingsResponse res (.actionGet ft)]
