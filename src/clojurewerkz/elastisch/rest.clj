@@ -61,6 +61,7 @@
         (http/post (merge (.http-opts conn)
                           options
                           {:accept :json
+                           :content-type :json
                            ;:throw-exceptions false ;;ables to see ES when debugging
                            :body (json/encode body)}))
         (:body)
