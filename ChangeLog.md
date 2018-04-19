@@ -4,6 +4,7 @@
 
  This is part of ongoing effort to support 5.x.
  POST calls now include content-type: json headers (backwards-compatible).
+ delete-by-query now targets the 5.x API route (breaking change from 2.x).
 
 Contributed by [Brian T. Rice](https://github.com/briantrice) from [Han Tuzun](https://github.com/hantuzun).
 
