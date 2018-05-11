@@ -1,6 +1,14 @@
 ## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
 
-### ElasticSeach 2.3.x Compatibility
+### ElasticSearch 5.x Compatibility
+
+ This is part of ongoing effort to support 5.x.
+ POST calls now include content-type: json headers (backwards-compatible).
+ delete-by-query now targets the 5.x API route (breaking change from 2.x).
+
+Contributed by [Brian T. Rice](https://github.com/briantrice) from [Han Tuzun](https://github.com/hantuzun).
+
+### ElasticSearch 2.3.x Compatibility
 
 This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
 

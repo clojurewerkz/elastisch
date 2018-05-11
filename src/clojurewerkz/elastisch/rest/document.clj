@@ -335,22 +335,22 @@
   Multiple indexes and types can be specified by passing in a seq of strings,
   otherwise specifying a string suffices."
   ([^Connection conn index mapping-type query]
-     (rest/delete conn
-                  (rest/delete-by-query-url
-                    conn
-                    (join-names index)
-                    (join-names mapping-type))
-                  {:body {:query query}}))
+     (rest/post conn
+                (rest/delete-by-query-url
+                  conn
+                  (join-names index)
+                  (join-names mapping-type))
+                {:body {:query query}}))
   ([^Connection conn index mapping-type query opts]
-     (rest/delete conn
-                  (rest/delete-by-query-url
-                    conn
-                    (join-names index)
-                    (join-names mapping-type))
-                  {:query-params (select-keys opts
-                                              (conj optional-delete-query-parameters
-                                                    :ignore_unavailable))
-                   :body {:query query}})))
+     (rest/post conn
+                (rest/delete-by-query-url
+                  conn
+                  (join-names index)
+                  (join-names mapping-type))
+                {:query-params (select-keys opts
+                                            (conj optional-delete-query-parameters
+                                                  :ignore_unavailable))
+                 :body {:query query}})))
 
 (defn delete-by-query-across-all-types
   "Performs a delete-by-query operation over one or more indexes, across all
