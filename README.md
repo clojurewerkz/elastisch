@@ -142,7 +142,7 @@ Elastisch needs Elasticsearch running locally (`127.0.0.1`). `ES_CLUSTER_NAME` n
 with the name of the local cluster. To find it out, use
 
 ```
-curl http://localhost:9200/_cluster/nodes
+curl http://localhost:9200/_nodes/cluster
 ```
 
 ### Running Tests
