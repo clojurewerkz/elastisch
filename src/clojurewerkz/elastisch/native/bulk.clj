@@ -19,9 +19,7 @@
             [clojure.set :refer :all]
             [clojurewerkz.elastisch.native.conversion :as cnv]
             [clojurewerkz.elastisch.common.bulk :as common-bulk])
-  (:import clojure.lang.IPersistentMap
-           org.elasticsearch.client.Client
-           org.elasticsearch.action.bulk.BulkRequest
+  (:import org.elasticsearch.client.Client
            org.elasticsearch.action.bulk.BulkRequestBuilder
            org.elasticsearch.action.bulk.BulkResponse
            org.elasticsearch.action.index.IndexRequest

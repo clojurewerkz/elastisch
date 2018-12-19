@@ -1,6 +1,7 @@
 (ns clojurewerkz.elastisch.native.conversion-stats
   (:import
-    [org.elasticsearch.action.admin.indices.stats CommonStats IndicesStatsResponse]      org.elasticsearch.index.shard.DocsStats
+    (org.elasticsearch.action.admin.indices.stats CommonStats IndicesStatsResponse)
+    org.elasticsearch.index.shard.DocsStats
     org.elasticsearch.search.suggest.completion.CompletionStats
     org.elasticsearch.index.fielddata.FieldDataStats
     org.elasticsearch.index.flush.FlushStats

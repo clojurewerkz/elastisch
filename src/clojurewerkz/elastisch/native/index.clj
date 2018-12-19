@@ -21,12 +21,10 @@
            org.elasticsearch.action.admin.indices.create.CreateIndexResponse
            org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
            org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse
-           org.elasticsearch.action.index.IndexResponse
            org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexResponse
            org.elasticsearch.action.admin.indices.close.CloseIndexResponse
-           [org.elasticsearch.action.admin.indices.forcemerge.ForceMergeResponse]
            org.elasticsearch.action.admin.indices.flush.FlushResponse
            org.elasticsearch.action.admin.indices.refresh.RefreshResponse
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse
