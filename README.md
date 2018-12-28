@@ -55,7 +55,7 @@ Note: Elastisch documentation is not currently updated for version 3.0.
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "3.0.2"]
+    [clojurewerkz/elastisch "3.0.0"]
 
 
 With Maven:
@@ -63,7 +63,7 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.0</version>
     </dependency>
 
 
