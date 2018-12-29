@@ -17,19 +17,18 @@
   (:require [clojurewerkz.elastisch.native.conversion :as cnv])
   (:import org.elasticsearch.client.Client
            org.elasticsearch.client.transport.TransportClient
-           org.elasticsearch.common.settings.Settings
-           [org.elasticsearch.node NodeBuilder Node]
+           (org.elasticsearch.node NodeBuilder Node)
            ;; Actions
            org.elasticsearch.action.ActionFuture
            org.elasticsearch.action.index.IndexRequest
-           [org.elasticsearch.action.get GetRequest MultiGetRequest]
+           (org.elasticsearch.action.get GetRequest MultiGetRequest)
            org.elasticsearch.action.delete.DeleteRequest
            org.elasticsearch.action.update.UpdateRequest
            org.elasticsearch.action.count.CountRequest
-           [org.elasticsearch.action.search SearchRequest SearchScrollRequest
-            MultiSearchRequest]
-           [org.elasticsearch.action.percolate PercolateRequest PercolateResponse]
-           [org.elasticsearch.action.suggest SuggestRequest]
+           (org.elasticsearch.action.search SearchRequest SearchScrollRequest
+            MultiSearchRequest)
+           (org.elasticsearch.action.percolate PercolateRequest)
+           (org.elasticsearch.action.suggest SuggestRequest)
            ;; Admin Client
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -38,7 +37,7 @@
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
-           [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest] 
+           org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest
 
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest

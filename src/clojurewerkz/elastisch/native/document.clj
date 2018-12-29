@@ -20,11 +20,10 @@
             [clojurewerkz.elastisch.native.response :as r])
   (:import clojure.lang.IPersistentMap
            org.elasticsearch.client.Client
-           [org.elasticsearch.action.get GetResponse MultiGetResponse]
+           (org.elasticsearch.action.get GetResponse MultiGetResponse)
            org.elasticsearch.action.count.CountResponse
            org.elasticsearch.action.delete.DeleteResponse
            org.elasticsearch.action.search.SearchResponse
-           [org.elasticsearch.action.suggest SuggestResponse]
            java.util.Map))
 
 (defn ^IPersistentMap create

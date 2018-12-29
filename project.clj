@@ -1,8 +1,8 @@
-(defproject clojurewerkz/elastisch "6.0.0-SNAPSHOT"
+(defproject clojurewerkz/elastisch "3.0.1-SNAPSHOT"
   :url "http://clojureelasticsearch.info"
   :description "Minimalistic fully featured well documented Clojure Elasticsearch client"
   :license {:name "Eclipse Public License"}
-  :dependencies [[org.clojure/clojure   "1.8.0"]
+  :dependencies [[org.clojure/clojure   "1.9.0"]
                  [cheshire              "5.6.1"]
                  [clj-http              "2.2.0" :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support  "1.1.0" :exclusions [com.google.guava/guava]]
@@ -19,10 +19,10 @@
                  ;; some projects (e.g. using Spring's RestTemplate) can rely on,
                  ;; so we test for compatibility with it. MK.
                  :cljhttp076 {:dependencies [[clj-http "0.7.6"]]}
-                 :1.7 {:dependencies [[org.clojure/clojure "1.7.0"]]}
-                 :1.9    {:dependencies [[org.clojure/clojure "1.9.0-alpha13"]]}
-                 :master {:dependencies [[org.clojure/clojure "1.9.0-master-SNAPSHOT"]]}}
-  :aliases      {"all" ["with-profile" "dev:1.7,dev:1.9,dev:master,dev:cljhttp076,dev"]} ;try dev, then dev+1.8, then dev+master
+                 :1.8    {:dependencies [[org.clojure/clojure "1.8.0"]]}
+                 :1.10    {:dependencies [[org.clojure/clojure "1.10.0"]]}
+                 :master {:dependencies [[org.clojure/clojure "1.10.0-master-SNAPSHOT"]]}}
+  :aliases      {"all" ["with-profile" "dev:1.8,dev:1.10,dev:master,dev:cljhttp076,dev"]} ;try dev, then dev+1.8, then dev+master
   :repositories {"sonatype"         {:url "http://oss.sonatype.org/content/repositories/releases"
                                      :snapshots false
                                      :releases {:checksum :fail :update :always}}
