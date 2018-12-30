@@ -17,39 +17,37 @@
   (:require [clojure.walk :as wlk]
             [cheshire.core :as json]
             [clojurewerkz.elastisch.native.conversion-stats :as cnv-stats])
-  (:import [org.elasticsearch.common.settings Settings Settings$Builder]
-           [org.elasticsearch.common.transport
-            TransportAddress InetSocketTransportAddress LocalTransportAddress]
+  (:import (org.elasticsearch.common.settings Settings Settings$Builder)
+           (org.elasticsearch.common.transport TransportAddress InetSocketTransportAddress LocalTransportAddress)
            java.util.Map
            clojure.lang.IPersistentMap
            java.net.InetAddress
            org.elasticsearch.client.Client
            org.elasticsearch.common.xcontent.XContentType
            org.elasticsearch.index.VersionType
-           [org.elasticsearch.search.highlight HighlightBuilder HighlightBuilder$Field
-            HighlightField]
+           (org.elasticsearch.search.highlight HighlightBuilder HighlightBuilder$Field HighlightField)
            org.elasticsearch.common.text.Text
            ;; Actions
            org.elasticsearch.action.ShardOperationFailedException
-           [org.elasticsearch.action.index IndexRequest IndexRequest$OpType IndexResponse]
-           [org.elasticsearch.index.get GetResult]
-           [org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse]
-           [org.elasticsearch.action.delete DeleteRequest DeleteResponse]
-           [org.elasticsearch.action.update UpdateRequest UpdateResponse]
-           [org.elasticsearch.action.count CountRequest CountResponse]
-           [org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest
-            MultiSearchAction MultiSearchRequestBuilder MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item]
-           [org.elasticsearch.action.suggest SuggestRequest SuggestResponse]
-           [org.elasticsearch.search.suggest.completion CompletionSuggestionBuilder
-                                                        CompletionSuggestionFuzzyBuilder]
-           [org.elasticsearch.common.unit Fuzziness] ;;for CompletionSuggestionFuzzyBuilder
-           ;[org.elastisearch.search.suggest.phrase PhraseSuggestionBuilder]
-           [org.elasticsearch.search.suggest.term TermSuggestionBuilder]
+           (org.elasticsearch.action.index IndexRequest IndexRequest$OpType IndexResponse)
+           (org.elasticsearch.index.get GetResult)
+           (org.elasticsearch.action.get GetRequest GetResponse MultiGetRequest MultiGetResponse MultiGetItemResponse)
+           (org.elasticsearch.action.delete DeleteRequest DeleteResponse)
+           (org.elasticsearch.action.update UpdateRequest UpdateResponse)
+           (org.elasticsearch.action.count CountRequest)
+           (org.elasticsearch.action.search SearchRequest SearchResponse SearchScrollRequest
+            MultiSearchAction MultiSearchRequest MultiSearchResponse MultiSearchResponse$Item)
+           (org.elasticsearch.action.suggest SuggestResponse)
+           (org.elasticsearch.search.suggest.completion CompletionSuggestionBuilder
+                                                        CompletionSuggestionFuzzyBuilder)
+           (org.elasticsearch.common.unit Fuzziness) ;;for CompletionSuggestionFuzzyBuilder
+           ;(org.elastisearch.search.suggest.phrase PhraseSuggestionBuilder)
+           (org.elasticsearch.search.suggest.term TermSuggestionBuilder)
 
-           [org.elasticsearch.search.builder SearchSourceBuilder]
-           [org.elasticsearch.search.sort SortBuilder SortOrder FieldSortBuilder]
-           [org.elasticsearch.search SearchHits SearchHit]
-           [org.elasticsearch.action.percolate PercolateRequestBuilder PercolateResponse PercolateResponse$Match]
+           (org.elasticsearch.search.builder SearchSourceBuilder)
+           (org.elasticsearch.search.sort SortBuilder SortOrder FieldSortBuilder)
+           (org.elasticsearch.search SearchHits SearchHit)
+           (org.elasticsearch.action.percolate PercolateResponse PercolateResponse$Match)
            ;; Aggregations
            org.elasticsearch.search.aggregations.Aggregations
            org.elasticsearch.search.aggregations.metrics.avg.Avg
@@ -57,34 +55,34 @@
            org.elasticsearch.search.aggregations.metrics.min.Min
            org.elasticsearch.search.aggregations.metrics.sum.Sum
            org.elasticsearch.search.aggregations.metrics.tophits.TopHits
-           [org.elasticsearch.search.aggregations.metrics.percentiles Percentiles Percentile]
+           (org.elasticsearch.search.aggregations.metrics.percentiles Percentiles Percentile)
            org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality
            org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount
            org.elasticsearch.search.aggregations.metrics.stats.Stats
            org.elasticsearch.search.aggregations.metrics.stats.extended.ExtendedStats
-           [org.elasticsearch.search.aggregations.bucket.histogram  Histogram Histogram$Bucket]
-           [org.elasticsearch.search.aggregations.bucket.range      Range     Range$Bucket]
-           [org.elasticsearch.search.aggregations.bucket.terms      Terms     Terms$Bucket]
+           (org.elasticsearch.search.aggregations.bucket.histogram  Histogram Histogram$Bucket)
+           (org.elasticsearch.search.aggregations.bucket.range      Range     Range$Bucket)
+           (org.elasticsearch.search.aggregations.bucket.terms      Terms     Terms$Bucket)
            org.elasticsearch.search.aggregations.bucket.SingleBucketAggregation
-           [org.elasticsearch.search.aggregations HasAggregations]
+           (org.elasticsearch.search.aggregations HasAggregations)
            ;; Administrative Actions
            org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest
            org.elasticsearch.action.admin.indices.create.CreateIndexRequest
            org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
-           [org.elasticsearch.action.admin.indices.mapping.get GetMappingsRequest GetMappingsResponse]
+           (org.elasticsearch.action.admin.indices.mapping.get GetMappingsRequest GetMappingsResponse)
            org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
-           [org.elasticsearch.action.admin.indices.stats IndicesStatsRequest IndicesStatsResponse]
+           (org.elasticsearch.action.admin.indices.stats IndicesStatsRequest IndicesStatsResponse)
            org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest
            org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse
            org.elasticsearch.action.admin.indices.open.OpenIndexRequest
            org.elasticsearch.action.admin.indices.close.CloseIndexRequest
-           [org.elasticsearch.action.admin.indices.forcemerge ForceMergeAction ForceMergeRequest]
+           (org.elasticsearch.action.admin.indices.forcemerge ForceMergeRequest)
            org.elasticsearch.action.admin.indices.flush.FlushRequest
            org.elasticsearch.action.admin.indices.refresh.RefreshRequest
            org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest
-           [org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments]
-           [org.elasticsearch.action.admin.indices.alias.get GetAliasesResponse GetAliasesRequest]
+           (org.elasticsearch.action.admin.indices.segments IndicesSegmentsRequest IndicesSegmentResponse IndexSegments)
+           (org.elasticsearch.action.admin.indices.alias.get GetAliasesResponse GetAliasesRequest)
            org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
            org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
            org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest
@@ -100,7 +98,7 @@
            org.elasticsearch.action.support.master.AcknowledgedResponse
            org.elasticsearch.search.fetch.source.FetchSourceContext
            ;; Bulk responses
-           [org.elasticsearch.action.bulk BulkResponse BulkItemResponse]))
+           (org.elasticsearch.action.bulk BulkResponse BulkItemResponse)))
 
 ;;
 ;; Implementation
