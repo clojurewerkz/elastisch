@@ -1,3 +1,17 @@
+;; Copyright (c) 2011-2019 Michael S. Klishin, Alex Petrov, and the ClojureWerkz Team
+;;
+;; Licensed under the Apache License, Version 2.0 (the "License");
+;; you may not use this file except in compliance with the License.
+;; You may obtain a copy of the License at
+;;
+;;     http://www.apache.org/licenses/LICENSE-2.0
+;;
+;; Unless required by applicable law or agreed to in writing, software
+;; distributed under the License is distributed on an "AS IS" BASIS,
+;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+;; See the License for the specific language governing permissions and
+;; limitations under the License.
+
 (ns clojurewerkz.elastisch.native.conversion-stats
   (:import
     (org.elasticsearch.action.admin.indices.stats CommonStats IndicesStatsResponse)
@@ -34,7 +48,7 @@
   org.elasticsearch.search.suggest.completion.CompletionStats
   (to-stats [s]
     {:size_in_bytes (.getSizeInBytes s)})
-  
+
   org.elasticsearch.index.fielddata.FieldDataStats
   (to-stats [s]
     {:memory_size_in_bytes (.getMemorySizeInBytes s)
@@ -44,7 +58,7 @@
   (to-stats [s]
     {:total (.getTotal s)
      :total_time_in_millis (.getTotalTimeInMillis s)})
-  
+
   org.elasticsearch.index.get.GetStats
   (to-stats [s]
     {:total (.getCount s)
@@ -54,8 +68,8 @@
      :missing_total (.getMissingCount s)
      :missing_time_in_millis (.getMissingTimeInMillis s)
      :current (.current s)})
- 
-  org.elasticsearch.index.indexing.IndexingStats 
+
+  org.elasticsearch.index.indexing.IndexingStats
   (to-stats [s]
     (let [totals (.getTotal s)]
       {:index_total (.getIndexCount totals)
@@ -99,14 +113,14 @@
      :miss_count (.getMissCount s)
      :cache_size (.getCacheSize s)
      :cache_count (.getCacheCount s)
-     :evictions (.getEvictions s)}) 
+     :evictions (.getEvictions s)})
 
   org.elasticsearch.index.recovery.RecoveryStats
   (to-stats [s]
     {:current_as_source (.currentAsSource s)
      :current_as_target (.currentAsTarget s)
      :throttle_time_in_millis (-> s .throttleTime .getMillis)})
-  
+
   org.elasticsearch.index.refresh.RefreshStats
   (to-stats [s]
     {:total (.getTotal s)
@@ -118,7 +132,7 @@
      :evictions (.getEvictions s)
      :hit_count (.getHitCount s)
      :miss_count (.getMissCount s)})
-  
+
   org.elasticsearch.index.search.stats.SearchStats
   (to-stats [s]
     (let [totals (-> s .getTotal)]
@@ -152,7 +166,7 @@
     {:total (.getCount s)
      :time_in_millis (.getTimeInMillis s)
      :current (.getCurrent s)})
-  
+
   org.elasticsearch.index.store.StoreStats
   (to-stats [s]
     {:size_in_bytes (.getSizeInBytes s)
@@ -162,7 +176,7 @@
   (to-stats [s]
     {:operations (.estimatedNumberOfOperations s)
      :size_in_bytes (.getTranslogSizeInBytes s)})
-  
+
   org.elasticsearch.index.warmer.WarmerStats
   (to-stats [s]
     {:current (.current s)
@@ -201,4 +215,3 @@
                 (for [[idx-name idx-stats] (.getIndices r)]
                   [idx-name {:primaries (-> idx-stats .getPrimaries to-stats)
                              :total (-> idx-stats .getTotal to-stats)}]))}))
-
