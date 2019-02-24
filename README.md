@@ -30,12 +30,14 @@ on Twitter.
 
 Elastisch is a not a young project. Started in late 2011, it has been used
 in production since the early days. Elastisch API is stable. 1.0 was
-released in September 2012, 2.0 in June 2014, 2.1 in December 2014,
-2.2 in January 2016.
+released in September 2012, 2.0 in June 2014, 3.0 in December 2018.
 
-Elastisch 3.x focuses on Elasticsearch 2.x support.
+
+## Supported ElasticSearch Versions
 
 Elastisch 6.x (master) targets ElasticSearch 6.x (and 5.x to the extent possible).
+
+Elastisch 3.x focuses on Elasticsearch 2.x support.
 
 
 ## Artifacts
