@@ -1,10 +1,10 @@
-## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
+## Changes between Elastisch 2.2.x and 3.0.0 (March 1st, 2019)
 
 ### ElasticSearch 5.x Compatibility
 
- This is part of ongoing effort to support 5.x.
- POST calls now include content-type: json headers (backwards-compatible).
- delete-by-query now targets the 5.x API route (breaking change from 2.x).
+This is part of ongoing effort to support 5.x.
+POST calls now include content-type: json headers (backwards-compatible).
+delete-by-query now targets the 5.x API route (breaking change from 2.x).
 
 Contributed by [Brian T. Rice](https://github.com/briantrice) from [Han Tuzun](https://github.com/hantuzun).
 
@@ -185,7 +185,7 @@ For example:
 (require '[clojurewerkz.elastisch.native.document :as doc])
 (require '[clojurewerkz.elastisch.query :as q])
 
-(doc/search conn [index-name missing-index-name] 
+(doc/search conn [index-name missing-index-name]
                                              mapping-type
                                              :query   (q/match-all)
                                              :ignore_unavailable true)
@@ -211,7 +211,7 @@ Elastisch now depends on Elasticsearch Java client version `1.7.x`.
 
 ### Better support for plural/single indices and aliases in native update-aliases
 
-* `:remove` action now works with singular `:index` key 
+* `:remove` action now works with singular `:index` key
 * multiple aliases can be added with single `:add` action
 * alias can be removed from multiple indices with single `:remove` action
 
