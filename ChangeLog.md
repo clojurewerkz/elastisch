@@ -1,6 +1,15 @@
-## Changes between Elastisch 2.2.x and 3.0.0 (unreleased)
+## Changes between Elastisch 3.0.0 and 3.0.1 (April 27th, 2019)
 
-### ElasticSeach 2.3.x Compatibility
+### Clojure 1.10 Support
+
+Contributed by Jari Hanhela.
+
+GitHub issue: [#266](https://github.com/clojurewerkz/elastisch/issues/266)
+
+
+## Changes between Elastisch 2.2.x and 3.0.0 (March 1st, 2019)
+
+### ElasticSeach 5.x Compatibility
 
 This involves removing some features as [Elasticsearch 2.0 has breaking public API changes](https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-2.0.html).
 
@@ -177,7 +186,7 @@ For example:
 (require '[clojurewerkz.elastisch.native.document :as doc])
 (require '[clojurewerkz.elastisch.query :as q])
 
-(doc/search conn [index-name missing-index-name] 
+(doc/search conn [index-name missing-index-name]
                                              mapping-type
                                              :query   (q/match-all)
                                              :ignore_unavailable true)
@@ -203,7 +212,7 @@ Elastisch now depends on Elasticsearch Java client version `1.7.x`.
 
 ### Better support for plural/single indices and aliases in native update-aliases
 
-* `:remove` action now works with singular `:index` key 
+* `:remove` action now works with singular `:index` key
 * multiple aliases can be added with single `:add` action
 * alias can be removed from multiple indices with single `:remove` action
 
