@@ -59,7 +59,7 @@ Note: Elastisch documentation is not currently updated for version 3.0.
 
 With Leiningen:
 
-    [clojurewerkz/elastisch "3.0.0"]
+    [clojurewerkz/elastisch "3.0.1"]
 
 
 With Maven:
@@ -67,25 +67,8 @@ With Maven:
     <dependency>
       <groupId>clojurewerkz</groupId>
       <artifactId>elastisch</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
-
-
-### The Most Recent 2.x Release
-
-With Leiningen:
-
-[![Clojars Project](http://clojars.org/clojurewerkz/elastisch/latest-version.svg)](http://clojars.org/clojurewerkz/elastisch)
-
-
-With Maven:
-
-    <dependency>
-      <groupId>clojurewerkz</groupId>
-      <artifactId>elastisch</artifactId>
-      <version>2.2.2</version>
-    </dependency>
-
 
 
 ## Documentation & Examples
