@@ -1,14 +1,13 @@
 # Elastisch, a Clojure client for Elasticsearch
 
-Elastisch is a minimalistic [Clojure client for
-Elasticsearch](http://clojureelasticsearch.info), a modern distributed search engine.
+Elastisch is a minimalistic Clojure client for Elasticsearch, a modern distributed search engine.
 
 
 ## Project Goals
 
  * Be reasonably feature complete
- * Be [well documented](http://clojureelasticsearch.info)
- * Be [well tested](https://github.com/clojurewerkz/elastisch/tree/master/test)
+ * Be [well documented](./docs/guides/)
+ * Be [well tested](https://github.com/clojurewerkz/elastisch/tree/main/test)
  * Closely follow [Elasticsearch API structure](http://www.elasticsearch.org/guide/reference/api/), no new abstractions introduced
  * Support multiple transports: HTTP, native ES client, possibly more (e.g. Memcached)
  * Follow recent Elasticsearch releases & developments
@@ -16,8 +15,7 @@ Elasticsearch](http://clojureelasticsearch.info), a modern distributed search en
 
 ## Community
 
-[Elastisch has a mailing
-list](https://groups.google.com/forum/#!forum/clojure-elasticsearch). Feel
+[Elastisch has a mailing list](https://groups.google.com/forum/#!forum/clojure-elasticsearch). Feel
 free to join it and ask any questions you may have.
 
 To subscribe for announcements of releases, important changes and so
@@ -35,7 +33,7 @@ released in September 2012, 2.0 in June 2014, 3.0 in December 2018.
 
 ## Supported ElasticSearch Versions
 
-Elastisch 6.x (master) targets ElasticSearch 6.x (and 5.x to the extent possible).
+Elastisch 6.x (`main`) targets ElasticSearch 6.x
 
 Elastisch 3.x focuses on Elasticsearch 2.x support.
 
@@ -114,11 +112,6 @@ Elastisch is part of the group of [Clojure libraries](http://clojurewerkz.org) k
 and several others.
 
 
-## Continuous Integration
-
-[![Continuous Integration status](https://secure.travis-ci.org/clojurewerkz/elastisch.png)](http://travis-ci.org/clojurewerkz/elastisch)
-[![Dependencies Status](https://versions.deps.co/clojurewerkz/elastisch/status.svg)](https://versions.deps.co/clojurewerkz/elastisch)
-
 ## Development
 
 ### Elasticsearch Setup
@@ -160,7 +153,7 @@ with your changes and all tests pass, submit a pull request on GitHub.
 
 ## License
 
-Copyright (c) 2011-2019 Alex Petrov, Michael S. Klishin, and the ClojureWerkz Team.
+Copyright (c) 2011-2024 Alex Petrov, Michael S. Klishin, and the ClojureWerkz Team.
 
 Double-licensed under the [Eclipse Public License](https://www.eclipse.org/legal/epl-v10.html) (the same as Clojure) and
 [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
